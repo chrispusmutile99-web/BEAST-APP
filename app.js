@@ -396,24 +396,50 @@ function providerCost(source, amount, type = "send"){
 }
 
 function beastFee(amount){
-  amount = Number(amount || 0);
-  if(amount <= 0) return 0;
-  if(amount <= 1000) return 7;
-  if(amount <= 10000) return 30;
-  return 50;
+  // Kept for backward compatibility — no longer charged directly
+  return 0;
 }
 
+/* BEAST Wallet fee = M-PESA send fee − 3 */
+function beastWalletFee(amount){
+  const mpesa = mpesaSendFee(Number(amount) || 0);
+  return Math.max(0, mpesa - 3);
+}
+
+/* External split — user pays the provider fee, BEAST takes 40% */
+function externalSplit(source, amount, type = "send"){
+  const fee = providerCost(source, amount, type);
+  const beastCut = Math.round(fee * 0.4);
+  const providerKeeps = fee - beastCut;
+  return { fee, beastCut, providerKeeps };
+}
+
+/* Cost preview — branches on source */
 function costPreview(source, amount, type = "send"){
-  amount = Number(amount || 0);
-  const fee = beastFee(amount);
-  const provider = providerCost(source, amount, type);
-  const total = amount + fee + provider;
+  const amt = Number(amount) || 0;
+
+  if(amt <= 0){
+    return `<b>Cost preview</b><br>Enter an amount.`;
+  }
+
+  if(source === "wallet"){
+    const fee = beastWalletFee(amt);
+    const total = amt + fee;
+    return `
+      <b>BEAST Wallet transfer</b><br>
+      Amount: ${money(amt)}<br>
+      BEAST fee: ${money(fee)}<br><br>
+      <strong>Total: ${money(total)}</strong>
+    `;
+  }
+
+  const { fee, beastCut, providerKeeps } = externalSplit(source, amt, type);
+  const total = amt + fee;
   return `
     <b>Cost preview</b><br>
-    Amount: ${money(amount)}<br>
-    BEAST fee: ${money(fee)}<br>
-    ${SOURCE_NAMES[source] || source} cost: ${money(provider)}<br><br>
-    <strong>Total deducted: ${money(total)}</strong>
+    Amount: ${money(amt)}<br>
+    ${SOURCE_NAMES[source] || source} fee: ${money(fee)}<br><br>
+    <strong>Total: ${money(total)}</strong>
   `;
 }
 
@@ -761,6 +787,8 @@ function setupSourceManager(){
       if(!cardName){ toast("Enter card name."); source.enabled = false; return; }
       if(!/^\d{4}$/.test(last4)){ toast("Enter last 4 digits."); source.enabled = false; return; }
       source.cardName = cardName;
+
+w
       source.last4 = last4;
     }
 
@@ -875,17 +903,22 @@ function setupSend(){
     const amount = Number($("sendAmount").value);
     const source = $("sendSource").value;
     if(amount <= 0){ toast("Enter amount."); return; }
-    const fee = beastFee(amount);
-    const provider = providerCost(source, amount);
+
+    let fee;
+    if(source === "wallet"){
+      fee = beastWalletFee(amount);
+    } else {
+      fee = externalSplit(source, amount).fee;
+    }
+
     askConfirmation(
-      buildConfirmHTML({ title:"Confirm send", recipientName:"Demo recipient", recipient: phone, amount, source, fee, provider }),
+      buildConfirmHTML({ title:"Confirm send", recipientName:"Demo recipient", recipient: phone, amount, source, fee }),
       () => authorize("Send money", () => {
         completeTransaction({ type:"Send", amount, source, recipient: phone, recipientName:"Demo recipient", description:`Send to ${phone}` });
       })
     );
   });
 }
-
 
 /* ================= BULK ================= */
 
@@ -953,29 +986,54 @@ function setupBulk(){
 function executeBulkSend(source){
   const src = state.sources[source];
   if(!src){ toast("Invalid source."); return; }
+
+  const isWallet = source === "wallet";
   const results = [];
   let succeeded = 0, failed = 0, stoppedAt = null;
 
   for(const row of bulkRows){
-    const fee = beastFee(row.amount);
-    const provider = providerCost(source, row.amount);
-    const total = row.amount + fee + provider;
+    let fee, beastCut, providerKeeps;
+
+    if(isWallet){
+      fee = beastWalletFee(row.amount);
+      beastCut = fee;
+      providerKeeps = 0;
+    } else {
+      const split = externalSplit(source, row.amount);
+      fee = split.fee;
+      beastCut = split.beastCut;
+      providerKeeps = split.providerKeeps;
+    }
+
+    const total = row.amount + fee;
+
     if(src.balance < total){
       failed++;
       stoppedAt = row;
       results.push({ phone: row.phone, amount: row.amount, status: "failed", reason: "Insufficient balance" });
       break;
     }
+
     src.balance -= total;
     succeeded++;
-    const reference = generateReference();
+
     state.transactions.unshift({
-      reference, createdAt: new Date().toISOString(), status:"completed",
-      type:"Bulk Send", amount: row.amount, fee, providerCost: provider,
-      totalDeducted: total, source, recipient: row.phone, recipientName:"Demo recipient",
+      reference: generateReference(),
+      createdAt: new Date().toISOString(),
+      status: "completed",
+      type: "Bulk Send",
+      amount: row.amount,
+      fee,
+      beastCut,
+      providerCost: providerKeeps,
+      totalDeducted: total,
+      source,
+      recipient: row.phone,
+      recipientName: "Demo recipient",
       description: `Bulk send to ${row.phone}`
     });
-    results.push({ phone: row.phone, amount: row.amount, status: "sent", reference });
+
+    results.push({ phone: row.phone, amount: row.amount, status: "sent" });
   }
 
   addNotification("Bulk send", `${succeeded} sent, ${failed} failed.`);
@@ -1020,17 +1078,22 @@ function setupWithdraw(){
     const source = $("withdrawSource").value;
     const agent = ($("agentNumber").value || "").trim();
     if(amount <= 0){ toast("Enter amount."); return; }
-    const fee = beastFee(amount);
-    const provider = providerCost(source, amount, "withdraw");
+
+    let fee;
+    if(source === "wallet"){
+      fee = beastWalletFee(amount);
+    } else {
+      fee = externalSplit(source, amount, "withdraw").fee;
+    }
+
     askConfirmation(
-      `<b>Confirm withdrawal</b><br><br>Agent: ${escapeHTML(agent)}<br>Source: ${escapeHTML(SOURCE_NAMES[source])}<br><br>Amount: ${money(amount)}<br>BEAST fee: ${money(fee)}<br>${SOURCE_NAMES[source]} cost: ${money(provider)}<br><br><strong>Total: ${money(amount + fee + provider)}</strong>`,
+      buildConfirmHTML({ title:"Confirm withdrawal", recipientName:"Demo agent", recipient: agent, amount, source, fee }),
       () => authorize("Withdrawal", () => {
         completeTransaction({ type:"Withdraw", amount, source, recipient: agent, recipientName:"Demo agent", description:"Agent cash withdrawal", providerType:"withdraw" });
       })
     );
   });
 }
-
 
 /* ================= LIPA NA ================= */
 
@@ -1064,10 +1127,16 @@ function setupLipa(){
     const source = $("lipaSource").value;
     const dest = $("lipaDestNumber").value;
     if(amount <= 0){ toast("Enter amount."); return; }
-    const fee = beastFee(amount);
-    const provider = providerCost(source, amount);
+
+    let fee;
+    if(source === "wallet"){
+      fee = beastWalletFee(amount);
+    } else {
+      fee = externalSplit(source, amount).fee;
+    }
+
     askConfirmation(
-      buildConfirmHTML({ title:"Confirm business payment", recipientName:"Demo business", recipient: dest, amount, source, fee, provider }),
+      buildConfirmHTML({ title:"Confirm business payment", recipientName:"Demo business", recipient: dest, amount, source, fee }),
       () => authorize("Lipa Na", () => {
         completeTransaction({ type:"Lipa Na", amount, source, recipient: dest, recipientName:"Demo business", description:`${$("lipaType").value} payment` });
       })
@@ -1075,6 +1144,63 @@ function setupLipa(){
   });
 }
 
+function updateDepositPreview(){
+  const box = $("depositCostPreview");
+  if(!box) return;
+  const source = $("depositSource")?.value;
+  const amount = Number($("depositAmount")?.value || 0);
+  if(amount <= 0){
+    box.innerHTML = `<b>Deposit preview</b><br>Enter an amount.`;
+    return;
+  }
+  box.innerHTML = `<b>Deposit to BEAST</b><br>Amount: ${money(amount)}<br><br><strong>Deposits are free. No BEAST fee.</strong>`;
+}
+
+function setupDeposit(){
+  $("performDepositButton")?.addEventListener("click", () => {
+    const phone = normalizePhone($("depositPhone")?.value || "");
+    const source = $("depositSource")?.value;
+    const amount = Number($("depositAmount")?.value || 0);
+
+    if(!validPhone(phone)){ toast("Enter customer's valid phone."); return; }
+    if(phone !== state.user.phone){ toast("Demo deposit for registered customer only."); return; }
+    if(!state.sources[source]){ toast("Select a valid deposit source."); return; }
+    if(source === "wallet"){ toast("Wallet cannot deposit into itself."); return; }
+    if(amount <= 0){ toast("Enter amount."); return; }
+
+    askConfirmation(
+      `<b>Confirm deposit</b><br><br>Source: ${escapeHTML(SOURCE_NAMES[source])}<br>Amount: ${money(amount)}<br><br><strong>BEAST Wallet receives: ${money(amount)}</strong><br><small>Deposits are free.</small>`,
+      () => authorize("Deposit to BEAST", () => {
+        const src = state.sources[source];
+        if(src.balance < amount){ toast("Insufficient source balance."); return; }
+        src.balance -= amount;
+        state.sources.wallet.enabled = true;
+        state.sources.wallet.balance += amount;
+
+        const reference = generateReference();
+        state.transactions.unshift({
+          reference, createdAt: new Date().toISOString(), status: "completed",
+          type: "Deposit to BEAST", amount, fee: 0, beastCut: 0, providerCost: 0,
+          totalDeducted: amount, source, destination: "BEAST Wallet",
+          recipient: state.user.phone, recipientName: state.user.name,
+          received: amount,
+          description: `Deposit from ${SOURCE_NAMES[source]} to BEAST Wallet`
+        });
+
+        addNotification("Deposit completed", `${money(amount)} added to BEAST Wallet. Ref ${reference}.`);
+        addSecurity(`BEAST deposit from ${SOURCE_NAMES[source]}.`);
+        save();
+        toast("Deposit completed. No BEAST fee.");
+        if($("depositAmount")) $("depositAmount").value = "";
+        renderEverything();
+      })
+    );
+  });
+
+  $("depositSource")?.addEventListener("change", updateDepositPreview);
+  $("depositAmount")?.addEventListener("input", updateDepositPreview);
+  updateDepositPreview();
+}
 
 /* ================= CONFIRM + PIN MODAL ================= */
 
@@ -1087,9 +1213,9 @@ function askConfirmation(summaryHTML, onConfirm){
   $("confirmClose")?.addEventListener("click", () => { $("confirmModal").classList.add("hidden"); pendingAction = null; });
 }
 
-function buildConfirmHTML({title, recipientName, recipient, amount, source, fee, provider}){
-  const total = Number(amount) + Number(fee) + Number(provider);
-  return `<b>${escapeHTML(title)}</b><br><br>Recipient: ${escapeHTML(recipientName)}<br>Destination: ${escapeHTML(recipient)}<br>Source: ${escapeHTML(SOURCE_NAMES[source] || source)}<br><br>Amount: ${money(amount)}<br>BEAST fee: ${money(fee)}<br>${SOURCE_NAMES[source] || source} cost: ${money(provider)}<br><br><strong>Total: ${money(total)}</strong>`;
+function buildConfirmHTML({title, recipientName, recipient, amount, source, fee}){
+  const total = Number(amount) + Number(fee);
+  return `<b>${escapeHTML(title)}</b><br><br>Recipient: ${escapeHTML(recipientName)}<br>Destination: ${escapeHTML(recipient)}<br>Source: ${escapeHTML(SOURCE_NAMES[source] || source)}<br><br>Amount: ${money(amount)}<br>Fee: ${money(fee)}<br><br><strong>Total: ${money(total)}</strong>`;
 }
 
 function openPinModal(purpose){
@@ -1163,9 +1289,21 @@ function setupPin(){
 
 function completeTransaction(data){
   const amount = Number(data.amount);
-  const fee = beastFee(amount);
-  const provider = providerCost(data.source, amount, data.providerType || "send");
-  const total = amount + fee + provider;
+
+  let fee, beastCut, providerKeeps, total;
+
+  if(data.source === "wallet"){
+    fee = beastWalletFee(amount);
+    beastCut = fee;
+    providerKeeps = 0;
+    total = amount + fee;
+  } else {
+    const split = externalSplit(data.source, amount, data.providerType || "send");
+    fee = split.fee;
+    beastCut = split.beastCut;
+    providerKeeps = split.providerKeeps;
+    total = amount + fee;
+  }
 
   const source = state.sources[data.source];
   if(!source || !source.enabled){ toast("Source not enabled."); return; }
@@ -1176,10 +1314,17 @@ function completeTransaction(data){
   state.transactions.unshift({
     reference: generateReference(),
     createdAt: new Date().toISOString(),
-    status:"completed", type: data.type, amount, fee,
-    providerCost: provider, totalDeducted: total,
-    source: data.source, recipient: data.recipient,
-    recipientName: data.recipientName, description: data.description
+    status:"completed",
+    type: data.type,
+    amount,
+    fee,
+    beastCut,
+    providerCost: providerKeeps,
+    totalDeducted: total,
+    source: data.source,
+    recipient: data.recipient,
+    recipientName: data.recipientName,
+    description: data.description
   });
 
   addNotification(`${data.type} completed`, `${money(amount)} sent to ${data.recipientName}.`);
@@ -1187,10 +1332,13 @@ function completeTransaction(data){
   save();
   toast(`${data.type} completed. ${money(total)} deducted.`);
 
-  if(data.type === "Send"){ $("sendPhone").value = ""; $("sendAmount").value = ""; $("recipientVerification").classList.add("hidden"); }
+  if(data.type === "Send"){
+    $("sendPhone").value = "";
+    $("sendAmount").value = "";
+    $("recipientVerification").classList.add("hidden");
+  }
   renderEverything();
 }
-
 
 /* ================= RECEIVE (BUYER FLOW) ================= */
 
@@ -1400,11 +1548,15 @@ function updateBuyerCostPreview(){
   const amount = Number($("buyerPayAmount")?.value || 0);
   const source = buyerSession.chosenSource;
   if(amount <= 0){ box.innerHTML = `<b>Cost preview</b><br>Enter amount.`; return; }
-  const fee = beastFee(amount);
-  const provider = providerCost(source, amount);
-  box.innerHTML = `<b>Cost preview</b><br>Amount: ${money(amount)}<br>BEAST fee: ${money(fee)}<br>${SOURCE_NAMES[source]} cost: ${money(provider)}<br><br><strong>Total: ${money(amount+fee+provider)}</strong>`;
-}
 
+  if(source === "wallet"){
+    const fee = beastWalletFee(amount);
+    box.innerHTML = `<b>BEAST Wallet</b><br>Amount: ${money(amount)}<br>Fee: ${money(fee)}<br><br><strong>Total: ${money(amount + fee)}</strong>`;
+  } else {
+    const split = externalSplit(source, amount);
+    box.innerHTML = `<b>Cost preview</b><br>Amount: ${money(amount)}<br>${SOURCE_NAMES[source]} fee: ${money(split.fee)}<br><br><strong>Total: ${money(amount + split.fee)}</strong>`;
+  }
+}
 function doBuyerPay(){
   if(!buyerSession) return;
   const amount = Number($("buyerPayAmount").value);
@@ -1412,21 +1564,32 @@ function doBuyerPay(){
   if(amount <= 0){ toast("Enter amount."); return; }
 
   const source = buyerSession.chosenSource;
-  const fee = beastFee(amount);
-  const provider = providerCost(source, amount);
-  const total = amount + fee + provider;
+  let fee, beastCut, providerKeeps;
+
+  if(source === "wallet"){
+    fee = beastWalletFee(amount);
+    beastCut = fee;
+    providerKeeps = 0;
+  } else {
+    const split = externalSplit(source, amount);
+    fee = split.fee;
+    beastCut = split.beastCut;
+    providerKeeps = split.providerKeeps;
+  }
+
+  const total = amount + fee;
   const src = buyerSession.sources[source];
   if(!src || src.balance < total){ toast("Buyer insufficient balance."); return; }
 
   const channelLabel = { wallet:"Wallet", pochi:"Pochi", till:"Till", paybill:"PayBill", bank:"Bank", card:"Card" }[channel];
 
   askConfirmation(
-    `<b>Confirm buyer payment</b><br><br>Buyer: ${escapeHTML(buyerSession.name)}<br>To: ${escapeHTML(state.user.name)}<br>Via: ${escapeHTML(channelLabel)}<br>Source: ${escapeHTML(SOURCE_NAMES[source])}<br><br>Amount: ${money(amount)}<br>BEAST fee: ${money(fee)}<br>${SOURCE_NAMES[source]} cost: ${money(provider)}<br><br><strong>Total: ${money(total)}</strong>`,
-    () => authorizeBuyerPin(amount, source, fee, provider, channel)
+    `<b>Confirm buyer payment</b><br><br>Buyer: ${escapeHTML(buyerSession.name)}<br>To: ${escapeHTML(state.user.name)}<br>Via: ${escapeHTML(channelLabel)}<br>Source: ${escapeHTML(SOURCE_NAMES[source])}<br><br>Amount: ${money(amount)}<br>Fee: ${money(fee)}<br><br><strong>Total: ${money(total)}</strong>`,
+    () => authorizeBuyerPin(amount, source, fee, beastCut, providerKeeps, channel)
   );
 }
 
-function authorizeBuyerPin(amount, source, fee, provider, channel){
+function authorizeBuyerPin(amount, source, fee, beastCut, providerKeeps, channel){
   $("pinPurpose").textContent = `Buyer auth — ${buyerSession.name}`;
   $("authorizationPin").value = "";
   if($("pinError")){ $("pinError").textContent = ""; $("pinError").classList.add("hidden"); }
@@ -1445,15 +1608,15 @@ function authorizeBuyerPin(amount, source, fee, provider, channel){
     confirmBtn.removeEventListener("click", confirmBtn._buyerHandler);
     confirmBtn._buyerHandler = null;
     $("pinModal").classList.add("hidden");
-    finishBuyerPayment(amount, source, fee, provider, channel);
+    finishBuyerPayment(amount, source, fee, beastCut, providerKeeps, channel);
   };
 
   confirmBtn.addEventListener("click", confirmBtn._buyerHandler);
 }
 
-function finishBuyerPayment(amount, source, fee, provider, channel){
+function finishBuyerPayment(amount, source, fee, beastCut, providerKeeps, channel){
   const src = buyerSession.sources[source];
-  const total = amount + fee + provider;
+  const total = amount + fee;
   src.balance -= total;
 
   let sellerSourceKey = "wallet";
@@ -1467,7 +1630,8 @@ function finishBuyerPayment(amount, source, fee, provider, channel){
   const reference = generateReference();
   state.transactions.unshift({
     reference, createdAt: new Date().toISOString(), status:"completed",
-    type:"Buyer Payment", amount, fee, providerCost: provider, totalDeducted: total,
+    type:"Buyer Payment", amount, fee,
+    beastCut, providerCost: providerKeeps, totalDeducted: total,
     source, destination: channel, sellerSource: sellerSourceKey,
     recipient: state.user.phone, recipientName: state.user.name,
     buyerName: buyerSession.name, buyerPhone: buyerSession.phone,
@@ -1476,11 +1640,11 @@ function finishBuyerPayment(amount, source, fee, provider, channel){
 
   addNotification("Buyer payment", `${money(amount)} from ${buyerSession.name}.`);
   save();
-  showBuyerSuccess(amount, reference, channel, source, fee, provider);
+  showBuyerSuccess(amount, reference, channel, source, fee);
   renderEverything();
 }
 
-function showBuyerSuccess(amount, reference, channel, source, fee, provider){
+function showBuyerSuccess(amount, reference, channel, source, fee){
   const channelLabel = { wallet:"Wallet", pochi:"Pochi", till:"Till", paybill:"PayBill", bank:"Bank", card:"Card" }[channel];
   if($("buyerSuccessText")) $("buyerSuccessText").textContent = `${money(amount)} received. Ref ${reference}.`;
 
@@ -1489,8 +1653,7 @@ Ref: ${reference}
 From: ${buyerSession.name} (${buyerSession.phone})
 To: ${state.user.name} (${state.user.beastId})
 Amount: ${money(amount)}
-BEAST fee: ${money(fee)}
-${SOURCE_NAMES[source]} cost: ${money(provider)}
+Fee: ${money(fee)}
 Via: ${channelLabel}
 Date: ${new Date().toLocaleString("en-KE")}`;
 
@@ -2002,6 +2165,7 @@ async function initialize(){
   setupReceivingMethods();
   setupWithdraw();
   setupLipa();
+  setupDeposit();
   setupPin();
   setupSettings();
   setupSourceManager();
