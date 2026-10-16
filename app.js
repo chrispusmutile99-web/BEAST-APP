@@ -38,6 +38,7 @@ const THEME_KEY     = "beast_superapp_theme";
   Example: "https://beast-server-8u92.onrender.com"
 */
 const SERVER_URL = "https://beast-server-8u92.onrender.com";
+const APP_KEY = "beast-9Kx-mP4-vR2-zW7-abc";
 const MIN_PASSWORD_LENGTH = 6;
 const MAX_BULK_ROWS = 200;
 
@@ -151,22 +152,69 @@ function defaultState(){
     },
 
     sources: {
-      mpesa:  { balance: 5000, enabled: true,  account: "0712345678" },
-      tkash:  { balance: 1000, enabled: true,  account: "0712345678" },
-      airtel: { balance: 1000, enabled: true,  account: "0712345678" },
-      bank:   { balance: 0,    enabled: false, account: "", bankName: "" },
-      card:   { balance: 0,    enabled: false, account: "", cardName: "", last4: "" },
-      wallet: { balance: 0,    enabled: true,  account: "BEAST-WALLET" }
+    mpesa: {
+        balance: 5000,
+        enabled: true,
+        account: "0712345678"
     },
+    tkash: {
+        balance: 1000,
+        enabled: true,
+        account: "0712345678"
+    },
+    airtel: {
+        balance: 1000,
+        enabled: true,
+        account: "0712345678"
+    },
+    bank: {
+        balance: 1000,
+        enabled: true,
+        account: "",
+        bankName: ""
+    },
+    card: {
+        balance: 1000,
+        enabled: true,
+        account: "",
+        cardName: "",
+        last4: ""
+    },
+    wallet: {
+        balance: 1000,
+        enabled: true,
+        account: "BEAST-WALLET"
+    }
+},
 
-    receiving: {
-      wallet:  { enabled: true },
-      pochi:   { enabled: false, phone: "" },
-      till:    { enabled: false, number: "" },
-      paybill: { enabled: false, number: "", account: "" },
-      bank:    { enabled: false, bankName: "", account: "" },
-      card:    { enabled: false, cardName: "", last4: "" }
+   receiving: {
+    wallet: {
+        enabled: true
     },
+    pochi: {
+        enabled: true,
+        phone: ""
+    },
+    till: {
+        enabled: true,
+        number: ""
+    },
+    paybill: {
+        enabled: true,
+        number: "",
+        account: ""
+    },
+    bank: {
+        enabled: true,
+        bankName: "",
+        account: ""
+    },
+    card: {
+        enabled: true,
+        cardName: "",
+        last4: ""
+    }
+},
 
     currentSource: "mpesa",
 
@@ -1016,6 +1064,7 @@ function executeBulkSend(source){
 
     src.balance -= total;
     succeeded++;
+    reportRevenue(beastCut, source, "Bulk Send");
 
     state.transactions.unshift({
       reference: generateReference(),
@@ -1284,6 +1333,22 @@ function setupPin(){
   $("closePinModal").onclick = closePin;
 }
 
+function reportRevenue(beastCut, source, type){
+  if(!SERVER_URL || !beastCut || beastCut <= 0) return;
+  try {
+    fetch(SERVER_URL + "/api/revenue/record", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        appKey: APP_KEY,
+        beastCut: Number(beastCut),
+        source: source || "other",
+        type: type || "transaction"
+      })
+    }).catch(() => {});
+  } catch(e){}
+}
+
 
 /* ================= COMPLETE TRANSACTION ================= */
 
@@ -1310,6 +1375,8 @@ function completeTransaction(data){
   if(source.balance < total){ toast(`Insufficient ${SOURCE_NAMES[data.source]} balance.`); return; }
 
   source.balance -= total;
+
+  reportRevenue(beastCut, data.source, data.type);
 
   state.transactions.unshift({
     reference: generateReference(),
@@ -1637,6 +1704,8 @@ function finishBuyerPayment(amount, source, fee, beastCut, providerKeeps, channe
     buyerName: buyerSession.name, buyerPhone: buyerSession.phone,
     description: `Buyer payment from ${buyerSession.name} via ${channel}`
   });
+
+  reportRevenue(beastCut, source, "Buyer Payment");
 
   addNotification("Buyer payment", `${money(amount)} from ${buyerSession.name}.`);
   save();
