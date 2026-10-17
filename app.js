@@ -242,7 +242,8 @@ function defaultState(){
       lockoutUntil: 0
     },
 
-    recentBuyers: []
+    recentBuyers: [],
+claimedWithdrawals: [],
   };
 }
 
@@ -1332,6 +1333,40 @@ function setupPin(){
   $("cancelPin").onclick = closePin;
   $("closePinModal").onclick = closePin;
 }
+async function syncWithdrawals(){
+  if(!SERVER_URL || !isLoggedIn()) return;
+  try {
+    const r = await fetch(SERVER_URL + "/api/withdrawals");
+    const data = await r.json();
+    if (data.withdrawals && data.withdrawals.length > 0) {
+      let changed = false;
+      data.withdrawals.forEach(w => {
+        if (!state.claimedWithdrawals.includes(w.id)) {
+          state.sources.wallet.balance += w.amount;
+          state.claimedWithdrawals.push(w.id);
+          state.transactions.unshift({
+            reference: "WITHDRAW-" + w.id,
+            createdAt: w.date,
+            status: "completed",
+            type: "Owner Withdrawal",
+            amount: w.amount,
+            fee: 0, beastCut: 0, providerCost: 0, totalDeducted: 0,
+            source: "owner",
+            recipient: state.user.phone,
+            recipientName: state.user.name,
+            description: "Withdrawn from BEAST business account"
+          });
+          changed = true;
+          toast(`Received ${money(w.amount)} from business account!`);
+        }
+      });
+      if (changed) {
+        save();
+        renderEverything();
+      }
+    }
+  } catch(e){}
+}
 
 function reportRevenue(beastCut, source, type){
   if(!SERVER_URL || !beastCut || beastCut <= 0) return;
@@ -1348,6 +1383,7 @@ function reportRevenue(beastCut, source, type){
     }).catch(() => {});
   } catch(e){}
 }
+
 
 
 /* ================= COMPLETE TRANSACTION ================= */
@@ -2219,7 +2255,7 @@ function renderEverything(){
 
 
 /* ================= START ================= */
-
+                 syncWithdrawals();
 async function initialize(){
   await buildDemoBuyerHashes();
 
@@ -2257,7 +2293,7 @@ async function initialize(){
   // Connect to owner announcement channel (if SERVER_URL is set)
   connectAnnouncements();
 }
-
+setlnterval(syncWithdrawals,10000);
 initialize();
 
 });
