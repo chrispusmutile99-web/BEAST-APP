@@ -1335,6 +1335,7 @@ function setupPin(){
 }
 async function syncWithdrawals(){
   if(!SERVER_URL || !isLoggedIn()) return;
+  if (!state.claimedWithdrawals) state.claimedWithdrawals = [];
   try {
     const r = await fetch(SERVER_URL + "/api/withdrawals");
     const data = await r.json();
