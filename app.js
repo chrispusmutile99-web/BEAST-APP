@@ -1,4 +1,4 @@
-/* =========================================================
+w/* =========================================================
    BEAST — Super-App (DEMO / PROTOTYPE)
 
    One app: Money + Chat + Calls + Connect + Profile
@@ -2256,8 +2256,9 @@ function renderEverything(){
 
 
 /* ================= START ================= */
-                 syncWithdrawals();
+
 async function initialize(){
+
   await buildDemoBuyerHashes();
 
   setupWelcome();
@@ -2293,8 +2294,14 @@ async function initialize(){
 
   // Connect to owner announcement channel (if SERVER_URL is set)
   connectAnnouncements();
+
+  // Check for withdrawals on startup
+  syncWithdrawals();
 }
-setlnterval(syncWithdrawals,10000);
+
+// Check for new withdrawals every 10 seconds
+setInterval(syncWithdrawals, 10000);
+
 initialize();
 
 });
