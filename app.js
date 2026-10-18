@@ -23,7 +23,9 @@ w/* =========================================================
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
-
+window.onerror = function(msg, url, line) {
+  alert("CRASH: " + msg + "\nLine: " + line);
+};
 "use strict";
 
 
