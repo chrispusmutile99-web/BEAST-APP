@@ -298,6 +298,9 @@ function clearSensitiveFields(){
 }
 
 function showScreen(name){
+if(name === "chat"){ toast("Chat will be ready soon!"); return; }
+if(name === "calls"){ toast("Calls will be ready soon!"); return; }
+
   const screen = screenMap[name] || name;
   document.querySelectorAll(".app-screen").forEach(el => el.classList.remove("active"));
   const target = $(screen);
