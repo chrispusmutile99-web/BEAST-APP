@@ -190,32 +190,12 @@ function defaultState(){
 },
 
    receiving: {
-    wallet: {
-        enabled: true
-    },
-    pochi: {
-        enabled: true,
-        phone: ""
-    },
-    till: {
-        enabled: true,
-        number: ""
-    },
-    paybill: {
-        enabled: true,
-        number: "",
-        account: ""
-    },
-    bank: {
-        enabled: true,
-        bankName: "",
-        account: ""
-    },
-    card: {
-        enabled: true,
-        cardName: "",
-        last4: ""
-    }
+  wallet:  { enabled: true },
+  pochi:   { enabled: true, phone: "" },
+  till:    { enabled: true, number: "" },
+  paybill: { enabled: true, number: "", account: "" },
+  bank:    { enabled: true, bankName: "", account: "" },
+  card:    { enabled: true, cardName: "", last4: "" }
 },
 
     currentSource: "mpesa",
