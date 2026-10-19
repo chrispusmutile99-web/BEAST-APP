@@ -122,6 +122,7 @@ function defaultState(){
     },
     currentSource: "mpesa",
     chat: [],
+    activeChatId: null,
     transactions: [],
     notifications: [],
     securityEvents: [],
@@ -298,8 +299,8 @@ function clearSensitiveFields(){
 }
 
 function showScreen(name){
-if(name === "chat"){ toast("Chat will be ready soon!"); return; }
-if(name === "calls"){ toast("Calls will be ready soon!"); return; }
+  if(name === "chat"){ toast("Chat will be ready soon!"); return; }
+  if(name === "calls"){ toast("Calls will be ready soon!"); return; }
 
   const screen = screenMap[name] || name;
   document.querySelectorAll(".app-screen").forEach(el => el.classList.remove("active"));
@@ -315,7 +316,6 @@ if(name === "calls"){ toast("Calls will be ready soon!"); return; }
   if(name === "receive"){ resetBuyerFlow(); renderReceiveSellerLine(); }
   if(name === "statements") renderStatements();
   if(name === "bulk") resetBulkFlow();
-  if(name === "chat") renderChat();
 
   window.scrollTo({ top:0, behavior:"smooth" });
   renderEverything();
@@ -816,18 +816,43 @@ function updateDepositPreview(){
   if(amount <= 0){ box.innerHTML = `<b>Deposit preview</b><br>Enter an amount.`; return; }
   box.innerHTML = `<b>Deposit to BEAST</b><br>Amount: ${money(amount)}<br><br><strong>Deposits are free. No BEAST fee.</strong>`;
 }
+
+function performDeposit(){
+  const phone = normalizePhone($("depositPhone")?.value || "");
+  const amount = Number($("depositAmount")?.value || 0);
+
+  if(!validPhone(phone)){ toast("Enter a valid phone number."); return; }
+  if(amount <= 0){ toast("Enter a valid amount."); return; }
+
+  // Format to 2547... for Safaricom
+  let mpesaPhone = phone;
+  if (mpesaPhone.startsWith("0")) {
+    mpesaPhone = "254" + mpesaPhone.slice(1);
+  }
+
+  toast("Sending STK Push to your phone...");
+
+  fetch(SERVER_URL + "/api/mpesa/stkpush", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ phone: mpesaPhone, amount: amount })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.ResponseCode === "0") {
+      toast("Check your phone for the M-PESA PIN prompt!");
+    } else {
+      toast("M-PESA Error: " + (data.errorMessage || data.CustomerMessage || "Request failed"));
+    }
+  })
+  .catch(() => toast("Network error. Try again."));
+}
+
 function setupDeposit(){
-  $("performDepositButton")?.addEventListener("click", () => {
-    const phone = normalizePhone($("depositPhone")?.value || ""); const source = $("depositSource")?.value; const amount = Number($("depositAmount")?.value || 0);
-    if(!validPhone(phone)){ toast("Enter customer's valid phone."); return; } if(phone !== state.user.phone){ toast("Demo deposit for registered customer only."); return; } if(!state.sources[source]){ toast("Select a valid deposit source."); return; } if(source === "wallet"){ toast("Wallet cannot deposit into itself."); return; } if(amount <= 0){ toast("Enter amount."); return; }
-    askConfirmation(`<b>Confirm deposit</b><br><br>Source: ${escapeHTML(SOURCE_NAMES[source])}<br>Amount: ${money(amount)}<br><br><strong>BEAST Wallet receives: ${money(amount)}</strong><br><small>Deposits are free.</small>`, () => authorize("Deposit to BEAST", () => {
-      const src = state.sources[source]; if(src.balance < amount){ toast("Insufficient source balance."); return; } src.balance -= amount; state.sources.wallet.enabled = true; state.sources.wallet.balance += amount;
-      const reference = generateReference();
-      state.transactions.unshift({ reference, createdAt: new Date().toISOString(), status: "completed", type: "Deposit to BEAST", amount, fee: 0, beastCut: 0, providerCost: 0, totalDeducted: amount, source, destination: "BEAST Wallet", recipient: state.user.phone, recipientName: state.user.name, received: amount, description: `Deposit from ${SOURCE_NAMES[source]} to BEAST Wallet` });
-      addNotification("Deposit completed", `${money(amount)} added to BEAST Wallet. Ref ${reference}.`); addSecurity(`BEAST deposit from ${SOURCE_NAMES[source]}.`); save(); toast("Deposit completed. No BEAST fee."); if($("depositAmount")) $("depositAmount").value = ""; renderEverything();
-    }));
-  });
-  $("depositSource")?.addEventListener("change", updateDepositPreview); $("depositAmount")?.addEventListener("input", updateDepositPreview); updateDepositPreview();
+  $("performDepositButton")?.addEventListener("click", performDeposit);
+  $("depositSource")?.addEventListener("change", updateDepositPreview); 
+  $("depositAmount")?.addEventListener("input", updateDepositPreview); 
+  updateDepositPreview();
 }
 
 /* ================= AGENT DEPOSIT ================= */
@@ -858,28 +883,16 @@ function setupAgentDeposit(){
 /* ================= CHAT ================= */
 function renderChat(){
   const box = $("chatMessages"); if(!box) return;
-  if(!state.chat.length){ box.innerHTML = `<div class="chat-empty muted">No messages yet. Send one to try.</div>`; return; }
-  box.innerHTML = state.chat.map(msg => `<div class="chat-bubble ${msg.dir}"><small>${escapeHTML(msg.sender)}</small><p>${escapeHTML(msg.text)}</p><small class="chat-time">${dateText(msg.at)}</small></div>`).join("");
+  if(!state.chat.length){ box.innerHTML = `<div class="chat-empty muted">No messages yet.</div>`; return; }
+  const filtered = state.chat.filter(m => m.senderId === state.activeChatId || m.receiverId === state.activeChatId || (m.dir === "sent" && !state.activeChatId));
+  box.innerHTML = filtered.map(msg => `<div class="chat-bubble ${msg.dir}"><small>${escapeHTML(msg.sender)}</small><p>${escapeHTML(msg.text)}</p><small class="chat-time">${dateText(msg.at)}</small></div>`).join("");
   box.scrollTop = box.scrollHeight;
 }
 function setupChat(){
-  $("chatForm")?.addEventListener("submit", (e) => {
-    e.preventDefault(); const input = $("chatInput"); const text = input.value.trim(); if(!text) return;
-    state.chat.push({ sender: state.user.name || "YOU", text, dir: "sent", at: new Date().toISOString() }); input.value = ""; save(); renderChat();
-    setTimeout(() => { state.chat.push({ sender: "BEAST DEMO", text: "This is a local demo reply. Live chat between BEAST users needs a server.", dir: "received", at: new Date().toISOString() }); save(); renderChat(); }, 600);
-  });
-  $("startChatBtn")?.addEventListener("click", () => {
-    const id = ($("recipientId")?.value || "").trim().toUpperCase(); if(!id){ toast("Enter a BEAST ID."); return; } if(!/^BEAST-\d{6}$/.test(id)){ toast("Format: BEAST-100002."); return; } if(id === state.user.beastId){ toast("That's your own ID."); return; }
-    state.chat.push({ sender: "SYSTEM", text: `Demo conversation opened with ${id}. Real chat is not connected yet.`, dir: "received", at: new Date().toISOString() }); save(); renderChat(); toast("Demo conversation ready.");
-  });
-  $("clearChatBtn")?.addEventListener("click", () => { if(!state.chat.length){ toast("Chat is already empty."); return; } if(!confirm("Clear local chat history?")) return; state.chat = []; save(); renderChat(); toast("Chat cleared."); });
+  // Chat is currently disabled by the "Coming Soon" guard in showScreen().
 }
-
-/* ================= CALLS ================= */
 function setupCalls(){
-  $("beastCallBtn")?.addEventListener("click", () => { const target = ($("callId")?.value || "").trim(); if(!target){ toast("Enter BEAST ID or phone."); return; } const choice = confirm(`BEAST CALL DEMO\n\nDestination: ${target}\n\nOK = open phone dialer if it's a phone number.\nCancel = return.\n\nBEAST-to-BEAST calls not live yet.`); if(choice && /^\+?[\d\s()-]{7,20}$/.test(target)){ window.location.href = "tel:" + target.replace(/[^\d+]/g, ""); } else if(choice){ toast("Live BEAST calling is not connected yet."); } });
-  $("videoCallBtn")?.addEventListener("click", () => toast("Video calling needs a live service."));
-  $("phoneCallBtn")?.addEventListener("click", () => { const num = prompt("Enter phone number to call:"); if(num && /^\+?[\d\s()-]{7,20}$/.test(num)){ window.location.href = "tel:" + num.replace(/[^\d+]/g, ""); } else if(num){ toast("Check the number."); } });
+  // Calls is currently disabled by the "Coming Soon" guard in showScreen().
 }
 
 /* ================= CONNECT ================= */
@@ -953,13 +966,26 @@ function setupCostPreview(){ [["sendCostPreview","sendSource","sendAmount"],["wi
 function renderEverything(){
   if(!isLoggedIn()) return;
   renderHome(); renderSources("sourceList"); renderHistory(); renderNotifications(); renderSecurity(); renderProfile(); renderSettingsUI(); fillSourceSelects(); setupCostPreview(); updateNotificationBadge(); markNotificationsReadIfOpen(); renderReceiveSellerLine(); renderReceivingMethodsList(); updateReceiveBackButton();
-  if($("chatScreen")?.classList.contains("active")) renderChat(); if($("statementsScreen")?.classList.contains("active")) renderStatements();
+  if($("statementsScreen")?.classList.contains("active")) renderStatements();
 }
 function connectAnnouncements(){
   if(!SERVER_URL) return;
   try {
     const wsUrl = SERVER_URL.replace(/^http/, "ws"); socket = new WebSocket(wsUrl);
-    socket.onmessage = (event) => { try { const data = JSON.parse(event.data); if(data.type === "announcement"){ currentAnnouncement = data.message || null; renderAnnouncementBanner(); } } catch(e){} };
+    
+    socket.onopen = () => {
+      if (state.user.beastId) socket.send(JSON.stringify({ type: "identify", beastId: state.user.beastId }));
+    };
+
+    socket.onmessage = (event) => { 
+      try { 
+        const data = JSON.parse(event.data); 
+        if(data.type === "announcement"){ 
+          currentAnnouncement = data.message || null; 
+          renderAnnouncementBanner(); 
+        } 
+      } catch(e){} 
+    };
     socket.onclose = () => { setTimeout(connectAnnouncements, 5000); };
   } catch(e){}
 }
