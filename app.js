@@ -1,5 +1,5 @@
 /* =========================================================
-   BEAST — Super-App (DEMO / PROTOTYPE)
+   BEAST — Super-App (LIVE M-PESA INTEGRATION)
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -22,12 +22,6 @@ const REGISTERED_AGENTS = {
   "0712345678": "BEAST Demo Safaricom Agent",
   "0720000000": "Safaricom Registered Agent",
   "0711111111": "Safaricom Registered Agent"
-};
-
-const REGISTERED_AGENT_CODES = {
-  "AGENT-001": "BEAST Demo Agent 001",
-  "AGENT-002": "BEAST Demo Agent 002",
-  "BEAST-AG":  "BEAST Demo Agent"
 };
 
 const SOURCE_NAMES = {
@@ -59,7 +53,8 @@ const BANK_LIST = [
 
 const CARD_LIST = ["Visa","Mastercard","BEAST Card","Other"];
 
-const SAMPLE_BALANCE_SOURCES = new Set(["mpesa"]);
+// Removed M-PESA from the "SAMPLE" list so the badge disappears
+const SAMPLE_BALANCE_SOURCES = new Set([]);
 
 const MAX_PIN_ATTEMPTS = 3;
 const PIN_LOCKOUT_MS   = 30 * 1000;
@@ -68,7 +63,6 @@ const BUYER_SUCCESS_MS = 5000;
 const BUYER_SESSION_MS = 60 * 1000;
 
 /* ================= DEMO BUYERS ================= */
-
 const DEMO_BUYERS = [
   {
     phone: "0722000001", nationalId: "11111111", pin: "1111", name: "Alice Njeri",
@@ -99,7 +93,6 @@ const DEMO_BUYERS = [
 ];
 
 /* ================= STATE ================= */
-
 function defaultState(){
   return {
     registered: false,
@@ -167,9 +160,7 @@ let socket = null;
 let currentAnnouncement = null;
 
 /* ================= HELPERS ================= */
-
 function $(id){ return document.getElementById(id); }
-
 function money(v){ return `KES ${Number(v || 0).toLocaleString("en-KE",{ minimumFractionDigits:2, maximumFractionDigits:2 })}`; }
 
 function normalizePhone(value=""){
@@ -316,6 +307,7 @@ function showScreen(name){
   if(name === "receive"){ resetBuyerFlow(); renderReceiveSellerLine(); }
   if(name === "statements") renderStatements();
   if(name === "bulk") resetBulkFlow();
+  if(name === "chat") renderChat();
 
   window.scrollTo({ top:0, behavior:"smooth" });
   renderEverything();
@@ -452,7 +444,7 @@ function renderSources(containerId){
     if(key === "card") details = source.cardName ? `${source.cardName} •••• ${source.last4 || "----"}` : "Not linked";
     const isSample = SAMPLE_BALANCE_SOURCES.has(key);
     const isCurrent = state.currentSource === key && source.enabled;
-    return `<div class="source-card ${isCurrent ? "current-source" : ""} ${source.enabled ? "" : "source-disabled"}" data-source="${key}" role="button" tabindex="0"><div class="source-top"><span class="source-icon">${icon}</span><span class="pill ${source.enabled ? "green" : "red"}">${source.enabled ? "DEMO" : "OFF"}</span></div><div><strong>${SOURCE_NAMES[key]}</strong><small>${escapeHTML(details)}</small>${isSample ? `<span class="pill blue" style="margin-top:4px;">SAMPLE</span>` : ""}${isCurrent ? `<span class="pill green" style="margin-top:4px;">CURRENT</span>` : ""}</div><strong>${money(source.balance)}</strong></div>`;
+    return `<div class="source-card ${isCurrent ? "current-source" : ""} ${source.enabled ? "" : "source-disabled"}" data-source="${key}" role="button" tabindex="0"><div class="source-top"><span class="source-icon">${icon}</span><span class="pill ${source.enabled ? "green" : "red"}">${source.enabled ? "LIVE" : "OFF"}</span></div><div><strong>${SOURCE_NAMES[key]}</strong><small>${escapeHTML(details)}</small>${isSample ? `<span class="pill blue" style="margin-top:4px;">SAMPLE</span>` : ""}${isCurrent ? `<span class="pill green" style="margin-top:4px;">CURRENT</span>` : ""}</div><strong>${money(source.balance)}</strong></div>`;
   }).join("");
   container.querySelectorAll("[data-source]").forEach(card => {
     card.addEventListener("click", () => {
@@ -809,49 +801,46 @@ function resetBuyerFlow(){
   setBuyerStep(1); renderReceiveSellerLine();
 }
 
-/* ================= DEPOSIT ================= */
+/* ================= DEPOSIT (REAL M-PESA) ================= */
 function updateDepositPreview(){
   const box = $("depositCostPreview"); if(!box) return;
   const amount = Number($("depositAmount")?.value || 0);
   if(amount <= 0){ box.innerHTML = `<b>Deposit preview</b><br>Enter an amount.`; return; }
   box.innerHTML = `<b>Deposit to BEAST</b><br>Amount: ${money(amount)}<br><br><strong>Deposits are free. No BEAST fee.</strong>`;
 }
-
-function performDeposit(){
-  const phone = normalizePhone($("depositPhone")?.value || "");
-  const amount = Number($("depositAmount")?.value || 0);
-
-  if(!validPhone(phone)){ toast("Enter a valid phone number."); return; }
-  if(amount <= 0){ toast("Enter a valid amount."); return; }
-
-  // Format to 2547... for Safaricom
-  let mpesaPhone = phone;
-  if (mpesaPhone.startsWith("0")) {
-    mpesaPhone = "254" + mpesaPhone.slice(1);
-  }
-
-  toast("Sending STK Push to your phone...");
-
-  fetch(SERVER_URL + "/api/mpesa/stkpush", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ phone: mpesaPhone, amount: amount })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.ResponseCode === "0") {
-      toast("Check your phone for the M-PESA PIN prompt!");
-    } else {
-      toast("M-PESA Error: " + (data.errorMessage || data.CustomerMessage || "Request failed"));
-    }
-  })
-  .catch(() => toast("Network error. Try again."));
-}
-
 function setupDeposit(){
-  $("performDepositButton")?.addEventListener("click", performDeposit);
-  $("depositSource")?.addEventListener("change", updateDepositPreview); 
-  $("depositAmount")?.addEventListener("input", updateDepositPreview); 
+  $("performDepositButton")?.addEventListener("click", () => {
+    const phone = normalizePhone($("depositPhone")?.value || "");
+    const amount = Number($("depositAmount")?.value || 0);
+
+    if(!validPhone(phone)){ toast("Enter customer's valid phone."); return; }
+    if(amount <= 0){ toast("Enter amount."); return; }
+
+    // M-PESA Sandbox requires numbers in 2547... format
+    const mpesaPhone = "254" + phone.slice(1);
+
+    toast("Requesting M-PESA PIN...");
+
+    fetch(SERVER_URL + "/api/mpesa/stkpush", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone: mpesaPhone, amount: amount })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if(data.ResponseCode === "0") {
+        alert("Check your phone! Enter your M-PESA PIN to complete the deposit.");
+        // Note: The server will receive a callback from Safaricom and save it to the database.
+      } else {
+        alert("M-PESA Error: " + (data.errorMessage || "Could not send prompt"));
+      }
+    })
+    .catch(e => {
+      alert("Network error. Is the server awake?");
+    });
+  });
+  $("depositSource")?.addEventListener("change", updateDepositPreview);
+  $("depositAmount")?.addEventListener("input", updateDepositPreview);
   updateDepositPreview();
 }
 
@@ -883,16 +872,57 @@ function setupAgentDeposit(){
 /* ================= CHAT ================= */
 function renderChat(){
   const box = $("chatMessages"); if(!box) return;
-  if(!state.chat.length){ box.innerHTML = `<div class="chat-empty muted">No messages yet.</div>`; return; }
+  if(!state.chat.length){ box.innerHTML = `<div class="chat-empty muted">No messages yet. Start a chat by entering a BEAST ID below.</div>`; return; }
   const filtered = state.chat.filter(m => m.senderId === state.activeChatId || m.receiverId === state.activeChatId || (m.dir === "sent" && !state.activeChatId));
   box.innerHTML = filtered.map(msg => `<div class="chat-bubble ${msg.dir}"><small>${escapeHTML(msg.sender)}</small><p>${escapeHTML(msg.text)}</p><small class="chat-time">${dateText(msg.at)}</small></div>`).join("");
   box.scrollTop = box.scrollHeight;
 }
 function setupChat(){
-  // Chat is currently disabled by the "Coming Soon" guard in showScreen().
+  $("chatForm")?.addEventListener("submit", (e) => {
+    e.preventDefault(); 
+    const input = $("chatInput"); 
+    const text = input.value.trim(); 
+    if(!text) return;
+    if (!state.activeChatId) { toast("Start a chat with a BEAST ID first."); return; }
+    const msg = { sender: state.user.name, text, dir: "sent", at: new Date().toISOString(), receiverId: state.activeChatId };
+    state.chat.push(msg); input.value = ""; save(); renderChat();
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify({ type: "chat", senderId: state.user.beastId, senderName: state.user.name, receiverId: state.activeChatId, text: text, date: msg.at }));
+    }
+    fetch(SERVER_URL + "/api/chat/send", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ senderId: state.user.beastId, receiverId: state.activeChatId, text: text })
+    }).catch(() => {});
+  });
+  $("startChatBtn")?.addEventListener("click", async () => {
+    const id = ($("recipientId")?.value || "").trim().toUpperCase(); 
+    if(!id){ toast("Enter a BEAST ID."); return; } 
+    if(!/^BEAST-\d{6}$/.test(id)){ toast("Format: BEAST-100002."); return; } 
+    if(id === state.user.beastId){ toast("That's your own ID."); return; }
+    state.activeChatId = id; state.chat = []; toast(`Loading chat with ${id}...`);
+    try {
+      const r = await fetch(SERVER_URL + "/api/chat/history", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user1: state.user.beastId, user2: id })
+      });
+      const data = await r.json();
+      if (data.messages) {
+        state.chat = data.messages.map(m => ({
+          sender: m.senderId === state.user.beastId ? state.user.name : "BEAST User",
+          text: m.text, dir: m.senderId === state.user.beastId ? "sent" : "received", at: m.date, senderId: m.senderId
+        }));
+        save(); renderChat();
+      }
+    } catch(e) {}
+  });
+  $("clearChatBtn")?.addEventListener("click", () => { if(!state.chat.length){ return; } if(!confirm("Clear local chat history?")) return; state.chat = []; save(); renderChat(); toast("Chat cleared."); });
 }
+
+/* ================= CALLS ================= */
 function setupCalls(){
-  // Calls is currently disabled by the "Coming Soon" guard in showScreen().
+  $("beastCallBtn")?.addEventListener("click", () => { const target = ($("callId")?.value || "").trim(); if(!target){ toast("Enter BEAST ID or phone."); return; } const choice = confirm(`BEAST CALL DEMO\n\nDestination: ${target}\n\nOK = open phone dialer if it's a phone number.\nCancel = return.\n\nBEAST-to-BEAST calls not live yet.`); if(choice && /^\+?[\d\s()-]{7,20}$/.test(target)){ window.location.href = "tel:" + target.replace(/[^\d+]/g, ""); } else if(choice){ toast("Live BEAST calling is not connected yet."); } });
+  $("videoCallBtn")?.addEventListener("click", () => toast("Video calling needs a live service."));
+  $("phoneCallBtn")?.addEventListener("click", () => { const num = prompt("Enter phone number to call:"); if(num && /^\+?[\d\s()-]{7,20}$/.test(num)){ window.location.href = "tel:" + num.replace(/[^\d+]/g, ""); } else if(num){ toast("Check the number."); } });
 }
 
 /* ================= CONNECT ================= */
@@ -966,24 +996,18 @@ function setupCostPreview(){ [["sendCostPreview","sendSource","sendAmount"],["wi
 function renderEverything(){
   if(!isLoggedIn()) return;
   renderHome(); renderSources("sourceList"); renderHistory(); renderNotifications(); renderSecurity(); renderProfile(); renderSettingsUI(); fillSourceSelects(); setupCostPreview(); updateNotificationBadge(); markNotificationsReadIfOpen(); renderReceiveSellerLine(); renderReceivingMethodsList(); updateReceiveBackButton();
-  if($("statementsScreen")?.classList.contains("active")) renderStatements();
+  if($("chatScreen")?.classList.contains("active")) renderChat(); if($("statementsScreen")?.classList.contains("active")) renderStatements();
 }
 function connectAnnouncements(){
   if(!SERVER_URL) return;
   try {
     const wsUrl = SERVER_URL.replace(/^http/, "ws"); socket = new WebSocket(wsUrl);
-    
-    socket.onopen = () => {
-      if (state.user.beastId) socket.send(JSON.stringify({ type: "identify", beastId: state.user.beastId }));
-    };
-
+    socket.onopen = () => { if (state.user.beastId) socket.send(JSON.stringify({ type: "identify", beastId: state.user.beastId })); };
     socket.onmessage = (event) => { 
       try { 
         const data = JSON.parse(event.data); 
-        if(data.type === "announcement"){ 
-          currentAnnouncement = data.message || null; 
-          renderAnnouncementBanner(); 
-        } 
+        if(data.type === "announcement"){ currentAnnouncement = data.message || null; renderAnnouncementBanner(); } 
+        if (data.type === "chat") { state.chat.push({ sender: data.senderName, text: data.text, dir: "received", at: data.date, senderId: data.senderId }); save(); renderChat(); toast(`Message from ${data.senderName}!`); }
       } catch(e){} 
     };
     socket.onclose = () => { setTimeout(connectAnnouncements, 5000); };
