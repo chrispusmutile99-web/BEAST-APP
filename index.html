@@ -18,7 +18,7 @@
       <div class="brand-mark">B</div>
       <div>
         <strong>BEAST</strong>
-        <small>MONEY · CHAT · CONNECT</small>
+        <small>MONEY · CONNECT</small>
       </div>
     </div>
     <button class="icon-btn" id="notificationButton" aria-label="Notifications">
@@ -46,8 +46,6 @@
       <button data-menu="lipa">🛒 <span>Lipa Na</span></button>
       <button data-menu="history">🧾 <span>History</span></button>
       <button data-menu="statements">📊 <span>Statements</span></button>
-      <button data-menu="chat">💬 <span>Chat</span></button>
-      <button data-menu="calls">📞 <span>Calls</span></button>
       <button data-menu="connect">🌐 <span>Connect</span></button>
       <button data-menu="premium">👑 <span>Premium</span></button>
       <button data-menu="profile">👤 <span>Profile</span></button>
@@ -64,7 +62,7 @@
       <div class="welcome-hero">
         <div class="welcome-logo">B</div>
         <h1 class="welcome-title">BEAST</h1>
-        <p class="welcome-sub">Money · Chat · Connect</p>
+        <p class="welcome-sub">Money · Connect</p>
         <span class="pill green">ONLINE</span>
       </div>
       <div class="panel welcome-actions">
@@ -78,10 +76,7 @@
       <div class="login-topbar">
         <button class="back-btn" id="backToWelcomeFromLogin">←</button>
         <div class="page-head" style="flex:1;padding:0;">
-          <div>
-            <span class="pill green">LOGIN</span>
-            <h1>Welcome back</h1>
-          </div>
+          <div><span class="pill green">LOGIN</span><h1>Welcome back</h1></div>
         </div>
       </div>
       <div class="panel">
@@ -96,10 +91,7 @@
       <div class="login-topbar">
         <button class="back-btn" id="backToWelcomeFromRegister">←</button>
         <div class="page-head" style="flex:1;padding:0;">
-          <div>
-            <span class="pill red">REGISTER</span>
-            <h1>Build your BEAST identity.</h1>
-          </div>
+          <div><span class="pill red">REGISTER</span><h1>Build your BEAST identity.</h1></div>
         </div>
       </div>
       <div class="panel">
@@ -131,11 +123,7 @@
     <!-- MONEY -->
     <section id="moneyScreen" class="app-screen">
       <div class="page-head">
-        <div>
-          <span class="pill green">MONEY</span>
-          <h1>BEAST Wallet</h1>
-          <p id="welcomeText">Welcome.</p>
-        </div>
+        <div><span class="pill green">MONEY</span><h1>BEAST Wallet</h1><p id="welcomeText">Welcome.</p></div>
         <div id="dashboardBeastId" class="beast-id-chip">BEAST-000000</div>
       </div>
       <div class="balance-card">
@@ -166,9 +154,7 @@
 
     <!-- SEND -->
     <section id="sendScreen" class="app-screen">
-      <div class="page-head">
-        <div><span class="pill green">SEND</span><h1>Send money</h1></div>
-      </div>
+      <div class="page-head"><div><span class="pill green">SEND</span><h1>Send money</h1></div></div>
       <div class="panel">
         <label>Recipient phone<input id="sendPhone" placeholder="0712345678"></label>
         <button class="secondary-btn full" id="verifyRecipient">VERIFY RECIPIENT</button>
@@ -184,9 +170,7 @@
 
     <!-- BULK -->
     <section id="bulkScreen" class="app-screen">
-      <div class="page-head">
-        <div><span class="pill green">BULK SEND</span><h1>Send to many</h1></div>
-      </div>
+      <div class="page-head"><div><span class="pill green">BULK SEND</span><h1>Send to many</h1></div></div>
       <div class="panel">
         <label>Recipients — one per line as <code>phone,amount</code>
           <textarea id="bulkList" rows="10" placeholder="0712345678,500&#10;0720000000,250"></textarea>
@@ -228,7 +212,6 @@
             <label>Buyer National ID<input id="buyerLoginNationalId" placeholder="11111111"></label>
             <label>Buyer PIN<input id="buyerLoginPin" type="password" maxlength="4" placeholder="••••"></label>
             <button class="primary-btn full" id="buyerLoginButton">LOGIN & CONTINUE</button>
-            <div class="demo-hint"><b>Test buyers</b><br>0722000001 / 11111111 / PIN 1111</div>
           </div>
         </div>
         <div id="buyerStep2" class="buyer-step-panel">
@@ -336,38 +319,6 @@
       <div id="statementsList" class="list"></div>
     </section>
 
-    <!-- CHAT -->
-    <section id="chatScreen" class="app-screen">
-      <div class="page-head"><div><span class="pill green">CHAT</span><h1>💬 Messages</h1></div></div>
-      <div class="panel">
-        <div id="chatMessages" class="chat-messages"></div>
-        <form id="chatForm" class="chat-form">
-          <input id="chatInput" placeholder="Write a message...">
-          <button class="primary-btn" type="submit">Send</button>
-        </form>
-        <button class="secondary-btn full" id="clearChatBtn" style="margin-top:10px;">CLEAR CHAT</button>
-      </div>
-      <div class="panel">
-        <h3>Start with a BEAST ID</h3>
-        <label>Recipient ID<input id="recipientId" placeholder="BEAST-100002"></label>
-        <button class="secondary-btn full" id="startChatBtn">Start Chat</button>
-      </div>
-    </section>
-
-    <!-- CALLS -->
-    <section id="callsScreen" class="app-screen">
-      <div class="page-head"><div><span class="pill blue">CALLS</span><h1>📞 Calls</h1></div></div>
-      <div class="service-list">
-        <button class="service-row" id="phoneCallBtn"><span class="service-icon">📱</span><span><strong>Call a Phone Number</strong><small>Opens your dialer</small></span><b>›</b></button>
-        <button class="service-row" id="beastCallBtn"><span class="service-icon">📞</span><span><strong>BEAST-to-BEAST Call</strong><small>Prototype interface</small></span><b>›</b></button>
-        <button class="service-row" id="videoCallBtn"><span class="service-icon">🎥</span><span><strong>Video Call</strong><small>Requires a live service</small></span><b>›</b></button>
-      </div>
-      <div class="panel">
-        <h3>Start a demo call</h3>
-        <label>BEAST ID or phone number<input id="callId" placeholder="Enter ID or phone"></label>
-      </div>
-    </section>
-
     <!-- CONNECT -->
     <section id="connectScreen" class="app-screen">
       <div class="page-head"><div><span class="pill blue">CONNECT</span><h1>🌐 Connect</h1></div></div>
@@ -470,10 +421,9 @@
 
   </main>
 
+  <!-- BOTTOM NAV (Now only 3 items) -->
   <nav class="bottom-nav">
     <button data-tab="money"><span>💰</span><small>Money</small></button>
-    <button data-tab="chat"><span>💬</span><small>Chat</small></button>
-    <button data-tab="calls"><span>📞</span><small>Calls</small></button>
     <button data-tab="connect"><span>🌐</span><small>Connect</small></button>
     <button data-tab="profile"><span>👤</span><small>Profile</small></button>
   </nav>

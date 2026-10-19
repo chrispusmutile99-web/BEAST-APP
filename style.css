@@ -1202,7 +1202,7 @@ textarea:focus{ border-color:var(--green); }
   right:0;
   z-index:40;
   display:grid;
-  grid-template-columns:repeat(5,1fr);
+  grid-template-columns:repeat(3,1fr);
   background:rgba(7,9,8,.98);
   border-top:1px solid var(--border);
   backdrop-filter:blur(14px);

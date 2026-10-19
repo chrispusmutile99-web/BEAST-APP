@@ -1,5 +1,5 @@
 /* =========================================================
-   BEAST — Super-App (PRODUCTION BUILD)
+   BEAST — Super-App (NO CHAT/CALLS)
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -52,7 +52,7 @@ function defaultState(){
       till:    { enabled: true, number: "" }, paybill: { enabled: true, number: "", account: "" },
       bank:    { enabled: true, bankName: "", account: "" }, card:    { enabled: true, cardName: "", last4: "" }
     },
-    currentSource: "mpesa", chat: [], transactions: [], notifications: [], securityEvents: [],
+    currentSource: "mpesa", transactions: [], notifications: [], securityEvents: [],
     settings: { notifications: true, screenSecurity: true, biometric: false, dark: true },
     security: { failedPinAttempts: 0, lockoutUntil: 0 }, buyerSecurity: { failedPinAttempts: 0, lockoutUntil: 0 },
     recentBuyers: [], claimedWithdrawals: []
@@ -144,9 +144,9 @@ function isLoggedIn(){ return state.registered && sessionToken === "active"; }
 function startSession(){ sessionToken = "active"; sessionStorage.setItem(SESSION_KEY, sessionToken); }
 function endSession(){ sessionToken = null; sessionStorage.removeItem(SESSION_KEY); }
 
-const screenMap = { welcome:"welcomeScreen", login:"loginScreen", registration:"registrationScreen", money:"moneyScreen", send:"sendScreen", bulk:"bulkScreen", receive:"receiveScreen", withdraw:"withdrawScreen", lipa:"lipaScreen", history:"historyScreen", statements:"statementsScreen", chat:"chatScreen", calls:"callsScreen", connect:"connectScreen", profile:"profileScreen", premium:"premiumScreen", security:"securityScreen", notifications:"notificationsScreen", settings:"settingsScreen" };
+const screenMap = { welcome:"welcomeScreen", login:"loginScreen", registration:"registrationScreen", money:"moneyScreen", send:"sendScreen", bulk:"bulkScreen", receive:"receiveScreen", withdraw:"withdrawScreen", lipa:"lipaScreen", history:"historyScreen", statements:"statementsScreen", connect:"connectScreen", profile:"profileScreen", premium:"premiumScreen", security:"securityScreen", notifications:"notificationsScreen", settings:"settingsScreen" };
 
-const SENSITIVE_FIELDS = ["regPin","regPin2","regPassword","regPassword2","loginPassword","loginPin","sendAmount","sendPhone","withdrawAmount","agentNumber","lipaAmount","depositAmount","agentDepositAmount","authorizationPin","oldPin","newPin","confirmNewPin","oldPassword","newPassword","confirmNewPassword","buyerLoginPhone","buyerLoginNationalId","buyerLoginPin","buyerPayAmount","bulkList","chatInput","recipientId","searchInput"];
+const SENSITIVE_FIELDS = ["regPin","regPin2","regPassword","regPassword2","loginPassword","loginPin","sendAmount","sendPhone","withdrawAmount","agentNumber","lipaAmount","depositAmount","agentDepositAmount","authorizationPin","oldPin","newPin","confirmNewPin","oldPassword","newPassword","confirmNewPassword","buyerLoginPhone","buyerLoginNationalId","buyerLoginPin","buyerPayAmount","bulkList","searchInput"];
 
 function clearSensitiveFields(){
   SENSITIVE_FIELDS.forEach(id => { const el = $(id); if(el) el.value = ""; });
@@ -163,13 +163,12 @@ function showScreen(name){
   if(name === "receive"){ resetBuyerFlow(); renderReceiveSellerLine(); }
   if(name === "statements") renderStatements();
   if(name === "bulk") resetBulkFlow();
-  if(name === "chat") renderChat();
   window.scrollTo({ top:0, behavior:"smooth" }); renderEverything();
 }
 
 function getTabForScreen(name){
   if(["money","send","bulk","receive","withdraw","lipa","history","statements"].includes(name)) return "money";
-  if(name === "chat") return "chat"; if(name === "calls") return "calls"; if(name === "connect") return "connect";
+  if(name === "connect") return "connect";
   if(["profile","premium","security","notifications","settings"].includes(name)) return "profile";
   return null;
 }
@@ -628,31 +627,6 @@ function setupAgentDeposit(){
   });
 }
 
-function renderChat(){
-  const box = $("chatMessages"); if(!box) return;
-  if(!state.chat.length){ box.innerHTML = `<div class="chat-empty muted">No messages yet. Send one to try.</div>`; return; }
-  box.innerHTML = state.chat.map(msg => `<div class="chat-bubble ${msg.dir}"><small>${escapeHTML(msg.sender)}</small><p>${escapeHTML(msg.text)}</p><small class="chat-time">${dateText(msg.at)}</small></div>`).join("");
-  box.scrollTop = box.scrollHeight;
-}
-function setupChat(){
-  $("chatForm")?.addEventListener("submit", (e) => {
-    e.preventDefault(); const input = $("chatInput"); const text = input.value.trim(); if(!text) return;
-    state.chat.push({ sender: state.user.name || "YOU", text, dir: "sent", at: new Date().toISOString() }); input.value = ""; save(); renderChat();
-    setTimeout(() => { state.chat.push({ sender: "BEAST", text: "This is a local reply. Live chat between BEAST users needs a server.", dir: "received", at: new Date().toISOString() }); save(); renderChat(); }, 600);
-  });
-  $("startChatBtn")?.addEventListener("click", () => {
-    const id = ($("recipientId")?.value || "").trim().toUpperCase(); if(!id){ toast("Enter a BEAST ID."); return; } if(!/^BEAST-\d{6}$/.test(id)){ toast("Format: BEAST-100002."); return; } if(id === state.user.beastId){ toast("That's your own ID."); return; }
-    state.chat.push({ sender: "SYSTEM", text: `Demo conversation opened with ${id}. Real chat is not connected yet.`, dir: "received", at: new Date().toISOString() }); save(); renderChat(); toast("Demo conversation ready.");
-  });
-  $("clearChatBtn")?.addEventListener("click", () => { if(!state.chat.length){ toast("Chat is already empty."); return; } if(!confirm("Clear local chat history?")) return; state.chat = []; save(); renderChat(); toast("Chat cleared."); });
-}
-
-function setupCalls(){
-  $("beastCallBtn")?.addEventListener("click", () => { const target = ($("callId")?.value || "").trim(); if(!target){ toast("Enter BEAST ID or phone."); return; } const choice = confirm(`BEAST CALL\n\nDestination: ${target}\n\nOK = open phone dialer if it's a phone number.\nCancel = return.\n\nBEAST-to-BEAST calls not live yet.`); if(choice && /^\+?[\d\s()-]{7,20}$/.test(target)){ window.location.href = "tel:" + target.replace(/[^\d+]/g, ""); } else if(choice){ toast("Live BEAST calling is not connected yet."); } });
-  $("videoCallBtn")?.addEventListener("click", () => toast("Video calling needs a live service."));
-  $("phoneCallBtn")?.addEventListener("click", () => { const num = prompt("Enter phone number to call:"); if(num && /^\+?[\d\s()-]{7,20}$/.test(num)){ window.location.href = "tel:" + num.replace(/[^\d+]/g, ""); } else if(num){ toast("Check the number."); } });
-}
-
 function setupConnect(){
   $("searchForm")?.addEventListener("submit", (e) => { e.preventDefault(); const q = ($("searchInput")?.value || "").trim(); if(!q) return; window.open("https://www.google.com/search?q=" + encodeURIComponent(q), "_blank", "noopener,noreferrer"); });
 }
@@ -707,7 +681,7 @@ function setupSettings(){
 }
 
 function setupNav(){
-  document.querySelectorAll("[data-tab]").forEach(btn => { btn.addEventListener("click", () => { const tab = btn.dataset.tab; const target = { money: "money", chat: "chat", calls: "calls", connect: "connect", profile: "profile" }[tab]; if(!target) return; if(!isLoggedIn() && target !== "connect"){ toast("Please log in first."); showScreen("welcome"); return; } showScreen(target); }); });
+  document.querySelectorAll("[data-tab]").forEach(btn => { btn.addEventListener("click", () => { const tab = btn.dataset.tab; const target = { money: "money", connect: "connect", profile: "profile" }[tab]; if(!target) return; if(!isLoggedIn() && target !== "connect"){ toast("Please log in first."); showScreen("welcome"); return; } showScreen(target); }); });
   document.querySelectorAll("[data-menu]").forEach(btn => { btn.addEventListener("click", () => { const target = btn.dataset.menu; if(target === "logout"){ endSession(); addSecurity("Logged out."); save(); toast("Logged out."); closeMenu(); showScreen("welcome"); return; } if(!isLoggedIn() && target !== "welcome" && target !== "connect"){ toast("Please log in first."); showScreen("welcome"); return; } showScreen(target); }); });
   $("menuButton")?.addEventListener("click", openMenu); $("closeMenu")?.addEventListener("click", closeMenu); $("drawerBackdrop")?.addEventListener("click", closeMenu);
   $("notificationButton")?.addEventListener("click", () => { if(!isLoggedIn()){ showScreen("welcome"); return; } showScreen("notifications"); });
@@ -720,7 +694,7 @@ function setupCostPreview(){ [["sendCostPreview","sendSource","sendAmount"],["wi
 function renderEverything(){
   if(!isLoggedIn()) return;
   renderHome(); renderSources("sourceList"); renderHistory(); renderNotifications(); renderSecurity(); renderProfile(); renderSettingsUI(); fillSourceSelects(); setupCostPreview(); updateNotificationBadge(); markNotificationsReadIfOpen(); renderReceiveSellerLine(); renderReceivingMethodsList(); updateReceiveBackButton();
-  if($("chatScreen")?.classList.contains("active")) renderChat(); if($("statementsScreen")?.classList.contains("active")) renderStatements();
+  if($("statementsScreen")?.classList.contains("active")) renderStatements();
 }
 
 function connectAnnouncements(){
@@ -735,7 +709,7 @@ function renderAnnouncementBanner(){ const banner = $("announcementBanner"); if(
 
 async function initialize(){
   await buildDemoBuyerHashes();
-  setupWelcome(); setupLogin(); setupRegistration(); setupNav(); setupSend(); setupBulk(); setupReceiveTabs(); setupBuyerFlow(); setupReceivingMethods(); setupWithdraw(); setupLipa(); setupDeposit(); setupAgentDeposit(); setupPin(); setupSettings(); setupSourceManager(); setupChat(); setupCalls(); setupConnect(); setupPremium();
+  setupWelcome(); setupLogin(); setupRegistration(); setupNav(); setupSend(); setupBulk(); setupReceiveTabs(); setupBuyerFlow(); setupReceivingMethods(); setupWithdraw(); setupLipa(); setupDeposit(); setupAgentDeposit(); setupPin(); setupSettings(); setupSourceManager(); setupConnect(); setupPremium();
   loadTheme();
   if(!state.registered){ showScreen("welcome"); } else if(!isLoggedIn()){ showScreen("login"); } else { showScreen("money"); }
   resetBuyerFlow(); resetBulkFlow(); renderEverything(); resetAutoLock(); connectAnnouncements(); syncWithdrawals();
