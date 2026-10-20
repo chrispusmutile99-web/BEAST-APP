@@ -64,8 +64,18 @@ let pendingAction = null; let cameraStream = null; let autoLockTimer = null; let
 
 function $(id){ return document.getElementById(id); }
 function money(v){ return `KES ${Number(v || 0).toLocaleString("en-KE",{ minimumFractionDigits:2, maximumFractionDigits:2 })}`; }
+
 function normalizePhone(value=""){ let p = String(value).trim().replace(/\s+/g,"").replace(/-/g,""); if(p.startsWith("+254")) p = "0" + p.slice(4); else if(p.startsWith("254")) p = "0" + p.slice(3); return p; }
 function validPhone(value){ return /^(07|01)\d{8}$/.test(normalizePhone(value)); }
+
+// NEW: Normalize BEAST ID input
+function normalizeRecipient(value=""){
+  let v = String(value).trim().toUpperCase();
+  if(v.startsWith("BEAST-")) return v;
+  if(/^\d{6}$/.test(v)) return `BEAST-${v}`; // Auto-format 6 digits
+  return normalizePhone(v);
+}
+
 function internationalPhone(value){ const p = normalizePhone(value); return validPhone(p) ? "+254" + p.slice(1) : ""; }
 function validAgent(v){ return String(v || "").trim().length >= 4; }
 function validAccount(v){ return /^[A-Za-z0-9][A-Za-z0-9\- ]{3,}$/.test(String(v || "").trim()); }
@@ -140,7 +150,7 @@ function showScreen(name){
   if(name === "statements") renderStatements();
   if(name === "bulk") resetBulkFlow();
   if(name === "chat") renderChat();
-  if(name === "history") fetchHistory(); // Fetch from DB
+  if(name === "history") fetchHistory();
   window.scrollTo({ top:0, behavior:"smooth" }); renderEverything();
 }
 
@@ -281,13 +291,24 @@ async function recordTransactionToServer(txn) {
   } catch(e) { console.error("Failed to sync transaction to server"); }
 }
 
+async function sendInternalToServer(toBeastId, amount, reference) {
+  try {
+    const res = await fetch(SERVER_URL + "/api/send-internal", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fromBeastId: state.user.beastId, toBeastId, amount, reference })
+    });
+    const data = await res.json();
+    return data;
+  } catch(e) { return { error: "Network error" }; }
+}
+
 async function fetchHistory() {
   if(!state.user.beastId) return;
   try {
     const res = await fetch(SERVER_URL + "/api/transactions/" + state.user.beastId);
     const data = await res.json();
     if(data.ok) {
-      state.transactions = data.transactions; // Overwrite local with server truth
+      state.transactions = data.transactions;
       save();
       renderHistory();
       renderStatements();
@@ -297,16 +318,53 @@ async function fetchHistory() {
 
 function setupSend(){
   $("verifyRecipient")?.addEventListener("click", () => {
-    const phone = normalizePhone($("sendPhone").value); if(!validPhone(phone)){ toast("Enter valid phone."); return; }
-    if(phone === state.user.phone){ toast("Cannot send to yourself."); return; }
-    $("recipientVerification").classList.remove("hidden"); $("recipientVerification").innerHTML = `<strong>✓ Demo recipient</strong>${escapeHTML(phone)}`;
+    const raw = $("sendPhone").value;
+    const recipient = normalizeRecipient(raw);
+    
+    if (recipient.startsWith("BEAST-")) {
+      if (recipient === state.user.beastId) { toast("Cannot send to yourself."); return; }
+      $("recipientVerification").classList.remove("hidden"); 
+      $("recipientVerification").innerHTML = `<strong>✓ BEAST User</strong>${escapeHTML(recipient)}`;
+      $("sendSource").value = "wallet";
+      $("sendSource").disabled = true;
+    } else {
+      if(!validPhone(recipient)){ toast("Enter valid phone or BEAST ID."); return; }
+      if(recipient === state.user.phone){ toast("Cannot send to yourself."); return; }
+      $("recipientVerification").classList.remove("hidden"); 
+      $("recipientVerification").innerHTML = `<strong>✓ Demo recipient</strong>${escapeHTML(recipient)}`;
+      $("sendSource").disabled = false;
+    }
   });
+
   $("sendMoneyButton")?.addEventListener("click", () => {
-    const phone = normalizePhone($("sendPhone").value); if(!validPhone(phone)){ toast("Enter valid phone."); return; }
-    if(phone === state.user.phone){ toast("Cannot send to yourself."); return; }
-    const amount = Number($("sendAmount").value); const source = $("sendSource").value; if(amount <= 0){ toast("Enter amount."); return; }
-    let fee; if(source === "wallet") fee = beastWalletFee(amount); else fee = externalSplit(source, amount).fee;
-    askConfirmation(buildConfirmHTML({ title:"Confirm send", recipientName:"Demo recipient", recipient: phone, amount, source, fee }), () => authorize("Send money", () => { completeTransaction({ type:"Send", amount, source, recipient: phone, recipientName:"Demo recipient", description:`Send to ${phone}` }); }));
+    const raw = $("sendPhone").value;
+    const recipient = normalizeRecipient(raw);
+    let source = $("sendSource").value;
+
+    if (recipient.startsWith("BEAST-")) {
+      if (recipient === state.user.beastId) { toast("Cannot send to yourself."); return; }
+      source = "wallet";
+    } else {
+      if(!validPhone(recipient)){ toast("Enter valid phone."); return; }
+      if(recipient === state.user.phone){ toast("Cannot send to yourself."); return; }
+    }
+
+    const amount = Number($("sendAmount").value); if(amount <= 0){ toast("Enter amount."); return; }
+    
+    let fee;
+    if(source === "wallet") fee = beastWalletFee(amount);
+    else fee = externalSplit(source, amount).fee;
+
+    askConfirmation(buildConfirmHTML({ title:"Confirm send", recipientName: recipient.startsWith("BEAST-") ? "BEAST User" : "Demo recipient", recipient: recipient, amount, source, fee }), () => authorize("Send money", () => { 
+        completeTransaction({ 
+          type:"Send", 
+          amount, 
+          source, 
+          recipient: recipient, 
+          recipientName: recipient.startsWith("BEAST-") ? "BEAST User" : "Demo recipient", 
+          description: recipient.startsWith("BEAST-") ? `BEAST transfer to ${recipient}` : `Send to ${recipient}` 
+        }); 
+    }));
   });
 }
 
@@ -357,10 +415,11 @@ async function attemptPin(pin){
 
 function setupPin(){ $("confirmPin")?.addEventListener("click", () => { if(buyerSession && $("confirmPin")._buyerHandler) return; attemptPin($("authorizationPin").value); }); $("authorizationPin")?.addEventListener("keydown", e => { if(e.key === "Enter"){ if(buyerSession && $("confirmPin")._buyerHandler) return; attemptPin($("authorizationPin").value); } }); $("cancelPin").onclick = closePin; $("closePinModal").onclick = closePin; }
 
-function completeTransaction(data){
+async function completeTransaction(data){
   const amount = Number(data.amount); let fee, beastCut, providerKeeps, total;
   if(data.source === "wallet"){ fee = beastWalletFee(amount); beastCut = fee; providerKeeps = 0; total = amount + fee; }
   else { const split = externalSplit(data.source, amount, data.providerType || "send"); fee = split.fee; beastCut = split.beastCut; providerKeeps = split.providerKeeps; total = amount + fee; }
+  
   const source = state.sources[data.source]; if(!source || !source.enabled){ toast("Source not enabled."); return; }
   if(source.balance < total){ toast(`Insufficient ${SOURCE_NAMES[data.source]} balance.`); return; }
   
@@ -368,14 +427,23 @@ function completeTransaction(data){
   
   const txn = { reference: generateReference(), type: data.type, amount, fee, beastCut, providerCost: providerKeeps, totalDeducted: total, source: data.source, recipient: data.recipient, recipientName: data.recipientName, description: data.description };
   
-  // Save locally for instant UI
   state.transactions.unshift({ ...txn, createdAt: new Date().toISOString(), status:"completed" });
-  
-  // Send to server database
-  recordTransactionToServer(txn);
+
+  // If it's a BEAST ID, call the internal transfer API
+  if (data.recipient && data.recipient.startsWith("BEAST-")) {
+     const res = await sendInternalToServer(data.recipient, amount, txn.reference);
+     if(res.error) {
+        toast(res.error);
+        source.balance += total; // Revert local
+        state.transactions.shift(); // Remove local
+        return;
+     }
+  } else {
+     recordTransactionToServer(txn);
+  }
 
   addNotification(`${data.type} completed`, `${money(amount)} sent to ${data.recipientName}.`); addSecurity(`${data.type} authorized.`); save(); toast(`${data.type} completed. ${money(total)} deducted.`);
-  if(data.type === "Send"){ $("sendPhone").value = ""; $("sendAmount").value = ""; $("recipientVerification").classList.add("hidden"); }
+  if(data.type === "Send"){ $("sendPhone").value = ""; $("sendAmount").value = ""; $("recipientVerification").classList.add("hidden"); $("sendSource").disabled = false; }
   renderEverything();
 }
 
@@ -479,7 +547,7 @@ function finishBuyerPayment(amount, source, fee, beastCut, providerKeeps, channe
   const txn = { reference: generateReference(), type:"Buyer Payment", amount, fee, beastCut, providerCost: providerKeeps, totalDeducted: total, source, destination: channel, sellerSource: sellerSourceKey, recipient: state.user.phone, recipientName: state.user.name, buyerName: buyerSession.name, buyerPhone: buyerSession.phone, description: `Buyer payment from ${buyerSession.name} via ${channel}` };
   
   state.transactions.unshift({ ...txn, createdAt: new Date().toISOString(), status:"completed" });
-  recordTransactionToServer(txn); // Save to DB
+  recordTransactionToServer(txn);
 
   addNotification("Buyer payment", `${money(amount)} from ${buyerSession.name}.`); save(); showBuyerSuccess(amount, txn.reference, channel, source, fee); renderEverything();
 }
@@ -510,9 +578,12 @@ function parseBulkList(text){
   String(text || "").split(/\r?\n/).map(l => l.trim()).filter(l => l.length).forEach((line, i) => {
     const parts = line.split(/[,\s;]+/).filter(p => p.length);
     if(parts.length < 2){ errors.push(`Line ${i+1}: needs phone and amount`); return; }
-    const phone = normalizePhone(parts[0]); const amount = Number(parts[1]);
-    if(!validPhone(phone)){ errors.push(`Line ${i+1}: invalid phone`); return; } if(phone === state.user.phone){ errors.push(`Line ${i+1}: cannot send to yourself`); return; } if(!isFinite(amount) || amount <= 0){ errors.push(`Line ${i+1}: invalid amount`); return; }
-    rows.push({ phone, amount });
+    const raw = parts[0]; const amount = Number(parts[1]);
+    const recipient = normalizeRecipient(raw);
+    if(!validPhone(recipient) && !recipient.startsWith("BEAST-")){ errors.push(`Line ${i+1}: invalid phone or BEAST ID`); return; }
+    if(recipient === state.user.phone || recipient === state.user.beastId){ errors.push(`Line ${i+1}: cannot send to yourself`); return; }
+    if(!isFinite(amount) || amount <= 0){ errors.push(`Line ${i+1}: invalid amount`); return; }
+    rows.push({ recipient, amount });
   });
   return { rows, errors };
 }
@@ -541,7 +612,7 @@ function setupBulk(){
   });
 }
 
-function executeBulkSend(source){
+async function executeBulkSend(source){
   const src = state.sources[source]; if(!src){ toast("Invalid source."); return; }
   const isWallet = source === "wallet"; const results = []; let succeeded = 0, failed = 0, stoppedAt = null;
   for(const row of bulkRows){
@@ -549,20 +620,26 @@ function executeBulkSend(source){
     if(isWallet){ fee = beastWalletFee(row.amount); beastCut = fee; providerKeeps = 0; }
     else { const split = externalSplit(source, row.amount); fee = split.fee; beastCut = split.beastCut; providerKeeps = split.providerKeeps; }
     const total = row.amount + fee;
-    if(src.balance < total){ failed++; stoppedAt = row; results.push({ phone: row.phone, amount: row.amount, status: "failed", reason: "Insufficient balance" }); break; }
+    if(src.balance < total){ failed++; stoppedAt = row; results.push({ phone: row.recipient, amount: row.amount, status: "failed", reason: "Insufficient balance" }); break; }
+    
     src.balance -= total; succeeded++;
     
-    const txn = { reference: generateReference(), type: "Bulk Send", amount: row.amount, fee, beastCut, providerCost: providerKeeps, totalDeducted: total, source, recipient: row.phone, recipientName: "Demo recipient", description: `Bulk send to ${row.phone}` };
+    const txn = { reference: generateReference(), type: "Bulk Send", amount: row.amount, fee, beastCut, providerCost: providerKeeps, totalDeducted: total, source, recipient: row.recipient, recipientName: row.recipient.startsWith("BEAST-") ? "BEAST User" : "Demo recipient", description: `Bulk send to ${row.recipient}` };
     state.transactions.unshift({ ...txn, createdAt: new Date().toISOString(), status: "completed" });
-    recordTransactionToServer(txn); // Save to DB
     
-    results.push({ phone: row.phone, amount: row.amount, status: "sent" });
+    if(row.recipient.startsWith("BEAST-")) {
+       await sendInternalToServer(row.recipient, row.amount, txn.reference);
+    } else {
+       recordTransactionToServer(txn);
+    }
+    
+    results.push({ phone: row.recipient, amount: row.amount, status: "sent" });
   }
   addNotification("Bulk send", `${succeeded} sent, ${failed} failed.`); save();
   const resultBox = $("bulkResult");
   if(resultBox){
     resultBox.classList.remove("hidden");
-    resultBox.innerHTML = `<div class="bulk-result-head"><div><small>Sent</small><strong style="color:var(--green)">${succeeded}</strong></div><div><small>Failed</small><strong style="color:var(--red)">${failed}</strong></div></div><div class="bulk-results">${results.map(r => `<div class="bulk-row ${r.status === "sent" ? "ok" : "bad"}"><span>${r.status === "sent" ? "✓" : "✕"}</span><div><strong>${escapeHTML(r.phone)}</strong><small>${money(r.amount)}${r.reason ? " — " + escapeHTML(r.reason) : ""}</small></div></div>`).join("")}</div>${stoppedAt ? `<div class="bulk-warn">Stopped at ${escapeHTML(stoppedAt.phone)} — insufficient balance.</div>` : ""}`;
+    resultBox.innerHTML = `<div class="bulk-result-head"><div><small>Sent</small><strong style="color:var(--green)">${succeeded}</strong></div><div><small>Failed</small><strong style="color:var(--red)">${failed}</strong></div></div><div class="bulk-results">${results.map(r => `<div class="bulk-row ${r.status === "sent" ? "ok" : "bad"}"><span>${r.status === "sent" ? "✓" : "✕"}</span><div><strong>${escapeHTML(r.phone)}</strong><small>${money(r.amount)}${r.reason ? " — " + escapeHTML(r.reason) : ""}</small></div></div>`).join("")}</div>${stoppedAt ? `<div class="bulk-warn">Stopped at ${escapeHTML(stoppedAt.recipient)} — insufficient balance.</div>` : ""}`;
   }
   toast(`Bulk: ${succeeded} sent, ${failed} failed.`); renderEverything();
 }
