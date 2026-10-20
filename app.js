@@ -9,7 +9,8 @@ const SERVER_URL    = "https://beast-server-8u92.onrender.com";
 const MIN_PASSWORD_LENGTH = 6;
 const MAX_BULK_ROWS = 200;
 
-const REGISTERED_AGENTS = { "0712345678": "Safaricom Agent", "0720000000": "Safaricom Agent", "AGENT-001": "Agent 001" };
+const REGISTERED_AGENTS = { "0712345678": "Safaricom Agent", "0720000000": "Safaricom Agent" };
+const REGISTERED_AGENT_CODES = { "AGENT-001": "BEAST Demo Agent 001", "AGENT-002": "BEAST Demo Agent 002" };
 const SOURCE_NAMES = { mpesa:"M-PESA", tkash:"T-Kash", airtel:"Airtel Money", bank:"Bank Account", card:"Card", wallet:"BEAST Wallet" };
 const SOURCE_ICONS = { mpesa:"📱", tkash:"📲", airtel:"📲", bank:"🏦", card:"💳", wallet:"🐾" };
 const ALL_SOURCES = ["mpesa","wallet","bank","card","airtel","tkash"];
@@ -28,7 +29,7 @@ function defaultState(){
     registered: false, user: { name: "", phone: "", nationalId: "", beastId: "", pinHash: "", pinSalt: "", passwordHash: "", passwordSalt: "" },
     sources: { mpesa: { balance: 5000, enabled: true, account: "0712345678" }, tkash: { balance: 1000, enabled: true, account: "0712345678" }, airtel: { balance: 1000, enabled: true, account: "0712345678" }, bank: { balance: 1000, enabled: true, account: "", bankName: "" }, card: { balance: 1000, enabled: true, account: "", cardName: "", last4: "" }, wallet: { balance: 0, enabled: true, account: "BEAST-WALLET" } },
     receiving: { wallet: { enabled: true }, pochi: { enabled: true, phone: "" }, till: { enabled: true, number: "" }, paybill: { enabled: true, number: "", account: "" }, bank: { enabled: true, bankName: "", account: "" }, card: { enabled: true, cardName: "", last4: "" } },
-    currentSource: "mpesa", transactions: [], notifications: [], securityEvents: [],
+    currentSource: "mpesa", chat: [], transactions: [], notifications: [], securityEvents: [],
     settings: { notifications: true, dark: true },
     security: { failedPinAttempts: 0, lockoutUntil: 0 }, buyerSecurity: { failedPinAttempts: 0, lockoutUntil: 0 },
     recentBuyers: [], savedBulkLists: {}
@@ -118,7 +119,7 @@ function isLoggedIn(){ return state.registered && sessionToken === "active"; }
 function startSession(){ sessionToken = "active"; sessionStorage.setItem(SESSION_KEY, sessionToken); }
 function endSession(){ sessionToken = null; sessionStorage.removeItem(SESSION_KEY); }
 
-const screenMap = { welcome:"welcomeScreen", login:"loginScreen", registration:"registrationScreen", money:"moneyScreen", send:"sendScreen", bulk:"bulkScreen", receive:"receiveScreen", withdraw:"withdrawScreen", lipa:"lipaScreen", history:"historyScreen", statements:"statementsScreen", chat:"chatScreen", calls:"callsScreen", connect:"connectScreen", profile:"profileScreen", premium:"premiumScreen", security:"securityScreen", notifications:"notificationsScreen", settings:"settingsScreen" };
+const screenMap = { welcome:"welcomeScreen", login:"loginScreen", registration:"registrationScreen", money:"moneyScreen", send:"sendScreen", bulk:"bulkScreen", receive:"receiveScreen", withdraw:"withdrawScreen", lipa:"lipaScreen", history:"historyScreen", statements:"statementsScreen", connect:"connectScreen", profile:"profileScreen", premium:"premiumScreen", security:"securityScreen", notifications:"notificationsScreen", settings:"settingsScreen" };
 
 const SENSITIVE_FIELDS = ["regPin","regPin2","regPassword","regPassword2","loginPassword","loginPin","sendAmount","sendPhone","withdrawAmount","withdrawMobileAmount","withdrawMobilePhone","agentNumber","lipaAmount","depositAmount","agentDepositAmount","authorizationPin","oldPin","newPin","confirmNewPin","oldPassword","newPassword","confirmNewPassword","buyerLoginPhone","buyerLoginNationalId","buyerLoginPin","buyerPayAmount","bulkList","searchInput"];
 
@@ -583,11 +584,10 @@ function setupCostPreview(){
 
 function renderEverything(){
   if(!isLoggedIn()) return;
-  renderHome(); renderSources("sourceList"); renderNotifications(); renderSecurity(); renderProfile(); renderSettingsUI();
+  renderHome(); renderSources("sourceList"); renderHistory(); renderNotifications(); renderSecurity(); renderProfile(); renderSettingsUI();
   fillSourceSelects(); setupCostPreview(); updateNotificationBadge(); markNotificationsReadIfOpen();
   renderReceiveSellerLine(); renderReceivingMethodsList(); updateReceiveBackButton();
   renderAnnouncementBanner();
-  if($("chatScreen")?.classList.contains("active")) renderChat();
   if($("statementsScreen")?.classList.contains("active")) renderStatements();
 }
 
@@ -616,7 +616,7 @@ function renderAnnouncementBanner(){ const banner = $("announcementBanner"); if(
 
 async function initialize(){
   await buildDemoBuyerHashes();
-  setupWelcome(); setupLogin(); setupRegistration(); setupNav(); setupSend(); setupBulk(); setupReceiveTabs(); setupBuyerFlow(); setupWithdraw(); setupLipa(); setupPin(); setupSettings(); setupSourceManager(); setupChat(); setupCalls(); setupConnect(); setupPremium(); setupDeposit(); setupAgentDeposit();
+  setupWelcome(); setupLogin(); setupRegistration(); setupNav(); setupSend(); setupBulk(); setupReceiveTabs(); setupBuyerFlow(); setupWithdraw(); setupLipa(); setupPin(); setupSettings(); setupSourceManager(); setupConnect(); setupPremium(); setupDeposit(); setupAgentDeposit(); setupReceivingMethods();
 
   loadTheme();
 
