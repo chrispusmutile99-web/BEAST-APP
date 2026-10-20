@@ -376,7 +376,7 @@ function setupLogin(){
     const password = $("loginPassword")?.value || "";
     if(!validPhone(phone)){ toast("Enter a valid Kenyan phone number."); return; }
     if(password.length < MIN_PASSWORD_LENGTH){ toast(`Password must be at least ${MIN_PASSWORD_LENGTH} characters.`); return; }
-    if(phone !== state.user.phone){ toast("Phone number not registered."); return; }
+    if(phone !== state.user.phone){ toast("Phone number not registered on this device."); return; }
 
     const ok = await verifyPassword(password);
     if(!ok){ addSecurity("Failed password login."); save(); toast("Incorrect password."); return; }
@@ -395,6 +395,7 @@ function setupLogin(){
 
 function setupRegistration(){
   $("backToWelcomeFromRegister")?.addEventListener("click", () => showScreen("welcome"));
+  
   $("regNext1")?.addEventListener("click", () => {
     const name = $("regName").value.trim();
     const phone = normalizePhone($("regPhone").value);
@@ -424,14 +425,55 @@ function setupRegistration(){
     document.querySelectorAll(".step")[2]?.classList.add("active");
   });
 
-  $("finishRegistration")?.addEventListener("click", () => {
+  // UPDATED: Now sends data to the real database
+  $("finishRegistration")?.addEventListener("click", async () => {
     state.user.beastId = generateBeastId();
-    state.registered = true;
-    addNotification("BEAST ID created", `Your BEAST ID is ${state.user.beastId}.`);
-    addSecurity("New BEAST registration.");
-    startSession(); save();
-    toast("BEAST account created.");
-    showScreen("money");
+    
+    const btn = $("finishRegistration");
+    const originalText = btn.textContent;
+    btn.textContent = "CREATING ACCOUNT...";
+    btn.disabled = true;
+
+    try {
+      const payload = {
+        beastId: state.user.beastId,
+        name: state.user.name,
+        phone: state.user.phone,
+        nationalId: state.user.nationalId,
+        pinHash: state.user.pinHash,
+        pinSalt: state.user.pinSalt,
+        passwordHash: state.user.passwordHash,
+        passwordSalt: state.user.passwordSalt
+      };
+
+      const res = await fetch(SERVER_URL + "/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if (!data.ok) {
+        toast(data.error || "Registration failed. Phone might already exist.");
+        btn.textContent = originalText;
+        btn.disabled = false;
+        return;
+      }
+
+      // Success - Proceed locally
+      state.registered = true;
+      addNotification("BEAST ID created", `Your BEAST ID is ${state.user.beastId}.`);
+      addSecurity("New BEAST registration.");
+      startSession(); save();
+      toast("BEAST account created in database.");
+      showScreen("money");
+
+    } catch (e) {
+      toast("Network error. Check your connection.");
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }
   });
 }
 
