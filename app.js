@@ -27,8 +27,8 @@ function defaultState(){
     registered: false, user: { name: "", phone: "", nationalId: "", beastId: "", pinHash: "", pinSalt: "", passwordHash: "", passwordSalt: "" },
     sources: { mpesa: { balance: 5000, enabled: true, account: "0712345678" }, tkash: { balance: 1000, enabled: true, account: "0712345678" }, airtel: { balance: 1000, enabled: true, account: "0712345678" }, bank: { balance: 0, enabled: false, account: "", bankName: "" }, card: { balance: 0, enabled: false, account: "", cardName: "", last4: "" }, wallet: { balance: 0, enabled: true, account: "BEAST-WALLET" } },
     receiving: { wallet: { enabled: true }, pochi: { enabled: false, phone: "" }, till: { enabled: false, number: "" }, paybill: { enabled: false, number: "", account: "" }, bank: { enabled: false, bankName: "", account: "" }, card: { enabled: false, cardName: "", last4: "" } },
-    currentSource: "mpesa", chat: [], transactions: [], notifications: [], securityEvents: [],
-    settings: { notifications: true, screenSecurity: true, biometric: false, dark: true },
+    currentSource: "mpesa", transactions: [], notifications: [], securityEvents: [],
+    settings: { notifications: true, screenSecurity: true, dark: true },
     security: { failedPinAttempts: 0, lockoutUntil: 0 }, buyerSecurity: { failedPinAttempts: 0, lockoutUntil: 0 }, recentBuyers: [], savedBulkLists: {}
   };
 }
@@ -46,7 +46,7 @@ function loadState(){
 
 const state = loadState();
 let sessionToken = sessionStorage.getItem(SESSION_KEY) || null;
-let pendingAction = null, cameraStream = null, autoLockTimer = null, buyerSession = null, buyerStep = 1, buyerSuccessTimer = null, buyerSessionTimer = null, bulkRows = [], socket = null, currentAnnouncement = null;
+let pendingAction = null, buyerSession = null, buyerStep = 1, buyerSuccessTimer = null, buyerSessionTimer = null, bulkRows = [], socket = null, currentAnnouncement = null;
 
 function $(id){ return document.getElementById(id); }
 function money(v){ return `KES ${Number(v || 0).toLocaleString("en-KE",{ minimumFractionDigits:2, maximumFractionDigits:2 })}`; }
@@ -117,10 +117,10 @@ function startSession(){ sessionToken = "active"; sessionStorage.setItem(SESSION
 function endSession(){ sessionToken = null; sessionStorage.removeItem(SESSION_KEY); }
 
 const screenMap = {
-  welcome:"welcomeScreen", login:"loginScreen", registration:"registrationScreen", money:"moneyScreen", send:"sendScreen", bulk:"bulkScreen", receive:"receiveScreen", withdraw:"withdrawScreen", lipa:"lipaScreen", history:"historyScreen", statements:"statementsScreen", chat:"chatScreen", calls:"callsScreen", connect:"connectScreen", profile:"profileScreen", premium:"premiumScreen", security:"securityScreen", notifications:"notificationsScreen", settings:"settingsScreen"
+  welcome:"welcomeScreen", login:"loginScreen", registration:"registrationScreen", money:"moneyScreen", send:"sendScreen", bulk:"bulkScreen", receive:"receiveScreen", withdraw:"withdrawScreen", lipa:"lipaScreen", history:"historyScreen", statements:"statementsScreen", connect:"connectScreen", profile:"profileScreen", premium:"premiumScreen", security:"securityScreen", notifications:"notificationsScreen", settings:"settingsScreen"
 };
 
-const SENSITIVE_FIELDS = [ "regPin","regPin2","regPassword","regPassword2","loginPassword","loginPin", "sendAmount","sendPhone","withdrawAmount","withdrawMobileAmount","withdrawMobilePhone","agentNumber","lipaAmount","depositAmount","agentDepositAmount","authorizationPin", "oldPin","newPin","confirmNewPin","buyerLoginPhone","buyerLoginNationalId","buyerLoginPin","buyerPayAmount", "bulkList","chatInput","recipientId","searchInput" ];
+const SENSITIVE_FIELDS = [ "regPin","regPin2","regPassword","regPassword2","loginPassword","loginPin", "sendAmount","sendPhone","withdrawAmount","withdrawMobileAmount","withdrawMobilePhone","agentNumber","lipaAmount","depositAmount","agentDepositAmount","authorizationPin", "oldPin","newPin","confirmNewPin","buyerLoginPhone","buyerLoginNationalId","buyerLoginPin","buyerPayAmount", "bulkList","searchInput" ];
 
 function clearSensitiveFields(){ SENSITIVE_FIELDS.forEach(id => { const el = $(id); if(el) el.value = ""; }); ["recipientVerification","agentVerification","lipaVerification","agentDepositVerification"].forEach(id => $(id)?.classList.add("hidden")); }
 
@@ -133,17 +133,16 @@ function showScreen(name){
   if(name === "receive"){ resetBuyerFlow(); renderReceiveSellerLine(); }
   if(name === "statements") renderStatements();
   if(name === "bulk") resetBulkFlow();
-  if(name === "chat") renderChat();
   if(name === "history") fetchHistory();
   window.scrollTo({ top:0, behavior:"smooth" }); renderEverything();
 }
 
-function getTabForScreen(name){ if(["money","send","bulk","receive","withdraw","lipa","history","statements"].includes(name)) return "money"; if(name === "chat") return "chat"; if(name === "calls") return "calls"; if(name === "connect") return "connect"; if(["profile","premium","security","notifications","settings"].includes(name)) return "profile"; return null; }
+function getTabForScreen(name){ if(["money","send","bulk","receive","withdraw","lipa","history","statements"].includes(name)) return "money"; if(name === "connect") return "connect"; if(["profile","premium","security","notifications","settings"].includes(name)) return "profile"; return null; }
 function openMenu(){ $("menuDrawer")?.classList.add("open"); $("drawerBackdrop")?.classList.add("open"); }
 function closeMenu(){ $("menuDrawer")?.classList.remove("open"); $("drawerBackdrop")?.classList.remove("open"); }
 function resetAutoLock(){ clearTimeout(autoLockTimer); if(!isLoggedIn()) return; autoLockTimer = setTimeout(() => { if(!isLoggedIn()) return; addSecurity("Session auto-locked."); save(); showScreen("login"); toast("Session locked."); }, AUTO_LOCK_MS); }
 
-/* ================= AUTH (Unchanged) ================= */
+/* ================= AUTH ================= */
 function setupWelcome(){
   $("goRegisterButton")?.addEventListener("click", () => showScreen("registration"));
   $("goLoginButton")?.addEventListener("click", () => { if(!state.registered){ toast("No BEAST account yet."); showScreen("registration"); return; } showScreen("login"); });
@@ -199,7 +198,7 @@ function setupRegistration(){
   });
 }
 
-/* ================= SOURCES (Unchanged) ================= */
+/* ================= SOURCES ================= */
 function totalBalance(){ return Object.values(state.sources).reduce((t,s) => t + (s.enabled ? Number(s.balance) : 0), 0); }
 function renderSources(containerId){
   const container = $(containerId); if(!container) return;
@@ -221,16 +220,9 @@ function fillSourceSelects(){
 }
 
 /* ================= TRANSACTIONS ================= */
-async function recordTransactionToServer(txn) {
-  try { await fetch(SERVER_URL + "/api/transaction", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...txn, beastId: state.user.beastId }) }); } catch(e) {}
-}
-async function sendInternalToServer(toBeastId, amount, reference) {
-  try { const res = await fetch(SERVER_URL + "/api/send-internal", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ fromBeastId: state.user.beastId, toBeastId, amount, reference }) }); return await res.json(); } catch(e) { return { error: "Network error" }; }
-}
-async function fetchHistory() {
-  if(!state.user.beastId) return;
-  try { const res = await fetch(SERVER_URL + "/api/transactions/" + state.user.beastId); const data = await res.json(); if(data.ok) { state.transactions = data.transactions; save(); renderHistory(); renderStatements(); } } catch(e) {}
-}
+async function recordTransactionToServer(txn) { try { await fetch(SERVER_URL + "/api/transaction", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...txn, beastId: state.user.beastId }) }); } catch(e) {} }
+async function sendInternalToServer(toBeastId, amount, reference) { try { const res = await fetch(SERVER_URL + "/api/send-internal", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ fromBeastId: state.user.beastId, toBeastId, amount, reference }) }); return await res.json(); } catch(e) { return { error: "Network error" }; } }
+async function fetchHistory() { if(!state.user.beastId) return; try { const res = await fetch(SERVER_URL + "/api/transactions/" + state.user.beastId); const data = await res.json(); if(data.ok) { state.transactions = data.transactions; save(); renderHistory(); renderStatements(); } } catch(e) {} }
 
 function setupSend(){
   $("verifyRecipient")?.addEventListener("click", () => {
@@ -250,7 +242,6 @@ function setupSend(){
 }
 
 function setupWithdraw(){
-  // Tabs
   document.querySelectorAll("[data-wtab]").forEach(tab => {
     tab.addEventListener("click", () => {
       const target = tab.dataset.wtab;
@@ -260,7 +251,6 @@ function setupWithdraw(){
     });
   });
 
-  // Agent logic
   $("verifyAgent")?.addEventListener("click", () => { const number = ($("agentNumber").value || "").trim(); const store = ($("withdrawStore").value || "").trim(); if(!validAgent(number)){ toast("Enter agent ID."); return; } $("agentVerification").classList.remove("hidden"); $("agentVerification").innerHTML = `<strong>✓ Agent ${escapeHTML(number)}</strong>Store: ${escapeHTML(store)}`; });
   $("withdrawButton")?.addEventListener("click", () => {
     if($("agentVerification").classList.contains("hidden")){ toast("Verify agent first."); return; }
@@ -269,7 +259,6 @@ function setupWithdraw(){
     askConfirmation(buildConfirmHTML({ title:"Confirm Withdraw", recipientName:"Agent", recipient: agent, amount, source, fee }), () => authorize("Withdrawal", () => { completeTransaction({ type:"Withdraw", amount, source, recipient: agent, recipientName:"Agent", description:"Agent cash out", providerType:"withdraw" }); }));
   });
 
-  // Mobile logic
   $("withdrawMobilePhone")?.addEventListener("input", updateMobileWithdrawPreview);
   $("withdrawMobileAmount")?.addEventListener("input", updateMobileWithdrawPreview);
   $("withdrawMobileButton")?.addEventListener("click", () => {
@@ -304,7 +293,6 @@ function setupLipa(){
   });
 }
 
-/* ================= BULK ================= */
 function parseBulkList(text){
   const rows = [], errors = [];
   String(text || "").split(/\r?\n/).map(l => l.trim()).filter(l => l.length).forEach((line, i) => {
@@ -320,7 +308,6 @@ function parseBulkList(text){
 }
 
 function setupBulk(){
-  // Load lists
   const savedListSelect = $("savedBulkLists");
   if (savedListSelect) {
     Object.keys(state.savedBulkLists).forEach(name => { savedListSelect.innerHTML += `<option value="${name}">${name}</option>`; });
@@ -332,7 +319,7 @@ function setupBulk(){
   }
 
   $("saveBulkListButton")?.addEventListener("click", () => {
-    const name = prompt("Enter a name for this list (e.g. Staff Salaries):");
+    const name = prompt("Enter a name for this list:");
     if(!name) return;
     state.savedBulkLists[name] = $("bulkList").value;
     save();
@@ -379,7 +366,126 @@ async function executeBulkSend(source, type){
 }
 function resetBulkFlow(){ bulkRows = []; if($("bulkList")) $("bulkList").value = ""; if($("bulkPreview")) $("bulkPreview").innerHTML = ""; if($("bulkResult")){ $("bulkResult").innerHTML = ""; $("bulkResult").classList.add("hidden"); } }
 
-/* ================= PIN & CONFIRM (Standard) ================= */
+/* ================= RECEIVE / BUYER ================= */
+function setupReceiveTabs(){ document.querySelectorAll("[data-rtab]").forEach(tab => { tab.addEventListener("click", () => { const target = tab.dataset.rtab; document.querySelectorAll("[data-rtab]").forEach(t => t.classList.toggle("active", t === tab)); document.querySelectorAll(".receive-tab-panel").forEach(p => p.classList.remove("active")); const panel = target === "buyer" ? $("buyerTab") : target === "deposit" ? $("depositTab") : $("agentTab"); panel?.classList.add("active"); if(target === "buyer") resetBuyerFlow(); updateReceiveBackButton(); }); }); }
+function renderReceiveSellerLine(){ const line = $("receiveSellerLine"); if(!line) return; if(!isLoggedIn()){ line.textContent = "Paying: —"; return; } line.textContent = `Paying: ${state.user.name} • ${state.user.beastId}`; }
+function setBuyerStep(step){ buyerStep = step; ["buyerStep1","buyerStep2","buyerStep3","buyerSuccessPanel"].forEach(id => $(id)?.classList.remove("active")); if(step === 1) $("buyerStep1")?.classList.add("active"); if(step === 2) $("buyerStep2")?.classList.add("active"); if(step === 3) $("buyerStep3")?.classList.add("active"); if(step === "success") $("buyerSuccessPanel")?.classList.add("active"); document.querySelectorAll(".buyer-step").forEach(el => { el.classList.toggle("active", Number(el.dataset.bstep) === step); }); updateReceiveBackButton(); }
+function updateReceiveBackButton(){ const btn = $("receiveBackButton"); if(!btn) return; const buyerTabActive = $("buyerTab")?.classList.contains("active"); if(!buyerTabActive){ btn.classList.add("hidden"); return; } if(buyerStep === 1 || buyerStep === "success") btn.classList.add("hidden"); else btn.classList.remove("hidden"); }
+function handleReceiveBack(){ if(buyerStep === 3){ setBuyerStep(2); return; } if(buyerStep === 2){ buyerSession = null; setBuyerStep(1); ["buyerLoginPhone","buyerLoginNationalId","buyerLoginPin"].forEach(id => { if($(id)) $(id).value = ""; }); } }
+
+function setupBuyerFlow(){
+  $("receiveBackButton")?.addEventListener("click", handleReceiveBack); $("buyerLoginButton")?.addEventListener("click", doBuyerLogin);
+  $("buyerChooseSourceButton")?.addEventListener("click", () => { if(!buyerSession) return; if(!buyerSession.chosenSource){ toast("Select an account."); return; } renderBuyerStep3(); setBuyerStep(3); });
+  $("buyerPayAmount")?.addEventListener("input", updateBuyerCostPreview); $("buyerDestinationChannel")?.addEventListener("change", renderBuyerDestinationFields); $("buyerConfirmPayButton")?.addEventListener("click", doBuyerPay);
+  $("copyReceiptButton")?.addEventListener("click", () => { const text = $("receiptText")?.textContent || ""; navigator.clipboard?.writeText(text).then(() => toast("Copied.")).catch(() => toast("Copy failed.")); });
+  $("shareReceiptButton")?.addEventListener("click", () => { const text = $("receiptText")?.textContent || ""; if(navigator.share){ navigator.share({ title:"BEAST Receipt", text }).catch(() => {}); } else { navigator.clipboard?.writeText(text).then(() => toast("Copied.")); } });
+}
+
+async function doBuyerLogin(){
+  const phone = normalizePhone($("buyerLoginPhone").value); const nationalId = $("buyerLoginNationalId").value.trim(); const pin = $("buyerLoginPin").value;
+  if(!validPhone(phone)){ toast("Enter valid phone."); return; } if(!/^\d{5,}$/.test(nationalId)){ toast("Enter National ID."); return; } if(!/^\d{4}$/.test(pin)){ toast("Enter 4-digit PIN."); return; }
+  const bs = state.buyerSecurity; if(bs.lockoutUntil && Date.now() < bs.lockoutUntil){ toast(`Locked. ${Math.ceil((bs.lockoutUntil - Date.now())/1000)}s.`); return; }
+  const buyer = DEMO_BUYERS.find(b => b.phone === phone); if(!buyer){ addSecurity(`Unknown buyer ${phone}.`); save(); toast("Buyer not found."); return; }
+  if(buyer.nationalId !== nationalId){ addSecurity(`ID mismatch ${phone}.`); save(); toast("National ID mismatch."); return; }
+  const ok = await verifyDemoBuyerPin(phone, pin);
+  if(!ok){ bs.failedPinAttempts = (bs.failedPinAttempts || 0) + 1; if(bs.failedPinAttempts >= MAX_PIN_ATTEMPTS){ bs.lockoutUntil = Date.now() + PIN_LOCKOUT_MS; bs.failedPinAttempts = 0; save(); toast(`Too many attempts. Locked ${PIN_LOCKOUT_MS/1000}s.`); return; } save(); toast(`Incorrect PIN. ${MAX_PIN_ATTEMPTS - bs.failedPinAttempts} left.`); return; }
+  bs.failedPinAttempts = 0; bs.lockoutUntil = 0; save();
+  buyerSession = { phone: buyer.phone, name: buyer.name, nationalId: buyer.nationalId, sources: JSON.parse(JSON.stringify(buyer.sources)), chosenSource: null };
+  $("buyerLoginPin").value = ""; renderBuyerStep2(); setBuyerStep(2);
+  clearTimeout(buyerSessionTimer); buyerSessionTimer = setTimeout(() => { if(buyerSession){ toast("Buyer session expired."); resetBuyerFlow(); } }, BUYER_SESSION_MS);
+}
+
+function renderBuyerStep2(){
+  if(!buyerSession) return; if($("buyerWelcomeLine")) $("buyerWelcomeLine").textContent = `Signed in as ${buyerSession.name}`;
+  const list = $("buyerSourcesList"); if(!list) return;
+  list.innerHTML = ALL_SOURCES.map(key => {
+    const src = buyerSession.sources[key] || { enabled: false }; const linked = src.enabled === true; let details = "Not linked";
+    if(linked){ if(key === "bank") details = src.bankName ? `${src.bankName} ••••` : "Linked"; else if(key === "card") details = src.cardName ? `${src.cardName} •••• ${src.last4 || "----"}` : "Linked"; else if(key === "wallet") details = "BEAST Wallet"; else details = "Balance hidden"; }
+    const selected = buyerSession.chosenSource === key ? " selected" : "";
+    return `<button class="buyer-source-option${selected} ${linked ? "" : "disabled"}" data-bsource="${key}" ${linked ? "" : "disabled"}><span class="buyer-source-icon">${SOURCE_ICONS[key]}</span><span class="buyer-source-text"><strong>${SOURCE_NAMES[key]}</strong><small>${escapeHTML(details)}</small></span></button>`;
+  }).join("");
+  list.querySelectorAll("[data-bsource]").forEach(btn => { btn.addEventListener("click", () => { buyerSession.chosenSource = btn.dataset.bsource; list.querySelectorAll(".buyer-source-option").forEach(b => b.classList.remove("selected")); btn.classList.add("selected"); $("buyerChooseSourceButton").disabled = false; }); });
+  $("buyerChooseSourceButton").disabled = !buyerSession.chosenSource;
+}
+
+function availableDestinations(){ return Object.entries(state.receiving).filter(([,r]) => r.enabled).map(([k]) => k); }
+function renderBuyerStep3(){
+  if(!buyerSession) return; if($("buyerDestinationName")) $("buyerDestinationName").textContent = state.user.name;
+  if($("buyerDestinationId")) $("buyerDestinationId").textContent = `${state.user.beastId} • ${internationalPhone(state.user.phone)}`;
+  if($("buyerChosenSourceName")) $("buyerChosenSourceName").textContent = SOURCE_NAMES[buyerSession.chosenSource] || "—";
+  const select = $("buyerDestinationChannel"); if(select){ const enabled = availableDestinations(); select.innerHTML = enabled.map(key => { const label = { wallet:"Wallet", pochi:"Pochi", till:"Till", paybill:"PayBill", bank:"Bank", card:"Card" }[key]; return `<option value="${key}">${label}</option>`; }).join(""); if(!select.value && enabled.length) select.value = enabled[0]; }
+  renderBuyerDestinationFields(); if($("buyerPayAmount")) $("buyerPayAmount").value = ""; updateBuyerCostPreview();
+}
+
+function renderBuyerDestinationFields(){
+  const channel = $("buyerDestinationChannel")?.value; const fields = $("buyerDestinationFields"); if(!fields) return;
+  if(channel === "wallet"){ fields.innerHTML = `<small class="muted">Money lands in seller's Wallet.</small>`; return; }
+  if(channel === "pochi"){ fields.innerHTML = `<div class="buyer-account-chip"><span>Pochi</span><strong>${escapeHTML(state.receiving.pochi.phone || "—")}</strong></div>`; return; }
+  if(channel === "till"){ fields.innerHTML = `<div class="buyer-account-chip"><span>Till</span><strong>${escapeHTML(state.receiving.till.number || "—")}</strong></div>`; return; }
+  if(channel === "paybill"){ fields.innerHTML = `<div class="buyer-account-chip"><span>PayBill</span><strong>${escapeHTML(state.receiving.paybill.number || "—")}</strong><small>Acct: ${escapeHTML(state.receiving.paybill.account || "—")}</small></div>`; return; }
+  if(channel === "bank"){ fields.innerHTML = `<div class="buyer-account-chip"><span>Bank</span><strong>${escapeHTML(state.receiving.bank.bankName || "—")}</strong><small>Acct: ${escapeHTML(state.receiving.bank.account || "—")}</small></div>`; return; }
+  if(channel === "card"){ fields.innerHTML = `<div class="buyer-account-chip"><span>Card</span><strong>${escapeHTML(state.receiving.card.cardName || "—")} •••• ${escapeHTML(state.receiving.card.last4 || "----")}</strong></div>`; return; }
+}
+
+function updateBuyerCostPreview(){
+  const box = $("buyerCostPreview"); if(!box || !buyerSession) return; const amount = Number($("buyerPayAmount")?.value || 0); const source = buyerSession.chosenSource;
+  if(amount <= 0){ box.innerHTML = `<b>Cost preview</b><br>Enter amount.`; return; }
+  if(source === "wallet"){ const fee = beastWalletFee(amount); box.innerHTML = `<b>BEAST Wallet</b><br>Amount: ${money(amount)}<br>Fee: ${money(fee)}<br><br><strong>Total: ${money(amount + fee)}</strong>`; }
+  else { const split = externalSplit(source, amount); box.innerHTML = `<b>Cost preview</b><br>Amount: ${money(amount)}<br>${SOURCE_NAMES[source]} fee: ${money(split.fee)}<br><br><strong>Total: ${money(amount + split.fee)}</strong>`; }
+}
+
+function doBuyerPay(){
+  if(!buyerSession) return; const amount = Number($("buyerPayAmount").value); const channel = $("buyerDestinationChannel")?.value || "wallet"; if(amount <= 0){ toast("Enter amount."); return; }
+  const source = buyerSession.chosenSource; let fee, beastCut, providerKeeps;
+  if(source === "wallet"){ fee = beastWalletFee(amount); beastCut = fee; providerKeeps = 0; }
+  else { const split = externalSplit(source, amount); fee = split.fee; beastCut = split.beastCut; providerKeeps = split.providerKeeps; }
+  const total = amount + fee; const src = buyerSession.sources[source]; if(!src || src.balance < total){ toast("Buyer insufficient balance."); return; }
+  const channelLabel = { wallet:"Wallet", pochi:"Pochi", till:"Till", paybill:"PayBill", bank:"Bank", card:"Card" }[channel];
+  askConfirmation(`<b>Confirm buyer payment</b><br><br>Buyer: ${escapeHTML(buyerSession.name)}<br>To: ${escapeHTML(state.user.name)}<br>Via: ${escapeHTML(channelLabel)}<br>Source: ${escapeHTML(SOURCE_NAMES[source])}<br><br>Amount: ${money(amount)}<br>Fee: ${money(fee)}<br><br><strong>Total: ${money(total)}</strong>`, () => authorizeBuyerPin(amount, source, fee, beastCut, providerKeeps, channel));
+}
+
+function authorizeBuyerPin(amount, source, fee, beastCut, providerKeeps, channel){
+  $("pinPurpose").textContent = `Buyer auth — ${buyerSession.name}`; $("authorizationPin").value = ""; if($("pinError")){ $("pinError").textContent = ""; $("pinError").classList.add("hidden"); } $("pinModal").classList.remove("hidden");
+  const confirmBtn = $("confirmPin"); if(!confirmBtn) return;
+  confirmBtn._buyerHandler = async () => {
+    const pin = $("authorizationPin").value; if(!/^\d{4}$/.test(pin)){ if($("pinError")){ $("pinError").textContent = "Enter 4-digit PIN."; $("pinError").classList.remove("hidden"); } return; }
+    const ok = await verifyDemoBuyerPin(buyerSession.phone, pin); if(!ok){ if($("pinError")){ $("pinError").textContent = "Incorrect PIN."; $("pinError").classList.remove("hidden"); } return; }
+    confirmBtn.removeEventListener("click", confirmBtn._buyerHandler); confirmBtn._buyerHandler = null; $("pinModal").classList.add("hidden"); finishBuyerPayment(amount, source, fee, beastCut, providerKeeps, channel);
+  };
+  confirmBtn.addEventListener("click", confirmBtn._buyerHandler);
+}
+
+function finishBuyerPayment(amount, source, fee, beastCut, providerKeeps, channel){
+  const src = buyerSession.sources[source]; const total = amount + fee; src.balance -= total;
+  let sellerSourceKey = "wallet"; if(channel === "pochi" || channel === "till" || channel === "paybill") sellerSourceKey = "mpesa"; else if(channel === "bank") sellerSourceKey = "bank"; else if(channel === "card") sellerSourceKey = "card";
+  if(!state.sources[sellerSourceKey]?.enabled){ sellerSourceKey = "wallet"; state.sources.wallet.enabled = true; }
+  state.sources[sellerSourceKey].balance += amount;
+  const txn = { reference: generateReference(), type:"Buyer Payment", amount, fee, beastCut, providerCost: providerKeeps, totalDeducted: total, source, destination: channel, sellerSource: sellerSourceKey, recipient: state.user.phone, recipientName: state.user.name, buyerName: buyerSession.name, buyerPhone: buyerSession.phone, description: `Buyer payment from ${buyerSession.name} via ${channel}` };
+  state.transactions.unshift({ ...txn, createdAt: new Date().toISOString(), status:"completed" });
+  recordTransactionToServer(txn);
+  addNotification("Buyer payment", `${money(amount)} from ${buyerSession.name}.`); save(); showBuyerSuccess(amount, txn.reference, channel, source, fee); renderEverything();
+}
+
+function showBuyerSuccess(amount, reference, channel, source, fee){
+  const channelLabel = { wallet:"Wallet", pochi:"Pochi", till:"Till", paybill:"PayBill", bank:"Bank", card:"Card" }[channel];
+  if($("buyerSuccessText")) $("buyerSuccessText").textContent = `${money(amount)} received. Ref ${reference}.`;
+  const receiptText = `BEAST Payment Receipt\nRef: ${reference}\nFrom: ${buyerSession.name} (${buyerSession.phone})\nTo: ${state.user.name} (${state.user.beastId})\nAmount: ${money(amount)}\nFee: ${money(fee)}\nVia: ${channelLabel}\nDate: ${new Date().toLocaleString("en-KE")}`;
+  if($("receiptText")) $("receiptText").textContent = receiptText;
+  setBuyerStep("success"); clearTimeout(buyerSuccessTimer);
+  const fill = $("buyerCountdownFill"); const text = $("buyerCountdownText"); if(fill){ fill.style.transition = "none"; fill.style.width = "100%"; }
+  requestAnimationFrame(() => { if(fill){ fill.style.transition = `width ${BUYER_SUCCESS_MS}ms linear`; fill.style.width = "0%"; } });
+  let remaining = Math.ceil(BUYER_SUCCESS_MS / 1000); if(text) text.textContent = `Returning in ${remaining}s…`;
+  const tick = setInterval(() => { remaining -= 1; if(remaining > 0 && text) text.textContent = `Returning in ${remaining}s…`; if(remaining <= 0){ clearInterval(tick); buyerSuccessTimer = setTimeout(() => resetBuyerFlow(), 200); } }, 1000);
+}
+
+function resetBuyerFlow(){
+  clearTimeout(buyerSuccessTimer); clearTimeout(buyerSessionTimer); buyerSession = null;
+  ["buyerLoginPhone","buyerLoginNationalId","buyerLoginPin","buyerPayAmount"].forEach(id => { if($(id)) $(id).value = ""; });
+  if($("buyerSourcesList")) $("buyerSourcesList").innerHTML = ""; if($("buyerChosenSourceName")) $("buyerChosenSourceName").textContent = "—"; if($("buyerDestinationName")) $("buyerDestinationName").textContent = "—"; if($("buyerDestinationId")) $("buyerDestinationId").textContent = "—"; if($("buyerCostPreview")) $("buyerCostPreview").innerHTML = ""; if($("buyerChooseSourceButton")) $("buyerChooseSourceButton").disabled = true; if($("receiptText")) $("receiptText").textContent = "";
+  setBuyerStep(1); renderReceiveSellerLine();
+}
+
+/* ================= STANDARD FUNCTIONS ================= */
 function askConfirmation(summaryHTML, onConfirm){ if(!$("confirmModal")){ pendingAction = onConfirm; openPinModal("Confirm"); return; } $("confirmBody").innerHTML = summaryHTML; $("confirmModal").classList.remove("hidden"); $("confirmYes").onclick = () => { $("confirmModal").classList.add("hidden"); onConfirm(); }; $("confirmNo").onclick = () => { $("confirmModal").classList.add("hidden"); pendingAction = null; }; $("confirmClose")?.addEventListener("click", () => { $("confirmModal").classList.add("hidden"); pendingAction = null; }); }
 function buildConfirmHTML({title, recipientName, recipient, amount, source, fee}){ const total = Number(amount) + Number(fee); return `<b>${escapeHTML(title)}</b><br><br>Recipient: ${escapeHTML(recipientName)}<br>Destination: ${escapeHTML(recipient)}<br>Source: ${escapeHTML(SOURCE_NAMES[source] || source)}<br><br>Amount: ${money(amount)}<br>Fee: ${money(fee)}<br><br><strong>Total: ${money(total)}</strong>`; }
 function openPinModal(purpose){ $("pinPurpose").textContent = purpose; $("authorizationPin").value = ""; if($("pinError")){ $("pinError").textContent = ""; $("pinError").classList.add("hidden"); } $("pinModal").classList.remove("hidden"); setTimeout(() => $("authorizationPin").focus(), 100); }
@@ -412,17 +518,8 @@ async function completeTransaction(data){
   renderEverything();
 }
 
-/* ================= REST OF FUNCTIONS (Unchanged) ================= */
-// Paste the rest of the unchanged functions from previous versions here (renderHistory, renderStatements, renderChat, etc.)
-// Ensure you keep fetchHistory, setupNav, renderHome, initialize, etc.
-
 function renderHistory(){ const box = $("historyList"); if(!box) return; if(!state.transactions.length){ box.innerHTML = `<div class="panel muted">No transactions yet.</div>`; return; } box.innerHTML = state.transactions.map(t => { const dir = t.type === "Deposit to BEAST" || t.type === "Agent Deposit" || t.type === "Buyer Payment" || t.type === "Owner Withdrawal" ? "+" : "-"; return `<div class="list-item"><strong>${escapeHTML(t.type)}</strong><span>${dir} ${money(t.amount)}</span><small>${escapeHTML(t.description)}<br>Ref: ${escapeHTML(t.reference)}<br>${dateText(t.createdAt)}</small></div>`; }).join(""); }
 function renderStatements(){ const summaryBox = $("statementsSummary"); const listBox = $("statementsList"); if(!summaryBox || !listBox) return; let s = { count: state.transactions.length, received: 0, sent: 0, net: 0, fees: 0 }; state.transactions.forEach(t => { if(t.type === "Buyer Payment" || t.type === "Owner Withdrawal") s.received += t.amount; else s.sent += t.amount; s.fees += t.fee || 0; }); s.net = s.received - s.sent; summaryBox.innerHTML = `<div class="statements-grid"><div class="stat-card"><small>Txns</small><strong>${s.count}</strong></div><div class="stat-card"><small>In</small><strong>${money(s.received)}</strong></div><div class="stat-card"><small>Out</small><strong>${money(s.sent)}</strong></div><div class="stat-card"><small>Net</small><strong>${money(s.net)}</strong></div></div>`; if(!state.transactions.length){ listBox.innerHTML = `<div class="panel muted">No activity.</div>`; return; } listBox.innerHTML = state.transactions.slice(0, 20).map(t => `<div class="list-item"><strong>${t.type}</strong><span>${money(t.amount)}</span></div>`).join(""); }
-
-function renderChat(){ const box = $("chatMessages"); if(!box) return; if(!state.chat.length){ box.innerHTML = `<div class="chat-empty muted">No messages.</div>`; return; } box.innerHTML = state.chat.map(msg => `<div class="chat-bubble ${msg.dir}"><small>${msg.sender}</small><p>${msg.text}</p></div>`).join(""); box.scrollTop = box.scrollHeight; }
-function setupChat(){ $("chatForm")?.addEventListener("submit", (e) => { e.preventDefault(); const input = $("chatInput"); const text = input.value.trim(); if(!text) return; state.chat.push({ sender: state.user.name || "YOU", text, dir: "sent" }); input.value = ""; save(); renderChat(); }); $("clearChatBtn")?.addEventListener("click", () => { state.chat = []; save(); renderChat(); }); }
-
-function setupCalls(){ $("phoneCallBtn")?.addEventListener("click", () => { const num = prompt("Enter phone number:"); if(num) window.location.href = "tel:" + num; }); }
 function setupConnect(){ $("searchForm")?.addEventListener("submit", (e) => { e.preventDefault(); const q = $("searchInput").value; window.open("https://www.google.com/search?q=" + encodeURIComponent(q), "_blank"); }); }
 function renderProfile(){ const box = $("profileDetails"); if(!box) return; box.innerHTML = `<div class="list-item"><strong>${state.user.name}</strong><small>BEAST ID: ${state.user.beastId}<br>Phone: ${state.user.phone}</small></div>`; }
 function setupSettings(){ $("themeToggle")?.addEventListener("change", e => setTheme(e.target.checked)); $("resetDemo")?.addEventListener("click", () => { if(confirm("Reset?")){ localStorage.clear(); location.reload(); } }); }
@@ -430,20 +527,11 @@ function addNotification(title, message){ state.notifications.unshift({ title, m
 function renderNotifications(){ const box = $("notificationList"); if(!box) return; if(!state.notifications.length){ box.innerHTML = `<div class="panel muted">No notifications.</div>`; return; } box.innerHTML = state.notifications.map(n => `<div class="list-item"><strong>${n.title}</strong><small>${n.message}</small></div>`).join(""); }
 function addSecurity(message){ state.securityEvents.unshift({ message, createdAt: new Date().toISOString() }); }
 function renderSecurity(){ const box = $("securityList"); if(!box) return; if(!state.securityEvents.length){ box.innerHTML = `<div class="muted">No events.</div>`; return; } box.innerHTML = state.securityEvents.map(e => `<div class="list-item"><strong>Event</strong><small>${e.message}</small></div>`).join(""); }
-
 function setupNav(){ document.querySelectorAll("[data-tab]").forEach(btn => btn.addEventListener("click", () => { const tab = btn.dataset.tab; if(!isLoggedIn() && tab !== "connect"){ showScreen("welcome"); return; } showScreen(tab); })); $("menuButton")?.addEventListener("click", openMenu); $("closeMenu")?.addEventListener("click", closeMenu); $("drawerBackdrop")?.addEventListener("click", closeMenu); }
 function renderHome(){ if(!isLoggedIn()) return; if($("welcomeText")) $("welcomeText").textContent = `Welcome, ${state.user.name}.`; if($("dashboardBeastId")) $("dashboardBeastId").textContent = state.user.beastId; if($("totalBalance")) $("totalBalance").textContent = money(totalBalance()); }
-function renderEverything(){ if(!isLoggedIn()) return; renderHome(); renderSources("sourceList"); renderNotifications(); renderSecurity(); renderProfile(); fillSourceSelects(); renderChat(); }
+function renderEverything(){ if(!isLoggedIn()) return; renderHome(); renderSources("sourceList"); renderNotifications(); renderSecurity(); renderProfile(); fillSourceSelects(); }
 
-async function initialize(){ await buildDemoBuyerHashes(); setupWelcome(); setupLogin(); setupRegistration(); setupNav(); setupSend(); setupBulk(); setupReceiveTabs(); setupBuyerFlow(); setupWithdraw(); setupLipa(); setupPin(); setupSettings(); setupSourceManager(); setupChat(); setupCalls(); setupConnect(); setupPremium(); setupReceivingMethods(); loadTheme(); if(!state.registered){ showScreen("welcome"); } else if(!isLoggedIn()){ showScreen("login"); } else { showScreen("money"); } resetBuyerFlow(); resetBulkFlow(); renderEverything(); resetAutoLock(); }
+async function initialize(){ await buildDemoBuyerHashes(); setupWelcome(); setupLogin(); setupRegistration(); setupNav(); setupSend(); setupBulk(); setupReceiveTabs(); setupBuyerFlow(); setupWithdraw(); setupLipa(); setupPin(); setupSettings(); setupConnect(); loadTheme(); if(!state.registered){ showScreen("welcome"); } else if(!isLoggedIn()){ showScreen("login"); } else { showScreen("money"); } resetBuyerFlow(); resetBulkFlow(); renderEverything(); resetAutoLock(); }
 function setupPremium(){ $("premiumBtn")?.addEventListener("click", () => { toast("Premium demo activated."); }); }
-function setupReceivingMethods(){}
-function resetBuyerFlow(){}
-function renderReceiveSellerLine(){}
-function updateReceiveBackButton(){}
-function setupReceiveTabs(){}
-function setupBuyerFlow(){}
-function setupSourceManager(){}
-
 initialize();
 });

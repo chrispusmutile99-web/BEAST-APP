@@ -19,7 +19,7 @@
     <div class="brand-mark">B</div>
     <div>
       <strong>BEAST</strong>
-      <small>MONEY · CHAT · CONNECT</small>
+      <small>MONEY · CONNECT</small>
     </div>
   </div>
   <button class="icon-btn" id="notificationButton" aria-label="Notifications">
@@ -45,8 +45,6 @@
     <button data-menu="lipa">🛒 <span>Lipa Na</span></button>
     <button data-menu="history">🧾 <span>History</span></button>
     <button data-menu="statements">📊 <span>Statements</span></button>
-    <button data-menu="chat">💬 <span>Chat</span></button>
-    <button data-menu="calls">📞 <span>Calls</span></button>
     <button data-menu="connect">🌐 <span>Connect</span></button>
     <button data-menu="premium">👑 <span>Premium</span></button>
     <button data-menu="profile">👤 <span>Profile</span></button>
@@ -59,26 +57,26 @@
 
 <main class="app-shell">
 
-<!-- WELCOME, LOGIN, REGISTER (unchanged) -->
-<section id="welcomeScreen" class="app-screen">
+<!-- WELCOME -->
+<section id="welcomeScreen" class="app-screen active">
   <div class="welcome-hero">
     <div class="welcome-logo">B</div>
     <h1 class="welcome-title">BEAST</h1>
-    <p class="welcome-sub">Money · Chat · Connect — all in one</p>
+    <p class="welcome-sub">Money · Connect — all in one</p>
     <span class="pill red">DEMO / PROTOTYPE</span>
-    <p class="welcome-note muted">No real money, chat, calls, or internet moves here. Everything is simulated.</p>
+    <p class="welcome-note muted">No real money moves here. Simulated environment.</p>
   </div>
   <div class="panel welcome-actions">
     <button class="primary-btn full" id="goLoginButton">LOGIN</button>
     <button class="secondary-btn full" id="goRegisterButton">REGISTER</button>
-    <small class="muted center" style="display:block;margin-top:12px;">First time? Tap REGISTER.</small>
   </div>
 </section>
 
+<!-- LOGIN -->
 <section id="loginScreen" class="app-screen">
   <div class="login-topbar">
-    <button class="back-btn" id="backToWelcomeFromLogin" aria-label="Back">←</button>
-    <div class="page-head" style="flex:1;padding:0;"><div><span class="pill green">LOGIN</span><h1>Welcome back</h1><p>Enter your phone number and password.</p></div></div>
+    <button class="back-btn" id="backToWelcomeFromLogin">←</button>
+    <div class="page-head" style="flex:1;padding:0;"><div><span class="pill green">LOGIN</span><h1>Welcome back</h1></div></div>
   </div>
   <div class="panel">
     <label>Registered phone number<input id="loginPhone" inputmode="tel" placeholder="0712345678"></label>
@@ -87,9 +85,10 @@
   </div>
 </section>
 
+<!-- REGISTER -->
 <section id="registrationScreen" class="app-screen">
   <div class="login-topbar">
-    <button class="back-btn" id="backToWelcomeFromRegister" aria-label="Back">←</button>
+    <button class="back-btn" id="backToWelcomeFromRegister">←</button>
     <div class="page-head" style="flex:1;padding:0;"><div><span class="pill red">REGISTER</span><h1>Build your BEAST identity.</h1></div></div>
   </div>
   <div class="panel">
@@ -102,10 +101,10 @@
     </div>
     <div id="regStep2" class="hidden">
       <h2>Password & PIN</h2>
-      <label>BEAST Password (min 6 characters)<input id="regPassword" type="password" placeholder="At least 6 characters"></label>
-      <label>Confirm Password<input id="regPassword2" type="password" placeholder="Repeat your password"></label>
-      <label>BEAST PIN (4 digits)<input id="regPin" type="password" maxlength="4" placeholder="••••"></label>
-      <label>Confirm PIN<input id="regPin2" type="password" maxlength="4" placeholder="••••"></label>
+      <label>BEAST Password (min 6 chars)<input id="regPassword" type="password"></label>
+      <label>Confirm Password<input id="regPassword2" type="password"></label>
+      <label>BEAST PIN (4 digits)<input id="regPin" type="password" maxlength="4"></label>
+      <label>Confirm PIN<input id="regPin2" type="password" maxlength="4"></label>
       <button class="primary-btn full" id="regNext2">REVIEW</button>
     </div>
     <div id="regStep3" class="hidden">
@@ -181,7 +180,7 @@
   </div>
 </section>
 
-<!-- RECEIVE (unchanged) -->
+<!-- RECEIVE -->
 <section id="receiveScreen" class="app-screen">
   <div class="receive-topbar">
     <button class="back-btn hidden" id="receiveBackButton">←</button>
@@ -192,7 +191,7 @@
     <button class="receive-tab" data-rtab="deposit">💰 Deposit</button>
     <button class="receive-tab" data-rtab="agent">🏧 Agent</button>
   </div>
-  <!-- Buyer flow unchanged, paste it here -->
+  
   <div id="buyerTab" class="receive-tab-panel active">
     <div class="buyer-steps">
       <div class="buyer-step active" data-bstep="1"><b>1</b><small>Login</small></div>
@@ -255,7 +254,7 @@
   </div>
 </section>
 
-<!-- WITHDRAW (Now with 2 tabs) -->
+<!-- WITHDRAW -->
 <section id="withdrawScreen" class="app-screen">
   <div class="page-head"><div><span class="pill black">WITHDRAW</span><h1>Withdraw</h1></div></div>
   
@@ -264,7 +263,6 @@
     <button class="receive-tab" data-wtab="mobile">📲 Mobile Money</button>
   </div>
 
-  <!-- Agent Tab -->
   <div id="withdrawAgentTab" class="receive-tab-panel active">
     <div class="panel">
       <label>Agent ID / Number<input id="agentNumber" placeholder="AGENT-001"></label>
@@ -280,7 +278,6 @@
     </div>
   </div>
 
-  <!-- Mobile Tab -->
   <div id="withdrawMobileTab" class="receive-tab-panel">
     <div class="panel">
       <label>Destination Phone (M-PESA / Airtel)<input id="withdrawMobilePhone" placeholder="0712345678"></label>
@@ -294,7 +291,7 @@
   </div>
 </section>
 
-<!-- LIPA NA (Added BEAST Transfer) -->
+<!-- LIPA NA -->
 <section id="lipaScreen" class="app-screen">
   <div class="page-head"><div><span class="pill green">LIPA NA</span><h1>Pay a business</h1></div></div>
   <div class="panel">
@@ -318,11 +315,9 @@
   </div>
 </section>
 
-<!-- HISTORY, STATEMENTS, CHAT, CALLS, CONNECT, PROFILE, PREMIUM, SECURITY, NOTIFICATIONS, SETTINGS (unchanged) -->
+<!-- HISTORY, STATEMENTS, CONNECT, PROFILE, PREMIUM, SECURITY, NOTIFICATIONS, SETTINGS -->
 <section id="historyScreen" class="app-screen"><div class="page-head"><div><h1>Transactions</h1></div></div><div id="historyList" class="list"></div></section>
 <section id="statementsScreen" class="app-screen"><div class="page-head"><div><h1>Statements</h1></div></div><div id="statementsSummary" class="panel"></div><div id="statementsList" class="list"></div></section>
-<section id="chatScreen" class="app-screen"><div class="page-head"><div><h1>Chat</h1></div></div><div class="panel"><div id="chatMessages" class="chat-messages"></div><form id="chatForm" class="chat-form"><input id="chatInput" placeholder="Message..."><button class="primary-btn">Send</button></form><button class="secondary-btn full" id="clearChatBtn">CLEAR</button></div></section>
-<section id="callsScreen" class="app-screen"><div class="page-head"><div><h1>Calls</h1></div></div><div class="service-list"><button class="service-row" id="phoneCallBtn"><span>📱</span><strong>Call Phone</strong></button><button class="service-row" id="beastCallBtn"><span>📞</span><strong>BEAST Call</strong></button><button class="service-row" id="videoCallBtn"><span>🎥</span><strong>Video Call</strong></button></div></section>
 <section id="connectScreen" class="app-screen"><div class="page-head"><div><h1>Connect</h1></div></div><div class="panel"><form id="searchForm" class="search-form"><input id="searchInput" placeholder="Search Google..."><button class="primary-btn">Search</button></form></div></section>
 <section id="profileScreen" class="app-screen"><div class="page-head"><div><h1>Profile</h1></div></div><div id="profileDetails" class="panel"></div></section>
 <section id="premiumScreen" class="app-screen"><div class="page-head"><div><h1>Premium</h1></div></div><div class="panel"><div class="price">KES 250 <small>/ month</small></div><button id="premiumBtn" class="primary-btn full">Try Premium Demo</button></div></section>
@@ -332,8 +327,6 @@
 
 <nav class="bottom-nav">
   <button data-tab="money"><span>💰</span><small>Money</small></button>
-  <button data-tab="chat"><span>💬</span><small>Chat</small></button>
-  <button data-tab="calls"><span>📞</span><small>Calls</small></button>
   <button data-tab="connect"><span>🌐</span><small>Connect</small></button>
   <button data-tab="profile"><span>👤</span><small>Profile</small></button>
 </nav>
