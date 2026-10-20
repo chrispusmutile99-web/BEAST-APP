@@ -9,18 +9,13 @@ document.addEventListener("DOMContentLoaded", () => {
 const STORAGE_KEY   = "beast_superapp_v1";
 const SESSION_KEY   = "beast_superapp_session_v1";
 const THEME_KEY     = "beast_superapp_theme";
-
-const SERVER_URL = "https://beast-server-8u92.onrender.com";
+const SERVER_URL    = "https://beast-server-8u92.onrender.com";
 
 const MIN_PASSWORD_LENGTH = 6;
 const MAX_BULK_ROWS = 200;
 
-const REGISTERED_AGENTS = {
-  "0712345678": "BEAST Demo Safaricom Agent", "0720000000": "Safaricom Registered Agent", "0711111111": "Safaricom Registered Agent"
-};
-const REGISTERED_AGENT_CODES = {
-  "AGENT-001": "BEAST Demo Agent 001", "AGENT-002": "BEAST Demo Agent 002", "BEAST-AG":  "BEAST Demo Agent"
-};
+const REGISTERED_AGENTS = { "0712345678": "BEAST Demo Safaricom Agent", "0720000000": "Safaricom Registered Agent", "0711111111": "Safaricom Registered Agent" };
+const REGISTERED_AGENT_CODES = { "AGENT-001": "BEAST Demo Agent 001", "AGENT-002": "BEAST Demo Agent 002", "BEAST-AG":  "BEAST Demo Agent" };
 const SOURCE_NAMES = { mpesa:  "M-PESA", tkash:  "T-Kash", airtel: "Airtel Money", bank:   "Bank Account", card:   "Card", wallet: "BEAST Wallet" };
 const SOURCE_ICONS = { mpesa:  "📱", tkash:  "📲", airtel: "📲", bank:   "🏦", card:   "💳", wallet: "🐾" };
 const ALL_SOURCES = ["mpesa","wallet","bank","card","airtel","tkash"];
@@ -145,6 +140,7 @@ function showScreen(name){
   if(name === "statements") renderStatements();
   if(name === "bulk") resetBulkFlow();
   if(name === "chat") renderChat();
+  if(name === "history") fetchHistory(); // Fetch from DB
   window.scrollTo({ top:0, behavior:"smooth" }); renderEverything();
 }
 
@@ -167,86 +163,44 @@ function setupLogin(){
     if(!validPhone(phone)){ toast("Enter a valid Kenyan phone number."); return; }
     if(password.length < MIN_PASSWORD_LENGTH){ toast(`Password must be at least ${MIN_PASSWORD_LENGTH} characters.`); return; }
 
-    // Check if we have local data (first time login on this device)
     if(phone === state.user.phone) {
       const ok = await verifyPasswordLocal(password);
       if(!ok){ addSecurity("Failed password login."); save(); toast("Incorrect password."); return; }
-      
       $("loginPassword").value = "";
       authorize("Login", () => { startSession(); addSecurity("Logged in."); save(); toast("Welcome back."); showScreen("money"); });
       return;
     }
 
-    // Otherwise, ask the server for the account
-    const btn = $("loginSubmitButton");
-    const originalText = btn.textContent;
-    btn.textContent = "CHECKING...";
-    btn.disabled = true;
+    const btn = $("loginSubmitButton"); const originalText = btn.textContent;
+    btn.textContent = "CHECKING..."; btn.disabled = true;
 
     try {
-      // We have to generate the hash locally to send to the server for comparison
-      // In a real app, the server would fetch the salt, but we are simplifying here.
-      // We will just pass the password to a mock hashing function, or send it directly if using HTTPS.
-      // Since we have a salt in the DB, let's send the raw password over HTTPS (standard for modern apps).
-      // *Note: For this demo, the server will just accept the password and hash it there if needed, 
-      // OR we can use a simpler hashing method. For now, let's just send the password and let the server compare.
-      
       const res = await fetch(SERVER_URL + "/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, passwordHash: await hashValue(password, "demo-salt-placeholder") }) // Simplified for demo
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, passwordHash: await hashValue(password, "demo-salt-placeholder") })
       });
-
       const data = await res.json();
-
-      if (!data.ok) {
-        toast(data.error || "Login failed.");
-        btn.textContent = originalText; btn.disabled = false;
-        return;
-      }
-
-      // Restore state from server
-      state.user = data.user;
-      state.registered = true;
-      state.sources = defaultState().sources; // Reset local balances for now
-      
-      save();
-      $("loginPassword").value = "";
-      authorize("Login", () => {
-        startSession();
-        addSecurity("Logged in from server.");
-        save();
-        toast("Welcome back.");
-        showScreen("money");
-      });
-
-    } catch (e) {
-      toast("Network error. Check your connection.");
-      btn.textContent = originalText; btn.disabled = false;
-    }
+      if (!data.ok) { toast(data.error || "Login failed."); btn.textContent = originalText; btn.disabled = false; return; }
+      state.user = data.user; state.registered = true; state.sources = defaultState().sources; 
+      save(); $("loginPassword").value = "";
+      authorize("Login", () => { startSession(); addSecurity("Logged in from server."); save(); toast("Welcome back."); showScreen("money"); });
+    } catch (e) { toast("Network error."); btn.textContent = originalText; btn.disabled = false; }
   });
-  
   $("backToWelcomeFromLogin")?.addEventListener("click", () => showScreen("welcome"));
 }
 
 function setupRegistration(){
   $("backToWelcomeFromRegister")?.addEventListener("click", () => showScreen("welcome"));
-  
   $("regNext1")?.addEventListener("click", () => {
     const name = $("regName").value.trim(); const phone = normalizePhone($("regPhone").value); const nationalId = $("regNationalId").value.trim();
-    if(name.length < 2){ toast("Enter your full name."); return; }
-    if(!validPhone(phone)){ toast("Enter a valid Kenyan phone number."); return; }
-    if(nationalId.length < 5){ toast("Enter your National ID."); return; }
+    if(name.length < 2){ toast("Enter your full name."); return; } if(!validPhone(phone)){ toast("Enter a valid Kenyan phone number."); return; } if(nationalId.length < 5){ toast("Enter your National ID."); return; }
     state.user.name = name; state.user.phone = phone; state.user.nationalId = nationalId;
     $("regStep1").classList.add("hidden"); $("regStep2").classList.remove("hidden"); document.querySelectorAll(".step")[1]?.classList.add("active");
   });
 
   $("regNext2")?.addEventListener("click", async () => {
     const password = $("regPassword").value; const password2 = $("regPassword2").value; const pin = $("regPin").value; const confirmPin = $("regPin2").value;
-    if(password.length < MIN_PASSWORD_LENGTH){ toast(`Password must be at least ${MIN_PASSWORD_LENGTH} characters.`); return; }
-    if(password !== password2){ toast("Passwords do not match."); return; }
-    if(!/^\d{4}$/.test(pin)){ toast("PIN must contain 4 digits."); return; }
-    if(pin !== confirmPin){ toast("PINs do not match."); return; }
+    if(password.length < MIN_PASSWORD_LENGTH){ toast(`Password must be at least ${MIN_PASSWORD_LENGTH} characters.`); return; } if(password !== password2){ toast("Passwords do not match."); return; } if(!/^\d{4}$/.test(pin)){ toast("PIN must contain 4 digits."); return; } if(pin !== confirmPin){ toast("PINs do not match."); return; }
     await setPassword(password); await setPin(pin);
     $("registrationSummary").innerHTML = `<b>${escapeHTML(state.user.name)}</b><br>Phone: ${escapeHTML(state.user.phone)}<br>National ID: ${escapeHTML(state.user.nationalId)}<br><br>Your BEAST ID will be generated by the server.`;
     $("regStep2").classList.add("hidden"); $("regStep3").classList.remove("hidden"); document.querySelectorAll(".step")[2]?.classList.add("active");
@@ -255,37 +209,15 @@ function setupRegistration(){
   $("finishRegistration")?.addEventListener("click", async () => {
     const btn = $("finishRegistration"); const originalText = btn.textContent;
     btn.textContent = "CREATING ACCOUNT..."; btn.disabled = true;
-
     try {
-      const payload = {
-        name: state.user.name, phone: state.user.phone, nationalId: state.user.nationalId,
-        pinHash: state.user.pinHash, pinSalt: state.user.pinSalt, passwordHash: state.user.passwordHash, passwordSalt: state.user.passwordSalt
-      };
-
-      const res = await fetch(SERVER_URL + "/api/register", {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
-      });
-
+      const payload = { name: state.user.name, phone: state.user.phone, nationalId: state.user.nationalId, pinHash: state.user.pinHash, pinSalt: state.user.pinSalt, passwordHash: state.user.passwordHash, passwordSalt: state.user.passwordSalt };
+      const res = await fetch(SERVER_URL + "/api/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       const data = await res.json();
-
-      if (!data.ok) {
-        toast(data.error || "Registration failed. Phone might already exist.");
-        btn.textContent = originalText; btn.disabled = false; return;
-      }
-
-      // Get the permanent BEAST ID from the server
-      state.user.beastId = data.beastId;
-      state.registered = true;
-      addNotification("BEAST ID created", `Your BEAST ID is ${state.user.beastId}.`);
-      addSecurity("New BEAST registration.");
-      startSession(); save();
-      toast("BEAST account created in database.");
-      showScreen("money");
-
-    } catch (e) {
-      toast("Network error. Check your connection.");
-      btn.textContent = originalText; btn.disabled = false;
-    }
+      if (!data.ok) { toast(data.error || "Registration failed."); btn.textContent = originalText; btn.disabled = false; return; }
+      state.user.beastId = data.beastId; state.registered = true;
+      addNotification("BEAST ID created", `Your BEAST ID is ${state.user.beastId}.`); addSecurity("New BEAST registration.");
+      startSession(); save(); toast("BEAST account created."); showScreen("money");
+    } catch (e) { toast("Network error."); btn.textContent = originalText; btn.disabled = false; }
   });
 }
 
@@ -339,6 +271,29 @@ function setupSourceManager(){
 }
 
 /* ================= TRANSACTIONS ================= */
+
+async function recordTransactionToServer(txn) {
+  try {
+    await fetch(SERVER_URL + "/api/transaction", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...txn, beastId: state.user.beastId })
+    });
+  } catch(e) { console.error("Failed to sync transaction to server"); }
+}
+
+async function fetchHistory() {
+  if(!state.user.beastId) return;
+  try {
+    const res = await fetch(SERVER_URL + "/api/transactions/" + state.user.beastId);
+    const data = await res.json();
+    if(data.ok) {
+      state.transactions = data.transactions; // Overwrite local with server truth
+      save();
+      renderHistory();
+      renderStatements();
+    }
+  } catch(e) {}
+}
 
 function setupSend(){
   $("verifyRecipient")?.addEventListener("click", () => {
@@ -408,8 +363,17 @@ function completeTransaction(data){
   else { const split = externalSplit(data.source, amount, data.providerType || "send"); fee = split.fee; beastCut = split.beastCut; providerKeeps = split.providerKeeps; total = amount + fee; }
   const source = state.sources[data.source]; if(!source || !source.enabled){ toast("Source not enabled."); return; }
   if(source.balance < total){ toast(`Insufficient ${SOURCE_NAMES[data.source]} balance.`); return; }
+  
   source.balance -= total;
-  state.transactions.unshift({ reference: generateReference(), createdAt: new Date().toISOString(), status:"completed", type: data.type, amount, fee, beastCut, providerCost: providerKeeps, totalDeducted: total, source: data.source, recipient: data.recipient, recipientName: data.recipientName, description: data.description });
+  
+  const txn = { reference: generateReference(), type: data.type, amount, fee, beastCut, providerCost: providerKeeps, totalDeducted: total, source: data.source, recipient: data.recipient, recipientName: data.recipientName, description: data.description };
+  
+  // Save locally for instant UI
+  state.transactions.unshift({ ...txn, createdAt: new Date().toISOString(), status:"completed" });
+  
+  // Send to server database
+  recordTransactionToServer(txn);
+
   addNotification(`${data.type} completed`, `${money(amount)} sent to ${data.recipientName}.`); addSecurity(`${data.type} authorized.`); save(); toast(`${data.type} completed. ${money(total)} deducted.`);
   if(data.type === "Send"){ $("sendPhone").value = ""; $("sendAmount").value = ""; $("recipientVerification").classList.add("hidden"); }
   renderEverything();
@@ -511,9 +475,13 @@ function finishBuyerPayment(amount, source, fee, beastCut, providerKeeps, channe
   let sellerSourceKey = "wallet"; if(channel === "pochi" || channel === "till" || channel === "paybill") sellerSourceKey = "mpesa"; else if(channel === "bank") sellerSourceKey = "bank"; else if(channel === "card") sellerSourceKey = "card";
   if(!state.sources[sellerSourceKey]?.enabled){ sellerSourceKey = "wallet"; state.sources.wallet.enabled = true; }
   state.sources[sellerSourceKey].balance += amount;
-  const reference = generateReference();
-  state.transactions.unshift({ reference, createdAt: new Date().toISOString(), status:"completed", type:"Buyer Payment", amount, fee, beastCut, providerCost: providerKeeps, totalDeducted: total, source, destination: channel, sellerSource: sellerSourceKey, recipient: state.user.phone, recipientName: state.user.name, buyerName: buyerSession.name, buyerPhone: buyerSession.phone, description: `Buyer payment from ${buyerSession.name} via ${channel}` });
-  addNotification("Buyer payment", `${money(amount)} from ${buyerSession.name}.`); save(); showBuyerSuccess(amount, reference, channel, source, fee); renderEverything();
+  
+  const txn = { reference: generateReference(), type:"Buyer Payment", amount, fee, beastCut, providerCost: providerKeeps, totalDeducted: total, source, destination: channel, sellerSource: sellerSourceKey, recipient: state.user.phone, recipientName: state.user.name, buyerName: buyerSession.name, buyerPhone: buyerSession.phone, description: `Buyer payment from ${buyerSession.name} via ${channel}` };
+  
+  state.transactions.unshift({ ...txn, createdAt: new Date().toISOString(), status:"completed" });
+  recordTransactionToServer(txn); // Save to DB
+
+  addNotification("Buyer payment", `${money(amount)} from ${buyerSession.name}.`); save(); showBuyerSuccess(amount, txn.reference, channel, source, fee); renderEverything();
 }
 
 function showBuyerSuccess(amount, reference, channel, source, fee){
@@ -583,7 +551,11 @@ function executeBulkSend(source){
     const total = row.amount + fee;
     if(src.balance < total){ failed++; stoppedAt = row; results.push({ phone: row.phone, amount: row.amount, status: "failed", reason: "Insufficient balance" }); break; }
     src.balance -= total; succeeded++;
-    state.transactions.unshift({ reference: generateReference(), createdAt: new Date().toISOString(), status: "completed", type: "Bulk Send", amount: row.amount, fee, beastCut, providerCost: providerKeeps, totalDeducted: total, source, recipient: row.phone, recipientName: "Demo recipient", description: `Bulk send to ${row.phone}` });
+    
+    const txn = { reference: generateReference(), type: "Bulk Send", amount: row.amount, fee, beastCut, providerCost: providerKeeps, totalDeducted: total, source, recipient: row.phone, recipientName: "Demo recipient", description: `Bulk send to ${row.phone}` };
+    state.transactions.unshift({ ...txn, createdAt: new Date().toISOString(), status: "completed" });
+    recordTransactionToServer(txn); // Save to DB
+    
     results.push({ phone: row.phone, amount: row.amount, status: "sent" });
   }
   addNotification("Bulk send", `${succeeded} sent, ${failed} failed.`); save();
@@ -631,13 +603,12 @@ function setupChat(){
   $("chatForm")?.addEventListener("submit", (e) => {
     e.preventDefault(); const input = $("chatInput"); const text = input.value.trim(); if(!text) return;
     state.chat.push({ sender: state.user.name || "YOU", text, dir: "sent", at: new Date().toISOString() }); input.value = ""; save(); renderChat();
-    setTimeout(() => { state.chat.push({ sender: "BEAST DEMO", text: "This is a local demo reply. Live chat between BEAST users needs a server.", dir: "received", at: new Date().toISOString() }); save(); renderChat(); }, 600);
+    setTimeout(() => { state.chat.push({ sender: "BEAST DEMO", text: "This is a local demo reply.", dir: "received", at: new Date().toISOString() }); save(); renderChat(); }, 600);
   });
   $("startChatBtn")?.addEventListener("click", () => {
     const id = ($("recipientId")?.value || "").trim().toUpperCase(); if(!id){ toast("Enter a BEAST ID."); return; }
-    if(!/^BEAST-\d{6}$/.test(id)){ toast("Format: BEAST-100002."); return; }
-    if(id === state.user.beastId){ toast("That's your own ID."); return; }
-    state.chat.push({ sender: "SYSTEM", text: `Demo conversation opened with ${id}. Real chat is not connected yet.`, dir: "received", at: new Date().toISOString() }); save(); renderChat(); toast("Demo conversation ready.");
+    if(!/^BEAST-\d{6}$/.test(id)){ toast("Format: BEAST-100002."); return; } if(id === state.user.beastId){ toast("That's your own ID."); return; }
+    state.chat.push({ sender: "SYSTEM", text: `Demo conversation opened with ${id}.`, dir: "received", at: new Date().toISOString() }); save(); renderChat(); toast("Demo conversation ready.");
   });
   $("clearChatBtn")?.addEventListener("click", () => { if(!state.chat.length){ toast("Chat is already empty."); return; } if(!confirm("Clear local chat history?")) return; state.chat = []; save(); renderChat(); toast("Chat cleared."); });
 }
@@ -645,13 +616,11 @@ function setupChat(){
 function setupCalls(){
   $("beastCallBtn")?.addEventListener("click", () => {
     const target = ($("callId")?.value || "").trim(); if(!target){ toast("Enter BEAST ID or phone."); return; }
-    const choice = confirm(`BEAST CALL DEMO\n\nDestination: ${target}\n\nOK = open phone dialer if it's a phone number.\nCancel = return.\n\nBEAST-to-BEAST calls not live yet.`);
+    const choice = confirm(`BEAST CALL DEMO\n\nDestination: ${target}\n\nOK = open phone dialer if it's a phone number.\nCancel = return.`);
     if(choice && /^\+?[\d\s()-]{7,20}$/.test(target)){ window.location.href = "tel:" + target.replace(/[^\d+]/g, ""); } else if(choice){ toast("Live BEAST calling is not connected yet."); }
   });
   $("videoCallBtn")?.addEventListener("click", () => toast("Video calling needs a live service."));
-  $("phoneCallBtn")?.addEventListener("click", () => {
-    const num = prompt("Enter phone number to call:"); if(num && /^\+?[\d\s()-]{7,20}$/.test(num)){ window.location.href = "tel:" + num.replace(/[^\d+]/g, ""); } else if(num){ toast("Check the number."); }
-  });
+  $("phoneCallBtn")?.addEventListener("click", () => { const num = prompt("Enter phone number to call:"); if(num && /^\+?[\d\s()-]{7,20}$/.test(num)){ window.location.href = "tel:" + num.replace(/[^\d+]/g, ""); } else if(num){ toast("Check the number."); } });
 }
 
 function setupConnect(){ $("searchForm")?.addEventListener("submit", (e) => { e.preventDefault(); const q = ($("searchInput")?.value || "").trim(); if(!q) return; window.open("https://www.google.com/search?q=" + encodeURIComponent(q), "_blank", "noopener,noreferrer"); }); }
@@ -660,7 +629,7 @@ function setupConnect(){ $("searchForm")?.addEventListener("submit", (e) => { e.
 
 function renderProfile(){
   const box = $("profileDetails"); if(!box) return;
-  box.innerHTML = `<div class="list-item"><strong>${escapeHTML(state.user.name || "Not registered")}</strong><small>BEAST ID: ${escapeHTML(state.user.beastId || "-")}<br>Phone: ${escapeHTML(state.user.phone || "-")}<br>International: ${escapeHTML(internationalPhone(state.user.phone) || "-")}<br>National ID: ${escapeHTML(state.user.nationalId || "-")}<br>Total balance: ${money(totalBalance())}<br>PIN storage: <b>salted SHA-256 hash</b><br>Password storage: <b>salted SHA-256 hash</b></small></div>`;
+  box.innerHTML = `<div class="list-item"><strong>${escapeHTML(state.user.name || "Not registered")}</strong><small>BEAST ID: ${escapeHTML(state.user.beastId || "-")}<br>Phone: ${escapeHTML(state.user.phone || "-")}<br>Total balance: ${money(totalBalance())}</small></div>`;
 }
 
 function setupSettings(){
@@ -679,7 +648,7 @@ function setupSettings(){
     if(newPw !== confirmPw){ toast("Passwords don't match."); return; }
     await setPassword(newPw); addSecurity("Password changed."); save(); toast("Password changed."); $("oldPassword").value = ""; $("newPassword").value = ""; $("confirmNewPassword").value = "";
   });
-  $("resetDemo")?.addEventListener("click", () => { if(!confirm("Reset all BEAST demo data? You will be logged out.")) return; localStorage.removeItem(STORAGE_KEY); sessionStorage.removeItem(SESSION_KEY); location.reload(); });
+  $("resetDemo")?.addEventListener("click", () => { if(!confirm("Reset all BEAST demo data?")) return; localStorage.removeItem(STORAGE_KEY); sessionStorage.removeItem(SESSION_KEY); location.reload(); });
 }
 
 /* ================= NOTIFICATIONS & SECURITY ================= */
@@ -735,12 +704,11 @@ function setupCostPreview(){
 
 function renderEverything(){
   if(!isLoggedIn()) return;
-  renderHome(); renderSources("sourceList"); renderHistory(); renderNotifications(); renderSecurity(); renderProfile(); renderSettingsUI();
+  renderHome(); renderSources("sourceList"); renderNotifications(); renderSecurity(); renderProfile(); renderSettingsUI();
   fillSourceSelects(); setupCostPreview(); updateNotificationBadge(); markNotificationsReadIfOpen();
   renderReceiveSellerLine(); renderReceivingMethodsList(); updateReceiveBackButton();
   renderAnnouncementBanner();
   if($("chatScreen")?.classList.contains("active")) renderChat();
-  if($("statementsScreen")?.classList.contains("active")) renderStatements();
 }
 
 /* ================= WEBSOCKET (Owner & Announcements) ================= */
