@@ -8,13 +8,14 @@
   <link rel="stylesheet" href="style.css">
   <script src="app.js" defer></script>
 </head>
+
 <body>
 
 <div id="toast" class="toast"></div>
 <div id="announcementBanner" class="announcement-banner hidden"></div>
 
-<header class="topbar">
-  <button class="icon-btn" id="menuButton" aria-label="Open menu">☰</button>
+<!-- TOP BAR (No Hamburger Menu) -->
+<header class="topbar" style="justify-content: center; position: relative;">
   <div class="brand">
     <div class="brand-mark">B</div>
     <div>
@@ -22,37 +23,11 @@
       <small>MONEY · CHAT · CONNECT</small>
     </div>
   </div>
-  <button class="icon-btn" id="notificationButton" aria-label="Notifications">
+  <button class="icon-btn" id="notificationButton" aria-label="Notifications" style="position: absolute; right: 12px;">
     🔔
     <span id="notificationBadge" class="badge">0</span>
   </button>
 </header>
-
-<div id="drawerBackdrop" class="drawer-backdrop"></div>
-
-<aside id="menuDrawer" class="drawer">
-  <div class="drawer-head">
-    <div class="brand-mark large">B</div>
-    <div><strong>BEAST MENU</strong><small id="menuUser">Guest</small></div>
-    <button class="icon-btn" id="closeMenu" aria-label="Close menu">×</button>
-  </div>
-  <nav class="drawer-nav">
-    <button data-menu="money">💰 <span>Money</span></button>
-    <button data-menu="send">📤 <span>Send</span></button>
-    <button data-menu="bulk">📥 <span>Bulk Send</span></button>
-    <button data-menu="receive">🤝 <span>Receive</span></button>
-    <button data-menu="withdraw">🏧 <span>Withdraw</span></button>
-    <button data-menu="lipa">🛒 <span>Lipa Na</span></button>
-    <button data-menu="history">🧾 <span>History</span></button>
-    <button data-menu="statements">📊 <span>Statements</span></button>
-    <button data-menu="connect">🌐 <span>Connect</span></button>
-    <button data-menu="profile">👤 <span>Profile</span></button>
-    <button data-menu="security">🛡️ <span>Security</span></button>
-    <button data-menu="notifications">🔔 <span>Notifications</span></button>
-    <button data-menu="settings">⚙️ <span>Settings</span></button>
-    <button data-menu="logout">🚪 <span>Logout</span></button>
-  </nav>
-</aside>
 
 <main class="app-shell">
 
@@ -76,35 +51,57 @@
 <section id="loginScreen" class="app-screen">
   <div class="login-topbar">
     <button class="back-btn" id="backToWelcomeFromLogin" aria-label="Back">←</button>
-    <div class="page-head" style="flex:1;padding:0;"><div><span class="pill green">LOGIN</span><h1>Welcome back</h1><p>Enter your phone number and password.</p></div></div>
+    <div class="page-head" style="flex:1;padding:0;">
+      <div>
+        <span class="pill green">LOGIN</span>
+        <h1>Welcome back</h1>
+        <p>Enter your phone number and password.</p>
+      </div>
+    </div>
   </div>
   <div class="panel">
-    <label>Registered phone number<input id="loginPhone" inputmode="tel" placeholder="0712345678"></label>
-    <label>Password<input id="loginPassword" type="password" placeholder="Your BEAST password"></label>
+    <label>Registered phone number<input id="loginPhone" inputmode="tel" autocomplete="tel" placeholder="0712345678 or +254712345678"></label>
+    <label>Password<input id="loginPassword" type="password" autocomplete="current-password" placeholder="Your BEAST password"></label>
     <button class="primary-btn full" id="loginSubmitButton">CONTINUE</button>
+    <small class="muted center" style="display:block;margin-top:12px;">After password, you'll enter your 4-digit BEAST PIN.</small>
   </div>
 </section>
 
-<!-- REGISTER -->
+<!-- REGISTRATION -->
 <section id="registrationScreen" class="app-screen">
   <div class="login-topbar">
     <button class="back-btn" id="backToWelcomeFromRegister" aria-label="Back">←</button>
-    <div class="page-head" style="flex:1;padding:0;"><div><span class="pill red">REGISTER</span><h1>Build your BEAST identity.</h1></div></div>
+    <div class="page-head" style="flex:1;padding:0;">
+      <div>
+        <span class="pill red">REGISTER</span>
+        <h1>Build your BEAST identity.</h1>
+        <p>One BEAST ID for money, chat and connect.</p>
+      </div>
+    </div>
   </div>
+  <div class="security-banner">⚠️ No real money moves. Everything is simulated.</div>
   <div class="panel">
+    <div class="stepper">
+      <span class="step active">1 Identity</span>
+      <span class="step">2 Password + PIN</span>
+      <span class="step">3 Confirm</span>
+    </div>
     <div id="regStep1">
       <h2>Identity registration</h2>
-      <label>Full name<input id="regName" placeholder="Your full name"></label>
-      <label>Kenyan phone number<input id="regPhone" inputmode="tel" placeholder="0712345678"></label>
-      <label>National ID number<input id="regNationalId" inputmode="numeric" placeholder="National ID"></label>
+      <label>Full name<input id="regName" placeholder="Your full name" autocomplete="name"></label>
+      <label>Kenyan phone number<input id="regPhone" inputmode="tel" autocomplete="tel" placeholder="0712345678 or +254712345678"></label>
+      <small class="muted">Accepted formats: 07XXXXXXXX, 01XXXXXXXX, +2547XXXXXXXX, +2541XXXXXXXX.</small>
+      <label>National ID number<input id="regNationalId" inputmode="numeric" autocomplete="off" placeholder="National ID"></label>
       <button class="primary-btn full" id="regNext1">CONTINUE</button>
     </div>
     <div id="regStep2" class="hidden">
       <h2>Password & PIN</h2>
-      <label>BEAST Password (min 6 characters)<input id="regPassword" type="password" placeholder="At least 6 characters"></label>
-      <label>Confirm Password<input id="regPassword2" type="password" placeholder="Repeat your password"></label>
-      <label>BEAST PIN (4 digits)<input id="regPin" type="password" maxlength="4" placeholder="••••"></label>
-      <label>Confirm PIN<input id="regPin2" type="password" maxlength="4" placeholder="••••"></label>
+      <p class="muted">Your password is used to log in. Your PIN is used to authorize.</p>
+      <label>BEAST Password (min 6 characters)<input id="regPassword" type="password" autocomplete="new-password" placeholder="At least 6 characters"></label>
+      <label>Confirm Password<input id="regPassword2" type="password" autocomplete="new-password" placeholder="Repeat your password"></label>
+      <label>BEAST PIN (4 digits)<input id="regPin" type="password" maxlength="4" inputmode="numeric" autocomplete="new-password" placeholder="••••"></label>
+      <label>Confirm PIN<input id="regPin2" type="password" maxlength="4" inputmode="numeric" autocomplete="new-password" placeholder="••••"></label>
+      <small class="muted">Both are stored as salted SHA-256 hashes. Neither is stored as plaintext.</small>
       <button class="primary-btn full" id="regNext2">REVIEW</button>
     </div>
     <div id="regStep3" class="hidden">
@@ -115,34 +112,53 @@
   </div>
 </section>
 
-<!-- MONEY -->
+<!-- MONEY (Home Dashboard) -->
 <section id="moneyScreen" class="app-screen">
   <div class="page-head">
-    <div><span class="pill green">MONEY</span><h1>BEAST Wallet</h1><p id="welcomeText">Welcome.</p></div>
+    <div>
+      <span class="pill green">MONEY</span>
+      <h1>BEAST Wallet</h1>
+      <p id="welcomeText">Welcome.</p>
+    </div>
     <div id="dashboardBeastId" class="beast-id-chip">BEAST-000000</div>
   </div>
+
   <div class="balance-card">
     <div><span>Total available balance</span></div>
     <strong id="totalBalance">KES 0.00</strong>
+    <small>Across enabled payment sources</small>
   </div>
-  <div class="dashboard-grid">
-    <button class="square-card blue-card" data-menu="statements"><span>📊</span><b>Statements</b></button>
-    <button class="square-card green-card" data-menu="send"><span>📤</span><b>Send</b></button>
-    <button class="square-card black-card" data-menu="bulk"><span>📥</span><b>Bulk</b></button>
+
+  <h2 class="section-title">Quick actions</h2>
+  
+  <!-- ALL ACTIONS AS VISIBLE CARDS -->
+  <div class="quick-actions">
+    <button class="square-card green-card" data-menu="send"><span>📤</span><b>Send</b><small>Phone / ID</small></button>
+    <button class="square-card black-card" data-menu="bulk"><span>📥</span><b>Bulk Send</b><small>Many at once</small></button>
+    <button class="square-card blue-card" data-menu="receive"><span>🤝</span><b>Receive</b><small>Buyer pay</small></button>
+    <button class="square-card black-card" data-menu="withdraw"><span>🏧</span><b>Withdraw</b><small>Agent</small></button>
+    <button class="square-card green-card" data-menu="lipa"><span>🛒</span><b>Lipa Na</b><small>Business</small></button>
+    <button class="square-card blue-card" data-menu="history"><span>🧾</span><b>History</b><small>Transactions</small></button>
+    <button class="square-card blue-card" data-menu="statements"><span>📊</span><b>Statements</b><small>Summary</small></button>
+    <button class="square-card blue-card" data-menu="connect"><span>🌐</span><b>Connect</b><small>Social & Web</small></button>
+    <button class="square-card black-card" data-menu="profile"><span>👤</span><b>Profile</b><small>Identity</small></button>
+    <button class="square-card red-card" data-menu="security"><span>🛡️</span><b>Security</b><small>Events</small></button>
+    <button class="square-card red-card" data-menu="notifications"><span>🔔</span><b>Alerts</b><small>Notifications</small></button>
   </div>
+
   <h2 class="section-title">Linked accounts</h2>
   <div id="sourceList" class="source-grid"></div>
 </section>
 
 <!-- SEND -->
 <section id="sendScreen" class="app-screen">
-  <div class="page-head"><div><span class="pill green">SEND</span><h1>Send money</h1></div></div>
+  <div class="page-head"><div><span class="pill green">SEND</span><h1>Send money</h1><p>Recipient, amount, source and PIN stay together.</p></div></div>
   <div class="panel">
-    <label>Recipient Phone or BEAST ID<input id="sendPhone" placeholder="0712... or 835678"></label>
+    <label>Recipient phone<input id="sendPhone" autocomplete="off" placeholder="0712345678"></label>
     <button class="secondary-btn full" id="verifyRecipient">VERIFY RECIPIENT</button>
     <div id="recipientVerification" class="verification hidden"></div>
     <div class="two-col">
-      <label>Amount<input id="sendAmount" type="number" placeholder="100"></label>
+      <label>Amount<input id="sendAmount" type="number" min="1" inputmode="decimal" placeholder="100"></label>
       <label>Source<select id="sendSource"></select></label>
     </div>
     <div id="sendCostPreview" class="cost-box"></div>
@@ -152,38 +168,23 @@
 
 <!-- BULK -->
 <section id="bulkScreen" class="app-screen">
-  <div class="page-head"><div><span class="pill green">BULK SEND</span><h1>Send to many at once</h1></div></div>
+  <div class="page-head"><div><span class="pill green">BULK SEND</span><h1>Send to many at once</h1><p>Paste a list of phone,amount lines. One PIN authorizes the batch.</p></div></div>
   <div class="panel">
-    <label>Saved Lists<select id="savedBulkLists"><option value="">-- Select a saved list --</option></select></label>
-    
-    <label>Recipients (phone/account/beast,amount)
-      <textarea id="bulkList" rows="6" placeholder="0712345678,500&#10;835678,250&#10;BEAST-112233,1000"></textarea>
-    </label>
-
-    <div class="two-col">
-      <label>Source<select id="bulkSource"></select></label>
-      <label>Payment Type<select id="bulkType">
-        <option value="send">Send Money</option>
-        <option value="lipa">Pay Business</option>
-      </select></label>
-    </div>
-
-    <div style="display:flex; gap:8px; margin-top:10px;">
-      <button class="secondary-btn" style="flex:1;" id="saveBulkListButton">SAVE LIST</button>
-      <button class="secondary-btn" style="flex:1;" id="bulkParseButton">PARSE LIST</button>
-    </div>
-    <button class="secondary-btn full" id="bulkClearButton" style="margin-top:8px;">CLEAR</button>
-
+    <label>Recipients — one per line as <code>phone,amount</code><textarea id="bulkList" rows="10" autocomplete="off" placeholder="0712345678,500&#10;0720000000,250&#10;0711111111,1000"></textarea></label>
+    <label>Source<select id="bulkSource"></select></label>
+    <button class="secondary-btn full" id="bulkParseButton">PARSE LIST</button>
+    <button class="secondary-btn full" id="bulkClearButton">CLEAR</button>
     <div id="bulkPreview" class="bulk-preview-wrap"></div>
-    <button class="primary-btn full" id="bulkSendButton">SEND BATCH</button>
+    <button class="primary-btn full" id="bulkSendButton">SEND BATCH & AUTHORIZE</button>
     <div id="bulkResult" class="bulk-result-wrap hidden"></div>
+    <small class="muted center" style="display:block;margin-top:12px;">Batch stops automatically if balance runs out.</small>
   </div>
 </section>
 
 <!-- RECEIVE -->
 <section id="receiveScreen" class="app-screen">
   <div class="receive-topbar">
-    <button class="back-btn hidden" id="receiveBackButton">←</button>
+    <button class="back-btn hidden" id="receiveBackButton" aria-label="Back">←</button>
     <div class="page-head" style="flex:1;padding:0;"><div><span class="pill blue">RECEIVE</span><h1>Receive payment</h1><p id="receiveSellerLine">Paying: —</p></div></div>
   </div>
   <div class="receive-tabs">
@@ -191,7 +192,6 @@
     <button class="receive-tab" data-rtab="deposit">💰 Deposit</button>
     <button class="receive-tab" data-rtab="agent">🏧 Agent</button>
   </div>
-
   <div id="buyerTab" class="receive-tab-panel active">
     <div class="buyer-steps">
       <div class="buyer-step active" data-bstep="1"><b>1</b><small>Login</small></div>
@@ -201,112 +201,99 @@
     <div id="buyerStep1" class="buyer-step-panel active">
       <div class="panel">
         <h2>Buyer login</h2>
-        <div id="recentBuyersBox" class="recent-buyers-box"></div>
-        <label>Buyer phone<input id="buyerLoginPhone" placeholder="0722000001"></label>
-        <label>Buyer National ID<input id="buyerLoginNationalId" placeholder="11111111"></label>
-        <label>Buyer PIN<input id="buyerLoginPin" type="password" maxlength="4" placeholder="••••"></label>
+        <p class="muted">Buyer signs in with their own documents.</p>
+        <div id="recentBuyersBox" class="recent-buyers-box"><small class="muted">No recent buyers yet.</small></div>
+        <label>Buyer phone<input id="buyerLoginPhone" inputmode="tel" placeholder="0722000001"></label>
+        <label>Buyer National ID<input id="buyerLoginNationalId" inputmode="numeric" placeholder="11111111"></label>
+        <label>Buyer PIN<input id="buyerLoginPin" type="password" maxlength="4" inputmode="numeric" placeholder="••••"></label>
         <button class="primary-btn full" id="buyerLoginButton">LOGIN & CONTINUE</button>
+        <div class="demo-hint"><b>Demo buyers</b><br>0722000001 / 11111111 / PIN 1111<br>0722000002 / 22222222 / PIN 2222<br>0722000003 / 33333333 / PIN 3333</div>
       </div>
     </div>
     <div id="buyerStep2" class="buyer-step-panel">
-      <div class="panel"><h2>Choose payment account</h2><p id="buyerWelcomeLine"></p><div id="buyerSourcesList" class="buyer-source-list"></div><button class="primary-btn full" id="buyerChooseSourceButton" disabled>USE THIS ACCOUNT</button></div>
+      <div class="panel">
+        <h2>Choose payment account</h2>
+        <p class="muted" id="buyerWelcomeLine">Signed in as —</p>
+        <div id="buyerSourcesList" class="buyer-source-list"></div>
+        <button class="primary-btn full" id="buyerChooseSourceButton" disabled>USE THIS ACCOUNT</button>
+      </div>
     </div>
     <div id="buyerStep3" class="buyer-step-panel">
       <div class="panel">
         <h2>Confirm payment</h2>
-        <div class="buyer-destination-chip"><span>Paying to</span><strong id="buyerDestinationName"></strong><small id="buyerDestinationId"></small></div>
+        <div class="buyer-destination-chip"><span>Paying to</span><strong id="buyerDestinationName">—</strong><small id="buyerDestinationId">—</small></div>
         <label>Where to send<select id="buyerDestinationChannel"></select></label>
         <div id="buyerDestinationFields"></div>
-        <div class="buyer-account-chip"><span>From account</span><strong id="buyerChosenSourceName"></strong></div>
-        <label>Amount<input id="buyerPayAmount" type="number"></label>
+        <div class="buyer-account-chip"><span>From account</span><strong id="buyerChosenSourceName">—</strong></div>
+        <label>Amount (KES)<input id="buyerPayAmount" type="number" min="1" inputmode="decimal" placeholder="100"></label>
         <div id="buyerCostPreview" class="cost-box"></div>
         <button class="primary-btn full" id="buyerConfirmPayButton">PAY & AUTHORIZE</button>
       </div>
     </div>
     <div id="buyerSuccessPanel" class="buyer-step-panel">
       <div class="panel buyer-success-panel">
-        <div class="success-tick">✓</div><h2>Payment received</h2><p id="buyerSuccessText"></p>
-        <div class="receipt-box"><div class="receipt-head"><span class="pill green">RECEIPT</span><button id="copyReceiptButton">Copy</button><button id="shareReceiptButton">Share</button></div><pre id="receiptText"></pre></div>
-        <div class="countdown-bar"><div id="buyerCountdownFill"></div></div><small id="buyerCountdownText"></small>
+        <div class="success-tick">✓</div>
+        <h2>Payment received</h2>
+        <p id="buyerSuccessText" class="muted">—</p>
+        <div class="receipt-box">
+          <div class="receipt-head"><span class="pill green">RECEIPT</span><button class="receipt-mini-btn" id="copyReceiptButton" type="button">Copy</button><button class="receipt-mini-btn" id="shareReceiptButton" type="button">Share</button></div>
+          <pre id="receiptText" class="receipt-text">—</pre>
+        </div>
+        <div class="countdown-bar"><div id="buyerCountdownFill"></div></div>
+        <small class="muted" id="buyerCountdownText">Returning to login…</small>
       </div>
     </div>
   </div>
   <div id="depositTab" class="receive-tab-panel">
     <div class="panel">
-      <label>Customer phone<input id="depositPhone"></label>
-      <label>Source<select id="depositSource"><option value="mpesa">M-PESA</option><option value="airtel">Airtel</option></select></label>
-      <label>Amount<input id="depositAmount" type="number"></label>
+      <span class="pill green">DEPOSIT</span><h2>Deposit to BEAST</h2><p class="muted">Add money to your BEAST Wallet from a linked source.</p>
+      <label>Customer phone<input id="depositPhone" inputmode="tel" placeholder="0712345678"></label>
+      <label>Source<select id="depositSource"><option value="mpesa">M-PESA</option><option value="tkash">T-Kash</option><option value="airtel">Airtel Money</option><option value="bank">Bank</option><option value="card">Card</option></select></label>
+      <label>Amount<input id="depositAmount" type="number" min="1" inputmode="decimal" placeholder="500"></label>
       <div id="depositCostPreview" class="cost-box"></div>
-      <button class="primary-btn full" id="performDepositButton">DEPOSIT</button>
+      <button class="primary-btn full" id="performDepositButton">DEPOSIT TO BEAST</button>
     </div>
   </div>
   <div id="agentTab" class="receive-tab-panel">
     <div class="panel">
-      <label>Agent number<input id="agentDepositAgent"></label>
-      <label>Customer phone<input id="agentDepositPhone"></label>
-      <label>Customer National ID<input id="agentDepositNationalId"></label>
-      <button class="secondary-btn full" id="verifyAgentDeposit">VERIFY</button>
+      <span class="pill blue">AGENT DEPOSIT</span><h2>Deposit through agent</h2><p class="muted">Only a registered Safaricom agent can perform this demo agent deposit.</p>
+      <label>Agent number or code<input id="agentDepositAgent" placeholder="0712345678 or AGENT-001"></label>
+      <label>Customer phone<input id="agentDepositPhone" inputmode="tel" placeholder="0712345678"></label>
+      <label>Customer National ID<input id="agentDepositNationalId" inputmode="numeric" placeholder="National ID"></label>
+      <button class="secondary-btn full" id="verifyAgentDeposit">VERIFY AGENT & CUSTOMER</button>
       <div id="agentDepositVerification" class="verification hidden"></div>
-      <label>Amount<input id="agentDepositAmount" type="number"></label>
-      <button class="primary-btn full" id="agentDepositButton">AUTHORIZE</button>
+      <label>Amount<input id="agentDepositAmount" type="number" min="1" inputmode="decimal" placeholder="1000"></label>
+      <button class="primary-btn full" id="agentDepositButton">AUTHORIZE AGENT DEPOSIT</button>
     </div>
   </div>
 </section>
 
-<!-- WITHDRAW (2 Tabs) -->
+<!-- WITHDRAW -->
 <section id="withdrawScreen" class="app-screen">
-  <div class="page-head"><div><span class="pill black">WITHDRAW</span><h1>Withdraw</h1></div></div>
-  
-  <div class="receive-tabs">
-    <button class="receive-tab active" data-wtab="agent">🏧 Agent Cash</button>
-    <button class="receive-tab" data-wtab="mobile">📲 Mobile Money</button>
-  </div>
-
-  <div id="withdrawAgentTab" class="receive-tab-panel active">
-    <div class="panel">
-      <label>Agent ID / Number<input id="agentNumber" placeholder="AGENT-001"></label>
-      <label>Store Number<input id="withdrawStore" placeholder="e.g. 4432"></label>
-      <button class="secondary-btn full" id="verifyAgent">VERIFY AGENT</button>
-      <div id="agentVerification" class="verification hidden"></div>
-      <div class="two-col">
-        <label>Source<select id="withdrawSource"></select></label>
-        <label>Amount<input id="withdrawAmount" type="number"></label>
-      </div>
-      <div id="withdrawCostPreview" class="cost-box"></div>
-      <button class="primary-btn full" id="withdrawButton">WITHDRAW CASH</button>
+  <div class="page-head"><div><span class="pill black">WITHDRAW</span><h1>Agent withdrawal</h1><p>Verify the agent before authorization.</p></div></div>
+  <div class="panel">
+    <label>Agent ID or code<input id="agentNumber" placeholder="e.g. AGENT-001 or 0712345678"></label>
+    <small class="muted">Demo accepts any agent ID.</small>
+    <button class="secondary-btn full" id="verifyAgent">VERIFY AGENT</button>
+    <div id="agentVerification" class="verification hidden"></div>
+    <div class="two-col">
+      <label>Source<select id="withdrawSource"></select></label>
+      <label>Amount<input id="withdrawAmount" type="number" min="1" inputmode="decimal" placeholder="500"></label>
     </div>
-  </div>
-
-  <div id="withdrawMobileTab" class="receive-tab-panel">
-    <div class="panel">
-      <label>Destination Phone (M-PESA / Airtel)<input id="withdrawMobilePhone" placeholder="0712345678"></label>
-      <div class="two-col">
-        <label>Source<select id="withdrawMobileSource"><option value="wallet">BEAST Wallet</option></select></label>
-        <label>Amount<input id="withdrawMobileAmount" type="number" placeholder="500"></label>
-      </div>
-      <div id="withdrawMobileCostPreview" class="cost-box"></div>
-      <button class="primary-btn full" id="withdrawMobileButton">TRANSFER TO PHONE</button>
-    </div>
+    <div id="withdrawCostPreview" class="cost-box"></div>
+    <button class="primary-btn full" id="withdrawButton">WITHDRAW & AUTHORIZE</button>
   </div>
 </section>
 
 <!-- LIPA NA -->
 <section id="lipaScreen" class="app-screen">
-  <div class="page-head"><div><span class="pill green">LIPA NA</span><h1>Pay a business</h1></div></div>
+  <div class="page-head"><div><span class="pill green">LIPA NA</span><h1>Pay a business</h1><p>Verify destination before payment.</p></div></div>
   <div class="panel">
-    <label>Payment method<select id="lipaMethod">
-      <option value="mpesa">M-PESA</option><option value="tkash">T-Kash</option><option value="airtel">Airtel</option><option value="bank">Bank</option><option value="card">Card</option><option value="wallet">BEAST Wallet</option>
-    </select></label>
-    <label>Payment type<select id="lipaType">
-      <option value="beast">BEAST Transfer</option>
-      <option value="paybill">PayBill</option>
-      <option value="till">Till</option>
-      <option value="pochi">Pochi</option>
-      <option value="account">Account</option>
-    </select></label>
+    <label>Payment method<select id="lipaMethod"><option value="mpesa">M-PESA</option><option value="tkash">T-Kash</option><option value="airtel">Airtel Money</option><option value="bank">Bank</option><option value="card">Card</option><option value="wallet">BEAST Wallet</option></select></label>
+    <label>Payment type<select id="lipaType"><option value="paybill">PayBill</option><option value="till">Till</option><option value="account">Account / Other</option><option value="pochi">Pochi</option></select></label>
     <div id="lipaDestinationFields"></div>
     <label>Source<select id="lipaSource"></select></label>
-    <label>Amount<input id="lipaAmount" type="number"></label>
+    <label>Amount<input id="lipaAmount" type="number" min="1" inputmode="decimal" placeholder="100"></label>
     <button class="secondary-btn full" id="verifyLipa">VERIFY DESTINATION</button>
     <div id="lipaVerification" class="verification hidden"></div>
     <div id="lipaCostPreview" class="cost-box"></div>
@@ -315,141 +302,171 @@
 </section>
 
 <!-- HISTORY -->
-<section id="historyScreen" class="app-screen"><div class="page-head"><div><h1>Transactions</h1></div></div><div id="historyList" class="list"></div></section>
+<section id="historyScreen" class="app-screen">
+  <div class="page-head"><div><span class="pill blue">HISTORY</span><h1>Transactions</h1><p>Demo records.</p></div></div>
+  <div id="historyList" class="list"></div>
+</section>
 
 <!-- STATEMENTS -->
-<section id="statementsScreen" class="app-screen"><div class="page-head"><div><h1>Statements</h1></div></div><div id="statementsSummary" class="panel"></div><div id="statementsList" class="list"></div></section>
+<section id="statementsScreen" class="app-screen">
+  <div class="page-head"><div><span class="pill blue">STATEMENTS</span><h1>Mini statements</h1><p>Last 30 days summary.</p></div></div>
+  <div id="statementsSummary" class="panel"><div class="muted">No activity yet.</div></div>
+  <h2 class="section-title">Recent activity</h2>
+  <div id="statementsList" class="list"></div>
+</section>
+
+<!-- CHAT -->
+<section id="chatScreen" class="app-screen">
+  <div class="page-head"><div><span class="pill green">CHAT</span><h1>💬 Messages</h1><p>Local demo. Real chat needs a server.</p></div></div>
+  <div class="panel">
+    <div class="demo-label">LOCAL DEMO CHAT</div>
+    <div id="chatMessages" class="chat-messages"></div>
+    <form id="chatForm" class="chat-form">
+      <input id="chatInput" placeholder="Write a demo message..." maxlength="500">
+      <button class="primary-btn" type="submit">Send</button>
+    </form>
+    <button class="secondary-btn full" id="clearChatBtn" style="margin-top:10px;">CLEAR CHAT</button>
+  </div>
+  <div class="panel">
+    <h3>Start with a BEAST ID</h3>
+    <label>Recipient BEAST ID<input id="recipientId" placeholder="e.g. BEAST-100002"></label>
+    <button class="secondary-btn full" id="startChatBtn">Start Demo Chat</button>
+  </div>
+</section>
+
+<!-- CALLS -->
+<section id="callsScreen" class="app-screen">
+  <div class="page-head"><div><span class="pill blue">CALLS</span><h1>📞 Calls</h1><p>Choose how you want to connect.</p></div></div>
+  <div class="service-list">
+    <button class="service-row" id="phoneCallBtn"><span class="service-icon">📱</span><span><strong>Call a Phone Number</strong><small>Opens your phone dialer</small></span><b>›</b></button>
+    <button class="service-row" id="beastCallBtn"><span class="service-icon">📞</span><span><strong>BEAST-to-BEAST Call</strong><small>Prototype interface</small></span><b>›</b></button>
+    <button class="service-row" id="videoCallBtn"><span class="service-icon">🎥</span><span><strong>Video Call</strong><small>Requires a live service</small></span><b>›</b></button>
+  </div>
+  <div class="panel">
+    <h3>Start a demo call</h3>
+    <label>BEAST ID or phone number<input id="callId" placeholder="Enter ID or phone"></label>
+    <p class="tiny">This prototype cannot connect or carry live calls.</p>
+  </div>
+</section>
 
 <!-- CONNECT -->
-<section id="connectScreen" class="app-screen"><div class="page-head"><div><h1>Connect</h1></div></div><div class="panel"><form id="searchForm" class="search-form"><input id="searchInput" placeholder="Search Google..."><button class="primary-btn">Search</button></form></div></section>
+<section id="connectScreen" class="app-screen">
+  <div class="page-head"><div><span class="pill blue">CONNECT</span><h1>🌐 Connect</h1><p>Access web services from one place.</p></div></div>
+  <div class="panel">
+    <h3>🔎 Search the web</h3>
+    <form id="searchForm" class="search-form">
+      <input id="searchInput" placeholder="Search Google..." maxlength="200">
+      <button class="primary-btn" type="submit">Search</button>
+    </form>
+  </div>
+  <h2 class="section-title">Social platforms</h2>
+  <div class="quick-actions">
+    <a class="square-card blue-card" href="https://www.whatsapp.com/" target="_blank" rel="noopener noreferrer"><span>🟢</span><b>WhatsApp</b><small>Open</small></a>
+    <a class="square-card green-card" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer"><span>📸</span><b>Instagram</b><small>Open</small></a>
+    <a class="square-card blue-card" href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer"><span>🔵</span><b>Facebook</b><small>Open</small></a>
+    <a class="square-card black-card" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer"><span>🎵</span><b>TikTok</b><small>Open</small></a>
+    <a class="square-card blue-card" href="https://web.telegram.org/" target="_blank" rel="noopener noreferrer"><span>✈️</span><b>Telegram</b><small>Open</small></a>
+    <a class="square-card red-card" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer"><span>▶️</span><b>YouTube</b><small>Watch</small></a>
+    <a class="square-card green-card" href="https://www.google.com/" target="_blank" rel="noopener noreferrer"><span>🔍</span><b>Google</b><small>Explore</small></a>
+    <a class="square-card blue-card" href="https://maps.google.com/" target="_blank" rel="noopener noreferrer"><span>🗺️</span><b>Maps</b><small>Find places</small></a>
+    <a class="square-card black-card" href="https://www.crazygames.com/" target="_blank" rel="noopener noreferrer"><span>🎮</span><b>Games</b><small>Play</small></a>
+  </div>
+</section>
 
 <!-- PROFILE -->
-<section id="profileScreen" class="app-screen"><div class="page-head"><div><h1>Profile</h1></div></div><div id="profileDetails" class="panel"></div></section>
+<section id="profileScreen" class="app-screen">
+  <div class="page-head"><div><span class="pill green">PROFILE</span><h1>BEAST identity</h1><p id="profileTopBeastId" class="muted">BEAST-000000</p></div></div>
+  <div id="profileDetails" class="panel"></div>
+  <div class="quick-actions">
+    <button class="square-card green-card" data-menu="premium"><span>👑</span><b>Premium</b><small>KES 250/mo</small></button>
+    <button class="square-card red-card" data-menu="security"><span>🛡️</span><b>Security</b><small>Events</small></button>
+    <button class="square-card blue-card" data-menu="settings"><span>⚙️</span><b>Settings</b><small>Controls</small></button>
+  </div>
+</section>
 
 <!-- PREMIUM -->
-<section id="premiumScreen" class="app-screen"><div class="page-head"><div><h1>Premium</h1></div></div><div class="panel"><div class="price">KES 250 <small>/ month</small></div><button id="premiumBtn" class="primary-btn full">Try Premium Demo</button></div></section>
+<section id="premiumScreen" class="app-screen">
+  <div class="page-head"><div><span class="pill green">PREMIUM</span><h1>👑 BEAST Premium</h1><p>One planned package for your digital world.</p></div></div>
+  <div class="panel"><div class="price">KES 250 <small>/ month</small></div><span class="pill blue">DEMO ONLY — NO PAYMENT</span></div>
+  <div class="panel">
+    <h2>Planned benefits</h2>
+    <div class="list-item"><strong>✓ One BEAST profile</strong></div>
+    <div class="list-item"><strong>✓ Easier access to BEAST services</strong></div>
+    <div class="list-item"><strong>✓ Planned chat and calling features</strong></div>
+    <div class="list-item"><strong>✓ Planned connectivity options</strong></div>
+    <button id="premiumBtn" class="primary-btn full">Try Premium Demo</button>
+    <p class="tiny">No money will be charged. M-PESA payments and live services are not connected yet.</p>
+  </div>
+</section>
 
 <!-- SECURITY -->
-<section id="securityScreen" class="app-screen"><div class="page-head"><div><h1>Security</h1></div></div><div class="panel"><div id="securityList" class="list"></div></div></section>
+<section id="securityScreen" class="app-screen">
+  <div class="page-head"><div><span class="pill red">SECURITY</span><h1>Security center</h1><p>Security events.</p></div></div>
+  <div class="panel"><h2>Security events</h2><div id="securityList" class="list"></div></div>
+</section>
 
 <!-- NOTIFICATIONS -->
-<section id="notificationsScreen" class="app-screen"><div class="page-head"><div><h1>Notifications</h1></div></div><div id="notificationList" class="list"></div></section>
+<section id="notificationsScreen" class="app-screen">
+  <div class="page-head"><div><span class="pill red">NOTIFICATIONS</span><h1>BEAST alerts</h1></div></div>
+  <div id="notificationList" class="list"></div>
+</section>
 
-<!-- SETTINGS (RESTORED) -->
+<!-- SETTINGS -->
 <section id="settingsScreen" class="app-screen">
-  <div class="page-head">
-    <div><span class="pill blue">SETTINGS</span><h1>App settings</h1><p>Control appearance and security.</p></div>
-  </div>
-
+  <div class="page-head"><div><span class="pill blue">SETTINGS</span><h1>App settings</h1><p>Control appearance and security.</p></div></div>
   <div class="panel">
-    <div class="setting-row">
-      <div><b>Dark mode</b><small>Use the dark BEAST theme</small></div>
-      <input id="themeToggle" type="checkbox">
-    </div>
-    <div class="setting-row">
-      <div><b>Notifications</b><small>Show in-app alerts</small></div>
-      <input id="notificationsToggle" type="checkbox">
-    </div>
+    <div class="setting-row"><div><b>Dark mode</b><small>Use the dark BEAST theme</small></div><input id="themeToggle" type="checkbox"></div>
+    <div class="setting-row"><div><b>Notifications</b><small>Show in-app alerts</small></div><input id="notificationsToggle" type="checkbox"></div>
   </div>
-
   <div class="panel">
-    <h2>Receiving methods</h2>
-    <p class="muted">Which channels buyers can use to pay you.</p>
-    <label>Receiving channel<select id="receivingMethodType">
-      <option value="wallet">BEAST Wallet</option>
-      <option value="pochi">Pochi la Biashara</option>
-      <option value="till">Till</option>
-      <option value="paybill">PayBill</option>
-      <option value="bank">Bank Account</option>
-      <option value="card">Card</option>
-    </select></label>
+    <h2>Receiving methods</h2><p class="muted">Which channels buyers can use to pay you.</p>
+    <label>Receiving channel<select id="receivingMethodType"><option value="wallet">BEAST Wallet</option><option value="pochi">Pochi la Biashara</option><option value="till">Till</option><option value="paybill">PayBill</option><option value="bank">Bank Account</option><option value="card">Card</option></select></label>
     <div id="receivingMethodFields"></div>
     <button class="primary-btn full" id="saveReceivingMethodButton">SAVE RECEIVING METHOD</button>
   </div>
-
-  <div class="panel">
-    <h2>Enabled receiving methods</h2>
-    <div id="receivingMethodsList" class="list"></div>
-  </div>
-
+  <div class="panel"><h2>Enabled receiving methods</h2><div id="receivingMethodsList" class="list"></div></div>
   <div class="panel">
     <h2>Add / update payment source</h2>
-    <label>Payment source<select id="sourceType">
-      <option value="mpesa">M-PESA</option>
-      <option value="tkash">T-Kash</option>
-      <option value="airtel">Airtel Money</option>
-      <option value="bank">Bank Account</option>
-      <option value="card">Card</option>
-      <option value="wallet">BEAST Wallet</option>
-    </select></label>
-
+    <label>Payment source<select id="sourceType"><option value="mpesa">M-PESA</option><option value="tkash">T-Kash</option><option value="airtel">Airtel Money</option><option value="bank">Bank Account</option><option value="card">Card</option><option value="wallet">BEAST Wallet</option></select></label>
     <label>Phone / account number<input id="sourceAccount" placeholder="Phone or account (letters & digits ok)"></label>
-
-    <div id="bankSourceFields" class="hidden">
-      <label>Bank name<select id="bankName">
-        <option value="">Select bank</option>
-        <option value="ABC Bank">ABC Bank</option>
-        <option value="Absa Bank Kenya">Absa Bank Kenya</option>
-        <option value="Co-operative Bank">Co-operative Bank</option>
-        <option value="Equity Bank">Equity Bank</option>
-        <option value="National Bank of Kenya (NBK)">National Bank of Kenya (NBK)</option>
-        <option value="KCB Bank">KCB Bank</option>
-        <option value="NCBA Bank">NCBA Bank</option>
-        <option value="Prime Bank">Prime Bank</option>
-        <option value="Family Bank">Family Bank</option>
-        <option value="Postbank">Postbank</option>
-        <option value="Stanbic Bank">Stanbic Bank</option>
-        <option value="Standard Chartered">Standard Chartered</option>
-        <option value="DTB">DTB</option>
-        <option value="I&M Bank">I&M Bank</option>
-        <option value="Other">Other</option>
-      </select></label>
-    </div>
-
-    <div id="cardSourceFields" class="hidden">
-      <label>Card name<input id="cardName" placeholder="Visa / Mastercard / BEAST Card"></label>
-      <label>Card last 4 digits<input id="cardLast4" maxlength="4" inputmode="numeric" placeholder="1234"></label>
-    </div>
-
+    <div id="bankSourceFields" class="hidden"><label>Bank name<select id="bankName"><option value="">Select bank</option><option value="ABC Bank">ABC Bank</option><option value="Absa Bank Kenya">Absa Bank Kenya</option><option value="Co-operative Bank">Co-operative Bank</option><option value="Equity Bank">Equity Bank</option><option value="National Bank of Kenya (NBK)">National Bank of Kenya (NBK)</option><option value="KCB Bank">KCB Bank</option><option value="NCBA Bank">NCBA Bank</option><option value="Prime Bank">Prime Bank</option><option value="Family Bank">Family Bank</option><option value="Postbank">Postbank</option><option value="Stanbic Bank">Stanbic Bank</option><option value="Standard Chartered">Standard Chartered</option><option value="DTB">DTB</option><option value="I&M Bank">I&M Bank</option><option value="Other">Other</option></select></label></div>
+    <div id="cardSourceFields" class="hidden"><label>Card name<input id="cardName" placeholder="Visa / Mastercard / BEAST Card"></label><label>Card last 4 digits<input id="cardLast4" maxlength="4" inputmode="numeric" placeholder="1234"></label></div>
     <label>Demo balance<input id="sourceBalance" type="number" min="0" step="0.01" placeholder="0"></label>
     <button class="primary-btn full" id="saveSourceButton">SAVE PAYMENT SOURCE</button>
   </div>
-
   <div class="panel">
     <h2>Change BEAST PIN</h2>
-    <div class="two-col">
-      <label>Current PIN<input id="oldPin" type="password" maxlength="4" inputmode="numeric"></label>
-      <label>New PIN<input id="newPin" type="password" maxlength="4" inputmode="numeric"></label>
-    </div>
+    <div class="two-col"><label>Current PIN<input id="oldPin" type="password" maxlength="4" inputmode="numeric"></label><label>New PIN<input id="newPin" type="password" maxlength="4" inputmode="numeric"></label></div>
     <label>Confirm new PIN<input id="confirmNewPin" type="password" maxlength="4" inputmode="numeric"></label>
     <button class="secondary-btn full" id="changePinButton">CHANGE PIN</button>
   </div>
-
   <div class="panel">
     <h2>Change BEAST password</h2>
-    <div class="two-col">
-      <label>Current<input id="oldPassword" type="password"></label>
-      <label>New<input id="newPassword" type="password"></label>
-    </div>
+    <div class="two-col"><label>Current<input id="oldPassword" type="password"></label><label>New<input id="newPassword" type="password"></label></div>
     <label>Confirm new<input id="confirmNewPassword" type="password"></label>
     <button class="secondary-btn full" id="changePasswordButton">CHANGE PASSWORD</button>
   </div>
-
   <button class="danger-btn full" id="resetDemo">RESET DEMO DATA</button>
 </section>
 
+<!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <button data-tab="money"><span>💰</span><small>Money</small></button>
+  <button data-tab="chat"><span>💬</span><small>Chat</small></button>
+  <button data-tab="calls"><span>📞</span><small>Calls</small></button>
   <button data-tab="connect"><span>🌐</span><small>Connect</small></button>
   <button data-tab="profile"><span>👤</span><small>Profile</small></button>
 </nav>
 
+<!-- MODALS -->
 <div id="pinModal" class="modal hidden">
   <div class="modal-card">
-    <button class="modal-close" id="closePinModal">×</button>
-    <h2>Enter BEAST PIN</h2><p id="pinPurpose" class="muted"></p>
-    <input id="authorizationPin" type="password" maxlength="4" placeholder="••••">
-    <small id="pinError" class="muted hidden" style="color:var(--red);"></small>
+    <button class="modal-close" id="closePinModal" aria-label="Close">×</button>
+    <span class="pill green">AUTHORIZATION</span>
+    <h2>Enter BEAST PIN</h2>
+    <p id="pinPurpose" class="muted">Confirm transaction.</p>
+    <input id="authorizationPin" type="password" maxlength="4" inputmode="numeric" placeholder="••••">
+    <small id="pinError" class="muted hidden" style="color:var(--red);display:block;margin-top:8px;"></small>
     <button class="primary-btn full" id="confirmPin">AUTHORIZE</button>
     <button class="secondary-btn full" id="cancelPin">CANCEL</button>
   </div>
@@ -457,10 +474,11 @@
 
 <div id="confirmModal" class="modal hidden">
   <div class="modal-card">
-    <button class="modal-close" id="confirmClose">×</button>
+    <button class="modal-close" id="confirmClose" aria-label="Close">×</button>
+    <span class="pill blue">CONFIRM</span>
     <h2>Review before authorizing</h2>
     <div id="confirmBody" class="summary-box"></div>
-    <button class="primary-btn full" id="confirmYes">CONFIRM</button>
+    <button class="primary-btn full" id="confirmYes">CONFIRM & CONTINUE</button>
     <button class="secondary-btn full" id="confirmNo">CANCEL</button>
   </div>
 </div>
