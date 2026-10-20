@@ -1,537 +1,2000 @@
+/* =========================================================
+   BEAST APP — MONEY · CONNECT
+   Frontend controller
+   ========================================================= */
+
 document.addEventListener("DOMContentLoaded", () => {
-"use strict";
+  "use strict";
 
-const STORAGE_KEY   = "beast_superapp_v1";
-const SESSION_KEY   = "beast_superapp_session_v1";
-const THEME_KEY     = "beast_superapp_theme";
-const SERVER_URL    = "https://beast-server-8u92.onrender.com";
-const MIN_PASSWORD_LENGTH = 6;
-const MAX_BULK_ROWS = 200;
+  const API = "https://beast-server-8u92.onrender.com";
+  const STORAGE_KEY = "beast_superapp_v1";
+  const SESSION_KEY = "beast_superapp_session_v1";
+  const BULK_KEY = "beast_bulk_saved_lists_v1";
+  const THEME_KEY = "beast_superapp_theme";
 
-const REGISTERED_AGENTS = { "0712345678": "BEAST Agent", "0720000000": "Safaricom Agent", "AGENT-001": "Demo Agent 1" };
-const SOURCE_NAMES = { mpesa: "M-PESA", tkash: "T-Kash", airtel: "Airtel", bank: "Bank", card: "Card", wallet: "BEAST Wallet" };
-const SOURCE_ICONS = { mpesa: "📱", tkash: "📲", airtel: "📲", bank: "🏦", card: "💳", wallet: "🐾" };
-const ALL_SOURCES = ["mpesa","wallet","bank","card","airtel","tkash"];
-const BANK_LIST = [ "ABC Bank","Absa Bank Kenya","Co-operative Bank","Equity Bank","KCB Bank","NCBA Bank","Prime Bank","Family Bank","Other" ];
+  const $ = id => document.getElementById(id);
 
-const MAX_PIN_ATTEMPTS = 3; const PIN_LOCKOUT_MS = 30 * 1000; const AUTO_LOCK_MS = 2 * 60 * 1000;
-const BUYER_SUCCESS_MS = 5000; const BUYER_SESSION_MS = 60 * 1000;
+  const money = value =>
+    "KES " + Number(value || 0).toLocaleString("en-KE", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
 
-const DEMO_BUYERS = [
-  { phone: "0722000001", nationalId: "11111111", pin: "1111", name: "Alice Njeri", sources: { mpesa: { enabled: true, balance: 12500 }, wallet: { enabled: true, balance: 0 }, bank: { enabled: true, balance: 8000, bankName: "Equity Bank" }, card: { enabled: true, balance: 15000, cardName: "Visa", last4: "4321" }, airtel: { enabled: true, balance: 2500 }, tkash: { enabled: false, balance: 0 } } },
-  { phone: "0722000002", nationalId: "22222222", pin: "2222", name: "Brian Otieno", sources: { mpesa: { enabled: true, balance: 3200 }, wallet: { enabled: true, balance: 500 }, bank: { enabled: true, balance: 2500, bankName: "KCB Bank" }, card: { enabled: false, balance: 0 }, airtel: { enabled: true, balance: 1000 }, tkash: { enabled: true, balance: 800 } } }
-];
+  const uid = prefix =>
+    prefix + "-" + Date.now().toString(36).toUpperCase() +
+    "-" + Math.random().toString(36).slice(2, 7).toUpperCase();
 
-function defaultState(){
-  return {
-    registered: false, user: { name: "", phone: "", nationalId: "", beastId: "", pinHash: "", pinSalt: "", passwordHash: "", passwordSalt: "" },
-    sources: { mpesa: { balance: 5000, enabled: true, account: "0712345678" }, tkash: { balance: 1000, enabled: true, account: "0712345678" }, airtel: { balance: 1000, enabled: true, account: "0712345678" }, bank: { balance: 0, enabled: false, account: "", bankName: "" }, card: { balance: 0, enabled: false, account: "", cardName: "", last4: "" }, wallet: { balance: 0, enabled: true, account: "BEAST-WALLET" } },
-    receiving: { wallet: { enabled: true }, pochi: { enabled: false, phone: "" }, till: { enabled: false, number: "" }, paybill: { enabled: false, number: "", account: "" }, bank: { enabled: false, bankName: "", account: "" }, card: { enabled: false, cardName: "", last4: "" } },
-    currentSource: "mpesa", transactions: [], notifications: [], securityEvents: [],
-    settings: { notifications: true, screenSecurity: true, dark: true },
-    security: { failedPinAttempts: 0, lockoutUntil: 0 }, buyerSecurity: { failedPinAttempts: 0, lockoutUntil: 0 }, recentBuyers: [], savedBulkLists: {}
+  const escapeHTML = value =>
+    String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
+
+  function toast(message) {
+    const el = $("toast");
+    if (!el) {
+      alert(message);
+      return;
+    }
+
+    el.textContent = message;
+    el.classList.add("show");
+
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(() => {
+      el.classList.remove("show");
+    }, 3500);
+  }
+
+  function showError(message) {
+    toast(message);
+  }
+
+  function normalizePhone(value) {
+    let phone = String(value || "").replace(/[\s()-]/g, "");
+
+    if (phone.startsWith("+254")) phone = "0" + phone.slice(4);
+    else if (phone.startsWith("254")) phone = "0" + phone.slice(3);
+
+    return phone;
+  }
+
+  function validPhone(value) {
+    return /^(07|01)\d{8}$/.test(normalizePhone(value));
+  }
+
+  function normalizeBeastId(value) {
+    let id = String(value || "").trim().toUpperCase();
+
+    if (/^\d{6}$/.test(id)) id = "BEAST-" + id;
+    if (/^BEAST\d{6}$/.test(id)) {
+      id = "BEAST-" + id.slice(5);
+    }
+
+    return /^BEAST-\d{6}$/.test(id) ? id : null;
+  }
+
+  function validAccount(value) {
+    const account = String(value || "").trim();
+    return /^[A-Za-z0-9][A-Za-z0-9_-]{3,29}$/.test(account);
+  }
+
+  function validAmount(value) {
+    const amount = Number(value);
+    return Number.isSafeInteger(amount) && amount > 0;
+  }
+
+  const SOURCE_NAMES = {
+    mpesa: "M-PESA",
+    tkash: "T-Kash",
+    airtel: "Airtel Money",
+    bank: "Bank Account",
+    card: "Card",
+    wallet: "BEAST Wallet"
   };
-}
 
-function loadState(){
-  try{
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if(saved){
+  function defaultState() {
+    return {
+      version: 10,
+      user: null,
+      sources: {
+        mpesa: { balance: 5000, enabled: true, account: "" },
+        tkash: { balance: 1000, enabled: true, account: "" },
+        airtel: { balance: 1000, enabled: true, account: "" },
+        bank: { balance: 1000, enabled: true, account: "" },
+        card: { balance: 1000, enabled: true, account: "" },
+        wallet: { balance: 0, enabled: true, account: "" }
+      },
+      transactions: [],
+      notifications: [],
+      securityEvents: [],
+      receivingMethods: [],
+      settings: { notifications: true, darkMode: true },
+      revenue: { fees: 0 },
+      claimedWithdrawals: [],
+      currentScreen: "welcome"
+    };
+  }
+
+  function loadState() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+      if (!saved || typeof saved !== "object") return defaultState();
+
       const base = defaultState();
-      return { ...base, ...saved, user: { ...base.user, ...(saved.user || {}) }, sources: { ...base.sources, ...(saved.sources || {}) }, receiving: { ...base.receiving, ...(saved.receiving || {}) }, settings: { ...base.settings, ...(saved.settings || {}) }, security: { ...base.security, ...(saved.security || {}) }, buyerSecurity: { ...base.buyerSecurity, ...(saved.buyerSecurity || {}) }, savedBulkLists: saved.savedBulkLists || {} };
+
+      return {
+        ...base,
+        ...saved,
+        sources: { ...base.sources, ...(saved.sources || {}) },
+        settings: { ...base.settings, ...(saved.settings || {}) },
+        transactions: Array.isArray(saved.transactions)
+          ? saved.transactions : [],
+        notifications: Array.isArray(saved.notifications)
+          ? saved.notifications : [],
+        securityEvents: Array.isArray(saved.securityEvents)
+          ? saved.securityEvents : [],
+        receivingMethods: Array.isArray(saved.receivingMethods)
+          ? saved.receivingMethods : [],
+        claimedWithdrawals: Array.isArray(saved.claimedWithdrawals)
+          ? saved.claimedWithdrawals : []
+      };
+    } catch {
+      return defaultState();
     }
-  }catch(e){}
-  return defaultState();
-}
+  }
 
-const state = loadState();
-let sessionToken = sessionStorage.getItem(SESSION_KEY) || null;
-let pendingAction = null, buyerSession = null, buyerStep = 1, buyerSuccessTimer = null, buyerSessionTimer = null, bulkRows = [], socket = null, currentAnnouncement = null;
+  let state = loadState();
+  let currentRecipient = null;
+  let currentLipaRecipient = null;
+  let verifiedAgent = null;
+  let verifiedMobileDestination = null;
+  let pendingAction = null;
+  let currentRegistration = {};
+  let currentLogin = false;
+  let selectedBuyer = null;
+  let selectedBuyerSource = null;
+  let verifiedAgentDeposit = false;
+  let parsedBulk = [];
 
-function $(id){ return document.getElementById(id); }
-function money(v){ return `KES ${Number(v || 0).toLocaleString("en-KE",{ minimumFractionDigits:2, maximumFractionDigits:2 })}`; }
-function normalizePhone(value=""){ let p = String(value).trim().replace(/\s+/g,"").replace(/-/g,""); if(p.startsWith("+254")) p = "0" + p.slice(4); else if(p.startsWith("254")) p = "0" + p.slice(3); return p; }
-function validPhone(value){ return /^(07|01)\d{8}$/.test(normalizePhone(value)); }
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
 
-function normalizeRecipient(value=""){
-  let v = String(value).trim().toUpperCase();
-  if(v.startsWith("BEAST-")) return v;
-  if(/^\d{6}$/.test(v)) return `BEAST-${v}`;
-  return normalizePhone(v);
-}
+  function isLoggedIn() {
+    return Boolean(state.user);
+  }
 
-function internationalPhone(value){ const p = normalizePhone(value); return validPhone(p) ? "+254" + p.slice(1) : ""; }
-function validAgent(v){ return String(v || "").trim().length >= 4; }
-function validAccount(v){ return /^[A-Za-z0-9][A-Za-z0-9\- ]{3,}$/.test(String(v || "").trim()); }
-function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-function randomDigits(n){ return Math.floor(Math.random() * Math.pow(10,n)).toString().padStart(n,"0"); }
-function randomHex(bytes){ const arr = new Uint8Array(bytes); crypto.getRandomValues(arr); return Array.from(arr).map(b => b.toString(16).padStart(2,"0")).join(""); }
-function generateReference(){ return `BST-${Date.now().toString().slice(-8)}-${randomDigits(3)}`; }
-function escapeHTML(v){ return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
-function dateText(v){ return new Date(v).toLocaleString("en-KE"); }
-function toast(msg){ const el = $("toast"); if(!el) return; el.textContent = msg; el.classList.add("show"); clearTimeout(el._timer); el._timer = setTimeout(() => el.classList.remove("show"), 2600); }
-
-async function hashValue(value, saltHex){ const data = new TextEncoder().encode(saltHex + ":" + value); const digest = await crypto.subtle.digest("SHA-256", data); return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2,"0")).join(""); }
-async function setPin(pin){ state.user.pinSalt = randomHex(16); state.user.pinHash = await hashValue(pin, state.user.pinSalt); }
-async function verifyPin(pin){ if(!state.user.pinHash || !state.user.pinSalt) return false; return (await hashValue(pin, state.user.pinSalt)) === state.user.pinHash; }
-async function setPassword(pw){ state.user.passwordSalt = randomHex(16); state.user.passwordHash = await hashValue(pw, state.user.passwordSalt); }
-async function verifyPasswordLocal(pw){ if(!state.user.passwordHash || !state.user.passwordSalt) return false; return (await hashValue(pw, state.user.passwordSalt)) === state.user.passwordHash; }
-
-const demoBuyerHashes = {};
-async function buildDemoBuyerHashes(){ for(const b of DEMO_BUYERS){ const salt = randomHex(16); demoBuyerHashes[b.phone] = { salt, hash: await hashValue(b.pin, salt) }; } }
-async function verifyDemoBuyerPin(phone, pin){ const entry = demoBuyerHashes[phone]; if(!entry) return false; return (await hashValue(pin, entry.salt)) === entry.hash; }
-
-function mpesaSendFee(a){ a=Number(a||0); if(a<=100)return 0; if(a<=500)return 7; if(a<=1000)return 13; if(a<=1500)return 23; if(a<=2500)return 33; if(a<=3500)return 53; if(a<=5000)return 57; if(a<=7500)return 78; if(a<=10000)return 90; if(a<=15000)return 100; if(a<=20000)return 105; return 108; }
-function mpesaWithdrawFee(a){ a=Number(a||0); if(a<=100)return 11; if(a<=1500)return 29; if(a<=2500)return 29; if(a<=3500)return 52; if(a<=5000)return 69; if(a<=7500)return 87; if(a<=10000)return 115; if(a<=15000)return 167; if(a<=20000)return 185; if(a<=35000)return 197; if(a<=50000)return 278; return 309; }
-function tkashSendFee(a){ a=Number(a||0); if(a<=100)return 0; if(a<=500)return 6; if(a<=1000)return 13; if(a<=1500)return 21; if(a<=2500)return 33; if(a<=3500)return 47; if(a<=5000)return 57; if(a<=7500)return 67; if(a<=10000)return 88; if(a<=20000)return 93; return 103; }
-function airtelSendFee(a){ a=Number(a||0); if(a<=100)return 0; if(a<=500)return 7; if(a<=1000)return 13; if(a<=1500)return 33; if(a<=2500)return 53; if(a<=3500)return 57; if(a<=5000)return 78; if(a<=7500)return 90; if(a<=10000)return 100; return 110; }
-function bankFee(a){ a=Number(a||0); if(a<=1000)return 0; if(a<=5000)return 5; return 20; }
-function cardFee(a){ return Math.round(Number(a||0) * 0.029); }
-
-function providerCost(source, amount, type = "send"){
-  amount = Number(amount || 0);
-  if(source === "wallet") return 0;
-  if(source === "mpesa") return type === "withdraw" ? mpesaWithdrawFee(amount) : mpesaSendFee(amount);
-  if(source === "tkash") return tkashSendFee(amount);
-  if(source === "airtel") return airtelSendFee(amount);
-  if(source === "bank") return bankFee(amount);
-  if(source === "card") return cardFee(amount);
-  return 0;
-}
-
-function beastWalletFee(amount){ const mpesa = mpesaSendFee(Number(amount) || 0); return Math.max(0, mpesa - 3); }
-function externalSplit(source, amount, type = "send"){ const fee = providerCost(source, amount, type); const beastCut = Math.round(fee * 0.4); const providerKeeps = fee - beastCut; return { fee, beastCut, providerKeeps }; }
-
-function costPreview(source, amount, type = "send"){
-  const amt = Number(amount) || 0;
-  if(amt <= 0) return `<b>Cost preview</b><br>Enter an amount.`;
-  if(source === "wallet"){ const fee = beastWalletFee(amt); return `<b>BEAST Wallet</b><br>Amount: ${money(amt)}<br>BEAST fee: ${money(fee)}<br><br><strong>Total: ${money(amt + fee)}</strong>`; }
-  const { fee } = externalSplit(source, amt, type);
-  return `<b>Cost preview</b><br>Amount: ${money(amt)}<br>${SOURCE_NAMES[source] || source} fee: ${money(fee)}<br><br><strong>Total: ${money(amt + fee)}</strong>`;
-}
-
-function setTheme(dark){ state.settings.dark = dark; document.documentElement.dataset.theme = dark ? "dark" : "light"; localStorage.setItem(THEME_KEY, dark ? "dark" : "light"); save(); }
-function loadTheme(){ const t = localStorage.getItem(THEME_KEY) || "dark"; setTheme(t === "dark"); }
-function isLoggedIn(){ return state.registered && sessionToken === "active"; }
-function startSession(){ sessionToken = "active"; sessionStorage.setItem(SESSION_KEY, sessionToken); }
-function endSession(){ sessionToken = null; sessionStorage.removeItem(SESSION_KEY); }
-
-const screenMap = {
-  welcome:"welcomeScreen", login:"loginScreen", registration:"registrationScreen", money:"moneyScreen", send:"sendScreen", bulk:"bulkScreen", receive:"receiveScreen", withdraw:"withdrawScreen", lipa:"lipaScreen", history:"historyScreen", statements:"statementsScreen", connect:"connectScreen", profile:"profileScreen", premium:"premiumScreen", security:"securityScreen", notifications:"notificationsScreen", settings:"settingsScreen"
-};
-
-const SENSITIVE_FIELDS = [ "regPin","regPin2","regPassword","regPassword2","loginPassword","loginPin", "sendAmount","sendPhone","withdrawAmount","withdrawMobileAmount","withdrawMobilePhone","agentNumber","lipaAmount","depositAmount","agentDepositAmount","authorizationPin", "oldPin","newPin","confirmNewPin","buyerLoginPhone","buyerLoginNationalId","buyerLoginPin","buyerPayAmount", "bulkList","searchInput" ];
-
-function clearSensitiveFields(){ SENSITIVE_FIELDS.forEach(id => { const el = $(id); if(el) el.value = ""; }); ["recipientVerification","agentVerification","lipaVerification","agentDepositVerification"].forEach(id => $(id)?.classList.add("hidden")); }
-
-function showScreen(name){
-  const screen = screenMap[name] || name;
-  document.querySelectorAll(".app-screen").forEach(el => el.classList.remove("active"));
-  const target = $(screen); if(target) target.classList.add("active");
-  document.querySelectorAll("[data-tab]").forEach(t => t.classList.toggle("active", t.dataset.tab === getTabForScreen(name)));
-  clearSensitiveFields(); closeMenu(); resetAutoLock();
-  if(name === "receive"){ resetBuyerFlow(); renderReceiveSellerLine(); }
-  if(name === "statements") renderStatements();
-  if(name === "bulk") resetBulkFlow();
-  if(name === "history") fetchHistory();
-  window.scrollTo({ top:0, behavior:"smooth" }); renderEverything();
-}
-
-function getTabForScreen(name){ if(["money","send","bulk","receive","withdraw","lipa","history","statements"].includes(name)) return "money"; if(name === "connect") return "connect"; if(["profile","premium","security","notifications","settings"].includes(name)) return "profile"; return null; }
-function openMenu(){ $("menuDrawer")?.classList.add("open"); $("drawerBackdrop")?.classList.add("open"); }
-function closeMenu(){ $("menuDrawer")?.classList.remove("open"); $("drawerBackdrop")?.classList.remove("open"); }
-function resetAutoLock(){ clearTimeout(autoLockTimer); if(!isLoggedIn()) return; autoLockTimer = setTimeout(() => { if(!isLoggedIn()) return; addSecurity("Session auto-locked."); save(); showScreen("login"); toast("Session locked."); }, AUTO_LOCK_MS); }
-
-/* ================= AUTH ================= */
-function setupWelcome(){
-  $("goRegisterButton")?.addEventListener("click", () => showScreen("registration"));
-  $("goLoginButton")?.addEventListener("click", () => { if(!state.registered){ toast("No BEAST account yet."); showScreen("registration"); return; } showScreen("login"); });
-}
-
-function setupLogin(){
-  $("loginSubmitButton")?.addEventListener("click", async () => {
-    const phone = normalizePhone($("loginPhone")?.value || ""); const password = $("loginPassword")?.value || "";
-    if(!validPhone(phone)){ toast("Enter valid phone."); return; }
-    if(password.length < MIN_PASSWORD_LENGTH){ toast(`Min ${MIN_PASSWORD_LENGTH} characters.`); return; }
-    if(phone === state.user.phone) {
-      const ok = await verifyPasswordLocal(password);
-      if(!ok){ addSecurity("Failed login."); save(); toast("Incorrect password."); return; }
-      $("loginPassword").value = ""; authorize("Login", () => { startSession(); save(); showScreen("money"); }); return;
+  function requireLogin() {
+    if (!isLoggedIn()) {
+      showScreen("welcome");
+      toast("Please log in or register first.");
+      return false;
     }
-    const btn = $("loginSubmitButton"); btn.textContent = "CHECKING..."; btn.disabled = true;
-    try {
-      const res = await fetch(SERVER_URL + "/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ phone, passwordHash: await hashValue(password, "demo-salt") }) });
-      const data = await res.json();
-      if (!data.ok) { toast(data.error); btn.textContent = "CONTINUE"; btn.disabled = false; return; }
-      state.user = data.user; state.registered = true; state.sources = defaultState().sources; 
-      save(); $("loginPassword").value = ""; authorize("Login", () => { startSession(); save(); showScreen("money"); });
-    } catch (e) { toast("Network error."); btn.textContent = "CONTINUE"; btn.disabled = false; }
-  });
-  $("backToWelcomeFromLogin")?.addEventListener("click", () => showScreen("welcome"));
-}
+    return true;
+  }
 
-function setupRegistration(){
-  $("backToWelcomeFromRegister")?.addEventListener("click", () => showScreen("welcome"));
-  $("regNext1")?.addEventListener("click", () => {
-    const name = $("regName").value.trim(); const phone = normalizePhone($("regPhone").value); const nationalId = $("regNationalId").value.trim();
-    if(name.length < 2){ toast("Enter name."); return; } if(!validPhone(phone)){ toast("Enter valid phone."); return; } if(nationalId.length < 5){ toast("Enter National ID."); return; }
-    state.user.name = name; state.user.phone = phone; state.user.nationalId = nationalId;
-    $("regStep1").classList.add("hidden"); $("regStep2").classList.remove("hidden");
-  });
-  $("regNext2")?.addEventListener("click", async () => {
-    const password = $("regPassword").value; const password2 = $("regPassword2").value; const pin = $("regPin").value; const confirmPin = $("regPin2").value;
-    if(password.length < MIN_PASSWORD_LENGTH){ toast("Min 6 chars."); return; } if(password !== password2){ toast("Passwords don't match."); return; } if(!/^\d{4}$/.test(pin)){ toast("PIN must be 4 digits."); return; } if(pin !== confirmPin){ toast("PINs don't match."); return; }
-    await setPassword(password); await setPin(pin);
-    $("registrationSummary").innerHTML = `<b>${escapeHTML(state.user.name)}</b><br>Phone: ${escapeHTML(state.user.phone)}`;
-    $("regStep2").classList.add("hidden"); $("regStep3").classList.remove("hidden");
-  });
-  $("finishRegistration")?.addEventListener("click", async () => {
-    const btn = $("finishRegistration"); btn.textContent = "CREATING..."; btn.disabled = true;
-    try {
-      const payload = { name: state.user.name, phone: state.user.phone, nationalId: state.user.nationalId, pinHash: state.user.pinHash, pinSalt: state.user.pinSalt, passwordHash: state.user.passwordHash, passwordSalt: state.user.passwordSalt };
-      const res = await fetch(SERVER_URL + "/api/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-      const data = await res.json();
-      if (!data.ok) { toast(data.error); btn.textContent = "CREATE BEAST ID"; btn.disabled = false; return; }
-      state.user.beastId = data.beastId; state.registered = true;
-      startSession(); save(); showScreen("money");
-    } catch (e) { toast("Network error."); btn.textContent = "CREATE BEAST ID"; btn.disabled = false; }
-  });
-}
-
-/* ================= SOURCES ================= */
-function totalBalance(){ return Object.values(state.sources).reduce((t,s) => t + (s.enabled ? Number(s.balance) : 0), 0); }
-function renderSources(containerId){
-  const container = $(containerId); if(!container) return;
-  container.innerHTML = Object.entries(state.sources).map(([key, source]) => {
-    const icon = SOURCE_ICONS[key] || "❓"; let details = source.account || "Not linked";
-    if(key === "bank" && source.bankName) details = `${source.bankName} • ${source.account}`;
-    if(key === "card") details = source.cardName ? `${source.cardName} •••• ${source.last4 || "----"}` : "Not linked";
-    const isCurrent = state.currentSource === key && source.enabled;
-    return `<div class="source-card ${isCurrent ? "current-source" : ""} ${source.enabled ? "" : "source-disabled"}" data-source="${key}"><div class="source-top"><span class="source-icon">${icon}</span><span class="pill ${source.enabled ? "green" : "red"}">${source.enabled ? "DEMO" : "OFF"}</span></div><div><strong>${SOURCE_NAMES[key]}</strong><small>${escapeHTML(details)}</small>${isCurrent ? `<span class="pill green" style="margin-top:4px;">CURRENT</span>` : ""}</div><strong>${money(source.balance)}</strong></div>`;
-  }).join("");
-  container.querySelectorAll("[data-source]").forEach(card => { card.addEventListener("click", () => { const key = card.dataset.source; const source = state.sources[key]; if(!source || !source.enabled){ toast(`${SOURCE_NAMES[key]} not linked.`); return; } state.currentSource = key; save(); renderSources("sourceList"); fillSourceSelects(); toast(`${SOURCE_NAMES[key]} is now current.`); }); });
-}
-function fillSourceSelects(){
-  ["sendSource","withdrawSource","withdrawMobileSource","lipaSource","bulkSource"].forEach(id => {
-    const select = $(id); if(!select) return; const current = select.value || state.currentSource;
-    select.innerHTML = Object.entries(state.sources).filter(([,s]) => s.enabled).map(([key]) => `<option value="${key}">${SOURCE_NAMES[key]}</option>`).join("");
-    if(current && state.sources[current]?.enabled) select.value = current;
-  });
-}
-
-/* ================= TRANSACTIONS ================= */
-async function recordTransactionToServer(txn) { try { await fetch(SERVER_URL + "/api/transaction", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...txn, beastId: state.user.beastId }) }); } catch(e) {} }
-async function sendInternalToServer(toBeastId, amount, reference) { try { const res = await fetch(SERVER_URL + "/api/send-internal", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ fromBeastId: state.user.beastId, toBeastId, amount, reference }) }); return await res.json(); } catch(e) { return { error: "Network error" }; } }
-async function fetchHistory() { if(!state.user.beastId) return; try { const res = await fetch(SERVER_URL + "/api/transactions/" + state.user.beastId); const data = await res.json(); if(data.ok) { state.transactions = data.transactions; save(); renderHistory(); renderStatements(); } } catch(e) {} }
-
-function setupSend(){
-  $("verifyRecipient")?.addEventListener("click", () => {
-    const recipient = normalizeRecipient($("sendPhone").value);
-    if (recipient.startsWith("BEAST-")) { if (recipient === state.user.beastId) { toast("Cannot send to yourself."); return; } $("recipientVerification").classList.remove("hidden"); $("recipientVerification").innerHTML = `<strong>✓ BEAST User</strong>${escapeHTML(recipient)}`; $("sendSource").value = "wallet"; $("sendSource").disabled = true; } 
-    else { if(!validPhone(recipient)){ toast("Enter valid phone or BEAST ID."); return; } if(recipient === state.user.phone){ toast("Cannot send to yourself."); return; } $("recipientVerification").classList.remove("hidden"); $("recipientVerification").innerHTML = `<strong>✓ Demo recipient</strong>${escapeHTML(recipient)}`; $("sendSource").disabled = false; }
-  });
-
-  $("sendMoneyButton")?.addEventListener("click", () => {
-    const recipient = normalizeRecipient($("sendPhone").value); let source = $("sendSource").value;
-    if (recipient.startsWith("BEAST-")) { if (recipient === state.user.beastId) { toast("Cannot send to yourself."); return; } source = "wallet"; } 
-    else { if(!validPhone(recipient)){ toast("Enter valid phone."); return; } if(recipient === state.user.phone){ toast("Cannot send to yourself."); return; } }
-    const amount = Number($("sendAmount").value); if(amount <= 0){ toast("Enter amount."); return; }
-    let fee = source === "wallet" ? beastWalletFee(amount) : externalSplit(source, amount).fee;
-    askConfirmation(buildConfirmHTML({ title:"Confirm send", recipientName: recipient.startsWith("BEAST-") ? "BEAST User" : "Demo recipient", recipient: recipient, amount, source, fee }), () => authorize("Send money", () => { completeTransaction({ type:"Send", amount, source, recipient: recipient, recipientName: recipient.startsWith("BEAST-") ? "BEAST User" : "Demo recipient", description: recipient.startsWith("BEAST-") ? `BEAST transfer to ${recipient}` : `Send to ${recipient}` }); }));
-  });
-}
-
-function setupWithdraw(){
-  document.querySelectorAll("[data-wtab]").forEach(tab => {
-    tab.addEventListener("click", () => {
-      const target = tab.dataset.wtab;
-      document.querySelectorAll("[data-wtab]").forEach(t => t.classList.toggle("active", t === tab));
-      document.querySelectorAll("#withdrawScreen .receive-tab-panel").forEach(p => p.classList.remove("active"));
-      $(target === "agent" ? "withdrawAgentTab" : "withdrawMobileTab").classList.add("active");
+  function addNotification(title, message) {
+    state.notifications.unshift({
+      id: uid("NTF"),
+      title,
+      message,
+      createdAt: new Date().toISOString(),
+      read: false
     });
-  });
 
-  $("verifyAgent")?.addEventListener("click", () => { const number = ($("agentNumber").value || "").trim(); const store = ($("withdrawStore").value || "").trim(); if(!validAgent(number)){ toast("Enter agent ID."); return; } $("agentVerification").classList.remove("hidden"); $("agentVerification").innerHTML = `<strong>✓ Agent ${escapeHTML(number)}</strong>Store: ${escapeHTML(store)}`; });
-  $("withdrawButton")?.addEventListener("click", () => {
-    if($("agentVerification").classList.contains("hidden")){ toast("Verify agent first."); return; }
-    const amount = Number($("withdrawAmount").value); const source = $("withdrawSource").value; const agent = ($("agentNumber").value || "").trim(); if(amount <= 0){ toast("Enter amount."); return; }
-    let fee = source === "wallet" ? beastWalletFee(amount) : externalSplit(source, amount, "withdraw").fee;
-    askConfirmation(buildConfirmHTML({ title:"Confirm Withdraw", recipientName:"Agent", recipient: agent, amount, source, fee }), () => authorize("Withdrawal", () => { completeTransaction({ type:"Withdraw", amount, source, recipient: agent, recipientName:"Agent", description:"Agent cash out", providerType:"withdraw" }); }));
-  });
+    state.notifications = state.notifications.slice(0, 100);
+    saveState();
+    renderNotifications();
+  }
 
-  $("withdrawMobilePhone")?.addEventListener("input", updateMobileWithdrawPreview);
-  $("withdrawMobileAmount")?.addEventListener("input", updateMobileWithdrawPreview);
-  $("withdrawMobileButton")?.addEventListener("click", () => {
-    const phone = normalizePhone($("withdrawMobilePhone").value); const amount = Number($("withdrawMobileAmount").value); if(!validPhone(phone)){ toast("Enter valid phone."); return; } if(amount <= 0){ toast("Enter amount."); return; }
-    askConfirmation(buildConfirmHTML({ title:"Mobile Withdraw", recipientName:"Mobile Money", recipient: phone, amount, source: "wallet", fee: beastWalletFee(amount) }), () => authorize("Withdraw", () => { completeTransaction({ type:"Withdraw", amount, source:"wallet", recipient: phone, recipientName:"Mobile Money", description:"Withdraw to Mobile" }); }));
-  });
-}
+  function addSecurityEvent(message) {
+    state.securityEvents.unshift({
+      id: uid("SEC"),
+      message,
+      createdAt: new Date().toISOString()
+    });
 
-function updateMobileWithdrawPreview(){
-  const box = $("withdrawMobileCostPreview"); if(!box) return; const amount = Number($("withdrawMobileAmount")?.value || 0);
-  if(amount <= 0) { box.innerHTML = `<b>Cost preview</b><br>Enter amount.`; return; }
-  const fee = beastWalletFee(amount);
-  box.innerHTML = `<b>Mobile Transfer</b><br>Amount: ${money(amount)}<br>Fee: ${money(fee)}<br><br><strong>Total: ${money(amount+fee)}</strong>`;
-}
+    state.securityEvents = state.securityEvents.slice(0, 100);
+    saveState();
+    renderSecurity();
+  }
 
-function lipaFields(){
-  const type = $("lipaType")?.value; if(!$("lipaDestinationFields")) return;
-  if(type === "beast"){ $("lipaDestinationFields").innerHTML = `<label>BEAST ID<input id="lipaDestNumber" placeholder="e.g. 835678"></label>`; $("lipaSource").value = "wallet"; $("lipaSource").disabled = true; }
-  else { $("lipaSource").disabled = false; if(type === "paybill"){ $("lipaDestinationFields").innerHTML = `<div class="two-col"><label>PayBill<input id="lipaDestNumber" placeholder="123456"></label><label>Account<input id="lipaAccount" placeholder="ACC"></label></div>`; } else if(type === "till"){ $("lipaDestinationFields").innerHTML = `<label>Till<input id="lipaDestNumber" placeholder="123456"></label>`; } else if(type === "pochi"){ $("lipaDestinationFields").innerHTML = `<label>Pochi phone<input id="lipaDestNumber" placeholder="0712345678"></label>`; } else { $("lipaDestinationFields").innerHTML = `<label>Reference<input id="lipaDestNumber" placeholder="Ref"></label>`; } }
-}
+  function addTransaction(data) {
+    const tx = {
+      id: uid("TX"),
+      reference: uid("BEAST"),
+      createdAt: new Date().toISOString(),
+      status: "demo",
+      ...data
+    };
 
-function setupLipa(){
-  $("lipaType")?.addEventListener("change", lipaFields); lipaFields();
-  $("verifyLipa")?.addEventListener("click", () => { const value = ($("lipaDestNumber")?.value || "").trim(); if(value.length < 4){ toast("Enter destination."); return; } $("lipaVerification").classList.remove("hidden"); $("lipaVerification").innerHTML = `<strong>✓ Verified</strong>${escapeHTML(value)}`; });
-  $("lipaPayButton")?.addEventListener("click", () => {
-    if($("lipaVerification").classList.contains("hidden")){ toast("Verify destination first."); return; }
-    let dest = $("lipaDestNumber").value; const type = $("lipaType").value; const amount = Number($("lipaAmount").value); let source = $("lipaSource").value;
-    if(type === "beast") { dest = normalizeRecipient(dest); source = "wallet"; if(!dest.startsWith("BEAST-")) { toast("Invalid BEAST ID"); return; } }
-    if(amount <= 0){ toast("Enter amount."); return; }
-    let fee = source === "wallet" ? beastWalletFee(amount) : externalSplit(source, amount).fee;
-    askConfirmation(buildConfirmHTML({ title:"Confirm Payment", recipientName: dest.startsWith("BEAST-") ? "BEAST User" : "Business", recipient: dest, amount, source, fee }), () => authorize("Pay", () => { completeTransaction({ type:"Lipa Na", amount, source, recipient: dest, recipientName: dest.startsWith("BEAST-") ? "BEAST User" : "Business", description:`${type} payment` }); }));
-  });
-}
+    state.transactions.unshift(tx);
+    state.transactions = state.transactions.slice(0, 500);
+    saveState();
+    renderHistory();
+    renderStatements();
 
-function parseBulkList(text){
-  const rows = [], errors = [];
-  String(text || "").split(/\r?\n/).map(l => l.trim()).filter(l => l.length).forEach((line, i) => {
-    const parts = line.split(/[,\s;]+/).filter(p => p.length);
-    if(parts.length < 2){ errors.push(`Line ${i+1}: needs recipient and amount`); return; }
-    const recipient = normalizeRecipient(parts[0]); const amount = Number(parts[1]);
-    if(!validPhone(recipient) && !recipient.startsWith("BEAST-") && recipient.length < 4){ errors.push(`Line ${i+1}: invalid recipient`); return; }
-    if(recipient === state.user.phone || recipient === state.user.beastId){ errors.push(`Line ${i+1}: cannot send to yourself`); return; }
-    if(!isFinite(amount) || amount <= 0){ errors.push(`Line ${i+1}: invalid amount`); return; }
-    rows.push({ recipient, amount });
-  });
-  return { rows, errors };
-}
+    return tx;
+  }
 
-function setupBulk(){
-  const savedListSelect = $("savedBulkLists");
-  if (savedListSelect) {
-    Object.keys(state.savedBulkLists).forEach(name => { savedListSelect.innerHTML += `<option value="${name}">${name}</option>`; });
-    savedListSelect.addEventListener("change", (e) => {
-      if(!e.target.value) return;
-      $("bulkList").value = state.savedBulkLists[e.target.value];
-      toast("List loaded.");
+  function totalBalance() {
+    return Object.values(state.sources).reduce((total, source) => {
+      return total + (source.enabled ? Number(source.balance || 0) : 0);
+    }, 0);
+  }
+
+  function showScreen(name) {
+    const target = $(name + "Screen");
+
+    if (!target) {
+      console.warn("Unknown screen:", name);
+      return;
+    }
+
+    document.querySelectorAll(".app-screen").forEach(screen => {
+      screen.classList.remove("active");
+      screen.classList.add("hidden");
+    });
+
+    target.classList.remove("hidden");
+    target.classList.add("active");
+
+    state.currentScreen = name;
+    saveState();
+
+    closeDrawer();
+    renderEverything();
+
+    if (name === "withdraw") syncWithdrawals();
+  }
+
+  function openDrawer() {
+    $("menuDrawer")?.classList.add("open");
+    $("drawerBackdrop")?.classList.add("show");
+  }
+
+  function closeDrawer() {
+    $("menuDrawer")?.classList.remove("open");
+    $("drawerBackdrop")?.classList.remove("show");
+  }
+
+  function menuNavigate(name) {
+    if (name === "logout") {
+      logout();
+      return;
+    }
+
+    if (!isLoggedIn() &&
+        !["welcome", "login", "registration"].includes(name)) {
+      toast("Log in first to access this feature.");
+      showScreen("welcome");
+      return;
+    }
+
+    showScreen(name);
+  }
+
+  function logout() {
+    state.user = null;
+    localStorage.removeItem(SESSION_KEY);
+    saveState();
+    currentRecipient = null;
+    closeDrawer();
+    showScreen("welcome");
+    toast("You have logged out.");
+  }
+
+  /* =======================================================
+     DEMO TRANSACTIONS
+     These affect this browser's localStorage only.
+     They do not move real money or synchronize accounts.
+     ======================================================= */
+
+  function previewFee(source, amount, type = "send") {
+    amount = Number(amount || 0);
+
+    if (!amount || amount < 0) return 0;
+
+    if (source === "wallet") return 0;
+
+    if (type === "withdraw") {
+      if (amount <= 100) return 10;
+      if (amount <= 500) return 15;
+      if (amount <= 1000) return 25;
+      if (amount <= 2500) return 40;
+      if (amount <= 5000) return 55;
+      return 75;
+    }
+
+    if (amount <= 100) return 0;
+    if (amount <= 500) return 7;
+    if (amount <= 1000) return 13;
+    if (amount <= 2500) return 23;
+    if (amount <= 5000) return 33;
+    if (amount <= 10000) return 45;
+    return 60;
+  }
+
+  function updateCostPreview(containerId, sourceId, amountId, type = "send") {
+    const container = $(containerId);
+    const source = $(sourceId)?.value || "wallet";
+    const amount = Number($(amountId)?.value || 0);
+
+    if (!container) return;
+
+    if (!validAmount(amount)) {
+      container.textContent = "Enter a valid amount to preview the cost.";
+      return;
+    }
+
+    const fee = previewFee(source, amount, type);
+
+    container.innerHTML = `
+      <div>Amount: <strong>${money(amount)}</strong></div>
+      <div>Estimated demo fee: <strong>${money(fee)}</strong></div>
+      <div>Total: <strong>${money(amount + fee)}</strong></div>
+      <small>Indicative demo figures, not live provider pricing.</small>
+    `;
+  }
+
+  function completeLocalTransaction({
+    type,
+    source,
+    amount,
+    recipient = "",
+    recipientName = "",
+    description = "",
+    fee = 0,
+    destination = "wallet"
+  }) {
+    if (!requireLogin()) return false;
+
+    amount = Number(amount);
+    fee = Number(fee);
+
+    if (!validAmount(amount)) {
+      showError("Enter a valid positive whole-number amount.");
+      return false;
+    }
+
+    if (!state.sources[source]?.enabled) {
+      showError("This payment source is not enabled.");
+      return false;
+    }
+
+    const total = amount + fee;
+
+    if (Number(state.sources[source].balance || 0) < total) {
+      showError("Insufficient demo balance.");
+      return false;
+    }
+
+    if (source === "wallet" && destination === "wallet" &&
+        recipient && state.user.beastId === recipient) {
+      showError("You cannot send money to your own BEAST account.");
+      return false;
+    }
+
+    state.sources[source].balance -= total;
+
+    if (type === "Receive" || type === "Deposit") {
+      state.sources.wallet.balance += amount;
+    }
+
+    state.revenue.fees = Number(state.revenue.fees || 0) + fee;
+
+    const tx = addTransaction({
+      type,
+      source,
+      amount,
+      fee,
+      totalDeducted: total,
+      recipient,
+      recipientName,
+      description,
+      destination,
+      status: "demo"
+    });
+
+    addNotification(
+      type + " recorded",
+      `${money(amount)} — reference ${tx.reference}`
+    );
+
+    renderEverything();
+    toast(`${type} recorded in DEMO mode.`);
+
+    return true;
+  }
+
+  function sourceOptions(select, preferred = "wallet") {
+    if (!select) return;
+
+    const oldValue = select.value || preferred;
+
+    select.innerHTML = Object.entries(SOURCE_NAMES).map(([key, name]) => {
+      const source = state.sources[key];
+      const disabled = !source?.enabled ? "disabled" : "";
+      return `<option value="${key}" ${disabled}>
+        ${escapeHTML(name)} — ${money(source?.balance || 0)}
+      </option>`;
+    }).join("");
+
+    if (state.sources[oldValue]?.enabled) {
+      select.value = oldValue;
+    } else {
+      select.value = state.sources.wallet.enabled ? "wallet" : "mpesa";
+    }
+  }
+
+  /* =======================================================
+     REGISTRATION / LOGIN
+     This local prototype is not secure production auth.
+     ======================================================= */
+
+  function setupRegistration() {
+    $("goRegisterButton")?.addEventListener("click", () => {
+      currentRegistration = {};
+      showScreen("registration");
+      $("regStep1")?.classList.remove("hidden");
+      $("regStep2")?.classList.add("hidden");
+      $("regStep3")?.classList.add("hidden");
+    });
+
+    $("backToWelcomeFromRegister")?.addEventListener("click", () => {
+      showScreen("welcome");
+    });
+
+    $("regNext1")?.addEventListener("click", () => {
+      const name = $("regName")?.value.trim();
+      const phone = normalizePhone($("regPhone")?.value);
+      const nationalId = $("regNationalId")?.value.trim();
+
+      if (!name || name.length < 3) {
+        showError("Enter your full name.");
+        return;
+      }
+
+      if (!validPhone(phone)) {
+        showError("Enter a valid Kenyan phone number.");
+        return;
+      }
+
+      if (!/^\d{5,12}$/.test(nationalId)) {
+        showError("Check your National ID number.");
+        return;
+      }
+
+      currentRegistration = { name, phone, nationalId };
+
+      $("regStep1")?.classList.add("hidden");
+      $("regStep2")?.classList.remove("hidden");
+      document.querySelectorAll(".step")[1]?.classList.add("active");
+    });
+
+    $("regNext2")?.addEventListener("click", () => {
+      const password = $("regPassword")?.value || "";
+      const password2 = $("regPassword2")?.value || "";
+      const pin = $("regPin")?.value || "";
+      const pin2 = $("regPin2")?.value || "";
+
+      if (password.length < 6) {
+        showError("Password must have at least 6 characters.");
+        return;
+      }
+
+      if (password !== password2) {
+        showError("Passwords do not match.");
+        return;
+      }
+
+      if (!/^\d{4}$/.test(pin) || pin !== pin2) {
+        showError("Enter matching four-digit PINs.");
+        return;
+      }
+
+      currentRegistration.password = password;
+      currentRegistration.pin = pin;
+
+      $("registrationSummary").innerHTML = `
+        <p><strong>Name:</strong> ${escapeHTML(currentRegistration.name)}</p>
+        <p><strong>Phone:</strong> ${escapeHTML(currentRegistration.phone)}</p>
+        <p><strong>National ID:</strong> Provided</p>
+        <p>Your BEAST ID will be assigned when registration is completed.</p>
+      `;
+
+      $("regStep2")?.classList.add("hidden");
+      $("regStep3")?.classList.remove("hidden");
+      document.querySelectorAll(".step")[2]?.classList.add("active");
+    });
+
+    $("finishRegistration")?.addEventListener("click", () => {
+      const data = currentRegistration;
+
+      if (!data.name || !data.phone || !data.password || !data.pin) {
+        showError("Complete all registration steps first.");
+        return;
+      }
+
+      if (state.user && state.user.phone === data.phone) {
+        showError("This phone is already registered on this browser.");
+        return;
+      }
+
+      const user = {
+        name: data.name,
+        phone: data.phone,
+        nationalId: data.nationalId,
+        beastId: "BEAST-" +
+          Math.floor(100000 + Math.random() * 900000),
+        pin: data.pin,
+        password: data.password,
+        createdAt: new Date().toISOString()
+      };
+
+      state.user = user;
+      localStorage.setItem(SESSION_KEY, JSON.stringify({
+        phone: user.phone
+      }));
+
+      saveState();
+      addSecurityEvent("New local demo profile created.");
+      showScreen("money");
+      toast("Demo profile created: " + user.beastId);
+    });
+
+    $("goLoginButton")?.addEventListener("click", () => {
+      showScreen("login");
+    });
+
+    $("backToWelcomeFromLogin")?.addEventListener("click", () => {
+      showScreen("welcome");
+    });
+
+    $("loginSubmitButton")?.addEventListener("click", () => {
+      const phone = normalizePhone($("loginPhone")?.value);
+      const password = $("loginPassword")?.value || "";
+
+      if (!validPhone(phone) || !password) {
+        showError("Enter your registered phone and password.");
+        return;
+      }
+
+      const savedUser = state.user;
+
+      if (!savedUser ||
+          savedUser.phone !== phone ||
+          savedUser.password !== password) {
+        showError(
+          "This local demo has no matching account. " +
+          "Register here or use the connected server login after backend integration."
+        );
+        return;
+      }
+
+      localStorage.setItem(SESSION_KEY, JSON.stringify({ phone }));
+      showScreen("money");
+      toast("Welcome back.");
     });
   }
 
-  $("saveBulkListButton")?.addEventListener("click", () => {
-    const name = prompt("Enter a name for this list:");
-    if(!name) return;
-    state.savedBulkLists[name] = $("bulkList").value;
-    save();
-    savedListSelect.innerHTML += `<option value="${name}">${name}</option>`;
-    toast("List saved.");
-  });
+  /* =======================================================
+     SEND / RECIPIENT VERIFICATION
+     ======================================================= */
 
-  $("bulkParseButton")?.addEventListener("click", () => {
-    const text = $("bulkList")?.value || ""; if(!text.trim()){ toast("Paste a list."); return; }
-    const { rows, errors } = parseBulkList(text);
-    if(errors.length){ $("bulkPreview").innerHTML = `<div class="bulk-errors"><b>${errors.length} problem(s)</b>${errors.map(e => `<div>• ${escapeHTML(e)}</div>`).join("")}</div>`; bulkRows = []; return; }
-    if(!rows.length){ toast("No valid rows."); return; } if(rows.length > MAX_BULK_ROWS){ toast(`Max ${MAX_BULK_ROWS} rows.`); return; }
-    bulkRows = rows;
-    const source = $("bulkSource")?.value || state.currentSource; let totalAmount = 0, totalFee = 0;
-    rows.forEach(r => { totalAmount += r.amount; const split = source === "wallet" ? { fee: beastWalletFee(r.amount) } : externalSplit(source, r.amount); totalFee += split.fee; });
-    $("bulkPreview").innerHTML = `<div class="bulk-preview"><div class="bulk-summary"><div><small>Recipients</small><strong>${rows.length}</strong></div><div><small>Total amount</small><strong>${money(totalAmount)}</strong></div><div><small>BEAST fees</small><strong>${money(totalFee)}</strong></div></div><div class="bulk-grand"><span>Total deducted</span><strong>${money(totalAmount + totalFee)}</strong></div></div>`;
-  });
+  function getSendRecipient() {
+    const type = $("sendRecipientType")?.value || "phone";
+    const raw = $("sendPhone")?.value.trim() || "";
 
-  $("bulkClearButton")?.addEventListener("click", () => { resetBulkFlow(); toast("Cleared."); });
-  $("bulkSendButton")?.addEventListener("click", () => {
-    if(!bulkRows.length){ toast("Parse a list first."); return; } const source = $("bulkSource")?.value || state.currentSource; const type = $("bulkType").value;
-    const src = state.sources[source]; if(!src || !src.enabled){ toast("Source not enabled."); return; }
-    askConfirmation(`<b>Confirm bulk ${type}</b><br><br>Recipients: ${bulkRows.length}<br>Source: ${escapeHTML(SOURCE_NAMES[source])}`, () => authorize("Bulk send", () => executeBulkSend(source, type)));
-  });
-}
+    if (type === "beast") {
+      const beastId = normalizeBeastId(raw);
+      if (!beastId) {
+        showError("Enter a valid BEAST number, such as 835678.");
+        return null;
+      }
 
-async function executeBulkSend(source, type){
-  const src = state.sources[source]; if(!src){ toast("Invalid source."); return; }
-  const isWallet = source === "wallet"; const results = []; let succeeded = 0, failed = 0, stoppedAt = null;
-  for(const row of bulkRows){
-    let fee = isWallet ? beastWalletFee(row.amount) : externalSplit(source, row.amount).fee;
-    const total = row.amount + fee;
-    if(src.balance < total){ failed++; stoppedAt = row; results.push({ phone: row.recipient, amount: row.amount, status: "failed", reason: "Insufficient balance" }); break; }
-    src.balance -= total; succeeded++;
-    const txn = { reference: generateReference(), type: type === "lipa" ? "Lipa Na" : "Bulk Send", amount: row.amount, fee, beastCut: fee, providerCost: 0, totalDeducted: total, source, recipient: row.recipient, recipientName: row.recipient.startsWith("BEAST-") ? "BEAST User" : "Demo recipient", description: `Bulk ${type} to ${row.recipient}` };
-    state.transactions.unshift({ ...txn, createdAt: new Date().toISOString(), status: "completed" });
-    if(row.recipient.startsWith("BEAST-")) { await sendInternalToServer(row.recipient, row.amount, txn.reference); } else { recordTransactionToServer(txn); }
-    results.push({ phone: row.recipient, amount: row.amount, status: "sent" });
+      return { type, id: beastId };
+    }
+
+    if (type === "phone") {
+      const phone = normalizePhone(raw);
+      if (!validPhone(phone)) {
+        showError("Enter a valid Kenyan phone number.");
+        return null;
+      }
+
+      return { type, id: phone };
+    }
+
+    if (!validAccount(raw)) {
+      showError("Enter a valid account number.");
+      return null;
+    }
+
+    return { type, id: raw };
   }
-  addNotification("Bulk complete", `${succeeded} sent, ${failed} failed.`); save();
-  const resultBox = $("bulkResult");
-  if(resultBox){ resultBox.classList.remove("hidden"); resultBox.innerHTML = `<div class="bulk-result-head"><div><small>Sent</small><strong style="color:var(--green)">${succeeded}</strong></div><div><small>Failed</small><strong style="color:var(--red)">${failed}</strong></div></div><div class="bulk-results">${results.map(r => `<div class="bulk-row ${r.status === "sent" ? "ok" : "bad"}"><span>${r.status === "sent" ? "✓" : "✕"}</span><div><strong>${escapeHTML(r.phone)}</strong><small>${money(r.amount)}${r.reason ? " — " + escapeHTML(r.reason) : ""}</small></div></div>`).join("")}</div>`; }
-  toast(`Bulk: ${succeeded} sent, ${failed} failed.`); renderEverything();
-}
-function resetBulkFlow(){ bulkRows = []; if($("bulkList")) $("bulkList").value = ""; if($("bulkPreview")) $("bulkPreview").innerHTML = ""; if($("bulkResult")){ $("bulkResult").innerHTML = ""; $("bulkResult").classList.add("hidden"); } }
 
-/* ================= RECEIVE / BUYER ================= */
-function setupReceiveTabs(){ document.querySelectorAll("[data-rtab]").forEach(tab => { tab.addEventListener("click", () => { const target = tab.dataset.rtab; document.querySelectorAll("[data-rtab]").forEach(t => t.classList.toggle("active", t === tab)); document.querySelectorAll(".receive-tab-panel").forEach(p => p.classList.remove("active")); const panel = target === "buyer" ? $("buyerTab") : target === "deposit" ? $("depositTab") : $("agentTab"); panel?.classList.add("active"); if(target === "buyer") resetBuyerFlow(); updateReceiveBackButton(); }); }); }
-function renderReceiveSellerLine(){ const line = $("receiveSellerLine"); if(!line) return; if(!isLoggedIn()){ line.textContent = "Paying: —"; return; } line.textContent = `Paying: ${state.user.name} • ${state.user.beastId}`; }
-function setBuyerStep(step){ buyerStep = step; ["buyerStep1","buyerStep2","buyerStep3","buyerSuccessPanel"].forEach(id => $(id)?.classList.remove("active")); if(step === 1) $("buyerStep1")?.classList.add("active"); if(step === 2) $("buyerStep2")?.classList.add("active"); if(step === 3) $("buyerStep3")?.classList.add("active"); if(step === "success") $("buyerSuccessPanel")?.classList.add("active"); document.querySelectorAll(".buyer-step").forEach(el => { el.classList.toggle("active", Number(el.dataset.bstep) === step); }); updateReceiveBackButton(); }
-function updateReceiveBackButton(){ const btn = $("receiveBackButton"); if(!btn) return; const buyerTabActive = $("buyerTab")?.classList.contains("active"); if(!buyerTabActive){ btn.classList.add("hidden"); return; } if(buyerStep === 1 || buyerStep === "success") btn.classList.add("hidden"); else btn.classList.remove("hidden"); }
-function handleReceiveBack(){ if(buyerStep === 3){ setBuyerStep(2); return; } if(buyerStep === 2){ buyerSession = null; setBuyerStep(1); ["buyerLoginPhone","buyerLoginNationalId","buyerLoginPin"].forEach(id => { if($(id)) $(id).value = ""; }); } }
+  function setupSend() {
+    sourceOptions($("sendSource"));
 
-function setupBuyerFlow(){
-  $("receiveBackButton")?.addEventListener("click", handleReceiveBack); $("buyerLoginButton")?.addEventListener("click", doBuyerLogin);
-  $("buyerChooseSourceButton")?.addEventListener("click", () => { if(!buyerSession) return; if(!buyerSession.chosenSource){ toast("Select an account."); return; } renderBuyerStep3(); setBuyerStep(3); });
-  $("buyerPayAmount")?.addEventListener("input", updateBuyerCostPreview); $("buyerDestinationChannel")?.addEventListener("change", renderBuyerDestinationFields); $("buyerConfirmPayButton")?.addEventListener("click", doBuyerPay);
-  $("copyReceiptButton")?.addEventListener("click", () => { const text = $("receiptText")?.textContent || ""; navigator.clipboard?.writeText(text).then(() => toast("Copied.")).catch(() => toast("Copy failed.")); });
-  $("shareReceiptButton")?.addEventListener("click", () => { const text = $("receiptText")?.textContent || ""; if(navigator.share){ navigator.share({ title:"BEAST Receipt", text }).catch(() => {}); } else { navigator.clipboard?.writeText(text).then(() => toast("Copied.")); } });
-}
+    $("sendRecipientType")?.addEventListener("change", () => {
+      currentRecipient = null;
 
-async function doBuyerLogin(){
-  const phone = normalizePhone($("buyerLoginPhone").value); const nationalId = $("buyerLoginNationalId").value.trim(); const pin = $("buyerLoginPin").value;
-  if(!validPhone(phone)){ toast("Enter valid phone."); return; } if(!/^\d{5,}$/.test(nationalId)){ toast("Enter National ID."); return; } if(!/^\d{4}$/.test(pin)){ toast("Enter 4-digit PIN."); return; }
-  const bs = state.buyerSecurity; if(bs.lockoutUntil && Date.now() < bs.lockoutUntil){ toast(`Locked. ${Math.ceil((bs.lockoutUntil - Date.now())/1000)}s.`); return; }
-  const buyer = DEMO_BUYERS.find(b => b.phone === phone); if(!buyer){ addSecurity(`Unknown buyer ${phone}.`); save(); toast("Buyer not found."); return; }
-  if(buyer.nationalId !== nationalId){ addSecurity(`ID mismatch ${phone}.`); save(); toast("National ID mismatch."); return; }
-  const ok = await verifyDemoBuyerPin(phone, pin);
-  if(!ok){ bs.failedPinAttempts = (bs.failedPinAttempts || 0) + 1; if(bs.failedPinAttempts >= MAX_PIN_ATTEMPTS){ bs.lockoutUntil = Date.now() + PIN_LOCKOUT_MS; bs.failedPinAttempts = 0; save(); toast(`Too many attempts. Locked ${PIN_LOCKOUT_MS/1000}s.`); return; } save(); toast(`Incorrect PIN. ${MAX_PIN_ATTEMPTS - bs.failedPinAttempts} left.`); return; }
-  bs.failedPinAttempts = 0; bs.lockoutUntil = 0; save();
-  buyerSession = { phone: buyer.phone, name: buyer.name, nationalId: buyer.nationalId, sources: JSON.parse(JSON.stringify(buyer.sources)), chosenSource: null };
-  $("buyerLoginPin").value = ""; renderBuyerStep2(); setBuyerStep(2);
-  clearTimeout(buyerSessionTimer); buyerSessionTimer = setTimeout(() => { if(buyerSession){ toast("Buyer session expired."); resetBuyerFlow(); } }, BUYER_SESSION_MS);
-}
+      const type = $("sendRecipientType").value;
+      const input = $("sendPhone");
 
-function renderBuyerStep2(){
-  if(!buyerSession) return; if($("buyerWelcomeLine")) $("buyerWelcomeLine").textContent = `Signed in as ${buyerSession.name}`;
-  const list = $("buyerSourcesList"); if(!list) return;
-  list.innerHTML = ALL_SOURCES.map(key => {
-    const src = buyerSession.sources[key] || { enabled: false }; const linked = src.enabled === true; let details = "Not linked";
-    if(linked){ if(key === "bank") details = src.bankName ? `${src.bankName} ••••` : "Linked"; else if(key === "card") details = src.cardName ? `${src.cardName} •••• ${src.last4 || "----"}` : "Linked"; else if(key === "wallet") details = "BEAST Wallet"; else details = "Balance hidden"; }
-    const selected = buyerSession.chosenSource === key ? " selected" : "";
-    return `<button class="buyer-source-option${selected} ${linked ? "" : "disabled"}" data-bsource="${key}" ${linked ? "" : "disabled"}><span class="buyer-source-icon">${SOURCE_ICONS[key]}</span><span class="buyer-source-text"><strong>${SOURCE_NAMES[key]}</strong><small>${escapeHTML(details)}</small></span></button>`;
-  }).join("");
-  list.querySelectorAll("[data-bsource]").forEach(btn => { btn.addEventListener("click", () => { buyerSession.chosenSource = btn.dataset.bsource; list.querySelectorAll(".buyer-source-option").forEach(b => b.classList.remove("selected")); btn.classList.add("selected"); $("buyerChooseSourceButton").disabled = false; }); });
-  $("buyerChooseSourceButton").disabled = !buyerSession.chosenSource;
-}
+      if (input) {
+        input.value = "";
+        input.placeholder = type === "beast"
+          ? "835678 or BEAST-835678"
+          : type === "account"
+            ? "Account number"
+            : "0712345678";
+      }
 
-function availableDestinations(){ return Object.entries(state.receiving).filter(([,r]) => r.enabled).map(([k]) => k); }
-function renderBuyerStep3(){
-  if(!buyerSession) return; if($("buyerDestinationName")) $("buyerDestinationName").textContent = state.user.name;
-  if($("buyerDestinationId")) $("buyerDestinationId").textContent = `${state.user.beastId} • ${internationalPhone(state.user.phone)}`;
-  if($("buyerChosenSourceName")) $("buyerChosenSourceName").textContent = SOURCE_NAMES[buyerSession.chosenSource] || "—";
-  const select = $("buyerDestinationChannel"); if(select){ const enabled = availableDestinations(); select.innerHTML = enabled.map(key => { const label = { wallet:"Wallet", pochi:"Pochi", till:"Till", paybill:"PayBill", bank:"Bank", card:"Card" }[key]; return `<option value="${key}">${label}</option>`; }).join(""); if(!select.value && enabled.length) select.value = enabled[0]; }
-  renderBuyerDestinationFields(); if($("buyerPayAmount")) $("buyerPayAmount").value = ""; updateBuyerCostPreview();
-}
+      $("recipientVerification")?.classList.add("hidden");
+    });
 
-function renderBuyerDestinationFields(){
-  const channel = $("buyerDestinationChannel")?.value; const fields = $("buyerDestinationFields"); if(!fields) return;
-  if(channel === "wallet"){ fields.innerHTML = `<small class="muted">Money lands in seller's Wallet.</small>`; return; }
-  if(channel === "pochi"){ fields.innerHTML = `<div class="buyer-account-chip"><span>Pochi</span><strong>${escapeHTML(state.receiving.pochi.phone || "—")}</strong></div>`; return; }
-  if(channel === "till"){ fields.innerHTML = `<div class="buyer-account-chip"><span>Till</span><strong>${escapeHTML(state.receiving.till.number || "—")}</strong></div>`; return; }
-  if(channel === "paybill"){ fields.innerHTML = `<div class="buyer-account-chip"><span>PayBill</span><strong>${escapeHTML(state.receiving.paybill.number || "—")}</strong><small>Acct: ${escapeHTML(state.receiving.paybill.account || "—")}</small></div>`; return; }
-  if(channel === "bank"){ fields.innerHTML = `<div class="buyer-account-chip"><span>Bank</span><strong>${escapeHTML(state.receiving.bank.bankName || "—")}</strong><small>Acct: ${escapeHTML(state.receiving.bank.account || "—")}</small></div>`; return; }
-  if(channel === "card"){ fields.innerHTML = `<div class="buyer-account-chip"><span>Card</span><strong>${escapeHTML(state.receiving.card.cardName || "—")} •••• ${escapeHTML(state.receiving.card.last4 || "----")}</strong></div>`; return; }
-}
+    $("verifyRecipient")?.addEventListener("click", async () => {
+      if (!requireLogin()) return;
 
-function updateBuyerCostPreview(){
-  const box = $("buyerCostPreview"); if(!box || !buyerSession) return; const amount = Number($("buyerPayAmount")?.value || 0); const source = buyerSession.chosenSource;
-  if(amount <= 0){ box.innerHTML = `<b>Cost preview</b><br>Enter amount.`; return; }
-  if(source === "wallet"){ const fee = beastWalletFee(amount); box.innerHTML = `<b>BEAST Wallet</b><br>Amount: ${money(amount)}<br>Fee: ${money(fee)}<br><br><strong>Total: ${money(amount + fee)}</strong>`; }
-  else { const split = externalSplit(source, amount); box.innerHTML = `<b>Cost preview</b><br>Amount: ${money(amount)}<br>${SOURCE_NAMES[source]} fee: ${money(split.fee)}<br><br><strong>Total: ${money(amount + split.fee)}</strong>`; }
-}
+      const recipient = getSendRecipient();
+      if (!recipient) return;
 
-function doBuyerPay(){
-  if(!buyerSession) return; const amount = Number($("buyerPayAmount").value); const channel = $("buyerDestinationChannel")?.value || "wallet"; if(amount <= 0){ toast("Enter amount."); return; }
-  const source = buyerSession.chosenSource; let fee, beastCut, providerKeeps;
-  if(source === "wallet"){ fee = beastWalletFee(amount); beastCut = fee; providerKeeps = 0; }
-  else { const split = externalSplit(source, amount); fee = split.fee; beastCut = split.beastCut; providerKeeps = split.providerKeeps; }
-  const total = amount + fee; const src = buyerSession.sources[source]; if(!src || src.balance < total){ toast("Buyer insufficient balance."); return; }
-  const channelLabel = { wallet:"Wallet", pochi:"Pochi", till:"Till", paybill:"PayBill", bank:"Bank", card:"Card" }[channel];
-  askConfirmation(`<b>Confirm buyer payment</b><br><br>Buyer: ${escapeHTML(buyerSession.name)}<br>To: ${escapeHTML(state.user.name)}<br>Via: ${escapeHTML(channelLabel)}<br>Source: ${escapeHTML(SOURCE_NAMES[source])}<br><br>Amount: ${money(amount)}<br>Fee: ${money(fee)}<br><br><strong>Total: ${money(total)}</strong>`, () => authorizeBuyerPin(amount, source, fee, beastCut, providerKeeps, channel));
-}
+      if (recipient.type === "beast" &&
+          recipient.id === state.user.beastId) {
+        showError("You cannot send money to yourself.");
+        return;
+      }
 
-function authorizeBuyerPin(amount, source, fee, beastCut, providerKeeps, channel){
-  $("pinPurpose").textContent = `Buyer auth — ${buyerSession.name}`; $("authorizationPin").value = ""; if($("pinError")){ $("pinError").textContent = ""; $("pinError").classList.add("hidden"); } $("pinModal").classList.remove("hidden");
-  const confirmBtn = $("confirmPin"); if(!confirmBtn) return;
-  confirmBtn._buyerHandler = async () => {
-    const pin = $("authorizationPin").value; if(!/^\d{4}$/.test(pin)){ if($("pinError")){ $("pinError").textContent = "Enter 4-digit PIN."; $("pinError").classList.remove("hidden"); } return; }
-    const ok = await verifyDemoBuyerPin(buyerSession.phone, pin); if(!ok){ if($("pinError")){ $("pinError").textContent = "Incorrect PIN."; $("pinError").classList.remove("hidden"); } return; }
-    confirmBtn.removeEventListener("click", confirmBtn._buyerHandler); confirmBtn._buyerHandler = null; $("pinModal").classList.add("hidden"); finishBuyerPayment(amount, source, fee, beastCut, providerKeeps, channel);
-  };
-  confirmBtn.addEventListener("click", confirmBtn._buyerHandler);
-}
+      /*
+       * Server-side recipient lookup must be added before this
+       * prototype can claim that a remote account is verified.
+       */
+      currentRecipient = recipient;
 
-function finishBuyerPayment(amount, source, fee, beastCut, providerKeeps, channel){
-  const src = buyerSession.sources[source]; const total = amount + fee; src.balance -= total;
-  let sellerSourceKey = "wallet"; if(channel === "pochi" || channel === "till" || channel === "paybill") sellerSourceKey = "mpesa"; else if(channel === "bank") sellerSourceKey = "bank"; else if(channel === "card") sellerSourceKey = "card";
-  if(!state.sources[sellerSourceKey]?.enabled){ sellerSourceKey = "wallet"; state.sources.wallet.enabled = true; }
-  state.sources[sellerSourceKey].balance += amount;
-  const txn = { reference: generateReference(), type:"Buyer Payment", amount, fee, beastCut, providerCost: providerKeeps, totalDeducted: total, source, destination: channel, sellerSource: sellerSourceKey, recipient: state.user.phone, recipientName: state.user.name, buyerName: buyerSession.name, buyerPhone: buyerSession.phone, description: `Buyer payment from ${buyerSession.name} via ${channel}` };
-  state.transactions.unshift({ ...txn, createdAt: new Date().toISOString(), status:"completed" });
-  recordTransactionToServer(txn);
-  addNotification("Buyer payment", `${money(amount)} from ${buyerSession.name}.`); save(); showBuyerSuccess(amount, txn.reference, channel, source, fee); renderEverything();
-}
+      const box = $("recipientVerification");
+      box.classList.remove("hidden");
 
-function showBuyerSuccess(amount, reference, channel, source, fee){
-  const channelLabel = { wallet:"Wallet", pochi:"Pochi", till:"Till", paybill:"PayBill", bank:"Bank", card:"Card" }[channel];
-  if($("buyerSuccessText")) $("buyerSuccessText").textContent = `${money(amount)} received. Ref ${reference}.`;
-  const receiptText = `BEAST Payment Receipt\nRef: ${reference}\nFrom: ${buyerSession.name} (${buyerSession.phone})\nTo: ${state.user.name} (${state.user.beastId})\nAmount: ${money(amount)}\nFee: ${money(fee)}\nVia: ${channelLabel}\nDate: ${new Date().toLocaleString("en-KE")}`;
-  if($("receiptText")) $("receiptText").textContent = receiptText;
-  setBuyerStep("success"); clearTimeout(buyerSuccessTimer);
-  const fill = $("buyerCountdownFill"); const text = $("buyerCountdownText"); if(fill){ fill.style.transition = "none"; fill.style.width = "100%"; }
-  requestAnimationFrame(() => { if(fill){ fill.style.transition = `width ${BUYER_SUCCESS_MS}ms linear`; fill.style.width = "0%"; } });
-  let remaining = Math.ceil(BUYER_SUCCESS_MS / 1000); if(text) text.textContent = `Returning in ${remaining}s…`;
-  const tick = setInterval(() => { remaining -= 1; if(remaining > 0 && text) text.textContent = `Returning in ${remaining}s…`; if(remaining <= 0){ clearInterval(tick); buyerSuccessTimer = setTimeout(() => resetBuyerFlow(), 200); } }, 1000);
-}
+      box.innerHTML = `
+        <strong>Format valid — account not server-verified</strong>
+        <div>${escapeHTML(recipient.id)}</div>
+        <small>Recipient name verification requires the server lookup API.</small>
+      `;
 
-function resetBuyerFlow(){
-  clearTimeout(buyerSuccessTimer); clearTimeout(buyerSessionTimer); buyerSession = null;
-  ["buyerLoginPhone","buyerLoginNationalId","buyerLoginPin","buyerPayAmount"].forEach(id => { if($(id)) $(id).value = ""; });
-  if($("buyerSourcesList")) $("buyerSourcesList").innerHTML = ""; if($("buyerChosenSourceName")) $("buyerChosenSourceName").textContent = "—"; if($("buyerDestinationName")) $("buyerDestinationName").textContent = "—"; if($("buyerDestinationId")) $("buyerDestinationId").textContent = "—"; if($("buyerCostPreview")) $("buyerCostPreview").innerHTML = ""; if($("buyerChooseSourceButton")) $("buyerChooseSourceButton").disabled = true; if($("receiptText")) $("receiptText").textContent = "";
-  setBuyerStep(1); renderReceiveSellerLine();
-}
+      toast("Format checked. Remote identity is not yet verified.");
+    });
 
-/* ================= STANDARD FUNCTIONS ================= */
-function askConfirmation(summaryHTML, onConfirm){ if(!$("confirmModal")){ pendingAction = onConfirm; openPinModal("Confirm"); return; } $("confirmBody").innerHTML = summaryHTML; $("confirmModal").classList.remove("hidden"); $("confirmYes").onclick = () => { $("confirmModal").classList.add("hidden"); onConfirm(); }; $("confirmNo").onclick = () => { $("confirmModal").classList.add("hidden"); pendingAction = null; }; $("confirmClose")?.addEventListener("click", () => { $("confirmModal").classList.add("hidden"); pendingAction = null; }); }
-function buildConfirmHTML({title, recipientName, recipient, amount, source, fee}){ const total = Number(amount) + Number(fee); return `<b>${escapeHTML(title)}</b><br><br>Recipient: ${escapeHTML(recipientName)}<br>Destination: ${escapeHTML(recipient)}<br>Source: ${escapeHTML(SOURCE_NAMES[source] || source)}<br><br>Amount: ${money(amount)}<br>Fee: ${money(fee)}<br><br><strong>Total: ${money(total)}</strong>`; }
-function openPinModal(purpose){ $("pinPurpose").textContent = purpose; $("authorizationPin").value = ""; if($("pinError")){ $("pinError").textContent = ""; $("pinError").classList.add("hidden"); } $("pinModal").classList.remove("hidden"); setTimeout(() => $("authorizationPin").focus(), 100); }
-function authorize(purpose, callback){ pendingAction = callback; openPinModal(purpose); }
-function closePin(){ pendingAction = null; $("pinModal").classList.add("hidden"); }
-function pinLocked(){ return state.security.lockoutUntil && Date.now() < state.security.lockoutUntil; }
-function secondsLeft(){ return Math.ceil((state.security.lockoutUntil - Date.now()) / 1000); }
-async function attemptPin(pin){
-  if(pinLocked()){ const s = secondsLeft(); if($("pinError")){ $("pinError").textContent = `Locked. Try again in ${s}s.`; $("pinError").classList.remove("hidden"); } return; }
-  const ok = await verifyPin(pin);
-  if(!ok){ state.security.failedPinAttempts += 1; addSecurity("Failed PIN."); if(state.security.failedPinAttempts >= MAX_PIN_ATTEMPTS){ state.security.lockoutUntil = Date.now() + PIN_LOCKOUT_MS; state.security.failedPinAttempts = 0; save(); if($("pinError")){ $("pinError").textContent = `Too many. Locked ${PIN_LOCKOUT_MS/1000}s.`; $("pinError").classList.remove("hidden"); } return; } save(); if($("pinError")){ $("pinError").textContent = `Incorrect. ${MAX_PIN_ATTEMPTS - state.security.failedPinAttempts} left.`; $("pinError").classList.remove("hidden"); } return; }
-  state.security.failedPinAttempts = 0; state.security.lockoutUntil = 0; save();
-  const action = pendingAction; closePin(); if(action) action();
-}
-function setupPin(){ $("confirmPin")?.addEventListener("click", () => { if(buyerSession && $("confirmPin")._buyerHandler) return; attemptPin($("authorizationPin").value); }); $("authorizationPin")?.addEventListener("keydown", e => { if(e.key === "Enter"){ if(buyerSession && $("confirmPin")._buyerHandler) return; attemptPin($("authorizationPin").value); } }); $("cancelPin").onclick = closePin; $("closePinModal").onclick = closePin; }
+    $("sendAmount")?.addEventListener("input", () =>
+      updateCostPreview("sendCostPreview", "sendSource", "sendAmount")
+    );
 
-async function completeTransaction(data){
-  const amount = Number(data.amount); let fee, beastCut, providerKeeps, total;
-  if(data.source === "wallet"){ fee = beastWalletFee(amount); beastCut = fee; providerKeeps = 0; total = amount + fee; }
-  else { const split = externalSplit(data.source, amount, data.providerType || "send"); fee = split.fee; beastCut = split.beastCut; providerKeeps = split.providerKeeps; total = amount + fee; }
-  const source = state.sources[data.source]; if(!source || !source.enabled){ toast("Source not enabled."); return; }
-  if(source.balance < total){ toast(`Insufficient ${SOURCE_NAMES[data.source]} balance.`); return; }
-  source.balance -= total;
-  const txn = { reference: generateReference(), type: data.type, amount, fee, beastCut, providerCost: providerKeeps, totalDeducted: total, source: data.source, recipient: data.recipient, recipientName: data.recipientName, description: data.description };
-  state.transactions.unshift({ ...txn, createdAt: new Date().toISOString(), status:"completed" });
-  if (data.recipient && data.recipient.startsWith("BEAST-")) { const res = await sendInternalToServer(data.recipient, amount, txn.reference); if(res.error) { toast(res.error); source.balance += total; state.transactions.shift(); return; } } 
-  else { recordTransactionToServer(txn); }
-  addNotification(`${data.type} completed`, `${money(amount)} sent.`); addSecurity(`${data.type} authorized.`); save(); toast(`${data.type} completed. ${money(total)} deducted.`);
-  if(data.type === "Send"){ $("sendPhone").value = ""; $("sendAmount").value = ""; $("recipientVerification").classList.add("hidden"); $("sendSource").disabled = false; }
-  renderEverything();
-}
+    $("sendSource")?.addEventListener("change", () =>
+      updateCostPreview("sendCostPreview", "sendSource", "sendAmount")
+    );
 
-function renderHistory(){ const box = $("historyList"); if(!box) return; if(!state.transactions.length){ box.innerHTML = `<div class="panel muted">No transactions yet.</div>`; return; } box.innerHTML = state.transactions.map(t => { const dir = t.type === "Deposit to BEAST" || t.type === "Agent Deposit" || t.type === "Buyer Payment" || t.type === "Owner Withdrawal" ? "+" : "-"; return `<div class="list-item"><strong>${escapeHTML(t.type)}</strong><span>${dir} ${money(t.amount)}</span><small>${escapeHTML(t.description)}<br>Ref: ${escapeHTML(t.reference)}<br>${dateText(t.createdAt)}</small></div>`; }).join(""); }
-function renderStatements(){ const summaryBox = $("statementsSummary"); const listBox = $("statementsList"); if(!summaryBox || !listBox) return; let s = { count: state.transactions.length, received: 0, sent: 0, net: 0, fees: 0 }; state.transactions.forEach(t => { if(t.type === "Buyer Payment" || t.type === "Owner Withdrawal") s.received += t.amount; else s.sent += t.amount; s.fees += t.fee || 0; }); s.net = s.received - s.sent; summaryBox.innerHTML = `<div class="statements-grid"><div class="stat-card"><small>Txns</small><strong>${s.count}</strong></div><div class="stat-card"><small>In</small><strong>${money(s.received)}</strong></div><div class="stat-card"><small>Out</small><strong>${money(s.sent)}</strong></div><div class="stat-card"><small>Net</small><strong>${money(s.net)}</strong></div></div>`; if(!state.transactions.length){ listBox.innerHTML = `<div class="panel muted">No activity.</div>`; return; } listBox.innerHTML = state.transactions.slice(0, 20).map(t => `<div class="list-item"><strong>${t.type}</strong><span>${money(t.amount)}</span></div>`).join(""); }
-function setupConnect(){ $("searchForm")?.addEventListener("submit", (e) => { e.preventDefault(); const q = $("searchInput").value; window.open("https://www.google.com/search?q=" + encodeURIComponent(q), "_blank"); }); }
-function renderProfile(){ const box = $("profileDetails"); if(!box) return; box.innerHTML = `<div class="list-item"><strong>${state.user.name}</strong><small>BEAST ID: ${state.user.beastId}<br>Phone: ${state.user.phone}</small></div>`; }
-function setupSettings(){ $("themeToggle")?.addEventListener("change", e => setTheme(e.target.checked)); $("resetDemo")?.addEventListener("click", () => { if(confirm("Reset?")){ localStorage.clear(); location.reload(); } }); }
-function addNotification(title, message){ state.notifications.unshift({ title, message, createdAt: new Date().toISOString() }); save(); }
-function renderNotifications(){ const box = $("notificationList"); if(!box) return; if(!state.notifications.length){ box.innerHTML = `<div class="panel muted">No notifications.</div>`; return; } box.innerHTML = state.notifications.map(n => `<div class="list-item"><strong>${n.title}</strong><small>${n.message}</small></div>`).join(""); }
-function addSecurity(message){ state.securityEvents.unshift({ message, createdAt: new Date().toISOString() }); }
-function renderSecurity(){ const box = $("securityList"); if(!box) return; if(!state.securityEvents.length){ box.innerHTML = `<div class="muted">No events.</div>`; return; } box.innerHTML = state.securityEvents.map(e => `<div class="list-item"><strong>Event</strong><small>${e.message}</small></div>`).join(""); }
-function setupNav(){ document.querySelectorAll("[data-tab]").forEach(btn => btn.addEventListener("click", () => { const tab = btn.dataset.tab; if(!isLoggedIn() && tab !== "connect"){ showScreen("welcome"); return; } showScreen(tab); })); $("menuButton")?.addEventListener("click", openMenu); $("closeMenu")?.addEventListener("click", closeMenu); $("drawerBackdrop")?.addEventListener("click", closeMenu); }
-function renderHome(){ if(!isLoggedIn()) return; if($("welcomeText")) $("welcomeText").textContent = `Welcome, ${state.user.name}.`; if($("dashboardBeastId")) $("dashboardBeastId").textContent = state.user.beastId; if($("totalBalance")) $("totalBalance").textContent = money(totalBalance()); }
-function renderEverything(){ if(!isLoggedIn()) return; renderHome(); renderSources("sourceList"); renderNotifications(); renderSecurity(); renderProfile(); fillSourceSelects(); }
+    $("sendMoneyButton")?.addEventListener("click", () => {
+      if (!requireLogin()) return;
 
-async function initialize(){ await buildDemoBuyerHashes(); setupWelcome(); setupLogin(); setupRegistration(); setupNav(); setupSend(); setupBulk(); setupReceiveTabs(); setupBuyerFlow(); setupWithdraw(); setupLipa(); setupPin(); setupSettings(); setupConnect(); loadTheme(); if(!state.registered){ showScreen("welcome"); } else if(!isLoggedIn()){ showScreen("login"); } else { showScreen("money"); } resetBuyerFlow(); resetBulkFlow(); renderEverything(); resetAutoLock(); }
-function setupPremium(){ $("premiumBtn")?.addEventListener("click", () => { toast("Premium demo activated."); }); }
-initialize();
+      if (!currentRecipient) {
+        showError("Check the recipient details first.");
+        return;
+      }
+
+      const amount = Number($("sendAmount")?.value);
+      const source = $("sendSource")?.value;
+
+      if (!validAmount(amount)) {
+        showError("Enter a valid amount.");
+        return;
+      }
+
+      if (currentRecipient.type === "beast") {
+        if (source !== "wallet") {
+          showError("Direct BEAST-to-BEAST payments must use BEAST Wallet.");
+          return;
+        }
+
+        showError(
+          "Remote BEAST transfers are not enabled until the server " +
+          "provides secure recipient verification and atomic transfers."
+        );
+        return;
+      }
+
+      if (currentRecipient.type === "account") {
+        showError("External account transfers require a supported provider.");
+        return;
+      }
+
+      openAuthorization({
+        type: "Send",
+        source,
+        amount,
+        recipient: currentRecipient.id,
+        recipientName: "Unverified recipient",
+        description: "Demo phone transfer"
+      });
+    });
+  }
+
+  /* =======================================================
+     BULK SEND AND SAVED LISTS
+     ======================================================= */
+
+  function parseBulkList(text) {
+    const rows = [];
+    const errors = [];
+    const lines = String(text || "").split(/\r?\n/);
+
+    lines.forEach((line, index) => {
+      const trimmed = line.trim();
+      if (!trimmed) return;
+
+      const parts = trimmed.split(/[,\t;|]/).map(part => part.trim());
+
+      if (parts.length < 2) {
+        errors.push(`Line ${index + 1}: use recipient,amount.`);
+        return;
+      }
+
+      const rawRecipient = parts[0];
+      const amount = Number(parts[1]);
+
+      if (!validAmount(amount)) {
+        errors.push(`Line ${index + 1}: invalid amount.`);
+        return;
+      }
+
+      let recipientType;
+      let recipient = rawRecipient;
+
+      if (/^(BEAST-)?\d{6}$/i.test(rawRecipient)) {
+        recipientType = "beast";
+        recipient = normalizeBeastId(rawRecipient);
+      } else if (validPhone(rawRecipient)) {
+        recipientType = "phone";
+        recipient = normalizePhone(rawRecipient);
+      } else if (validAccount(rawRecipient)) {
+        recipientType = "account";
+      } else {
+        errors.push(`Line ${index + 1}: invalid recipient.`);
+        return;
+      }
+
+      if (recipientType === "beast" &&
+          state.user &&
+          recipient === state.user.beastId) {
+        errors.push(`Line ${index + 1}: cannot pay your own BEAST ID.`);
+        return;
+      }
+
+      rows.push({
+        line: index + 1,
+        recipient,
+        recipientType,
+        amount
+      });
+    });
+
+    if (rows.length > 200) {
+      return {
+        rows: [],
+        errors: ["Maximum 200 recipients per batch."]
+      };
+    }
+
+    const seen = new Set();
+
+    rows.forEach(row => {
+      const key = row.recipient.toUpperCase();
+
+      if (seen.has(key)) {
+        errors.push(`Duplicate recipient: ${row.recipient}`);
+      }
+
+      seen.add(key);
+    });
+
+    return { rows, errors };
+  }
+
+  function renderBulkPreview() {
+    const box = $("bulkPreview");
+    if (!box) return;
+
+    if (!parsedBulk.length) {
+      box.innerHTML = "<p>No validated recipients yet.</p>";
+      return;
+    }
+
+    const total = parsedBulk.reduce((sum, row) => sum + row.amount, 0);
+
+    box.innerHTML = `
+      <h3>Batch preview</h3>
+      <p>Recipients: <strong>${parsedBulk.length}</strong></p>
+      <p>Total amount: <strong>${money(total)}</strong></p>
+      <div class="list">
+        ${parsedBulk.map(row => `
+          <div class="list-item">
+            <strong>${escapeHTML(row.recipient)}</strong>
+            <span>${money(row.amount)}</span>
+            <small>${escapeHTML(row.recipientType)}</small>
+          </div>
+        `).join("")}
+      </div>
+      <p class="muted">Recipient identity and balances have not been verified.</p>
+    `;
+  }
+
+  function getSavedBulkLists() {
+    try {
+      const value = JSON.parse(localStorage.getItem(BULK_KEY) || "{}");
+      return value && typeof value === "object" ? value : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function renderSavedBulkLists() {
+    const select = $("bulkSavedList");
+    if (!select) return;
+
+    const lists = getSavedBulkLists();
+    const previous = select.value;
+
+    select.innerHTML = '<option value="">Select a saved list</option>' +
+      Object.keys(lists).sort().map(name =>
+        `<option value="${escapeHTML(name)}">${escapeHTML(name)}</option>`
+      ).join("");
+
+    if (lists[previous]) select.value = previous;
+  }
+
+  function setupBulk() {
+    sourceOptions($("bulkSource"));
+    renderSavedBulkLists();
+
+    $("bulkParseButton")?.addEventListener("click", () => {
+      if (!requireLogin()) return;
+
+      const result = parseBulkList($("bulkList")?.value || "");
+      parsedBulk = result.rows;
+
+      renderBulkPreview();
+
+      const resultBox = $("bulkResult");
+      if (resultBox) {
+        resultBox.classList.remove("hidden");
+        resultBox.innerHTML = result.errors.length
+          ? `<strong>Fix these issues:</strong><ul>${
+              result.errors.map(error =>
+                `<li>${escapeHTML(error)}</li>`
+              ).join("")
+            }</ul>`
+          : "<strong>Syntax validation complete.</strong> " +
+            "Remote recipients are not yet verified.";
+      }
+
+      if (result.errors.length) {
+        toast(`${result.errors.length} validation issue(s).`);
+      } else {
+        toast(`${result.rows.length} recipient(s) parsed.`);
+      }
+    });
+
+    $("bulkClearButton")?.addEventListener("click", () => {
+      $("bulkList").value = "";
+      $("bulkPreview").innerHTML = "";
+      $("bulkResult")?.classList.add("hidden");
+      parsedBulk = [];
+    });
+
+    $("bulkSaveListButton")?.addEventListener("click", () => {
+      if (!requireLogin()) return;
+
+      const name = $("bulkListName")?.value.trim();
+      const text = $("bulkList")?.value || "";
+
+      if (!name || !text.trim()) {
+        showError("Enter a list name and recipient list.");
+        return;
+      }
+
+      const lists = getSavedBulkLists();
+      lists[name] = { text, updatedAt: new Date().toISOString() };
+
+      localStorage.setItem(BULK_KEY, JSON.stringify(lists));
+      renderSavedBulkLists();
+      $("bulkSavedList").value = name;
+
+      toast("Recipient list saved on this device.");
+    });
+
+    $("bulkLoadListButton")?.addEventListener("click", () => {
+      const name = $("bulkSavedList")?.value;
+      const lists = getSavedBulkLists();
+
+      if (!name || !lists[name]) {
+        showError("Select a saved list.");
+        return;
+      }
+
+      $("bulkListName").value = name;
+      $("bulkList").value = lists[name].text;
+      parsedBulk = [];
+      $("bulkPreview").innerHTML = "";
+      toast("List loaded. Validate it before proceeding.");
+    });
+
+    $("bulkDeleteListButton")?.addEventListener("click", () => {
+      const name = $("bulkSavedList")?.value;
+
+      if (!name) {
+        showError("Select a saved list first.");
+        return;
+      }
+
+      const lists = getSavedBulkLists();
+      delete lists[name];
+
+      localStorage.setItem(BULK_KEY, JSON.stringify(lists));
+      renderSavedBulkLists();
+      toast("Saved list deleted from this device.");
+    });
+
+    $("bulkSendButton")?.addEventListener("click", () => {
+      if (!requireLogin()) return;
+
+      if (!parsedBulk.length) {
+        showError("Validate the list before proceeding.");
+        return;
+      }
+
+      if (parsedBulk.some(row => row.recipientType !== "phone")) {
+        showError(
+          "Bulk BEAST and account transfers require the secure server " +
+          "batch-transfer API, which is not yet implemented."
+        );
+        return;
+      }
+
+      showError(
+        "Bulk transfers are not enabled yet. The server must verify " +
+        "each recipient and process the batch safely before funds are moved."
+      );
+    });
+  }
+
+  /* =======================================================
+     WITHDRAW
+     ======================================================= */
+
+  function setupWithdraw() {
+    sourceOptions($("withdrawSource"), "wallet");
+
+    const mode = $("withdrawMode");
+    const agentFields = $("agentWithdrawalFields");
+    const mobileFields = $("mobileWithdrawalFields");
+
+    function updateMode() {
+      const isAgent = mode?.value !== "mobile";
+
+      agentFields?.classList.toggle("hidden", !isAgent);
+      mobileFields?.classList.toggle("hidden", isAgent);
+
+      verifiedAgent = null;
+      verifiedMobileDestination = null;
+
+      $("agentVerification")?.classList.add("hidden");
+      $("mobileWithdrawalVerification")?.classList.add("hidden");
+    }
+
+    mode?.addEventListener("change", updateMode);
+    updateMode();
+
+    $("verifyAgent")?.addEventListener("click", () => {
+      const agent = $("agentNumber")?.value.trim();
+      const store = $("agentStoreNumber")?.value.trim();
+
+      if (!agent || agent.length < 4 || !store || store.length < 3) {
+        showError("Enter both the agent ID and store number.");
+        return;
+      }
+
+      /*
+       * This checks field completeness only. A real agent registry
+       * endpoint is needed to verify the agent and store remotely.
+       */
+      verifiedAgent = { agent, store };
+
+      const box = $("agentVerification");
+      box.classList.remove("hidden");
+      box.innerHTML = `
+        <strong>Fields complete — agent not server-verified</strong>
+        <div>Agent: ${escapeHTML(agent)}</div>
+        <div>Store: ${escapeHTML(store)}</div>
+      `;
+
+      toast("Agent details entered. Server verification is still required.");
+    });
+
+    $("verifyMobileWithdrawal")?.addEventListener("click", () => {
+      const method = $("withdrawDestinationMethod")?.value;
+      const phone = normalizePhone($("withdrawDestinationPhone")?.value);
+
+      if (!validPhone(phone)) {
+        showError("Enter a valid Kenyan destination phone.");
+        return;
+      }
+
+      verifiedMobileDestination = { method, phone };
+
+      const box = $("mobileWithdrawalVerification");
+      box.classList.remove("hidden");
+      box.innerHTML = `
+        <strong>Phone format valid — destination not provider-verified</strong>
+        <div>${escapeHTML(SOURCE_NAMES[method])}: ${escapeHTML(phone)}</div>
+      `;
+
+      toast("Phone format checked. Provider verification is not connected.");
+    });
+
+    $("withdrawAmount")?.addEventListener("input", () =>
+      updateCostPreview(
+        "withdrawCostPreview",
+        "withdrawSource",
+        "withdrawAmount",
+        "withdraw"
+      )
+    );
+
+    $("withdrawSource")?.addEventListener("change", () =>
+      updateCostPreview(
+        "withdrawCostPreview",
+        "withdrawSource",
+        "withdrawAmount",
+        "withdraw"
+      )
+    );
+
+    $("withdrawButton")?.addEventListener("click", () => {
+      if (!requireLogin()) return;
+
+      const amount = Number($("withdrawAmount")?.value);
+      const source = $("withdrawSource")?.value;
+      const isAgent = mode?.value !== "mobile";
+
+      if (!validAmount(amount)) {
+        showError("Enter a valid withdrawal amount.");
+        return;
+      }
+
+      if (isAgent && !verifiedAgent) {
+        showError("Enter and verify both agent ID and store number.");
+        return;
+      }
+
+      if (!isAgent && !verifiedMobileDestination) {
+        showError("Enter and check the mobile-money destination.");
+        return;
+      }
+
+      if (isAgent) {
+        showError(
+          "Real agent withdrawal requires server-side agent/store " +
+          "verification and a secure ledger operation."
+        );
+        return;
+      }
+
+      showError(
+        "Real M-PESA/Airtel withdrawals require a provider integration. " +
+        "No external funds have been sent."
+      );
+    });
+  }
+
+  /* =======================================================
+     LIPA NA
+     ======================================================= */
+
+  function setupLipa() {
+    sourceOptions($("lipaSource"), "wallet");
+
+    const type = $("lipaType");
+    const method = $("lipaMethod");
+    const fields = $("lipaDestinationFields");
+
+    function renderDestinationFields() {
+      if (!fields) return;
+
+      const selected = type?.value || "beast";
+
+      if (selected === "beast") {
+        fields.innerHTML = `
+          <label>
+            Business BEAST Number
+            <input id="lipaBeastDestination"
+                   placeholder="835678 or BEAST-835678">
+          </label>
+        `;
+      } else if (selected === "paybill") {
+        fields.innerHTML = `
+          <label>Business number<input id="lipaBusinessNumber"></label>
+          <label>Account number<input id="lipaAccountNumber"></label>
+        `;
+      } else if (selected === "till") {
+        fields.innerHTML = `
+          <label>Till number<input id="lipaTillNumber"></label>
+        `;
+      } else if (selected === "pochi") {
+        fields.innerHTML = `
+          <label>Business phone<input id="lipaPochiPhone" inputmode="tel"></label>
+        `;
+      } else {
+        fields.innerHTML = `
+          <label>Account number<input id="lipaAccountNumber"></label>
+        `;
+      }
+
+      currentLipaRecipient = null;
+      $("lipaVerification")?.classList.add("hidden");
+    }
+
+    type?.addEventListener("change", renderDestinationFields);
+
+    method?.addEventListener("change", () => {
+      if (method.value === "wallet" && type) type.value = "beast";
+      renderDestinationFields();
+    });
+
+    renderDestinationFields();
+
+    $("verifyLipa")?.addEventListener("click", () => {
+      if (!requireLogin()) return;
+
+      const selectedType = type?.value || "beast";
+      const selectedMethod = method?.value || "wallet";
+      let destination = "";
+
+      if (selectedType === "beast") {
+        destination = normalizeBeastId(
+          $("lipaBeastDestination")?.value
+        );
+
+        if (!destination) {
+          showError("Enter a valid business BEAST number.");
+          return;
+        }
+
+        if (destination === state.user.beastId) {
+          showError("You cannot pay yourself.");
+          return;
+        }
+      } else if (selectedType === "paybill") {
+        const business = $("lipaBusinessNumber")?.value.trim();
+        const account = $("lipaAccountNumber")?.value.trim();
+
+        if (!business || !validAccount(account)) {
+          showError("Enter the PayBill business and account numbers.");
+          return;
+        }
+
+        destination = `${business}/${account}`;
+      } else if (selectedType === "till") {
+        destination = $("lipaTillNumber")?.value.trim();
+
+        if (!destination) {
+          showError("Enter the Till number.");
+          return;
+        }
+      } else if (selectedType === "pochi") {
+        destination = normalizePhone($("lipaPochiPhone")?.value);
+
+        if (!validPhone(destination)) {
+          showError("Enter a valid Pochi phone number.");
+          return;
+        }
+      } else {
+        destination = $("lipaAccountNumber")?.value.trim();
+
+        if (!validAccount(destination)) {
+          showError("Enter a valid account number.");
+          return;
+        }
+      }
+
+      currentLipaRecipient = {
+        type: selectedType,
+        method: selectedMethod,
+        destination
+      };
+
+      const box = $("lipaVerification");
+      box.classList.remove("hidden");
+      box.innerHTML = `
+        <strong>Destination format checked</strong>
+        <div>${escapeHTML(destination)}</div>
+        <small>Business identity is not yet verified by the server.</small>
+      `;
+
+      toast("Destination format checked.");
+    });
+
+    $("lipaAmount")?.addEventListener("input", () =>
+      updateCostPreview("lipaCostPreview", "lipaSource", "lipaAmount")
+    );
+
+    $("lipaSource")?.addEventListener("change", () =>
+      updateCostPreview("lipaCostPreview", "lipaSource", "lipaAmount")
+    );
+
+    $("lipaPayButton")?.addEventListener("click", () => {
+      if (!requireLogin()) return;
+
+      if (!currentLipaRecipient) {
+        showError("Verify the payment destination first.");
+        return;
+      }
+
+      const amount = Number($("lipaAmount")?.value);
+      const source = $("lipaSource")?.value;
+
+      if (!validAmount(amount)) {
+        showError("Enter a valid amount.");
+        return;
+      }
+
+      if (currentLipaRecipient.type === "beast") {
+        showError(
+          "BEAST business payments need the secure server transfer " +
+          "endpoint before they can be completed."
+        );
+        return;
+      }
+
+      showError(
+        "External Lipa Na payments need a connected payment provider. " +
+        "No payment has been sent."
+      );
+    });
+  }
+
+  /* =======================================================
+     PIN AUTHORIZATION MODAL
+     ======================================================= */
+
+  function openAuthorization(action) {
+    if (!requireLogin()) return;
+
+    pendingAction = action;
+
+    if ($("pinPurpose")) {
+      $("pinPurpose").textContent =
+        `${action.type}: ${money(action.amount)}. Confirm with your PIN.`;
+    }
+
+    if ($("authorizationPin")) $("authorizationPin").value = "";
+    $("pinError")?.classList.add("hidden");
+    $("pinModal")?.classList.remove("hidden");
+  }
+
+  function closeAuthorization() {
+    $("pinModal")?.classList.add("hidden");
+    pendingAction = null;
+  }
+
+  function setupAuthorization() {
+    $("closePinModal")?.addEventListener("click", closeAuthorization);
+    $("cancelPin")?.addEventListener("click", closeAuthorization);
+
+    $("confirmPin")?.addEventListener("click", () => {
+      if (!pendingAction || !state.user) {
+        closeAuthorization();
+        return;
+      }
+
+      const pin = $("authorizationPin")?.value || "";
+
+      if (pin !== state.user.pin) {
+        $("pinError").textContent = "Incorrect PIN.";
+        $("pinError")?.classList.remove("hidden");
+        addSecurityEvent("Failed local PIN authorization.");
+        return;
+      }
+
+      const action = pendingAction;
+      closeAuthorization();
+
+      const fee = previewFee(action.source, action.amount);
+
+      const success = completeLocalTransaction({
+        ...action,
+        fee
+      });
+
+      if (success) {
+        addSecurityEvent(`Authorized demo transaction: ${action.type}.`);
+      }
+    });
+  }
+
+  /* =======================================================
+     RECEIVE / BUYER / DEPOSIT
+     ======================================================= */
+
+  function setupReceive() {
+    document.querySelectorAll("[data-rtab]").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("[data-rtab]").forEach(item =>
+          item.classList.toggle("active", item === button)
+        );
+
+        document.querySelectorAll(".receive-tab-panel").forEach(panel =>
+          panel.classList.remove("active")
+        );
+
+        const panel = $(button.dataset.rtab + "Tab");
+        panel?.classList.add("active");
+      });
+    });
+
+    $("performDepositButton")?.addEventListener("click", () => {
+      if (!requireLogin()) return;
+
+      const phone = normalizePhone($("depositPhone")?.value);
+      const amount = Number($("depositAmount")?.value);
+
+      if (!validPhone(phone) || !validAmount(amount)) {
+        showError("Check the phone number and amount.");
+        return;
+      }
+
+      showError(
+        "External deposits require provider confirmation. " +
+        "The demo has not received real funds."
+      );
+    });
+
+    $("verifyAgentDeposit")?.addEventListener("click", () => {
+      const agent = $("agentDepositAgent")?.value.trim();
+      const phone = normalizePhone($("agentDepositPhone")?.value);
+      const nationalId = $("agentDepositNationalId")?.value.trim();
+
+      verifiedAgentDeposit =
+        Boolean(agent && validPhone(phone) && /^\d{5,12}$/.test(nationalId));
+
+      const box = $("agentDepositVerification");
+      box?.classList.remove("hidden");
+
+      if (verifiedAgentDeposit) {
+        box.innerHTML =
+          "<strong>Fields complete — server verification required.</strong>";
+      } else {
+        box.innerHTML =
+          "<strong>Check agent, phone, and National ID fields.</strong>";
+      }
+    });
+
+    $("agentDepositButton")?.addEventListener("click", () => {
+      if (!requireLogin()) return;
+
+      const amount = Number($("agentDepositAmount")?.value);
+
+      if (!verifiedAgentDeposit || !validAmount(amount)) {
+        showError("Complete agent verification and enter a valid amount.");
+        return;
+      }
+
+      showError(
+        "Agent deposits require server-side customer and agent verification."
+      );
+    });
+
+    $("buyerLoginButton")?.addEventListener("click", () => {
+      const phone = normalizePhone($("buyerLoginPhone")?.value);
+      const nationalId = $("buyerLoginNationalId")?.value.trim();
+      const pin = $("buyerLoginPin")?.value || "";
+
+      if (!validPhone(phone) ||
+          !/^\d{5,12}$/.test(nationalId) ||
+          !/^\d{4}$/.test(pin)) {
+        showError("Check buyer phone, National ID, and PIN.");
+        return;
+      }
+
+      showError(
+        "Buyer authentication requires a server account. " +
+        "Do not collect another person's credentials on an untrusted device."
+      );
+    });
+
+    $("buyerChooseSourceButton")?.addEventListener("click", () => {
+      if (!selectedBuyerSource) {
+        showError("Choose an account first.");
+        return;
+      }
+
+      showError("Buyer account selection is awaiting server integration.");
+    });
+
+    $("buyerConfirmPayButton")?.addEventListener("click", () => {
+      showError("Buyer payment requires a verified server-side account.");
+    });
+
+    $("copyReceiptButton")?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText($("receiptText")?.textContent || "");
+        toast("Receipt copied.");
+      } catch {
+        showError("Unable to copy receipt.");
+      }
+    });
+
+    $("shareReceiptButton")?.addEventListener("click", async () => {
+      const text = $("receiptText")?.textContent || "";
+
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: "BEAST receipt", text });
+        } catch {}
+      } else {
+        try {
+          await navigator.clipboard.writeText(text);
+          toast("Receipt copied for sharing.");
+        } catch {
+          showError("Sharing is not supported here.");
+        }
+      }
+    });
+  }
+
+  /* =======================================================
+     SOURCE MANAGER / SETTINGS
+     ======================================================= */
+
+  function setupSettings() {
+    $("themeToggle")?.addEventListener("change", event => {
+      state.settings.darkMode = event.target.checked;
+      document.body.classList.toggle("light-mode", !event.target.checked);
+      localStorage.setItem(THEME_KEY, event.target.checked ? "dark" : "light");
+      saveState();
+    });
+
+    $("notificationsToggle")?.addEventListener("change", event => {
+      state.settings.notifications = event.target.checked;
+      saveState();
+      toast("Notification preference saved.");
+    });
+
+    $("sourceType")?.addEventListener("change", () => {
+      const type = $("sourceType").value;
+      $("bankSourceFields")?.classList.toggle("hidden", type !== "bank");
+      $("cardSourceFields")?.classList.toggle("hidden", type !== "card");
+    });
+
+    $("saveSourceButton")?.addEventListener("click", () => {
+      if (!requireLogin()) return;
+
+      const type = $("sourceType")?.value;
+      const account = $("sourceAccount")?.value.trim();
+      const balance = Number($("sourceBalance")?.value || 0);
+
+      if (!SOURCE_NAMES[type] || !Number.isFinite(balance) || balance < 0) {
+        showError("Check the source and balance.");
+        return;
+      }
+
+      if (type !== "wallet" && !account) {
+        showError("Enter the account or phone number.");
+        return;
+      }
+
+      if (type === "wallet") {
+        showError("The BEAST Wallet is managed by the account ledger.");
+        return;
+      }
+
+      state.sources[type] = {
+        ...(state.sources[type] || {}),
+        account,
+        balance,
+        enabled: true
+      };
+
+      saveState();
+      renderEverything();
+      toast(`${SOURCE_NAMES[type]} saved in local demo mode.`);
+    });
+
+    $("changePinButton")?.addEventListener("click", () => {
+      if (!requireLogin()) return;
+
+      const oldPin = $("oldPin")?.value || "";
+      const newPin = $("newPin")?.value || "";
+      const confirmPin = $("confirmNewPin")?.value || "";
+
+      if (oldPin !== state.user.pin) {
+        showError("Current PIN is incorrect.");
+        return;
+      }
+
+      if (!/^\d{4}$/.test(newPin) || newPin !== confirmPin) {
+        showError("Enter matching four-digit new PINs.");
+        return;
+      }
+
+      state.user.pin = newPin;
+      saveState();
+
+      ["oldPin", "newPin", "confirmNewPin"].forEach(id => {
+        if ($(id)) $(id).value = "";
+      });
+
+      toast("Local demo PIN changed.");
+    });
+
+    $("changePasswordButton")?.addEventListener("click", () => {
+      if (!requireLogin()) return;
+
+      const oldPassword = $("oldPassword")?.value || "";
+      const newPassword = $("newPassword")?.value || "";
+      const confirmPassword = $("confirmNewPassword")?.value || "";
+
+      if (oldPassword !== state.user.password) {
+        showError("Current password is incorrect.");
+        return;
+      }
+
+      if (newPassword.length < 6 || newPassword !== confirmPassword) {
+        showError("Check the new password and confirmation.");
+        return;
+      }
+
+      state.user.password = newPassword;
+      saveState();
+
+      ["oldPassword", "newPassword", "confirmNewPassword"].forEach(id => {
+        if ($(id)) $(id).value = "";
+      });
+
+      toast("Local demo password changed.");
+    });
+
+    $("resetDemo")?.addEventListener("click", () => {
+      if (!confirm("Reset all local BEAST demo data on this device?")) return;
+
+      state = defaultState();
+      localStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem(BULK_KEY);
+      saveState();
+      showScreen("welcome");
+      toast("Local demo data reset.");
+    });
+
+    $("saveReceivingMethodButton")?.addEventListener("click", () => {
+      if (!requireLogin()) return;
+
+      const type = $("receivingMethodType")?.value;
+
+      if (!type) {
+        showError("Select a receiving method.");
+        return;
+      }
+
+      state.receivingMethods = state.receivingMethods.filter(
+        item => item.type !== type
+      );
+
+      state.receivingMethods.push({
+        type,
+        createdAt: new Date().toISOString()
+      });
+
+      saveState();
+      renderReceivingMethods();
+      toast("Receiving preference saved locally.");
+    });
+  }
+
+  /* =======================================================
+     OWNER WITHDRAWAL SYNCHRONIZATION
+     ======================================================= */
+
+  async function syncWithdrawals() {
+    if (!isLoggedIn()) return;
+
+    try {
+      const response = await fetch(`${API}/api/withdrawals`, {
+        method: "GET",
+        headers: { Accept: "application/json" }
+      });
+
+      if (!response.ok) return;
+
+      const data = await response.json();
+      const withdrawals = Array.isArray(data)
+        ? data
+        : Array.isArray(data.withdrawals)
+          ? data.withdrawals : [];
+
+      let changed = false;
+
+      for (const item of withdrawals) {
+        const id = String(item.id || item.reference || "");
+
+        if (!id || state.claimedWithdrawals.includes(id)) continue;
+
+        /*
+         * This compatibility path only updates the local demo wallet.
+         * A production wallet must reconcile a unique, authenticated,
+         * server-side ledger entry instead of trusting browser storage.
+         */
+        const amount = Number(item.amount);
+
+        if (!validAmount(amount)) continue;
+
+        state.sources.wallet.balance =
+          Number(state.sources.wallet.balance || 0) + amount;
+
+        state.claimedWithdrawals.push(id);
+
+        addTransaction({
+          type: "Owner Withdrawal",
+          source: "wallet",
+          amount,
+          fee: 0,
+          totalDeducted: 0,
+          description: "Owner-panel wallet credit (demo synchronization)",
+          reference: id,
+          status: "demo"
+        });
+
+        changed = true;
+      }
+
+      if (changed) {
+        saveState();
+        renderEverything();
+      }
+    } catch (error) {
+      console.warn("Withdrawal synchronization unavailable:", error.message);
+    }
+  }
+
+  /* =======================================================
+     HISTORY / STATEMENTS / PROFILE / NOTIFICATIONS
+     ======================================================= */
+
+  function renderHistory() {
+    const box = $("historyList");
+    if (!box) return;
+
+    if (!state.transactions.length) {
+      box.innerHTML = '<div class="panel">No transactions yet.</div>';
+      return;
+    }
+
+    box.innerHTML = state.transactions.map(tx => `
+      <div class="list-item">
+        <strong>${escapeHTML(tx.type || "Transaction")}</strong>
+        <span>${money(tx.amount)}</span>
+        <small>${escapeHTML(tx.description || "")}</small>
+        <small>${escapeHTML(tx.recipientName || tx.recipient || "")}</small>
+        <small>${escapeHTML(new Date(tx.createdAt).toLocaleString())}</small>
+        <small>Ref: ${escapeHTML(tx.reference || tx.id || "—")}</small>
+        <small>Status: ${escapeHTML(tx.status || "demo")}</small>
+      </div>
+    `).join("");
+  }
+
+  function renderStatements() {
+    const summary = $("statementsSummary");
+    const list = $("statementsList");
+
+    const count = state.transactions.length;
+    const sent = state.transactions
+      .filter(tx => ["Send", "Withdraw", "Lipa Na"].includes(tx.type))
+      .reduce((sum, tx) => sum + Number(tx.amount || 0), 0);
+
+    const fees = state.transactions
+      .reduce((sum, tx) => sum + Number(tx.fee || 0), 0);
+
+    if (summary) {
+      summary.innerHTML = `
+        <div class="list-item"><strong>Total transactions</strong><span>${count}</span></div>
+        <div class="list-item"><strong>Outgoing demo amount</strong><span>${money(sent)}</span></div>
+        <div class="list-item"><strong>Recorded demo fees</strong><span>${money(fees)}</span></div>
+        <div class="list-item"><strong>Displayed balances</strong><span>${money(totalBalance())}</span></div>
+      `;
+    }
+
+    if (list) {
+      list.innerHTML = state.transactions.slice(0, 10).map(tx => `
+        <div class="list-item">
+          <strong>${escapeHTML(tx.type)}</strong>
+          <span>${money(tx.amount)}</span>
+          <small>${escapeHTML(new Date(tx.createdAt).toLocaleString())}</small>
+        </div>
+      `).join("") || "<p>No statement records yet.</p>";
+    }
+  }
+
+  function renderNotifications() {
+    const box = $("notificationList");
+    const badge = $("notificationBadge");
+
+    const unread = state.notifications.filter(item => !item.read).length;
+
+    if (badge) badge.textContent = String(unread);
+
+    if (box) {
+      box.innerHTML = state.notifications.map(item => `
+        <div class="list-item">
+          <strong>${escapeHTML(item.title)}</strong>
+          <small>${escapeHTML(item.message)}</small>
+          <small>${escapeHTML(new Date(item.createdAt).toLocaleString())}</small>
+        </div>
+      `).join("") || "<p>No notifications.</p>";
+    }
+  }
+
+  function renderSecurity() {
+    const box = $("securityList");
+    if (!box) return;
+
+    box.innerHTML = state.securityEvents.map(item => `
+      <div class="list-item">
+        <strong>${escapeHTML(item.message)}</strong>
+        <small>${escapeHTML(new Date(item.createdAt).toLocaleString())}</small>
+      </div>
+    `).join("") || "<p>No security events.</p>";
+  }
+
+  function renderReceivingMethods() {
+    const box = $("receivingMethodsList");
+    if (!box) return;
+
+    box.innerHTML = state.receivingMethods.map(item => `
+      <div class="list-item">
+        <strong>${escapeHTML(item.type)}</strong>
+        <small>${escapeHTML(new Date(item.createdAt).toLocaleString())}</small>
+      </div>
+    `).join("") || "<p>No saved receiving methods.</p>";
+  }
+
+  function renderProfile() {
+    const box = $("profileDetails");
+    const user = state.user;
+
+    if (!box) return;
+
+    if (!user) {
+      box.innerHTML = "<p>Log in to see your BEAST profile.</p>";
+      return;
+    }
+
+    box.innerHTML = `
+      <div class="list-item"><strong>Name</strong><span>${escapeHTML(user.name)}</span></div>
+      <div class="list-item"><strong>Phone</strong><span>${escapeHTML(user.phone)}</span></div>
+      <div class="list-item"><strong>BEAST ID</strong><span>${escapeHTML(user.beastId)}</span></div>
+      <div class="list-item"><strong>National ID</strong><span>Registered locally</span></div>
+      <p class="muted">This profile is currently stored in this browser.</p>
+    `;
+
+    if ($("profileTopBeastId")) {
+      $("profileTopBeastId").textContent = user.beastId;
+    }
+
+    if ($("dashboardBeastId")) {
+      $("dashboardBeastId").textContent = user.beastId;
+    }
+
+    if ($("welcomeText")) {
+      $("welcomeText").textContent = "Welcome, " + user.name;
+    }
+
+    if ($("menuUser")) {
+      $("menuUser").textContent = user.name;
+    }
+  }
+
+  function renderSources() {
+    const box = $("sourceList");
+    if (!box) return;
+
+    box.innerHTML = Object.entries(SOURCE_NAMES).map(([key, name]) => {
+      const source = state.sources[key] || {};
+      return `
+        <div class="list-item">
+          <strong>${escapeHTML(name)}</strong>
+          <span>${money(source.balance || 0)}</span>
+          <small>${source.enabled ? "Enabled" : "Disabled"}</small>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function renderEverything() {
+    const total = $("totalBalance");
+    if (total) total.textContent = money(totalBalance());
+
+    renderProfile();
+    renderSources();
+    renderHistory();
+    renderStatements();
+    renderNotifications();
+    renderSecurity();
+    renderReceivingMethods();
+    renderSavedBulkLists();
+
+    if ($("themeToggle")) {
+      $("themeToggle").checked = Boolean(state.settings.darkMode);
+    }
+
+    if ($("notificationsToggle")) {
+      $("notificationsToggle").checked =
+        Boolean(state.settings.notifications);
+    }
+
+    ["sendSource", "bulkSource", "withdrawSource", "lipaSource"].forEach(id => {
+      if ($(id)) sourceOptions($(id), $(id).value || "wallet");
+    });
+
+    if ($("sendCostPreview")) {
+      updateCostPreview("sendCostPreview", "sendSource", "sendAmount");
+    }
+
+    if ($("withdrawCostPreview")) {
+      updateCostPreview(
+        "withdrawCostPreview",
+        "withdrawSource",
+        "withdrawAmount",
+        "withdraw"
+      );
+    }
+  }
+
+  /* =======================================================
+     NAVIGATION
+     ======================================================= */
+
+  function setupNavigation() {
+    $("menuButton")?.addEventListener("click", openDrawer);
+    $("closeMenu")?.addEventListener("click", closeDrawer);
+    $("drawerBackdrop")?.addEventListener("click", closeDrawer);
+
+    document.querySelectorAll("[data-menu]").forEach(button => {
+      button.addEventListener("click", () => {
+        menuNavigate(button.dataset.menu);
+      });
+    });
+
+    document.querySelectorAll("[data-tab]").forEach(button => {
+      button.addEventListener("click", () => {
+        menuNavigate(button.dataset.tab);
+      });
+    });
+
+    $("notificationButton")?.addEventListener("click", () => {
+      menuNavigate("notifications");
+
+      state.notifications.forEach(item => {
+        item.read = true;
+      });
+
+      saveState();
+      renderNotifications();
+    });
+
+    $("searchForm")?.addEventListener("submit", event => {
+      event.preventDefault();
+
+      const query = $("searchInput")?.value.trim();
+      if (!query) {
+        showError("Enter a search term.");
+        return;
+      }
+
+      window.open(
+        "https://www.google.com/search?q=" + encodeURIComponent(query),
+        "_blank",
+        "noopener,noreferrer"
+      );
+    });
+
+    $("premiumBtn")?.addEventListener("click", () => {
+      toast("Premium subscription payments are not connected.");
+    });
+
+    $("confirmClose")?.addEventListener("click", () => {
+      $("confirmModal")?.classList.add("hidden");
+    });
+
+    $("confirmNo")?.addEventListener("click", () => {
+      $("confirmModal")?.classList.add("hidden");
+    });
+  }
+
+  /* =======================================================
+     SERVER STATUS / ANNOUNCEMENTS
+     ======================================================= */
+
+  async function checkServerStatus() {
+    try {
+      const response = await fetch(`${API}/api/status`, {
+        method: "GET",
+        headers: { Accept: "application/json" }
+      });
+
+      if (!response.ok) return;
+
+      const data = await response.json();
+
+      if (data.announcement) {
+        const banner = $("announcementBanner");
+        if (banner) {
+          banner.textContent = String(data.announcement);
+          banner.classList.remove("hidden");
+        }
+      }
+    } catch (error) {
+      console.warn("BEAST server status unavailable:", error.message);
+    }
+  }
+
+  /* =======================================================
+     INITIALIZATION
+     ======================================================= */
+
+  function initialize() {
+    document.querySelectorAll(".app-screen").forEach(screen => {
+      screen.classList.add("hidden");
+      screen.classList.remove("active");
+    });
+
+    setupNavigation();
+    setupRegistration();
+    setupSend();
+    setupBulk();
+    setupWithdraw();
+    setupLipa();
+    setupAuthorization();
+    setupReceive();
+    setupSettings();
+
+    const theme = localStorage.getItem(THEME_KEY);
+
+    if (theme) {
+      state.settings.darkMode = theme === "dark";
+    }
+
+    document.body.classList.toggle(
+      "light-mode",
+      !state.settings.darkMode
+    );
+
+    saveState();
+    renderEverything();
+
+    if (isLoggedIn()) {
+      showScreen("money");
+      syncWithdrawals();
+    } else {
+      showScreen("welcome");
+    }
+
+    checkServerStatus();
+
+    console.log("BEAST frontend initialized.");
+    console.log("Demo mode: external and remote transfers are not enabled.");
+  }
+
+  initialize();
 });
