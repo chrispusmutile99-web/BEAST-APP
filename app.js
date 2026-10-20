@@ -1,15 +1,22 @@
 document.addEventListener("DOMContentLoaded", () => {
 "use strict";
 
-const STORAGE_KEY = "beast_v3";
-const SESSION_KEY = "beast_session_v3";
+const STORAGE_KEY = "beast_v4";
+const SESSION_KEY = "beast_session_v4";
 const SERVER_URL = "https://beast-server-8u92.onrender.com";
 
 let socket = null;
 let currentAnnouncement = null;
+let buyerSession = null;
+let buyerStep = 1;
 
 const SOURCE_NAMES = { mpesa: "M-PESA", tkash: "T-Kash", airtel: "Airtel", bank: "Bank", card: "Card", wallet: "BEAST Wallet" };
 const SOURCE_ICONS = { mpesa: "📱", tkash: "📲", airtel: "📲", bank: "🏦", card: "💳", wallet: "🐾" };
+
+const DEMO_BUYERS = [
+  { phone: "0722000001", nationalId: "11111111", pin: "1111", name: "Alice Njeri", sources: { mpesa: { enabled: true, balance: 12500 }, wallet: { enabled: true, balance: 0 } } },
+  { phone: "0722000002", nationalId: "22222222", pin: "2222", name: "Brian Otieno", sources: { mpesa: { enabled: true, balance: 3200 }, wallet: { enabled: true, balance: 500 } } }
+];
 
 function $(id) { return document.getElementById(id); }
 function money(v) { return `KES ${Number(v || 0).toLocaleString("en-KE", { minimumFractionDigits: 2 })}`; }
@@ -54,7 +61,6 @@ function showScreen(name) {
 
   document.querySelectorAll("[data-tab]").forEach(t => t.classList.toggle("active", t.dataset.tab === name));
 
-  // Top bar logic
   if (mainScreens.includes(name) || name === "welcome" || name === "login" || name === "registration") {
     $("settingsBtn").classList.toggle("hidden", name !== "money" && name !== "connect" && name !== "profile");
     $("backBtn").classList.add("hidden");
@@ -82,13 +88,17 @@ function renderEverything() {
     </div>
   `).join("");
 
-  $("historyList").innerHTML = state.transactions.map(t => `<div class="list-item"><strong>${t.type}</strong><span>${t.amount}</span><small>${t.description}</small></div>`).join("");
+  $("historyList").innerHTML = state.transactions.map(t => `<div class="list-item"><strong>${t.type}</strong><span>${money(t.amount)}</span><small>${t.description}</small></div>`).join("");
   $("notificationList").innerHTML = state.notifications.map(n => `<div class="list-item"><strong>${n.title}</strong><small>${n.message}</small></div>`).join("");
   $("securityList").innerHTML = state.securityEvents.map(e => `<div class="list-item"><strong>Event</strong><small>${e.message}</small></div>`).join("");
   $("profileDetails").innerHTML = `<div class="list-item"><strong>${state.user.name}</strong><small>ID: ${state.user.beastId}<br>Phone: ${state.user.phone}</small></div>`;
   
-  ["sendSource", "withdrawSource", "lipaSource", "bulkSource"].forEach(id => {
-    if ($(id)) $(id).innerHTML = Object.entries(state.sources).filter(([, s]) => s.enabled).map(([k]) => `<option value="${k}">${SOURCE_NAMES[k]}</option>`).join("");
+  ["sendSource", "withdrawSource", "lipaSource", "bulkSource", "depositSource"].forEach(id => {
+    if ($(id)) {
+      const isDeposit = id === "depositSource";
+      const sources = isDeposit ? ["mpesa", "tkash", "airtel", "bank", "card"] : Object.entries(state.sources).filter(([, s]) => s.enabled).map(([k]) => k);
+      $(id).innerHTML = sources.map(k => `<option value="${k}">${SOURCE_NAMES[k]}</option>`).join("");
+    }
   });
 }
 
@@ -101,11 +111,8 @@ async function triggerMpesaSTK(phone, amount) {
       body: JSON.stringify({ phone, amount })
     });
     const data = await res.json();
-    if (data.ok) {
-      toast("📱 STK Push sent to your phone!");
-    } else {
-      toast("STK Push failed: " + data.error);
-    }
+    if (data.ok) toast("📱 STK Push sent to your phone!");
+    else toast("STK Push failed: " + data.error);
   } catch(e) { toast("Network error connecting to Daraja"); }
 }
 
@@ -118,11 +125,10 @@ function completeTransaction(data) {
   if (source.balance < total) { toast("Insufficient balance."); return; }
   source.balance -= total;
 
-  state.transactions.unshift({ type: data.type, amount, description: `Sent to ${data.recipient}` });
-  state.notifications.unshift({ title: `${data.type} completed`, message: `${money(amount)} sent.` });
+  state.transactions.unshift({ type: data.type, amount, description: data.description || `Sent to ${data.recipient}` });
+  state.notifications.unshift({ title: `${data.type} completed`, message: `${money(amount)} processed.` });
   save();
 
-  // IF M-PESA selected, trigger the real Daraja API
   if (data.source === "mpesa") {
     triggerMpesaSTK(state.user.phone, amount);
   } else {
@@ -133,14 +139,13 @@ function completeTransaction(data) {
   renderEverything();
 }
 
-// --- Interactions ---
+// --- Setup Forms & Interactions ---
 function setupNav() {
   document.querySelectorAll("[data-tab]").forEach(btn => btn.addEventListener("click", () => showScreen(btn.dataset.tab)));
   document.querySelectorAll("[data-menu]").forEach(btn => btn.addEventListener("click", () => showScreen(btn.dataset.menu)));
   
   $("settingsBtn")?.addEventListener("click", () => showScreen("settings"));
   $("backBtn")?.addEventListener("click", () => showScreen("money")); 
-  
   $("notificationButton")?.addEventListener("click", () => showScreen("notifications"));
   $("themeToggle")?.addEventListener("change", e => { document.body.classList.toggle("light", !e.target.checked); save(); });
   $("resetDemo")?.addEventListener("click", () => { localStorage.clear(); sessionStorage.clear(); location.reload(); });
@@ -175,22 +180,129 @@ function setupAuth() {
   });
 }
 
-function setupSend() {
+function setupSendAndBulk() {
   $("sendMoneyButton")?.addEventListener("click", () => {
-    const phone = $("sendPhone").value;
     const amount = Number($("sendAmount").value);
     const source = $("sendSource").value;
-    $("confirmBody").innerHTML = `Send ${money(amount)} to ${phone}?`;
+    $("confirmBody").innerHTML = `Send ${money(amount)} to ${$("sendPhone").value}?`;
     $("confirmModal").classList.remove("hidden");
     $("confirmYes").onclick = () => {
       $("confirmModal").classList.add("hidden");
-      completeTransaction({ type: "Send", amount, source, recipient: phone });
+      completeTransaction({ type: "Send", amount, source, recipient: $("sendPhone").value });
     };
   });
-  $("confirmNo").onclick = () => $("confirmModal").classList.add("hidden");
+  
+  // Bulk Send
+  $("bulkSendButton")?.addEventListener("click", () => {
+    const source = $("bulkSource").value;
+    toast("Bulk Send processing...");
+    setTimeout(() => completeTransaction({ type: "Bulk Send", amount: 500, source, description: "Bulk batch" }), 1000);
+  });
 }
 
-// Setup Sources (Bank/Card) & Receiving Methods
+function setupReceive() {
+  // Tabs
+  document.querySelectorAll("[data-rtab]").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll("[data-rtab]").forEach(t => t.classList.toggle("active", t === tab));
+      document.querySelectorAll(".receive-tab-panel").forEach(p => p.classList.remove("active"));
+      const panel = tab.dataset.rtab === "buyer" ? $("buyerTab") : tab.dataset.rtab === "deposit" ? $("depositTab") : $("agentTab");
+      panel?.classList.add("active");
+    });
+  });
+
+  // Buyer Login
+  $("buyerLoginButton")?.addEventListener("click", () => {
+    const phone = $("buyerLoginPhone").value;
+    const buyer = DEMO_BUYERS.find(b => b.phone === phone);
+    if(!buyer || buyer.pin !== $("buyerLoginPin").value || buyer.nationalId !== $("buyerLoginNationalId").value) return toast("Invalid buyer credentials");
+    
+    buyerSession = JSON.parse(JSON.stringify(buyer));
+    setBuyerStep(2);
+  });
+
+  // Choose Source
+  $("buyerChooseSourceButton")?.addEventListener("click", () => {
+    setBuyerStep(3);
+    renderBuyerStep3();
+  });
+
+  // Buyer Pay
+  $("buyerConfirmPayButton")?.addEventListener("click", () => {
+    const amount = Number($("buyerPayAmount").value);
+    const srcKey = buyerSession.chosenSource;
+    if(buyerSession.sources[srcKey].balance < amount) return toast("Buyer insufficient balance");
+    
+    buyerSession.sources[srcKey].balance -= amount;
+    state.sources.wallet.balance += amount; // Seller receives in wallet
+    state.transactions.unshift({ type: "Buyer Payment", amount, description: `From ${buyerSession.name}` });
+    save();
+    
+    $("buyerSuccessPanel").classList.add("active");
+    setTimeout(() => { setBuyerStep(1); $("buyerSuccessPanel").classList.remove("active"); }, 3000);
+    toast("Payment received!");
+  });
+
+  // Deposit
+  $("performDepositButton")?.addEventListener("click", () => {
+    const amount = Number($("depositAmount").value);
+    state.sources.wallet.balance += amount;
+    save(); renderEverything();
+    toast("Deposit successful!");
+  });
+
+  // Agent Deposit
+  $("agentDepositButton")?.addEventListener("click", () => {
+    const amount = Number($("agentDepositAmount").value);
+    state.sources.wallet.balance += amount;
+    save(); renderEverything();
+    toast("Agent deposit successful!");
+  });
+}
+
+function setBuyerStep(step) {
+  buyerStep = step;
+  ["buyerStep1","buyerStep2","buyerStep3"].forEach((id, i) => $(id)?.classList.toggle("active", i+1 === step));
+  document.querySelectorAll(".buyer-step").forEach(el => el.classList.toggle("active", Number(el.dataset.bstep) === step));
+}
+
+function renderBuyerStep3() {
+  const list = $("buyerSourcesList");
+  list.innerHTML = Object.entries(buyerSession.sources).map(([k, s]) => {
+    if(!s.enabled) return "";
+    return `<button class="buyer-source-option" onclick="window.selectBuyerSrc('${k}', this)"><span>${SOURCE_ICONS[k]}</span><strong>${SOURCE_NAMES[k]}</strong></button>`;
+  }).join("");
+}
+
+window.selectBuyerSrc = (key, btn) => {
+  buyerSession.chosenSource = key;
+  document.querySelectorAll(".buyer-source-option").forEach(b => b.classList.remove("selected"));
+  btn.classList.add("selected");
+  $("buyerChooseSourceButton").disabled = false;
+  $("buyerChosenSourceName").textContent = SOURCE_NAMES[key];
+};
+
+function setupWithdraw() {
+  $("withdrawButton")?.addEventListener("click", () => {
+    const amount = Number($("withdrawAmount").value);
+    const source = $("withdrawSource").value;
+    if(state.sources[source].balance < amount) return toast("Insufficient balance");
+    
+    state.sources[source].balance -= amount;
+    state.transactions.unshift({ type: "Withdrawal", amount, description: `Agent ${$("agentNumber").value}` });
+    save(); showScreen("money"); renderEverything();
+    toast("Withdrawal successful!");
+  });
+}
+
+function setupLipaNa() {
+  $("lipaPayButton")?.addEventListener("click", () => {
+    const amount = Number($("lipaAmount").value);
+    const source = $("lipaSource").value;
+    completeTransaction({ type: "Lipa Na", amount, source, description: "Business Payment" });
+  });
+}
+
 function setupSettingsForms() {
   const type = $("sourceType");
   type?.addEventListener("change", () => {
@@ -201,32 +313,14 @@ function setupSettingsForms() {
   $("saveSourceButton")?.addEventListener("click", () => {
     const t = type.value;
     const acc = $("sourceAccount").value;
-    if(t === "bank") {
-      state.sources.bank = { enabled: true, account: acc, bankName: $("bankName").value, balance: Number($("sourceBalance").value || 0) };
-    } else if(t === "card") {
-      state.sources.card = { enabled: true, account: acc, cardName: $("cardName").value, last4: $("cardLast4").value, balance: Number($("sourceBalance").value || 0) };
-    } else {
-      state.sources[t].enabled = true;
-      state.sources[t].account = acc;
-      state.sources[t].balance = Number($("sourceBalance").value || 0);
-    }
+    state.sources[t] = { enabled: true, account: acc, balance: Number($("sourceBalance").value || 0) };
     save(); renderEverything(); toast("Source saved!");
   });
 
-  const rType = $("receivingMethodType");
-  rType?.addEventListener("change", () => {
-    const t = rType.value;
-    if(t === "wallet") $("receivingMethodFields").innerHTML = `<small class="muted">Always enabled</small>`;
-    else if(t === "pochi" || t === "till") $("receivingMethodFields").innerHTML = `<label>Number<input id="recNum"></label>`;
-    else if(t === "paybill") $("receivingMethodFields").innerHTML = `<label>Paybill<input id="recNum"></label><label>Account<input id="recAcc"></label>`;
-    else if(t === "bank") $("receivingMethodFields").innerHTML = `<label>Bank<input id="recNum"></label><label>Account<input id="recAcc"></label>`;
-    else if(t === "card") $("receivingMethodFields").innerHTML = `<label>Card Name<input id="recNum"></label>`;
-  });
-
-  $("saveReceivingMethodButton")?.addEventListener("click", () => {
-    const t = rType.value;
-    state.receiving[t] = { enabled: true };
-    save(); toast("Receiving method saved!");
+  $("changePinButton")?.addEventListener("click", async () => {
+    if(await verifyPin($("oldPin").value)) {
+      await setPin($("newPin").value); save(); toast("PIN changed");
+    } else toast("Wrong old PIN");
   });
 }
 
@@ -254,7 +348,7 @@ function connectAnnouncements() {
 }
 
 function init() {
-  setupNav(); setupAuth(); setupSend(); setupSettingsForms();
+  setupNav(); setupAuth(); setupSendAndBulk(); setupReceive(); setupWithdraw(); setupLipaNa(); setupSettingsForms();
   if (state.registered) showScreen("money"); else showScreen("welcome");
   renderEverything();
   connectAnnouncements();
