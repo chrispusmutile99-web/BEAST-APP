@@ -93,6 +93,8 @@
     <button class="square-card green-card" data-menu="lipa"><span>🛒</span><b>Lipa Na</b></button>
     <button class="square-card blue-card" data-menu="history"><span>🧾</span><b>History</b></button>
     <button class="square-card blue-card" data-menu="statements"><span>📊</span><b>Statements</b></button>
+    <button class="square-card red-card" data-menu="security"><span>🛡️</span><b>Security</b></button>
+    <button class="square-card red-card" data-menu="notifications"><span>🔔</span><b>Alerts</b></button>
   </div>
   <h2 class="section-title">Linked accounts</h2>
   <div id="sourceList" class="source-grid"></div>
@@ -192,27 +194,63 @@
   <div id="profileDetails" class="panel"></div>
 </section>
 
-<!-- SETTINGS (Theme at top) -->
+<!-- SETTINGS -->
 <section id="settingsScreen" class="app-screen">
   <div class="page-head"><div><span class="pill blue">SETTINGS</span><h1>Settings</h1></div></div>
   
+  <!-- 1. THEME AT TOP -->
   <div class="panel">
     <h2>Appearance</h2>
-    <div class="setting-row"><div><b>Dark mode</b></div><input id="themeToggle" type="checkbox"></div>
+    <div class="setting-row"><div><b>Dark mode</b><small>Use the dark theme</small></div><input id="themeToggle" type="checkbox"></div>
   </div>
 
+  <!-- 2. PREFERENCES -->
   <div class="panel">
     <h2>Preferences</h2>
-    <div class="setting-row"><div><b>Notifications</b></div><input id="notificationsToggle" type="checkbox"></div>
+    <div class="setting-row"><div><b>Notifications</b><small>Show in-app alerts</small></div><input id="notificationsToggle" type="checkbox"></div>
     <div class="list" style="margin-top:12px;">
-      <button class="service-row" data-menu="profile"><span class="service-icon">👤</span><span><strong>My Profile</strong></span><b>›</b></button>
-      <button class="service-row" data-menu="premium"><span class="service-icon">👑</span><span><strong>Premium</strong></span><b>›</b></button>
-      <button class="service-row" data-menu="security"><span class="service-icon">🛡️</span><span><strong>Security</strong></span><b>›</b></button>
+      <button class="service-row" data-menu="profile"><span class="service-icon">👤</span><span><strong>My Profile</strong><small>View your identity</small></span><b>›</b></button>
+      <button class="service-row" data-menu="premium"><span class="service-icon">👑</span><span><strong>Premium</strong><small>KES 250/month</small></span><b>›</b></button>
+      <button class="service-row" data-menu="security"><span class="service-icon">🛡️</span><span><strong>Security Center</strong><small>Audit logs & events</small></span><b>›</b></button>
     </div>
   </div>
 
-  <div class="panel"><h2>Security & PIN</h2><button class="secondary-btn full" data-menu="security">Open Security Center</button></div>
-  <button class="danger-btn full" id="resetDemo">RESET DEMO</button>
+  <!-- 3. LINK PAYMENT SOURCES -->
+  <div class="panel">
+    <h2>Add / Update Payment Source</h2>
+    <label>Payment source<select id="sourceType"><option value="mpesa">M-PESA</option><option value="tkash">T-Kash</option><option value="airtel">Airtel Money</option><option value="bank">Bank Account</option><option value="card">Card</option><option value="wallet">BEAST Wallet</option></select></label>
+    <label>Phone / account number<input id="sourceAccount" placeholder="Phone or account number"></label>
+    <div id="bankSourceFields" class="hidden"><label>Bank name<select id="bankName"><option value="">Select bank</option><option value="KCB Bank">KCB Bank</option><option value="Equity Bank">Equity Bank</option><option value="Co-operative Bank">Co-operative Bank</option><option value="NCBA Bank">NCBA Bank</option><option value="Absa Bank Kenya">Absa Bank Kenya</option><option value="Other">Other</option></select></label></div>
+    <div id="cardSourceFields" class="hidden"><label>Card name<input id="cardName" placeholder="Visa / Mastercard"></label><label>Card last 4 digits<input id="cardLast4" maxlength="4" placeholder="1234"></label></div>
+    <label>Demo balance<input id="sourceBalance" type="number" placeholder="0"></label>
+    <button class="primary-btn full" id="saveSourceButton">SAVE PAYMENT SOURCE</button>
+  </div>
+
+  <!-- 4. RECEIVING METHODS -->
+  <div class="panel">
+    <h2>Receiving Methods</h2>
+    <p class="muted">Which channels buyers can use to pay you.</p>
+    <label>Receiving channel<select id="receivingMethodType"><option value="wallet">BEAST Wallet</option><option value="pochi">Pochi la Biashara</option><option value="till">Till</option><option value="paybill">PayBill</option><option value="bank">Bank Account</option><option value="card">Card</option></select></label>
+    <div id="receivingMethodFields"></div>
+    <button class="primary-btn full" id="saveReceivingMethodButton">SAVE RECEIVING METHOD</button>
+  </div>
+  <div class="panel"><h2>Enabled receiving methods</h2><div id="receivingMethodsList" class="list"></div></div>
+
+  <!-- 5. SECURITY -->
+  <div class="panel">
+    <h2>Change BEAST PIN</h2>
+    <div class="two-col"><label>Current PIN<input id="oldPin" type="password" maxlength="4"></label><label>New PIN<input id="newPin" type="password" maxlength="4"></label></div>
+    <label>Confirm new PIN<input id="confirmNewPin" type="password" maxlength="4"></label>
+    <button class="secondary-btn full" id="changePinButton">CHANGE PIN</button>
+  </div>
+  <div class="panel">
+    <h2>Change BEAST Password</h2>
+    <div class="two-col"><label>Current<input id="oldPassword" type="password"></label><label>New<input id="newPassword" type="password"></label></div>
+    <label>Confirm new<input id="confirmNewPassword" type="password"></label>
+    <button class="secondary-btn full" id="changePasswordButton">CHANGE PASSWORD</button>
+  </div>
+
+  <button class="danger-btn full" id="resetDemo">RESET DEMO DATA</button>
 </section>
 
 <!-- SECURITY -->

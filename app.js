@@ -1,15 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
 "use strict";
 
-const STORAGE_KEY = "beast_v2";
-const SESSION_KEY = "beast_session_v2";
+const STORAGE_KEY = "beast_v3";
+const SESSION_KEY = "beast_session_v3";
 const SERVER_URL = "https://beast-server-8u92.onrender.com";
 
 let socket = null;
-let pendingAction = null;
 let currentAnnouncement = null;
-let buyerSession = null;
-let buyerStep = 1;
 
 const SOURCE_NAMES = { mpesa: "M-PESA", tkash: "T-Kash", airtel: "Airtel", bank: "Bank", card: "Card", wallet: "BEAST Wallet" };
 const SOURCE_ICONS = { mpesa: "📱", tkash: "📲", airtel: "📲", bank: "🏦", card: "💳", wallet: "🐾" };
@@ -20,7 +17,8 @@ function money(v) { return `KES ${Number(v || 0).toLocaleString("en-KE", { minim
 function defaultState() {
   return {
     registered: false, user: { name: "", phone: "", nationalId: "", beastId: "", pinHash: "", pinSalt: "", passwordHash: "", passwordSalt: "" },
-    sources: { mpesa: { balance: 5000, enabled: true }, tkash: { balance: 1000, enabled: true }, airtel: { balance: 1000, enabled: true }, bank: { balance: 0, enabled: false }, card: { balance: 0, enabled: false }, wallet: { balance: 0, enabled: true } },
+    sources: { mpesa: { balance: 5000, enabled: true, account: "0712345678" }, tkash: { balance: 1000, enabled: true, account: "0712345678" }, airtel: { balance: 1000, enabled: true, account: "0712345678" }, bank: { balance: 0, enabled: false, account: "", bankName: "" }, card: { balance: 0, enabled: false, account: "", cardName: "", last4: "" }, wallet: { balance: 0, enabled: true, account: "BEAST-WALLET" } },
+    receiving: { wallet: { enabled: true }, pochi: { enabled: false }, till: { enabled: false }, paybill: { enabled: false }, bank: { enabled: false }, card: { enabled: false } },
     transactions: [], notifications: [], securityEvents: [], settings: { dark: true }, currentSource: "mpesa"
   };
 }
@@ -114,7 +112,7 @@ async function triggerMpesaSTK(phone, amount) {
 function completeTransaction(data) {
   const amount = Number(data.amount);
   const source = state.sources[data.source];
-  const fee = source === "wallet" ? Math.max(0, 7 - 3) : 7; // simplified for demo
+  const fee = source === "wallet" ? 4 : 7; 
   const total = amount + fee;
   
   if (source.balance < total) { toast("Insufficient balance."); return; }
@@ -141,7 +139,7 @@ function setupNav() {
   document.querySelectorAll("[data-menu]").forEach(btn => btn.addEventListener("click", () => showScreen(btn.dataset.menu)));
   
   $("settingsBtn")?.addEventListener("click", () => showScreen("settings"));
-  $("backBtn")?.addEventListener("click", () => showScreen("money")); // Universal back to money for now
+  $("backBtn")?.addEventListener("click", () => showScreen("money")); 
   
   $("notificationButton")?.addEventListener("click", () => showScreen("notifications"));
   $("themeToggle")?.addEventListener("change", e => { document.body.classList.toggle("light", !e.target.checked); save(); });
@@ -192,6 +190,46 @@ function setupSend() {
   $("confirmNo").onclick = () => $("confirmModal").classList.add("hidden");
 }
 
+// Setup Sources (Bank/Card) & Receiving Methods
+function setupSettingsForms() {
+  const type = $("sourceType");
+  type?.addEventListener("change", () => {
+    $("bankSourceFields").classList.toggle("hidden", type.value !== "bank");
+    $("cardSourceFields").classList.toggle("hidden", type.value !== "card");
+  });
+
+  $("saveSourceButton")?.addEventListener("click", () => {
+    const t = type.value;
+    const acc = $("sourceAccount").value;
+    if(t === "bank") {
+      state.sources.bank = { enabled: true, account: acc, bankName: $("bankName").value, balance: Number($("sourceBalance").value || 0) };
+    } else if(t === "card") {
+      state.sources.card = { enabled: true, account: acc, cardName: $("cardName").value, last4: $("cardLast4").value, balance: Number($("sourceBalance").value || 0) };
+    } else {
+      state.sources[t].enabled = true;
+      state.sources[t].account = acc;
+      state.sources[t].balance = Number($("sourceBalance").value || 0);
+    }
+    save(); renderEverything(); toast("Source saved!");
+  });
+
+  const rType = $("receivingMethodType");
+  rType?.addEventListener("change", () => {
+    const t = rType.value;
+    if(t === "wallet") $("receivingMethodFields").innerHTML = `<small class="muted">Always enabled</small>`;
+    else if(t === "pochi" || t === "till") $("receivingMethodFields").innerHTML = `<label>Number<input id="recNum"></label>`;
+    else if(t === "paybill") $("receivingMethodFields").innerHTML = `<label>Paybill<input id="recNum"></label><label>Account<input id="recAcc"></label>`;
+    else if(t === "bank") $("receivingMethodFields").innerHTML = `<label>Bank<input id="recNum"></label><label>Account<input id="recAcc"></label>`;
+    else if(t === "card") $("receivingMethodFields").innerHTML = `<label>Card Name<input id="recNum"></label>`;
+  });
+
+  $("saveReceivingMethodButton")?.addEventListener("click", () => {
+    const t = rType.value;
+    state.receiving[t] = { enabled: true };
+    save(); toast("Receiving method saved!");
+  });
+}
+
 function connectAnnouncements() {
   if (!SERVER_URL) return;
   socket = new WebSocket(SERVER_URL.replace(/^http/, "ws"));
@@ -207,7 +245,6 @@ function connectAnnouncements() {
       save(); renderEverything(); toast(`💰 Received ${data.amount} from Company!`);
     }
     if (data.type === "mpesa_success") {
-      // Received callback from Safaricom!
       state.sources.wallet.balance += Number(data.amount);
       state.transactions.unshift({ type: "M-PESA Deposit", amount: data.amount, description: `Receipt: ${data.reference}` });
       save(); renderEverything(); toast(`✅ M-PESA Payment confirmed!`);
@@ -217,7 +254,7 @@ function connectAnnouncements() {
 }
 
 function init() {
-  setupNav(); setupAuth(); setupSend();
+  setupNav(); setupAuth(); setupSend(); setupSettingsForms();
   if (state.registered) showScreen("money"); else showScreen("welcome");
   renderEverything();
   connectAnnouncements();
