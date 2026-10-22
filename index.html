@@ -1,121 +1,214 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#07110d">
-  <meta name="description" content="BEAST — personal finance dashboard">
-  <title>BEAST — Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BEAST - One Number. One Beast.</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app-shell">
-    <header class="topbar">
-      <a class="brand" href="#" aria-label="BEAST home">
-        <span class="brand-mark">B</span>
-        <span class="brand-name">BEAST<span class="brand-dot">.</span><small>FINANCE</small></span>
-      </a>
-      <button class="icon-button" id="menu-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
-    </header>
 
-    <main>
-      <section id="welcome-screen" class="page welcome-screen">
-        <div class="hero-orb"></div>
-        <div class="eyebrow"><span class="status-dot"></span> YOUR MONEY. YOUR MOVE.</div>
-        <h1>Build your<br><span>beast mode.</span></h1>
-        <p class="muted hero-copy">A clearer view of your money starts here. Track your balance, organise activity, and stay in control.</p>
-        <div class="hero-card">
-          <div class="card-label">BEAST WALLET</div>
-          <div class="hero-balance">KES <span id="welcome-balance">0.00</span></div>
-          <div class="card-foot"><span>PERSONAL ACCOUNT</span><span class="chip">DEMO MODE</span></div>
+<div id="app">
+
+    <!-- SCREEN 1: SPLASH / LOGIN -->
+    <div id="screen-splash" class="screen active">
+        <div class="splash-container">
+            <div style="font-size: 60px; color: var(--gold); margin-bottom: 20px;">
+                <i class="fa-solid fa-crown"></i>
+            </div>
+            <h1 class="brand-title">BEAST</h1>
+            <p class="brand-subtitle">One Number. One Beast.</p>
+            
+            <h2 class="welcome-text">Welcome to BEAST</h2>
+            <p class="welcome-sub">Create your prototype account<br>or sign in to continue.</p>
+
+            <button class="btn btn-primary" onclick="navigate('screen-login')">SIGN IN</button>
+            <button class="btn btn-secondary" onclick="navigate('screen-register')">CREATE ACCOUNT</button>
+            
+            <p style="font-size: 11px; color: var(--text-muted); margin-top: 20px;">
+                <i class="fa-solid fa-shield-halved"></i> Protected by BEAST GUARD
+            </p>
         </div>
-        <button class="button button-primary full" id="get-started">Get started <span>→</span></button>
-        <p class="tiny center">Simple. Secure-minded. Built around you.</p>
-      </section>
+    </div>
 
-      <section id="auth-screen" class="page auth-screen hidden">
-        <button class="text-button back-button" id="back-welcome">← Back</button>
-        <div class="eyebrow">WELCOME TO BEAST</div>
-        <h1 id="auth-heading">Create your<br><span>account.</span></h1>
-        <p class="muted">This local demo saves information on this device only.</p>
-        <form id="auth-form" class="form-card">
-          <label for="full-name">Full name</label>
-          <input id="full-name" name="fullName" type="text" placeholder="Your name" autocomplete="name" required>
-          <label for="phone-number">Phone number</label>
-          <input id="phone-number" name="phone" type="tel" placeholder="e.g. 07XX XXX XXX" autocomplete="tel" required>
-          <label for="starting-balance">Starting balance (KES)</label>
-          <input id="starting-balance" name="balance" type="number" min="0" step="0.01" value="0" required>
-          <button class="button button-primary full" type="submit">Enter BEAST <span>→</span></button>
-        </form>
-        <p class="tiny">Demo only — do not enter passwords, PINs, or sensitive banking details.</p>
-      </section>
+    <!-- SCREEN 2: REGISTRATION -->
+    <div id="screen-register" class="screen" style="padding: 20px;">
+        <h2 style="color: var(--gold); margin-bottom: 5px;">Join BEAST</h2>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">Secure registration</p>
 
-      <section id="app-screen" class="page dashboard hidden">
-        <div class="welcome-row">
-          <div><p class="eyebrow">YOUR DASHBOARD</p><h1>Let's move, <span id="user-name">Beast</span>.</h1></div>
-          <div class="avatar" id="user-avatar">B</div>
+        <div class="reg-group">
+            <label class="reg-label">Phone Number</label>
+            <input type="tel" id="reg-phone" class="reg-input" placeholder="07XX XXX XXX">
+        </div>
+        
+        <div class="reg-group">
+            <label class="reg-label">ID Number (National ID)</label>
+            <input type="text" id="reg-id" class="reg-input" placeholder="Enter ID to verify name" onblur="verifyIdentity()">
         </div>
 
-        <article class="balance-card">
-          <div class="balance-top"><span>AVAILABLE BALANCE</span><button id="toggle-balance" class="balance-eye" aria-label="Hide balance">◉</button></div>
-          <div class="balance-amount">KES <strong id="balance-amount">0.00</strong></div>
-          <div class="balance-bottom"><span><i class="status-dot"></i> Personal wallet</span><span class="chip">BEAST ACCOUNT</span></div>
-          <div class="card-decoration"></div>
-        </article>
-
-        <div class="quick-actions">
-          <button class="action-button" data-action="add"><span class="action-icon">＋</span><span>Add funds</span></button>
-          <button class="action-button" data-action="send"><span class="action-icon">↗</span><span>Send</span></button>
-          <button class="action-button" data-action="withdraw"><span class="action-icon">↙</span><span>Withdraw</span></button>
-          <button class="action-button" data-action="receive"><span class="action-icon">⌑</span><span>Receive</span></button>
+        <!-- Auto-filled Name -->
+        <div class="reg-group" id="name-group" style="display: none;">
+            <label class="reg-label">Verified Name (Approve or Edit)</label>
+            <input type="text" id="reg-name" class="reg-input" readonly>
         </div>
 
-        <section class="section-block">
-          <div class="section-heading"><div><p class="eyebrow">OVERVIEW</p><h2>Money activity</h2></div><span class="live-tag">● LOCAL</span></div>
-          <div class="stat-grid">
-            <article class="stat-card"><span class="stat-icon income">↘</span><p>Total added</p><strong id="total-added">KES 0.00</strong></article>
-            <article class="stat-card"><span class="stat-icon expense">↗</span><p>Total sent</p><strong id="total-sent">KES 0.00</strong></article>
-          </div>
-        </section>
+        <div class="reg-group">
+            <label class="reg-label">4-Digit PIN</label>
+            <input type="password" id="reg-pin" class="reg-input" placeholder="****" maxlength="4">
+        </div>
 
-        <section class="section-block">
-          <div class="section-heading"><div><p class="eyebrow">YOUR RECORD</p><h2>Recent activity</h2></div><button id="clear-history" class="text-button">Clear</button></div>
-          <div id="transaction-history" class="history-list"></div>
-          <div id="empty-history" class="empty-state"><span>↔</span><strong>No activity yet</strong><p>Your demo transactions will appear here.</p></div>
-        </section>
+        <div class="reg-group">
+            <label class="reg-label">Password</label>
+            <input type="password" id="reg-pass" class="reg-input" placeholder="Create strong password">
+        </div>
 
-        <section class="section-block profile-card">
-          <div><p class="eyebrow">ACCOUNT</p><h2 id="profile-name">Your profile</h2><p class="muted" id="profile-phone"></p></div>
-          <button class="button button-outline" id="reset-demo">Reset demo</button>
-        </section>
-        <p class="demo-notice">BEAST is currently a frontend demo. Transfers, M-PESA, deposits and withdrawals are not connected to real financial services.</p>
-      </section>
-    </main>
+        <div class="terms-checkbox">
+            <input type="checkbox" id="terms">
+            <label for="terms">I agree to the BEAST Terms & Conditions and Privacy Policy.</label>
+        </div>
 
-    <nav class="bottom-nav hidden" id="bottom-nav" aria-label="Main navigation">
-      <button class="nav-item active" data-nav="home"><span>⌂</span>Home</button>
-      <button class="nav-item" data-nav="activity"><span>⇄</span>Activity</button>
-      <button class="nav-item" data-nav="account"><span>◉</span>Account</button>
-    </nav>
-  </div>
+        <button class="btn btn-primary" onclick="completeRegistration()">VERIFY & CREATE BEAST ID</button>
+    </div>
 
-  <div class="menu-backdrop hidden" id="menu-backdrop"></div>
-  <aside class="side-menu" id="side-menu" aria-hidden="true">
-    <div class="menu-header"><span class="brand-mark">B</span><button class="icon-button" id="menu-close" aria-label="Close menu">×</button></div>
-    <p class="eyebrow">BEAST MENU</p>
-    <button class="menu-link" data-menu="home">⌂ <span>Dashboard</span></button>
-    <button class="menu-link" data-menu="activity">⇄ <span>Transaction history</span></button>
-    <button class="menu-link" data-menu="account">◉ <span>Account details</span></button>
-    <div class="menu-note">Your demo data stays in this browser on this device.</div>
-  </aside>
+    <!-- SCREEN 3: LOGIN -->
+    <div id="screen-login" class="screen" style="padding: 20px;">
+        <h2 style="color: var(--gold); margin-bottom: 20px;">Welcome Back</h2>
+        <div class="reg-group">
+            <label class="reg-label">Phone Number or BEAST ID</label>
+            <input type="text" class="reg-input" placeholder="07XX... or BEAST-000001">
+        </div>
+        <div class="reg-group">
+            <label class="reg-label">Password</label>
+            <input type="password" class="reg-input" placeholder="Password">
+        </div>
+        <button class="btn btn-primary" onclick="navigate('screen-home')">LOGIN</button>
+    </div>
 
-  <div class="modal-backdrop hidden" id="modal-backdrop">
-    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <div class="modal-head"><div><p class="eyebrow">BEAST WALLET</p><h2 id="modal-title">Transaction</h2></div><button id="modal-close" class="icon-button" aria-label="Close dialog">×</button></div>
-      <div id="modal-content"></div>
-    </section>
-  </div>
-  <div class="toast hidden" id="toast" role="status"></div>
-  <script src="app.js"></script>
+    <!-- SCREEN 4: HOME DASHBOARD -->
+    <div id="screen-home" class="screen">
+        <div class="header">
+            <div class="header-logo"><i class="fa-solid fa-crown"></i> BEAST</div>
+            <div class="header-icons"><i class="fa-solid fa-bell"></i></div>
+        </div>
+
+        <div class="balance-card">
+            <div class="balance-header">
+                <span><i class="fa-solid fa-shield-halved"></i> BEAST ACCOUNT</span>
+            </div>
+            <p style="font-size: 14px; font-weight: 600;">Hello, <span id="display-name">Member</span></p>
+            <p style="font-size: 10px; color: var(--gold); margin-bottom: 15px;" id="display-beast-id">BEAST-000000</p>
+            
+            <div class="balance-label">TOTAL ACCOUNT BALANCE</div>
+            <div class="balance-amount">KES <span id="user-balance">0.00</span></div>
+            
+            <div class="balance-actions">
+                <button class="btn-send" onclick="navigate('screen-send')"><i class="fa-solid fa-arrow-up"></i> Send</button>
+                <button class="btn-receive"><i class="fa-solid fa-arrow-down"></i> Receive</button>
+            </div>
+        </div>
+
+        <!-- BEAST Card -->
+        <p class="section-title">Your BEAST Card</p>
+        <div style="padding: 0 20px;">
+            <div class="beast-card-ui">
+                <div class="card-chip"></div>
+                <div class="card-number">•••• •••• •••• 0000</div>
+                <div class="card-bottom">
+                    <span id="card-holder-name">MEMBER NAME</span>
+                    <span style="color: var(--gold); font-weight: bold;">BEAST VIRTUAL</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trending Banks -->
+        <p class="section-title">Trending Bank Accounts</p>
+        <div style="padding: 0 20px; background: var(--bg-card); border-radius: 12px; margin: 0 20px;">
+            <div class="bank-item">
+                <div class="bank-icon"><i class="fa-solid fa-building-columns"></i></div>
+                <div><div class="action-title">M-PESA</div><div class="action-sub">Safaricom</div></div>
+            </div>
+            <div class="bank-item" style="border: none;">
+                <div class="bank-icon"><i class="fa-solid fa-landmark"></i></div>
+                <div><div class="action-title">Equity Bank</div><div class="action-sub">Connect Account</div></div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item active"><i class="fa-solid fa-house"></i><span>Home</span></div>
+            <div class="nav-item"><i class="fa-solid fa-link"></i><span>Connect</span></div>
+            <div class="nav-item"><i class="fa-solid fa-user"></i><span>Profile</span></div>
+        </div>
+    </div>
+
+    <!-- SCREEN 5: SEND MONEY -->
+    <div id="screen-send" class="screen" style="padding: 20px;">
+        <div class="header" style="padding: 0 0 20px 0;">
+            <div class="header-icons" onclick="navigate('screen-home')"><i class="fa-solid fa-arrow-left"></i></div>
+            <span style="font-weight: 600;">Send Money</span>
+            <div style="width: 24px;"></div>
+        </div>
+
+        <div class="reg-group">
+            <label class="reg-label">Recipient BEAST ID or Phone</label>
+            <input type="text" class="reg-input" placeholder="BEAST-000001 or 07XX..." onblur="verifyRecipient()">
+        </div>
+
+        <!-- Recipient Name Verification -->
+        <div id="recipient-verified" style="display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--emerald); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+            <p style="font-size: 12px; color: var(--emerald);"><i class="fa-solid fa-circle-check"></i> Verified: <strong id="rec-name">John Doe</strong></p>
+        </div>
+
+        <div class="reg-group">
+            <label class="reg-label">Amount (KES)</label>
+            <input type="number" class="reg-input" placeholder="0" oninput="calculateFee(this.value)">
+        </div>
+
+        <!-- Professional Payment Source -->
+        <label class="reg-label">Pay From</label>
+        <div class="source-selector">
+            <div class="source-logo">M</div>
+            <div class="source-details">
+                <div class="source-name">M-PESA (Demo)</div>
+                <div class="source-sub">Safaricom • 0712 345 678</div>
+            </div>
+            <div class="source-balance">KES 10,000</div>
+        </div>
+        
+        <div class="source-selector" style="border-color: var(--emerald);">
+            <div class="source-logo" style="background: var(--emerald); color: white;">B</div>
+            <div class="source-details">
+                <div class="source-name">BEAST Wallet</div>
+                <div class="source-sub">BEAST-000001 • Instant Transfer</div>
+            </div>
+            <div class="source-balance">KES 5,000</div>
+        </div>
+
+        <div id="fee-display" style="display: none; font-size: 12px; color: var(--text-muted); margin-bottom: 15px; text-align: center;"></div>
+
+        <button class="btn btn-primary" onclick="initiateSecureTransfer()">CONTINUE SECURE TRANSFER</button>
+    </div>
+
+    <!-- SCREEN 6: FACE SCAN MODAL -->
+    <div id="screen-face-scan" class="screen" style="background: #000; justify-content: center; align-items: center;">
+        <div style="position: relative; width: 250px; height: 250px; border-radius: 50%; border: 2px dashed var(--emerald); display: flex; justify-content: center; align-items: center; animation: pulse 2s infinite;">
+            <i class="fa-solid fa-user" style="font-size: 80px; color: var(--text-muted);"></i>
+            <div style="position: absolute; bottom: -40px; width: 100%; text-align: center; font-size: 12px; color: var(--emerald);">Scanning for Liveness...</div>
+        </div>
+        <button class="btn btn-outline" style="margin-top: 80px; width: 200px;" onclick="cancelTransfer()">CANCEL</button>
+    </div>
+
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>

@@ -1,51 +1,211 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+/* --- BEAST DESIGN SYSTEM --- */
+:root {
+  --bg-dark: #0a0a0a;
+  --bg-card: #151515;
+  --bg-input: #1f1f1f;
+  --gold: #d4af37;
+  --gold-hover: #b5952f;
+  --emerald: #10b981;
+  --emerald-hover: #059669;
+  --text-main: #ffffff;
+  --text-muted: #888888;
+  --border: #2a2a2a;
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
 
-:root{--bg:#07110d;--panel:#0d1b14;--panel2:#11241a;--green:#36e58b;--green-dark:#153d2a;--gold:#d8b66a;--text:#f3f7f3;--muted:#91a59a;--line:rgba(218,240,224,.1);--danger:#ff7777;--radius:22px;--shadow:0 18px 50px rgba(0,0,0,.28)}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:radial-gradient(ellipse at 80% 0%,#122d1d 0%,var(--bg) 45%);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
-button,input{font:inherit}
-button{cursor:pointer}
-button:focus-visible,input:focus-visible{outline:2px solid var(--green);outline-offset:3px}
-.app-shell{max-width:760px;margin:0 auto;min-height:100vh;padding:0 20px 105px;position:relative;overflow:hidden}
-.topbar{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:relative;z-index:2}
-.brand{display:flex;align-items:center;gap:10px;color:var(--text);text-decoration:none}
-.brand-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(145deg,var(--green),#a1ffc9);color:#062012;display:grid;place-items:center;font:700 23px 'Space Grotesk',sans-serif;box-shadow:0 6px 22px #36e58b20}
-.brand-name{font:700 19px 'Space Grotesk',sans-serif;letter-spacing:1.6px}.brand-dot{color:var(--green)}.brand-name small{display:block;color:var(--muted);font:600 8px 'DM Sans',sans-serif;letter-spacing:3px;margin-top:1px}
-.icon-button{border:1px solid var(--line);background:#ffffff06;color:var(--text);width:42px;height:42px;border-radius:14px;font-size:22px;display:grid;place-items:center}
-.page{padding-top:28px;animation:appear .3s ease}
-.hidden{display:none!important}
-@keyframes appear{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
-.eyebrow{font-size:10px;letter-spacing:2px;font-weight:700;color:var(--muted);margin:0 0 10px}
-.status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px #36e58b90;margin-right:7px}
-h1,h2,p{margin-top:0}h1,h2{font-family:'Space Grotesk',sans-serif;letter-spacing:-.8px}
-h1{font-size:clamp(32px,8vw,48px);line-height:1.06;margin-bottom:15px}h1 span{color:var(--green)}h2{font-size:22px;margin-bottom:0}
-.muted{color:var(--muted);line-height:1.65;font-size:14px}.tiny{font-size:11px;line-height:1.6;color:#73897b}.center{text-align:center}
-.welcome-screen{padding-top:48px;position:relative}.hero-orb{position:absolute;width:250px;height:250px;right:-130px;top:0;border-radius:50%;background:#36e58b10;filter:blur(4px);pointer-events:none}
-.hero-copy{max-width:390px;margin-bottom:28px}.hero-card,.balance-card{background:linear-gradient(135deg,#163b28,#0d2116 75%);border:1px solid #4de99a28;border-radius:26px;padding:24px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
-.card-label{font-size:10px;letter-spacing:2px;color:#a6c9b3}.hero-balance{font:600 clamp(26px,7vw,36px) 'Space Grotesk',sans-serif;margin:15px 0 30px;letter-spacing:-1px}
-.card-foot,.balance-bottom,.balance-top{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:9px;letter-spacing:1.2px;color:#a4c0ae}
-.chip{border:1px solid #d8b66a55;color:var(--gold);padding:7px 9px;border-radius:20px;font-size:8px;letter-spacing:1px;white-space:nowrap}
-.button{border:0;border-radius:15px;padding:15px 18px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:12px;transition:transform .15s,filter .15s}
-.button:active,.action-button:active{transform:scale(.98)}
-.button-primary{background:var(--green);color:#052012;box-shadow:0 8px 24px #36e58b20}.button-primary:hover{filter:brightness(1.06)}
-.button-outline{background:transparent;color:var(--text);border:1px solid var(--line);padding:11px 14px;font-size:12px}
-.full{width:100%;margin-top:20px}.full span{font-size:20px}.welcome-screen .tiny{margin-top:16px}
-.auth-screen{padding-top:24px}.back-button{margin-bottom:26px}.text-button{border:0;background:none;color:var(--green);font-weight:600;font-size:12px;padding:8px}
-.form-card{display:flex;flex-direction:column;gap:9px;margin-top:24px}.form-card label{font-size:12px;color:#c6d8cc;margin-top:6px}.form-card input,.transaction-form input,.transaction-form select{width:100%;border:1px solid var(--line);border-radius:13px;background:#09150e;color:var(--text);padding:14px 13px;min-height:48px}.form-card input::placeholder,.transaction-form input::placeholder{color:#64776b}.auth-screen>.tiny{margin-top:17px}
-.welcome-row{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:22px}.welcome-row h1{font-size:clamp(26px,6vw,36px);margin-bottom:0}.welcome-row h1 span{display:inline-block;max-width:210px;overflow-wrap:anywhere}.avatar{width:45px;height:45px;border-radius:16px;background:var(--green-dark);border:1px solid #36e58b50;color:var(--green);display:grid;place-items:center;font-weight:700;font-size:18px;flex-shrink:0}
-.balance-card{padding:22px;margin-bottom:18px}.balance-top{color:#aac5b3}.balance-eye{border:0;background:transparent;color:var(--green);font-size:17px}.balance-amount{font-size:13px;color:#c5d7cb;margin:12px 0 24px}.balance-amount strong{font:600 clamp(27px,7vw,38px) 'Space Grotesk',sans-serif;color:white;letter-spacing:-1px;margin-left:4px}.balance-bottom{position:relative;z-index:1}.balance-bottom .status-dot{margin-right:5px}.card-decoration{position:absolute;width:150px;height:150px;border:1px solid #36e58b20;border-radius:50%;right:-55px;top:35px;box-shadow:0 0 0 20px #36e58b06,0 0 0 40px #36e58b04;pointer-events:none}
-.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0 30px}.action-button{border:1px solid var(--line);background:linear-gradient(145deg,#102219,#0b1710);color:var(--text);border-radius:17px;min-height:92px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;font-size:11px;font-weight:600;padding:10px 3px}.action-icon{width:35px;height:35px;border-radius:12px;background:#36e58b18;color:var(--green);display:grid;place-items:center;font-size:22px}
-.section-block{margin:0 0 30px}.section-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}.section-heading h2{font-size:21px}.live-tag{font-size:9px;letter-spacing:1px;color:var(--green);border:1px solid #36e58b2a;border-radius:20px;padding:7px 9px}
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.stat-card{padding:17px 15px;border:1px solid var(--line);border-radius:18px;background:#ffffff04}.stat-icon{width:30px;height:30px;display:grid;place-items:center;border-radius:10px;font-size:16px}.income{background:#36e58b18;color:var(--green)}.expense{background:#d8b66a18;color:var(--gold)}.stat-card p{font-size:11px;color:var(--muted);margin:12px 0 7px}.stat-card strong{font:600 clamp(13px,3.5vw,17px) 'Space Grotesk',sans-serif;overflow-wrap:anywhere}
-.history-list{display:flex;flex-direction:column;gap:9px}.history-item{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid var(--line);background:#ffffff03;border-radius:15px}.history-symbol{width:39px;height:39px;border-radius:13px;background:#36e58b15;color:var(--green);display:grid;place-items:center;font-size:20px;flex-shrink:0}.history-info{min-width:0;flex:1}.history-info strong{display:block;font-size:12px;overflow-wrap:anywhere}.history-info small{display:block;color:var(--muted);font-size:10px;margin-top:5px}.history-amount{text-align:right;font:600 13px 'Space Grotesk',sans-serif;white-space:nowrap}.history-amount.in{color:var(--green)}.history-amount.out{color:var(--gold)}
-.empty-state{padding:28px 12px;text-align:center;border:1px dashed #ffffff18;border-radius:18px;color:var(--muted)}.empty-state>span{font-size:25px;color:var(--green)}.empty-state strong{display:block;color:#d8e5dc;margin:8px 0;font-size:13px}.empty-state p{font-size:11px;margin:0}
-.profile-card{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px;border:1px solid var(--line);border-radius:18px;background:#ffffff04}.profile-card h2{font-size:17px}.profile-card .muted{font-size:11px;margin:6px 0 0}.demo-notice{font-size:10px;line-height:1.6;color:#8d9f93;background:#d8b66a0b;border:1px solid #d8b66a22;padding:13px;border-radius:13px}
-.bottom-nav{position:fixed;z-index:4;bottom:0;left:50%;transform:translateX(-50%);width:min(760px,100%);padding:10px 24px calc(10px + env(safe-area-inset-bottom));background:#07110ded;backdrop-filter:blur(18px);border-top:1px solid var(--line);display:flex;justify-content:space-around}
-.nav-item{background:none;border:0;color:#6f8577;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;min-width:68px}.nav-item span{font-size:21px}.nav-item.active{color:var(--green)}
-.menu-backdrop,.modal-backdrop{position:fixed;inset:0;background:#000a;z-index:8;backdrop-filter:blur(3px)}.side-menu{position:fixed;z-index:9;right:0;top:0;bottom:0;width:min(310px,86vw);background:#0a1710;border-left:1px solid var(--line);padding:20px;transform:translateX(105%);transition:transform .25s ease}.side-menu.open{transform:translateX(0)}.menu-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px}.menu-link{width:100%;display:flex;gap:14px;align-items:center;padding:15px 10px;border:0;border-bottom:1px solid var(--line);background:none;color:var(--green);text-align:left;font-size:18px}.menu-link span{color:var(--text);font-size:13px}.menu-note{position:absolute;bottom:25px;color:var(--muted);font-size:11px;line-height:1.6;padding-right:20px}
-.modal-backdrop{z-index:10;display:grid;place-items:end center;padding:16px}.modal{width:min(500px,100%);max-height:85vh;overflow:auto;background:#0d1b14;border:1px solid #ffffff18;border-radius:24px;padding:22px;box-shadow:var(--shadow);animation:appear .2s ease}.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}.modal-head h2{font-size:23px}.transaction-form{display:flex;flex-direction:column;gap:9px}.transaction-form label{font-size:11px;color:#b6c9bc;margin-top:5px}.transaction-form .button{margin-top:10px}.modal-copy{font-size:13px;line-height:1.7;color:var(--muted)}.receive-box{padding:17px;border:1px dashed #36e58b55;border-radius:16px;color:var(--green);overflow-wrap:anywhere;font-size:13px}
-.toast{position:fixed;z-index:20;bottom:95px;left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);background:#dfffee;color:#062012;padding:12px 17px;border-radius:13px;box-shadow:var(--shadow);font-size:12px;font-weight:700}
-@media(min-width:600px){.app-shell{padding-left:30px;padding-right:30px}.welcome-screen{padding-top:65px}.hero-card{max-width:520px}.welcome-screen>.button{max-width:520px}.quick-actions{gap:14px}.action-button{min-height:100px}.modal-backdrop{place-items:center}}
-@media(max-width:360px){.app-shell{padding-left:14px;padding-right:14px}.quick-actions{gap:6px}.action-button{font-size:10px}.balance-card{padding:18px}.chip{font-size:7px;padding:6px}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    -webkit-tap-highlight-color: transparent; 
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: #000;
+  color: var(--text-main);
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* Mobile App Container */
+#app {
+  width: 100%;
+  max-width: 430px;
+  background-color: var(--bg-dark);
+  position: relative;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-shadow: 0 0 50px rgba(212, 175, 55, 0.05);
+}
+
+/* Screen Management */
+.screen {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  padding-bottom: 80px;
+}
+.screen.active { display: flex; }
+
+/* --- SPLASH / LOGIN SCREEN --- */
+.splash-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 24px;
+  text-align: center;
+}
+.brand-title { font-size: 32px; font-weight: 800; color: var(--gold); letter-spacing: 2px; }
+.brand-subtitle { font-size: 12px; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 40px; text-transform: uppercase; }
+.welcome-text { font-size: 24px; font-weight: 600; margin-bottom: 8px; color: var(--emerald); }
+.welcome-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 30px; }
+
+/* Buttons */
+.btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.btn-primary { background-color: var(--emerald); color: white; }
+.btn-secondary { background-color: var(--gold); color: #000; }
+.btn-outline { background-color: transparent; border: 1px solid var(--border); color: var(--text-main); }
+
+/* --- REGISTRATION & FORMS --- */
+.reg-group { margin-bottom: 15px; text-align: left; }
+.reg-label { font-size: 12px; color: var(--text-muted); margin-bottom: 5px; display: block; }
+.reg-input {
+    width: 100%;
+    padding: 12px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: white;
+    font-family: var(--font-main);
+    font-size: 14px;
+}
+.reg-input:focus { outline: none; border-color: var(--gold); }
+.reg-input[readonly] { background: #111; color: var(--gold); font-weight: bold; }
+.terms-checkbox { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-muted); margin: 15px 0; }
+
+/* --- HOME DASHBOARD --- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+.header-logo { font-size: 20px; font-weight: 800; color: var(--gold); display: flex; align-items: center; gap: 8px;}
+.header-icons { display: flex; gap: 15px; color: var(--text-main); }
+
+.balance-card {
+  background: linear-gradient(145deg, #1a1a1a, #111);
+  margin: 0 20px;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+.balance-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+.balance-label { font-size: 12px; color: var(--text-muted); margin-bottom: 5px; }
+.balance-amount { font-size: 36px; font-weight: 700; margin-bottom: 20px; }
+.balance-actions { display: flex; gap: 10px; }
+.btn-send { flex: 1; background-color: var(--emerald); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;}
+.btn-receive { flex: 1; background-color: var(--gold); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;}
+
+.section-title { font-size: 14px; font-weight: 600; margin: 25px 20px 15px; }
+
+/* --- BEAST CARD DESIGN --- */
+.beast-card-ui {
+    background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+    border: 1px solid var(--gold);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+    margin-bottom: 20px;
+}
+.beast-card-ui::before {
+    content: ''; position: absolute; top: -50%; right: -50%; width: 100%; height: 100%;
+    background: radial-gradient(circle, rgba(212,175,55,0.2) 0%, transparent 70%);
+}
+.card-chip { width: 40px; height: 30px; background: var(--gold); border-radius: 4px; margin-bottom: 20px; }
+.card-number { font-size: 18px; letter-spacing: 2px; margin-bottom: 15px; font-family: monospace; }
+.card-bottom { display: flex; justify-content: space-between; font-size: 10px; text-transform: uppercase; color: var(--text-muted); }
+
+/* --- BANKS LIST --- */
+.bank-item { display: flex; align-items: center; gap: 15px; padding: 12px; border-bottom: 1px solid var(--border); }
+.bank-icon { width: 40px; height: 40px; background: var(--bg-input); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--gold); }
+.action-title { font-size: 13px; font-weight: 600; }
+.action-sub { font-size: 10px; color: var(--text-muted); }
+
+/* --- PROFESSIONAL PAYMENT SOURCE --- */
+.source-selector {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.source-logo { width: 30px; height: 30px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; }
+.source-details { flex: 1; margin-left: 15px; }
+.source-name { font-size: 14px; font-weight: 600; }
+.source-sub { font-size: 11px; color: var(--text-muted); }
+.source-balance { font-size: 14px; font-weight: 700; color: var(--emerald); }
+
+/* --- SECURITY FEATURES --- */
+.security-blur {
+    filter: blur(20px);
+    pointer-events: none;
+    transition: filter 0.1s;
+}
+
+/* Face Scan Animation */
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+    70% { box-shadow: 0 0 0 20px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: var(--bg-card);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  padding: 15px 0;
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 10px;
+  gap: 4px;
+  cursor: pointer;
+}
+.nav-item.active { color: var(--emerald); }
