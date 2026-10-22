@@ -1,18 +1,225 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#030908"><title>BEAST</title><link rel="stylesheet" href="style.css"></head><body>
-<div class="app"><header class="top"><button id="menuOpen">☰</button><a class="brand" data-page="home"><span>♛</span><b>BEAST<small>ONE NUMBER. ONE BEAST.</small></b></a><button data-page="shield">⬡</button></header><main>
-<section class="page" id="register"><div class="hero"><div>♛</div><h1>BEAST</h1><p>ONE NUMBER. ONE BEAST.</p></div><div class="notice">Prototype only. Identity verification and payments are not connected.</div><form id="registerForm" class="form"><label>Phone number<input name="phone" required placeholder="+254 7XX XXX XXX"></label><label>National ID number<input name="id" required></label><button type="button" class="outline" id="verifyIdentity">Verify registered name</button><label>Real name<input name="name" required placeholder="Confirm your name"></label><label>Create PIN<input name="pin" type="password" inputmode="numeric" minlength="4" maxlength="6" required></label><label>Create password<input name="password" type="password" minlength="8" required></label><label class="check"><input type="checkbox" required> I agree to <button type="button" id="terms" class="text">Terms & Conditions</button></label><button class="wide green">CREATE ACCOUNT</button></form></section>
-<section class="page" id="home"><div class="wallet"><small>BEAST WALLET</small><h2>Hello, <span id="hello">Member</span></h2><p>BEAST ID: <b id="beastId">BEAST-000001</b></p><small>TOTAL WALLET BALANCE</small><div class="amount">KES <strong id="balance">0.00</strong></div><div class="three"><button data-page="statements">▤<small>Statements</small></button><button data-page="send">↗<small>Send</small></button><button data-page="bulk">＋<small>Bulk</small></button></div></div><h3>Quick actions</h3><div class="grid"><button data-page="send">↗<b>Send Money</b><small>Phone or BEAST ID</small></button><button data-page="bulk">＋<b>Bulk Send</b><small>Multiple recipients</small></button><button data-page="receive">⇩<b>Receive</b><small>Collect payments</small></button><button data-page="withdraw">↙<b>Withdraw</b><small>Agent cash-out</small></button><button data-page="lipa">▣<b>Lipa Na</b><small>Merchant payment</small></button><button data-page="history">◴<b>History</b><small>Transactions</small></button><button data-page="profile">♙<b>Profile</b><small>Account</small></button><button data-page="banks">▥<b>Banks</b><small>Accounts</small></button><button data-page="shield">⬡<b>BEAST Shield</b><small>Privacy check</small></button><button data-page="card">▤<b>BEAST Card</b><small>Card preview</small></button></div><h3>Recent activity</h3><div id="recent" class="list">No activity yet.</div><div class="notice">DEMO MODE — no real money moves. Do not use real PINs, passwords or identity details.</div></section>
-<section class="page" id="send"><button class="back" data-page="home">← Back</button><h2>Send Money</h2><form id="sendForm" class="form"><label>Phone number or BEAST digits<input name="recipient" required placeholder="Phone or 000001"></label><button type="button" id="verifyRecipient" class="wide outline">VERIFY RECIPIENT</button><div class="verify">Recipient name: <b id="recipientName">Not verified</b></div><label>Payment source<select name="source"><option>BEAST Wallet</option><option>BEAST Card</option><option>Bank Account</option><option>M-PESA</option><option>Airtel Money</option><option>Other Card</option></select></label><label>Amount (KES)<input name="amount" id="sendAmount" type="number" min="1" required></label><div class="fee">Transaction cost <b id="sendFee">KES 0.00</b><br>Total deducted <b id="sendTotal">KES 0.00</b></div><label>PIN<input name="pin" type="password" minlength="4" maxlength="6" required inputmode="numeric"></label><button class="wide green">CONFIRM DEMO TRANSFER</button></form></section>
-<section class="page" id="bulk"><button class="back" data-page="home">← Back</button><h2>Bulk Send</h2><form id="bulkForm" class="form"><div id="bulkCards"></div><button type="button" id="addBulk" class="wide outline">＋ ADD RECIPIENT</button><div class="fee">Total <b id="bulkTotal">KES 0.00</b></div><label>Payment source<select name="source"><option>BEAST Wallet</option><option>Bank Account</option><option>M-PESA</option></select></label><label>PIN<input name="pin" type="password" minlength="4" maxlength="6" required></label><button class="wide green">CONFIRM DEMO BATCH</button></form></section>
-<section class="page" id="receive"><button class="back" data-page="home">← Back</button><h2>Receive Money</h2><div class="tabs"><button data-tab="collect" class="active">Merchant Collection</button><button data-tab="deposit">Deposit & Withdraw</button></div><div id="collect"><div class="notice">Buyer enters their own details on the seller's device. Demo only.</div><form id="buyerLogin" class="form"><h3>Buyer login</h3><label>Phone or BEAST ID<input name="buyer" required></label><label>Password<input name="password" type="password" required></label><label>Buyer PIN<input name="pin" type="password" required></label><button class="wide green">CONTINUE</button><button type="button" id="face" class="wide outline">Face check (preview)</button></form><form id="collectForm" class="form hidden"><h3>Approve payment</h3><label>Payment source<select><option>BEAST Wallet</option><option>BEAST Card</option><option>Bank account</option><option>M-PESA</option><option>Airtel Money</option></select></label><div class="verify">Seller destination: <b id="destination">BEAST Wallet</b></div><label>Amount (KES)<input name="amount" type="number" min="1" required></label><label>Buyer PIN<input name="pin" type="password" minlength="4" maxlength="6" required></label><button class="wide green">AUTHORIZE DEMO PAYMENT</button></form><div id="collectResult" class="notice hidden"></div></div><div id="deposit" class="hidden"><form id="depositForm" class="form"><label>Route<select><option>M-PESA → BEAST</option><option>Airtel Money → BEAST</option><option>BEAST → M-PESA</option><option>BEAST → Bank</option><option>Bank → BEAST</option></select></label><label>Phone/account<input required></label><label>Amount<input type="number" min="1" required></label><button class="wide green">CONTINUE (DEMO)</button></form></div></section>
-<section class="page" id="withdraw"><button class="back" data-page="home">← Back</button><h2>Withdraw</h2><form id="withdrawForm" class="form"><label>Agent phone or BEAST number<input name="agent" required></label><label>Store number<input name="store" required></label><button type="button" id="verifyAgent" class="wide outline">VERIFY AGENT</button><b id="agentName">Not verified</b><label>Source<select><option>BEAST Wallet</option><option>BEAST Card</option><option>M-PESA</option></select></label><label>Amount<input name="amount" type="number" min="1" required></label><label>PIN<input name="pin" type="password" minlength="4" maxlength="6" required></label><button class="wide green">CONFIRM DEMO WITHDRAWAL</button></form></section>
-<section class="page" id="lipa"><button class="back" data-page="home">← Back</button><h2>Lipa Na BEAST</h2><form id="lipaForm" class="form"><label>Service<select name="kind"><option>Pochi la Biashara</option><option>Buy Goods / Till</option><option>Paybill</option><option>T-Kash</option><option>Bill Manager</option><option>GlobalPay</option><option>Government services</option><option>Transport</option><option>Other</option></select></label><label>Source<select><option>BEAST Wallet</option><option>BEAST Card</option><option>Bank account</option><option>M-PESA</option><option>Airtel Money</option></select></label><label>Business / Till / Paybill number<input name="business" required></label><label>Account number / reference<input name="account"></label><button type="button" id="verifyBusiness" class="wide outline">VERIFY BUSINESS</button><b id="businessName">Not verified</b><label>Amount<input name="amount" type="number" min="1" required></label><label>PIN<input name="pin" type="password" minlength="4" maxlength="6" required></label><button class="wide green">CONFIRM DEMO PAYMENT</button></form></section>
-<section class="page" id="card"><button class="back" data-page="home">← Back</button><h2>BEAST Card</h2><div class="bankcard"><div class="split"><b>♛ BEAST</b><span>▰</span></div><h3>•••• •••• •••• 0000</h3><div class="split"><small>CARDHOLDER</small><b id="cardholder">BEAST MEMBER</b></div></div><div class="notice">Preview only, not an issued card.</div><button id="freeze" class="wide outline">FREEZE DEMO CARD</button></section>
-<section class="page" id="banks"><button class="back" data-page="home">← Back</button><h2>Banks & Accounts</h2><input id="bankSearch" placeholder="Search banks"><div id="bankDirectory" class="grid"></div><form id="bankForm" class="form"><label>Bank<select name="bank"><option>Equity Bank</option><option>KCB Bank Kenya</option><option>Co-operative Bank</option><option>Absa Bank Kenya</option><option>NCBA Bank Kenya</option><option>Standard Chartered Kenya</option><option>Family Bank</option><option>I&M Bank</option></select></label><label>Account nickname<input name="nickname" required></label><label>Last 4 digits only<input name="last4" maxlength="4"></label><button class="wide gold">SAVE DEMO ACCOUNT</button></form><div id="banksList" class="list"></div></section>
-<section class="page" id="history"><button class="back" data-page="home">← Back</button><h2>Transaction History</h2><select id="filter"><option value="all">All transactions</option><option value="send">Send</option><option value="bulk">Bulk</option><option value="receive">Receive</option><option value="withdraw">Withdraw</option><option value="lipa">Lipa</option></select><div id="historyList" class="list"></div><button id="export" class="wide gold">EXPORT DEMO STATEMENT</button></section>
-<section class="page" id="statements"><button class="back" data-page="home">← Back</button><h2>Statements</h2><div id="summary" class="list"></div><button data-page="history" class="wide outline">VIEW HISTORY</button></section>
-<section class="page" id="profile"><button class="back" data-page="home">← Back</button><h2>My Profile</h2><div id="profileDetails" class="list"></div><button data-page="settings" class="wide gold">SETTINGS</button></section>
-<section class="page" id="settings"><button class="back" data-page="home">← Back</button><h2>Settings</h2><p class="muted">Set the seller's preferred destination for collections.</p><form id="settingsForm" class="form"><label>Preferred destination<select name="destination"><option>BEAST Wallet</option><option>BEAST Card</option><option>Bank Account</option><option>Pochi la Biashara</option><option>Buy Goods / Till</option><option>Paybill</option><option>T-Kash</option><option>Bill Manager</option><option>GlobalPay</option><option>Government services</option><option>Transport</option><option>Other</option></select></label><label>Destination number/account<input name="destNumber"></label><label>Merchant name<input name="merchant"></label><button class="wide green">SAVE SETTINGS</button></form></section>
-<section class="page" id="shield"><button class="back" data-page="home">← Back</button><h2>BEAST Shield</h2><div class="ring"><div>⬡</div></div><p id="shieldStatus" class="muted center">Privacy check not started.</p><button id="scan" class="wide green">RUN PRIVACY CHECK</button><button id="camera" class="wide outline">TEST CAMERA PERMISSION</button><div class="notice">Web pages cannot guarantee blocking screenshots or recordings. Native Android secure-window controls are needed for stronger screenshot blocking. Camera permission does not reliably detect multiple faces or external cameras.</div></section>
-</main><nav class="bottom"><button data-page="home">⌂<small>Money</small></button><button data-page="banks">◉<small>Connect</small></button><button data-page="profile">♙<small>Profile</small></button></nav></div>
-<div id="scrim" class="hidden"></div><aside id="drawer"><button id="menuClose">× Close</button><h2>BEAST MENU</h2><button data-page="home">Dashboard</button><button data-page="send">Send Money</button><button data-page="bulk">Bulk Send</button><button data-page="receive">Receive</button><button data-page="withdraw">Withdraw</button><button data-page="lipa">Lipa Na</button><button data-page="history">History</button><button data-page="card">BEAST Card</button><button data-page="banks">Banks</button><button data-page="shield">BEAST Shield</button><button data-page="settings">Settings</button><button id="logout">Log out</button></aside><div id="toast" class="hidden"></div><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#03100c">
+<title>BEAST — One Number. One Beast.</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <button class="icon-btn" id="menuOpen" aria-label="Open menu">☰</button>
+    <button class="brand" data-page="home" aria-label="BEAST home"><span class="brand-lion">♛</span><span><strong>BEAST</strong><small>ONE NUMBER. ONE BEAST.</small></span></button>
+    <button class="icon-btn" data-page="shield" aria-label="BEAST Shield">◉</button>
+  </header>
+  <nav id="drawer" class="drawer">
+    <button id="menuClose" class="icon-btn close-menu">✕</button>
+    <h3>BEAST MENU</h3>
+    <button data-page="home">Home</button><button data-page="send">Send Money</button>
+    <button data-page="receive">Receive & Payment Settings</button><button data-page="withdraw">Withdraw</button>
+    <button data-page="lipa">Lipa Na</button><button data-page="card">BEAST Card</button>
+    <button data-page="banks">Linked Accounts</button><button data-page="shield">BEAST Shield</button>
+    <button data-page="history">Transaction History</button><button data-page="settings">Settings</button>
+  </nav>
+  <div id="scrim" class="scrim hidden"></div>
+
+  <main>
+    <section class="page active" id="register">
+      <div class="hero">
+        <div class="lion-mark">♛</div><div class="hero-title">BEAST</div>
+        <p>ONE NUMBER. ONE BEAST.</p><span class="pill">SECURE WALLET EXPERIENCE</span>
+      </div>
+      <div class="notice warning"><b>DEMO PROTOTYPE</b><br>Identity checks, payments, account linking and card issuance are simulated. Do not enter real PINs, passwords or identity details.</div>
+      <form id="registerForm" class="panel form">
+        <h2>Create your BEAST account</h2>
+        <label>Phone number<input name="phone" autocomplete="tel" placeholder="+254 7XX XXX XXX" required></label>
+        <label>National ID number<input name="id" placeholder="Demo ID only" required></label>
+        <button type="button" class="btn secondary" id="verifyIdentity">CHECK NAME (DEMO)</button>
+        <label>Full legal name<input name="name" placeholder="Name as shown on ID" required></label>
+        <div class="two-col"><label>Create PIN<input name="pin" type="password" inputmode="numeric" minlength="4" maxlength="6" required></label><label>Create password<input name="password" type="password" minlength="8" required></label></div>
+        <label class="check-row"><input type="checkbox" required> I agree to the <button type="button" id="terms" class="inline-btn">demo terms</button></label>
+        <button class="btn primary full">CREATE ACCOUNT & SCAN</button>
+      </form>
+    </section>
+
+    <section class="page" id="home">
+      <div class="wallet-card">
+        <div class="wallet-top"><span>♛ BEAST WALLET</span><span class="live-dot">● DEMO</span></div>
+        <p class="muted">WELCOME BACK</p><h2 id="hello">Member</h2>
+        <p class="small">BEAST ID <b id="beastId">BEAST-000001</b></p>
+        <div class="balance-label">DEMO WALLET BALANCE</div><div class="balance">KSh <strong id="balance">0.00</strong></div>
+        <div class="quick-row"><button data-page="send">↗<small>Send</small></button><button data-page="receive">↓<small>Receive</small></button><button data-page="withdraw">⇧<small>Withdraw</small></button><button data-page="card">▰<small>Card</small></button></div>
+      </div>
+      <h3 class="section-title">Quick actions</h3>
+      <div class="action-grid">
+        <button data-page="send"><span>↗</span><b>Send Money</b><small>Phone or BEAST ID</small></button>
+        <button data-page="receive"><span>⇩</span><b>Receive</b><small>Default destination</small></button>
+        <button data-page="withdraw"><span>⇧</span><b>Withdraw</b><small>Linked accounts</small></button>
+        <button data-page="lipa"><span>▣</span><b>Lipa Na</b><small>Merchant payments</small></button>
+        <button data-page="card"><span>▰</span><b>BEAST Card</b><small>Virtual / physical</small></button>
+        <button data-page="banks"><span>▥</span><b>Linked Accounts</b><small>Bank & mobile money</small></button>
+        <button data-page="shield"><span>◉</span><b>BEAST Shield</b><small>Security scanner</small></button>
+        <button data-page="history"><span>◴</span><b>History</b><small>Demo activity</small></button>
+      </div>
+      <h3 class="section-title">Recent activity</h3><div id="recent" class="panel list">No activity yet.</div>
+      <p class="fine-print">Prototype only: no real money moves and no live identity or fraud detection is connected.</p>
+    </section>
+
+    <section class="page" id="send">
+      <button class="back" data-page="home">← Home</button><h1>Send Money</h1>
+      <form id="sendForm" class="panel form">
+        <label>Recipient phone or BEAST ID<input name="recipient" required placeholder="Phone / BEAST-000001"></label>
+        <button type="button" id="verifyRecipient" class="btn secondary">VERIFY RECIPIENT (DEMO)</button>
+        <div class="verify-box">Recipient name <b id="recipientName">Not verified</b></div>
+        <label>Payment source<select name="source"><option>BEAST Wallet</option><option>Linked Bank Account</option><option>M-PESA</option><option>Airtel Money</option><option>BEAST Card (demo)</option></select></label>
+        <label>Amount (KSh)<input id="sendAmount" name="amount" type="number" min="1" step="1" required></label>
+        <div class="fee-box">Estimated demo fee <b id="sendFee">KSh 0.00</b><br>Total <b id="sendTotal">KSh 0.00</b></div>
+        <label>Confirm with demo PIN<input name="pin" type="password" inputmode="numeric" minlength="4" maxlength="6" required></label>
+        <button class="btn primary full">SCAN & CONFIRM DEMO TRANSFER</button>
+      </form>
+    </section>
+
+    <section class="page" id="receive">
+      <button class="back" data-page="home">← Home</button><h1>Receive Money</h1>
+      <div class="tabs"><button class="tab active" data-receive-tab="collect">Collect payment</button><button class="tab" data-receive-tab="settings">Payment settings</button><button class="tab" data-receive-tab="movement">Deposit / withdraw</button></div>
+      <div id="receiveCollect" class="tab-panel">
+        <div class="panel">
+          <div class="section-heading"><div><span class="eyebrow">YOUR DEFAULT DESTINATION</span><h2 id="destinationSummary">BEAST Wallet</h2></div><span class="status-badge">DEFAULT</span></div>
+          <p class="muted" id="destinationNumberSummary">Incoming payments use your selected default destination where supported.</p>
+        </div>
+        <div class="notice">Buyer should enter their own details privately. Do not share or ask for another person's PIN or password. This collection flow is a UI demo only.</div>
+        <form id="buyerLogin" class="panel form">
+          <h2>Buyer authorization</h2>
+          <label>Buyer's phone or BEAST ID<input name="buyer" required></label>
+          <label>Buyer password (demo only)<input name="password" type="password" required></label>
+          <label>Buyer PIN (demo only)<input name="pin" type="password" inputmode="numeric" minlength="4" maxlength="6" required></label>
+          <button class="btn primary full">CONTINUE TO SHIELD SCAN</button>
+        </form>
+        <form id="collectForm" class="panel form hidden">
+          <h2>Confirm collection</h2>
+          <label>Payment source<select name="source"><option>BEAST Wallet</option><option>Linked Bank Account</option><option>M-PESA</option><option>Airtel Money</option></select></label>
+          <div class="verify-box">Seller's configured destination <b id="destination">BEAST Wallet</b></div>
+          <label>Amount (KSh)<input name="amount" type="number" min="1" required></label>
+          <label>Buyer PIN (demo only)<input name="pin" type="password" minlength="4" maxlength="6" required></label>
+          <button class="btn primary full">SCAN & AUTHORIZE DEMO PAYMENT</button>
+        </form>
+        <div id="collectResult" class="notice hidden"></div>
+      </div>
+      <div id="receiveSettings" class="tab-panel hidden">
+        <form id="destinationForm" class="panel form">
+          <h2>Where should your money go?</h2>
+          <label>Default destination<select name="destination" id="destinationSelect"><option>BEAST Wallet</option><option>M-PESA</option><option>Airtel Money</option><option>Bank Account</option></select></label>
+          <label>Linked phone / BEAST ID / account reference<input name="destNumber" placeholder="Use demo details only"></label>
+          <label>Account holder / business display name<input name="destName" placeholder="Verified name in a live system"></label>
+          <div class="notice">Live account ownership checks and actual payouts require a payment provider. This prototype only saves a local demo preference.</div>
+          <button class="btn primary full">SAVE DEFAULT DESTINATION</button>
+        </form>
+      </div>
+      <div id="receiveMovement" class="tab-panel hidden">
+        <form id="movementForm" class="panel form">
+          <h2>Move money</h2>
+          <label>Route<select name="route"><option>M-PESA → BEAST</option><option>Airtel Money → BEAST</option><option>BEAST → M-PESA</option><option>BEAST → Airtel Money</option><option>BEAST → Linked Bank</option><option>Linked Bank → BEAST</option></select></label>
+          <label>Phone / linked account<input name="account" required></label><label>Amount (KSh)<input name="amount" type="number" min="1" required></label>
+          <button class="btn primary full">CONTINUE (DEMO)</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="page" id="withdraw">
+      <button class="back" data-page="home">← Home</button><h1>Withdraw</h1>
+      <form id="withdrawForm" class="panel form">
+        <label>Withdraw from<select name="source" id="withdrawSource"><option>BEAST Wallet</option><option>Linked Bank Account</option><option>M-PESA</option><option>Airtel Money</option></select></label>
+        <div id="linkedBankSummary" class="verify-box">Linked bank details will appear here if saved.</div>
+        <label>Destination type<select name="destinationType"><option>Agent / BEAST number</option><option>M-PESA</option><option>Airtel Money</option><option>Bank Account</option></select></label>
+        <label>Agent / phone / account number<input name="destination" required></label>
+        <label>Store number (if using an agent)<input name="store"></label>
+        <button type="button" id="verifyAgent" class="btn secondary">VERIFY DESTINATION (DEMO)</button><div class="verify-box">Verified details <b id="agentName">Not verified</b></div>
+        <label>Amount (KSh)<input name="amount" type="number" min="1" required></label>
+        <div class="fee-box">Estimated demo fee <b id="withdrawFee">KSh 0.00</b></div>
+        <label>Confirm with demo PIN<input name="pin" type="password" inputmode="numeric" minlength="4" maxlength="6" required></label>
+        <button class="btn primary full">SCAN & CONFIRM WITHDRAWAL</button>
+      </form>
+    </section>
+
+    <section class="page" id="lipa">
+      <button class="back" data-page="home">← Home</button><h1>Lipa Na BEAST</h1>
+      <div class="service-grid">
+        <button data-service="Pochi la Biashara">Pochi la Biashara<small>Phone number</small></button>
+        <button data-service="Buy Goods / Till">Buy Goods<small>Till number</small></button>
+        <button data-service="Paybill">Paybill<small>Business + account</small></button>
+        <button data-service="T-Kash">T-Kash<small>Pay Bill or Buy Goods</small></button>
+        <button data-service="GlobalPay">GlobalPay<small>Use BEAST Card</small></button>
+        <button data-service="Bill Manager">Bill Manager<small>Bill reference</small></button>
+        <button data-service="Government services">Government services<small>Official reference</small></button>
+        <button data-service="Transport">Transport<small>Operator reference</small></button>
+      </div>
+      <form id="lipaForm" class="panel form">
+        <div class="section-heading"><div><span class="eyebrow">SELECTED SERVICE</span><h2 id="lipaTitle">Pochi la Biashara</h2></div><span class="status-badge">DEMO</span></div>
+        <label id="tKashChoiceWrap" class="hidden">T-Kash payment type<select name="tKashChoice" id="tKashChoice"><option>Pay Bill</option><option>Buy Goods</option></select></label>
+        <div id="lipaFields"></div>
+        <label>Payment source<select name="source"><option>BEAST Wallet</option><option>BEAST Card</option><option>Linked Bank Account</option><option>M-PESA</option><option>Airtel Money</option></select></label>
+        <label>Amount (KSh)<input name="amount" type="number" min="1" required></label>
+        <div class="fee-box">Estimated demo fee <b id="lipaFee">KSh 0.00</b></div>
+        <button type="button" id="verifyBusiness" class="btn secondary">VERIFY DETAILS (DEMO)</button><div class="verify-box">Business <b id="businessName">Not verified</b></div>
+        <label>Confirm with demo PIN<input name="pin" type="password" inputmode="numeric" minlength="4" maxlength="6" required></label>
+        <button class="btn primary full">SCAN & CONFIRM DEMO PAYMENT</button>
+      </form>
+    </section>
+
+    <section class="page" id="card">
+      <button class="back" data-page="home">← Home</button><h1>BEAST Card</h1>
+      <div class="beast-card">
+        <div class="card-top"><div class="card-brand"><span>♛</span><b>BEAST<small>ONE NUMBER. ONE BEAST.</small></b></div><span class="card-type" id="cardTypeLabel">VIRTUAL</span></div>
+        <div class="lion-art" aria-label="Lion emblem">🦁</div>
+        <div class="chip-row"><span class="chip"></span><span class="contactless">)))</span></div>
+        <div class="card-number">•••• &nbsp; •••• &nbsp; •••• &nbsp; <span id="cardLast4">0000</span></div>
+        <div class="card-bottom"><div><small>CARDHOLDER</small><b id="cardholder">BEAST MEMBER</b><small id="cardBeastId">BEAST ID • BEAST-000001</small></div><div class="card-pay">BEAST<br>PAY</div></div>
+      </div>
+      <div class="notice">BEAST-branded ecosystem card concept. It is not a Visa/Mastercard or a live payment card. Do not use the demo card number for payments.</div>
+      <div class="two-col card-actions"><button id="getVirtual" class="btn primary">GET VIRTUAL — FREE</button><button id="orderPhysical" class="btn gold">ORDER PHYSICAL — KSh 100*</button></div>
+      <div id="cardStatus" class="panel status-panel"><b>Card status:</b> Preview only</div>
+      <div class="panel form">
+        <h3>Card controls</h3><button id="freeze" class="btn secondary full">FREEZE / UNFREEZE DEMO CARD</button>
+        <button id="activateCard" class="btn secondary full">ACTIVATE RECEIVED CARD (DEMO)</button>
+        <button id="cardQr" class="btn secondary full">SHOW BEAST ACCOUNT QR (DEMO)</button>
+        <p class="fine-print">*Physical card price is proposed and must be checked against production, fulfilment and delivery costs.</p>
+      </div>
+    </section>
+
+    <section class="page" id="banks">
+      <button class="back" data-page="home">← Home</button><h1>Linked Accounts</h1>
+      <div class="notice">Save demo references only. In production, verify ownership through an authorized provider and mask sensitive account details.</div>
+      <form id="bankForm" class="panel form">
+        <label>Account type<select name="type"><option>Bank Account</option><option>M-PESA</option><option>Airtel Money</option></select></label>
+        <label>Provider / bank name<select name="provider"><option>Equity Bank</option><option>KCB Bank Kenya</option><option>Co-operative Bank</option><option>Absa Bank Kenya</option><option>NCBA Bank Kenya</option><option>Standard Chartered Kenya</option><option>Family Bank</option><option>I&M Bank</option><option>Safaricom M-PESA</option><option>Airtel Money</option></select></label>
+        <label>Account nickname<input name="nickname" required placeholder="e.g. My main account"></label>
+        <label>Account reference (demo)<input name="reference" required placeholder="Phone or account number"></label>
+        <label>Account holder name<input name="holder" required></label>
+        <button class="btn primary full">SAVE LINKED ACCOUNT (DEMO)</button>
+      </form>
+      <h3 class="section-title">Saved accounts</h3><div id="banksList" class="panel list">No linked accounts yet.</div>
+    </section>
+
+    <section class="page" id="shield">
+      <button class="back" data-page="home">← Home</button><h1>BEAST Shield</h1>
+      <div class="scanner-panel">
+        <div class="scanner-brand"><span>♛</span><b>BEAST<small>ONE NUMBER. ONE BEAST.</small></b></div>
+        <div class="scanner" id="scannerVisual"><div class="scan-ring ring-one"></div><div class="scan-ring ring-two"></div><div class="scan-ring ring-three"></div><div class="scan-sweep"></div><div class="scan-lion">♛</div></div>
+        <h2 id="shieldStatus">READY TO SCAN</h2><p id="shieldMessage">Security checks are simulated in this prototype.</p>
+        <div class="progress-track"><div id="scanProgress"></div></div>
+        <div class="shield-features"><span>◈<small>SAFE</small></span><span>▣<small>SECURE</small></span><span>◎<small>VERIFIED</small></span><span>♛<small>BEAST</small></span></div>
+      </div>
+      <div class="notice warning">The animation is not real fraud detection. Browser apps cannot guarantee screenshot/recording blocking. Face verification requires explicit consent and a real provider; never treat a scan animation as proof of identity.</div>
+      <div class="panel form"><h3>Security actions</h3><button id="scanNow" class="btn primary full">RUN DEMO SECURITY SCAN</button><button id="cameraCheck" class="btn secondary full">TEST CAMERA PERMISSION</button><button id="lockdown" class="btn danger full">LOCK ACCOUNT (DEMO)</button><p class="fine-print">In production, server-side controls must enforce session revocation, risk checks and transaction holds.</p></div>
+    </section>
+
+    <section class="page" id="history"><button class="back" data-page="home">← Home</button><h1>Transaction History</h1><div id="historyList" class="panel list">No transactions yet.</div></section>
+    <section class="page" id="settings"><button class="back" data-page="home">← Home</button><h1>Settings</h1><div class="panel form"><h3>Account security</h3><button id="logout" class="btn secondary full">LOG OUT OF DEMO</button><p class="fine-print">Local demo data is stored in this browser. This is not suitable for real financial accounts.</p></div></section>
+  </main>
+  <div id="toast" class="toast hidden" role="status"></div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
