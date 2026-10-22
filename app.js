@@ -1,1607 +1,1014 @@
-document.addEventListener("DOMContentLoaded", () => {
-  "use strict";
-
-  // =====================================================
-  // BEAST MONEY TRANSFER
-  // Frontend matched to the supplied index.html/style.css
-  // =====================================================
-
-  const SERVER_URL = "https://beast-server-8u92.onrender.com";
-  const STORAGE_KEY = "beast_v4";
-  const SESSION_KEY = "beast_session_v4";
-
-  let socket = null;
-  let socketRetry = null;
-  let toastTimer = null;
-  let pendingAction = null;
-  let pendingTransaction = null;
-  let buyerSession = null;
-  let buyerSelectedSource = null;
-  let registrationStep = 1;
-  let currentScreen = "welcome";
-  let announcementText = "";
-
-  const SOURCE_NAMES = {
-    mpesa: "M-PESA",
-    tkash: "T-Kash",
-    airtel: "Airtel Money",
-    bank: "Bank",
-    card: "Card",
-    wallet: "BEAST Wallet"
-  };
-
-  const SOURCE_ICONS = {
-    mpesa: "📱",
-    tkash: "📲",
-    airtel: "📲",
-    bank: "🏦",
-    card: "💳",
-    wallet: "🐾"
-  };
-
-  const SCREEN_NAMES = {
-    home: "moneyScreen",
-    money: "moneyScreen",
-    send: "sendScreen",
-    bulk: "bulkScreen",
-    receive: "receiveScreen",
-    withdraw: "withdrawScreen",
-    lipa: "lipaScreen",
-    beastCard: "beastCardScreen",
-    banks: "banksScreen",
-    history: "historyScreen",
-    statements: "statementsScreen",
-    connect: "connectScreen",
-    security: "securityScreen",
-    notifications: "notificationsScreen",
-    profile: "profileScreen",
-    settings: "settingsScreen",
-    admin: "adminScreen",
-    welcome: "welcomeScreen",
-    login: "loginScreen",
-    registration: "registrationScreen"
-  };
-
-  const MAIN_SCREENS = ["money", "connect", "profile"];
-
-  const $ = id => document.getElementById(id);
-
-  function money(value) {
-    return "KES " + Number(value || 0).toLocaleString("en-KE", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-  }
-
-  function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, char => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    })[char]);
-  }
-
-  function defaultState() {
-    return {
-      registered: false,
-
-      user: {
-        name: "",
-        phone: "",
-        nationalId: "",
-        beastId: "",
-        pinHash: "",
-        pinSalt: "",
-        passwordHash: "",
-        passwordSalt: ""
-      },
-
-      sources: {
-        mpesa: {
-          balance: 0,
-          enabled: true,
-          account: ""
-        },
-
-        tkash: {
-          balance: 0,
-          enabled: false,
-          account: ""
-        },
-
-        airtel: {
-          balance: 0,
-          enabled: false,
-          account: ""
-        },
-
-        bank: {
-          balance: 0,
-          enabled: false,
-          account: "",
-          bankName: ""
-        },
-
-        card: {
-          balance: 0,
-          enabled: false,
-          account: "",
-          cardName: "",
-          last4: ""
-        },
-
-        wallet: {
-          balance: 0,
-          enabled: true,
-          account: "BEAST-WALLET"
-        }
-      },
-
-      receiving: {
-        wallet: true,
-        pochi: false,
-        till: false,
-        paybill: false,
-        bank: false,
-        card: false
-      },
-
-      transactions: [],
-      notifications: [],
-      securityEvents: [],
-
-      settings: {
-        theme: "dark"
-      }
-    };
-  }
-
-  function loadState() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-      if (!saved || typeof saved !== "object") {
-        return defaultState();
-      }
-
-      const base = defaultState();
-
-      return {
-        ...base,
-        ...saved,
-
-        user: {
-          ...base.user,
-          ...(saved.user || {})
-        },
-
-        sources: {
-          ...base.sources,
-          ...(saved.sources || {})
-        },
-
-        receiving: {
-          ...base.receiving,
-          ...(saved.receiving || {})
-        },
-
-        settings: {
-          ...base.settings,
-          ...(saved.settings || {})
-        },
-
-        transactions: Array.isArray(saved.transactions)
-          ? saved.transactions
-          : [],
-
-        notifications: Array.isArray(saved.notifications)
-          ? saved.notifications
-          : [],
-
-        securityEvents: Array.isArray(saved.securityEvents)
-          ? saved.securityEvents
-          : []
-      };
-    } catch {
-      return defaultState();
-    }
-  }
-
-  const state = loadState();
-
-  let sessionToken = sessionStorage.getItem(SESSION_KEY);
-
-  function save() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      return true;
-    } catch {
-      toast("Unable to save app data on this device.");
-      return false;
-    }
-  }
-
-  function isLoggedIn() {
-    return state.registered && sessionToken === "active";
-  }
-
-  function startSession() {
-    sessionToken = "active";
-    sessionStorage.setItem(SESSION_KEY, sessionToken);
-  }
-
-  function endSession() {
-    sessionToken = null;
-    sessionStorage.removeItem(SESSION_KEY);
-  }
-
-  // -----------------------------------------------------
-  // UTILITIES
-  // -----------------------------------------------------
-
-  function toast(message) {
-    const el = $("toast");
-
-    if (!el) {
-      alert(message);
-      return;
-    }
-
-    el.textContent = message;
-    el.classList.add("show");
-
-    clearTimeout(toastTimer);
-
-    toastTimer = setTimeout(() => {
-      el.classList.remove("show");
-    }, 3000);
-  }
-
-  function addNotification(title, message) {
-    state.notifications.unshift({
-      id: crypto.randomUUID
-        ? crypto.randomUUID()
-        : String(Date.now()),
-
-      title,
-      message,
-      createdAt: new Date().toISOString(),
-      read: false
-    });
-
-    state.notifications = state.notifications.slice(0, 200);
-  }
-
-  function addSecurityEvent(message) {
-    state.securityEvents.unshift({
-      message,
-      createdAt: new Date().toISOString()
-    });
-
-    state.securityEvents = state.securityEvents.slice(0, 100);
-  }
-
-  function addTransaction(type, amount, description, reference = "") {
-    state.transactions.unshift({
-      id: crypto.randomUUID
-        ? crypto.randomUUID()
-        : String(Date.now()),
-
-      type,
-      amount: Number(amount),
-      description,
-      reference,
-      createdAt: new Date().toISOString()
-    });
-
-    state.transactions = state.transactions.slice(0, 500);
-  }
-
-  async function api(path, options = {}) {
-    const response = await fetch(`${SERVER_URL}${path}`, {
-      ...options,
-
-      headers: {
-        "Content-Type": "application/json",
-        ...(options.headers || {})
-      }
-    });
-
-    let data;
-
-    try {
-      data = await response.json();
-    } catch {
-      data = {};
-    }
-
-    if (!response.ok || data.ok === false) {
-      throw new Error(data.error || `Server error (${response.status})`);
-    }
-
-    return data;
-  }
-
-  function normalizePhone(phone) {
-    let value = String(phone || "").replace(/\s+/g, "");
-
-    if (value.startsWith("+254")) {
-      value = "0" + value.slice(4);
-    } else if (value.startsWith("254")) {
-      value = "0" + value.slice(3);
-    }
-
-    return value;
-  }
-
-  function validPhone(phone) {
-    return /^07\d{8}$|^01\d{8}$/.test(normalizePhone(phone));
-  }
-
-  function validAmount(value) {
-    const amount = Number(value);
-
-    return Number.isFinite(amount) &&
-      amount > 0 &&
-      amount <= 100000000;
-  }
-
-  function requireLogin() {
-    if (isLoggedIn()) return true;
-
-    showScreen("welcome");
-    toast("Please log in first.");
-
-    return false;
-  }
-
-  function setText(id, value) {
-    const el = $(id);
-
-    if (el) {
-      el.textContent = value ?? "";
-    }
-  }
-
-  function setHTML(id, value) {
-    const el = $(id);
-
-    if (el) {
-      el.innerHTML = value;
-    }
-  }
-
-  function setValue(id, value) {
-    const el = $(id);
-
-    if (el) {
-      el.value = value ?? "";
-    }
-  }
-
-  function showElement(id, visible) {
-    const el = $(id);
-
-    if (el) {
-      el.hidden = !visible;
-      el.classList.toggle("hidden", !visible);
-    }
-  }
-
-  function setButtonBusy(button, busy, busyText = "Please wait...") {
-    if (!button) return () => {};
-
-    const original = button.textContent;
-
-    button.disabled = busy;
-
-    if (busy) {
-      button.dataset.originalText = original;
-      button.textContent = busyText;
-    } else {
-      button.textContent = button.dataset.originalText || original;
-    }
-
-    return () => {
-      button.disabled = false;
-      button.textContent = button.dataset.originalText || original;
-    };
-  }
-
-  // -----------------------------------------------------
-  // THEME
-  // -----------------------------------------------------
-
-  function applyTheme(theme) {
-    if (!["dark", "light", "gold"].includes(theme)) {
-      theme = "dark";
-    }
-
-    state.settings.theme = theme;
-
-    document.documentElement.dataset.theme = theme;
-
-    const selector = $("themeSelect");
-
-    if (selector) {
-      selector.value = theme;
-    }
-  }
-
-  // -----------------------------------------------------
-  // NAVIGATION
-  // -----------------------------------------------------
-
-  function closeDrawer() {
-    $("menuDrawer")?.classList.remove("open");
-    $("drawerBackdrop")?.classList.remove("open");
-    document.body.classList.remove("drawer-open");
-  }
-
-  function openDrawer() {
-    if (!requireLogin()) return;
-
-    $("menuDrawer")?.classList.add("open");
-    $("drawerBackdrop")?.classList.add("open");
-    document.body.classList.add("drawer-open");
-  }
-
-  function showScreen(name) {
-    const screenId = SCREEN_NAMES[name] || name;
-
-    if (!$(screenId)) {
-      toast("This screen is not available in index.html.");
-      return;
-    }
-
-    if (
-      !["welcome", "login", "registration"].includes(name) &&
-      !isLoggedIn()
-    ) {
-      screenId !== "welcomeScreen" && showScreen("welcome");
-      return;
-    }
-
-    currentScreen = name;
-
-    document.querySelectorAll(".app-screen").forEach(screen => {
-      screen.classList.toggle("active", screen.id === screenId);
-    });
-
-    document.querySelectorAll("[data-tab]").forEach(button => {
-      const tab = button.dataset.tab;
-
-      button.classList.toggle(
-        "active",
-        tab === name || (name === "home" && tab === "home")
-      );
-    });
-
-    closeDrawer();
-
-    if (MAIN_SCREENS.includes(name)) {
-      $("settingsButton")?.classList.remove("hidden");
-    } else {
-      $("settingsButton")?.classList.add("hidden");
-    }
-
-    if (!isLoggedIn()) {
-      $("settingsButton")?.classList.add("hidden");
-    }
-
-    renderEverything();
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  }
-
-  function setupNavigation() {
-    $("menuButton")?.addEventListener("click", openDrawer);
-
-    $("closeDrawer")?.addEventListener("click", closeDrawer);
-
-    $("drawerBackdrop")?.addEventListener("click", closeDrawer);
-
-    $("settingsButton")?.addEventListener("click", () => {
-      showScreen("settings");
-    });
-
-    $("notificationButton")?.addEventListener("click", () => {
-      showScreen("notifications");
-    });
-
-    document.querySelectorAll("[data-tab]").forEach(button => {
-      button.addEventListener("click", () => {
-        showScreen(button.dataset.tab);
-      });
-    });
-
-    document.querySelectorAll("[data-menu]").forEach(button => {
-      button.addEventListener("click", () => {
-        showScreen(button.dataset.menu);
-      });
-    });
-
-    document.querySelectorAll("[data-back]").forEach(button => {
-      button.addEventListener("click", () => {
-        showScreen(button.dataset.back);
-      });
-    });
-
-    $("logoutButton")?.addEventListener("click", () => {
-      endSession();
-      closeDrawer();
-      showScreen("welcome");
-      toast("You have been logged out.");
-    });
-
-    document.querySelectorAll("[data-menu]").forEach(button => {
-      button.addEventListener("click", closeDrawer);
-    });
-  }
-
-  // -----------------------------------------------------
-  // RENDERING
-  // -----------------------------------------------------
-
-  function renderSources() {
-    const list = $("sourceList");
-
-    if (!list) return;
-
-    list.innerHTML = Object.entries(state.sources).map(([key, source]) => `
-      <div class="source-card">
-        <div class="flex-between">
-          <span>${SOURCE_ICONS[key] || "💳"}</span>
-          <span class="status-pill ${source.enabled ? "success" : "warning"}">
-            ${source.enabled ? "ENABLED" : "DISABLED"}
-          </span>
-        </div>
-
-        <div class="source-name">${escapeHTML(SOURCE_NAMES[key] || key)}</div>
-
-        <small>${escapeHTML(source.account || "Not connected")}</small>
-
-        <div class="source-balance">
-          ${money(source.balance)}
-        </div>
-      </div>
-    `).join("");
-  }
-
-  function renderTransactions() {
-    const recent = $("recentTransactions");
-    const history = $("historyList");
-
-    const transactions = state.transactions;
-
-    const markup = items => {
-      if (!items.length) {
-        return `<div class="empty-state">
-          <span class="empty-icon">📄</span>
-          No transactions yet.
-        </div>`;
-      }
-
-      return items.map(transaction => `
-        <div class="transaction-item">
-          <div class="transaction-icon">💸</div>
-
-          <div class="transaction-details">
-            <strong>${escapeHTML(transaction.type)}</strong>
-            <small>${escapeHTML(transaction.description || "")}</small>
-            <small>${escapeHTML(
-              transaction.createdAt
-                ? new Date(transaction.createdAt).toLocaleString()
-                : ""
-            )}</small>
-          </div>
-
-          <div class="transaction-amount">
-            ${money(transaction.amount)}
-          </div>
-        </div>
-      `).join("");
-    };
-
-    if (recent) {
-      recent.innerHTML = markup(transactions.slice(0, 5));
-    }
-
-    if (history) {
-      const filter = $("historyFilter")?.value || "all";
-
-      const filtered = filter === "all"
-        ? transactions
-        : transactions.filter(transaction =>
-            String(transaction.type).toLowerCase().includes(
-              filter.toLowerCase()
-            )
-          );
-
-      history.innerHTML = markup(filtered);
-    }
-  }
-
-  function renderNotifications() {
-    const list = $("notificationsList");
-
-    if (!list) return;
-
-    list.innerHTML = state.notifications.length
-      ? state.notifications.map(notification => `
-        <div class="notification-item">
-          <div class="transaction-icon">🔔</div>
-
-          <div class="transaction-details">
-            <strong>${escapeHTML(notification.title)}</strong>
-            <small>${escapeHTML(notification.message)}</small>
-            <small>${escapeHTML(notification.createdAt || "")}</small>
-          </div>
-
-          ${notification.read ? "" : '<span class="status-pill warning">NEW</span>'}
-        </div>
-      `).join("")
-      : `<div class="empty-state">No notifications yet.</div>`;
-
-    const unread = state.notifications.filter(item => !item.read).length;
-
-    const badge = $("notificationBadge");
-
-    if (badge) {
-      badge.textContent = unread ? String(unread) : "";
-      badge.hidden = unread === 0;
-    }
-  }
-
-  function renderSecurityEvents() {
-    const list = $("securityEvents");
-
-    if (!list) return;
-
-    list.innerHTML = state.securityEvents.length
-      ? state.securityEvents.map(event => `
-        <div class="security-event">
-          <div class="transaction-icon">🔐</div>
-          <div class="transaction-details">
-            <strong>Security event</strong>
-            <small>${escapeHTML(event.message)}</small>
-            <small>${escapeHTML(event.createdAt || "")}</small>
-          </div>
-        </div>
-      `).join("")
-      : `<div class="empty-state">No recorded security events.</div>`;
-  }
-
-  function renderProfile() {
-    setText("dashboardName", state.user.name || "BEAST Member");
-    setText("dashboardBeastId", state.user.beastId || "Not assigned");
-    setText("profileName", state.user.name || "");
-    setText("profilePhone", state.user.phone || "");
-    setText("profileBeastId", state.user.beastId || "");
-
-    setText("beastCardHolder", state.user.name || "BEAST MEMBER");
-    setText("beastCardLast4", "••••");
-
-    const total = Object.values(state.sources).reduce((sum, source) => {
-      return sum + (source.enabled ? Number(source.balance || 0) : 0);
-    }, 0);
-
-    setText("totalBalance", money(total));
-
-    const card = $("beastCardLast4");
-
-    if (card && card.tagName === "INPUT") {
-      card.value = "••••";
-    }
-  }
-
-  function renderSourceSelects() {
-    const ids = [
-      "sendSource",
-      "withdrawSource",
-      "bulkSource",
-      "depositSource",
-      "buyerSource"
-    ];
-
-    ids.forEach(id => {
-      const select = $(id);
-
-      if (!select) return;
-
-      const previous = select.value;
-
-      const allowed = Object.entries(state.sources).filter(([key, source]) => {
-        if (id === "depositSource") {
-          return source.enabled && key !== "wallet";
-        }
-
-        return source.enabled;
-      });
-
-      select.innerHTML = allowed.map(([key]) => `
-        <option value="${escapeHTML(key)}">
-          ${escapeHTML(SOURCE_NAMES[key])}
-        </option>
-      `).join("");
-
-      if (allowed.some(([key]) => key === previous)) {
-        select.value = previous;
-      }
-    });
-  }
-
-  function renderBankAccounts() {
-    const list = $("bankAccountList");
-
-    if (!list) return;
-
-    const sources = Object.entries(state.sources)
-      .filter(([key, source]) =>
-        ["bank", "card"].includes(key) && source.enabled
-      );
-
-    list.innerHTML = sources.length
-      ? sources.map(([key, source]) => `
-        <div class="bank-account-card">
-          <div class="bank-logo">${SOURCE_ICONS[key]}</div>
-
-          <div class="bank-account-info">
-            <strong>${escapeHTML(SOURCE_NAMES[key])}</strong>
-            <span>${escapeHTML(source.account || "Account connected")}</span>
-          </div>
-
-          <span class="status-pill success">Enabled</span>
-        </div>
-      `).join("")
-      : `<div class="empty-state">No bank or card sources configured.</div>`;
-  }
-
-  function renderEverything() {
-    if (!isLoggedIn()) return;
-
-    renderProfile();
-    renderSources();
-    renderTransactions();
-    renderNotifications();
-    renderSecurityEvents();
-    renderSourceSelects();
-    renderBankAccounts();
-
-    const banner = $("announcementBanner");
-
-    if (banner) {
-      banner.textContent = announcementText;
-      banner.classList.toggle("hidden", !announcementText);
-    }
-
-    const summary = $("statementsSummary");
-
-    if (summary) {
-      summary.textContent =
-        `Transactions: ${state.transactions.length}. ` +
-        `Recorded activity is stored on this device unless the server ` +
-        `provides synchronized transaction history.`;
-    }
-  }
-
-  // -----------------------------------------------------
-  // PASSWORD AND PIN HASHING
-  // Local-only demo protection, not server authentication.
-  // -----------------------------------------------------
-
-  async function hashValue(value, salt) {
-    if (!crypto.subtle) {
-      throw new Error("Secure browser context required for password hashing.");
-    }
-
-    const data = new TextEncoder().encode(`${salt}:${value}`);
-    const digest = await crypto.subtle.digest("SHA-256", data);
-
-    return Array.from(new Uint8Array(digest))
-      .map(byte => byte.toString(16).padStart(2, "0"))
-      .join("");
-  }
-
-  async function setPin(pin) {
-    state.user.pinSalt = crypto.randomUUID();
-    state.user.pinHash = await hashValue(pin, state.user.pinSalt);
-  }
-
-  async function verifyPin(pin) {
-    if (!state.user.pinHash || !state.user.pinSalt) return false;
-
-    return (
-      await hashValue(pin, state.user.pinSalt)
-    ) === state.user.pinHash;
-  }
-
-  async function setPassword(password) {
-    state.user.passwordSalt = crypto.randomUUID();
-    state.user.passwordHash =
-      await hashValue(password, state.user.passwordSalt);
-  }
-
-  async function verifyPassword(password) {
-    if (!state.user.passwordHash || !state.user.passwordSalt) {
-      return false;
-    }
-
-    return (
-      await hashValue(password, state.user.passwordSalt)
-    ) === state.user.passwordHash;
-  }
-
-  // -----------------------------------------------------
-  // REGISTRATION
-  // -----------------------------------------------------
-
-  function showRegistrationStep(step) {
-    registrationStep = step;
-
-    ["regStep1", "regStep2", "regStep3"].forEach((id, index) => {
-      const element = $(id);
-
-      if (element) {
-        element.classList.toggle("active", index + 1 === step);
-        element.hidden = index + 1 !== step;
-      }
-    });
-
-    document.querySelectorAll(".registration-steps span").forEach((item, i) => {
-      item.classList.toggle("active", i + 1 === step);
-    });
-  }
-
-  function setupRegistration() {
-    $("showRegisterButton")?.addEventListener("click", () => {
-      showRegistrationStep(1);
-      showScreen("registration");
-    });
-
-    $("showLoginButton")?.addEventListener("click", () => {
-      showScreen("login");
-    });
-
-    $("loginToRegister")?.addEventListener("click", () => {
-      showRegistrationStep(1);
-      showScreen("registration");
-    });
-
-    $("registrationNext")?.addEventListener("click", () => {
-      const name = $("regName")?.value.trim();
-      const phone = normalizePhone($("regPhone")?.value);
-      const nationalId = $("regNationalId")?.value.trim();
-
-      if (!name) return toast("Enter your full name.");
-      if (!validPhone(phone)) return toast("Enter a valid Kenyan phone number.");
-      if (!nationalId) return toast("Enter your national ID.");
-
-      state.user.name = name;
-      state.user.phone = phone;
-      state.user.nationalId = nationalId;
-
-      showRegistrationStep(2);
-    });
-
-    $("registrationSecurityNext")?.addEventListener("click", async () => {
-      const password = $("regPassword")?.value || "";
-      const confirmPassword = $("regPasswordConfirm")?.value || "";
-      const pin = $("regPin")?.value || "";
-      const confirmPin = $("regPinConfirm")?.value || "";
-
-      if (password.length < 8) {
-        return toast("Password must have at least 8 characters.");
-      }
-
-      if (password !== confirmPassword) {
-        return toast("Passwords do not match.");
-      }
-
-      if (!/^\d{4,6}$/.test(pin)) {
-        return toast("PIN must contain 4 to 6 digits.");
-      }
-
-      if (pin !== confirmPin) {
-        return toast("PINs do not match.");
-      }
-
-      try {
-        await setPassword(password);
-        await setPin(pin);
-
-        showRegistrationStep(3);
-
-        setText("registrationSummary",
-          `${state.user.name} — ${state.user.phone}`
-        );
-      } catch (error) {
-        toast(error.message);
-      }
-    });
-
-    $("registrationPrevious")?.addEventListener("click", () => {
-      showRegistrationStep(1);
-    });
-
-    $("registrationConfirmBack")?.addEventListener("click", () => {
-      showRegistrationStep(2);
-    });
-
-    $("finishRegistration")?.addEventListener("click", () => {
-      if ($("regTerms") && !$("regTerms").checked) {
-        return toast("Please accept the terms before continuing.");
-      }
-
-      state.user.beastId = "BEAST-" +
-        Math.floor(100000 + Math.random() * 900000);
-
-      state.registered = true;
-
-      save();
-      startSession();
-
-      addSecurityEvent("Local demo registration completed.");
-      save();
-
-      showScreen("money");
-
-      toast("Demo profile created. Server registration is not yet confirmed.");
-    });
-  }
-
-  // -----------------------------------------------------
-  // LOGIN
-  // -----------------------------------------------------
-
-  function setupLogin() {
-    $("loginSubmitButton")?.addEventListener("click", async event => {
-      const button = event.currentTarget;
-
-      if (!state.registered) {
-        return toast("Create a profile on this device first.");
-      }
-
-      const phone = normalizePhone($("loginPhone")?.value);
-      const password = $("loginPassword")?.value || "";
-
-      if (phone !== normalizePhone(state.user.phone)) {
-        return toast("Phone number does not match this profile.");
-      }
-
-      const restore = setButtonBusy(button, true, "Checking...");
-
-      try {
-        if (!(await verifyPassword(password))) {
-          addSecurityEvent("Failed local login attempt.");
-          save();
-
-          return toast("Incorrect phone number or password.");
-        }
-
-        startSession();
-        showScreen("money");
-      } catch (error) {
-        toast(error.message);
-      } finally {
-        restore();
-      }
-    });
-
-    $("demoModeButton")?.addEventListener("click", () => {
-      toast("Demo mode does not authorize real-money transactions.");
-    });
-  }
-
-  // -----------------------------------------------------
-  // TRANSACTION CONFIRMATION
-  // -----------------------------------------------------
-
-  function closeConfirmModal() {
-    $("confirmModal")?.classList.remove("open", "active");
-  }
-
-  function askConfirmation(title, message, action) {
-    pendingAction = action;
-
-    setText("confirmModalTitle", title);
-    setText("confirmModalMessage", message);
-
-    $("confirmModal")?.classList.add("open");
-  }
-
-  function setupConfirmation() {
-    $("closeConfirmModal")?.addEventListener("click", closeConfirmModal);
-    $("cancelActionButton")?.addEventListener("click", closeConfirmModal);
-
-    $("confirmActionButton")?.addEventListener("click", async () => {
-      const action = pendingAction;
-
-      pendingAction = null;
-      closeConfirmModal();
-
-      if (typeof action === "function") {
-        await action();
-      }
-    });
-  }
-
-  // -----------------------------------------------------
-  // M-PESA STK PUSH
-  // A request is not proof of a completed payment.
-  // -----------------------------------------------------
-
-  async function triggerMpesaSTK(phone, amount) {
-    const normalized = normalizePhone(phone);
-
-    if (!validPhone(normalized)) {
-      throw new Error("Enter a valid Kenyan M-PESA phone number.");
-    }
-
-    if (!validAmount(amount)) {
-      throw new Error("Enter a valid amount.");
-    }
-
-    const data = await api("/api/mpesa/stkpush", {
-      method: "POST",
-
-      body: JSON.stringify({
-        phone: normalized,
-        amount: Number(amount)
-      })
-    });
-
-    if (!data.ok) {
-      throw new Error(data.error || "STK Push request failed.");
-    }
-
-    return data;
-  }
-
-  // -----------------------------------------------------
-  // SEND MONEY
-  // Does not debit a real wallet without a server endpoint.
-  // -----------------------------------------------------
-
-  function setupSend() {
-    $("verifyRecipient")?.addEventListener("click", () => {
-      const phone = normalizePhone($("sendPhone")?.value);
-
-      if (!validPhone(phone)) {
-        return toast("Enter a valid recipient phone number.");
-      }
-
-      const box = $("recipientVerification");
-
-      if (box) {
-        box.textContent =
-          `Number format accepted: ${phone}. ` +
-          "The recipient's identity has not been verified by the server.";
-      }
-    });
-
-    $("sendMoneyButton")?.addEventListener("click", () => {
-      if (!requireLogin()) return;
-
-      const phone = normalizePhone($("sendPhone")?.value);
-      const amount = Number($("sendAmount")?.value);
-
-      if (!validPhone(phone)) {
-        return toast("Enter a valid recipient phone number.");
-      }
-
-      if (phone === normalizePhone(state.user.phone)) {
-        return toast("You cannot send money to your own number.");
-      }
-
-      if (!validAmount(amount)) {
-        return toast("Enter a valid transfer amount.");
-      }
-
-      const source = $("sendSource")?.value;
-
-      if (!state.sources[source]?.enabled) {
-        return toast("Select an enabled source.");
-      }
-
-      pendingTransaction = {
-        type: "Send",
-        amount,
-        source,
-        recipient: phone
-      };
-
-      askConfirmation(
-        "Confirm transfer",
-        `You are preparing to send ${money(amount)} to ${phone}. ` +
-        "No money will be moved until the server confirms the transaction.",
-        async () => {
-          if (source === "mpesa") {
-            try {
-              await triggerMpesaSTK(phone, amount);
-
-              toast("STK Push requested. Complete payment on your phone.");
-            } catch (error) {
-              toast(error.message);
-            }
-          } else {
-            toast(
-              "Transfer not submitted: a verified server transfer endpoint " +
-              "is required for this source."
-            );
-          }
-        }
-      );
-    });
-  }
-
-  // -----------------------------------------------------
-  // BULK TRANSFER
-  // -----------------------------------------------------
-
-  function setupBulk() {
-    $("previewBulkButton")?.addEventListener("click", () => {
-      const input = $("bulkRecipients")?.value || "";
-
-      const recipients = input
-        .split(/\n|,|;/)
-        .map(normalizePhone)
-        .filter(Boolean);
-
-      const valid = recipients.filter(validPhone);
-      const invalid = recipients.filter(phone => !validPhone(phone));
-      const amount = Number($("bulkAmount")?.value);
-
-      const preview = $("bulkPreview");
-
-      if (!preview) return;
-
-      preview.textContent =
-        `Recipients: ${valid.length}. ` +
-        `Invalid numbers: ${invalid.length}. ` +
-        `Amount per recipient: ${money(amount)}. ` +
-        `Total before fees: ${money(valid.length * (amount || 0))}.`;
-
-      preview.dataset.recipients = JSON.stringify(valid);
-    });
-
-    $("executeBulkButton")?.addEventListener("click", () => {
-      toast(
-        "Bulk transfers require a server-side batch-transfer endpoint. " +
-        "No transfers were executed."
-      );
-    });
-  }
-
-  // -----------------------------------------------------
-  // RECEIVE AND DEPOSIT
-  // -----------------------------------------------------
-
-  function setupReceive() {
-    document.querySelectorAll("[data-receive-tab]").forEach(button => {
-      button.addEventListener("click", () => {
-        const tab = button.dataset.receiveTab;
-
-        document.querySelectorAll("[data-receive-tab]").forEach(item => {
-          item.classList.toggle("active", item === button);
-        });
-
-        const panels = {
-          buyer: "receiveBuyerPanel",
-          deposit: "receiveDepositPanel",
-          agent: "receiveAgentPanel"
-        };
-
-        Object.entries(panels).forEach(([key, id]) => {
-          $(id)?.classList.toggle("active", key === tab);
-        });
-      });
-    });
-
-    $("depositButton")?.addEventListener("click", async () => {
-      const amount = Number($("depositAmount")?.value);
-      const source = $("depositSource")?.value;
-
-      if (!validAmount(amount)) {
-        return toast("Enter a valid deposit amount.");
-      }
-
-      if (source === "mpesa") {
-        try {
-          await triggerMpesaSTK(state.user.phone, amount);
-          toast("Deposit request sent. Await payment confirmation.");
-        } catch (error) {
-          toast(error.message);
-        }
-
-        return;
-      }
-
-      toast(
-        "Deposit not credited. The selected provider must confirm " +
-        "the deposit through the BEAST server."
-      );
-    });
-
-    $("agentDepositButton")?.addEventListener("click", () => {
-      const amount = Number($("agentAmount")?.value);
-
-      if (!validAmount(amount)) {
-        return toast("Enter a valid deposit amount.");
-      }
-
-      toast(
-        "Agent deposits require server-side agent verification. " +
-        "No wallet credit was created."
-      );
-    });
-
-    $("buyerLoginButton")?.addEventListener(() => {});
-
-    $("buyerPayButton")?.addEventListener("click", () => {
-      toast(
-        "Buyer payments require verified buyer authentication " +
-        "and a server-side payment endpoint."
-      );
-    });
-  }
-
-  // -----------------------------------------------------
-  // WITHDRAWALS
-  // -----------------------------------------------------
-
-  function setupWithdraw() {
-    $("withdrawButton")?.addEventListener("click", () => {
-      const amount = Number($("withdrawAmount")?.value);
-      const phone = normalizePhone($("withdrawAgentPhone")?.value);
-
-      if (!validAmount(amount)) {
-        return toast("Enter a valid withdrawal amount.");
-      }
-
-      if (!validPhone(phone)) {
-        return toast("Enter a valid recipient or agent phone number.");
-      }
-
-      askConfirmation(
-        "Confirm withdrawal request",
-        `Request a withdrawal of ${money(amount)} to ${phone}?`,
-        async () => {
-          toast(
-            "Withdrawal not executed. Connect a verified server withdrawal " +
-            "endpoint before handling real funds."
-          );
-        }
-      );
-    });
-  }
-
-  // -----------------------------------------------------
-  // LIPA NA
-  // -----------------------------------------------------
-
-  function setupLipa() {
-    $("lipaButton")?.addEventListener("click", async () => {
-      const amount = Number($("lipaAmount")?.value);
-
-      if (!validAmount(amount)) {
-        return toast("Enter a valid payment amount.");
-      }
-
-      const phone = normalizePhone(state.user.phone);
-
-      try {
-        await triggerMpesaSTK(phone, amount);
-        toast("Payment request submitted. Await M-PESA confirmation.");
-      } catch (error) {
-        toast(error.message);
-      }
-    });
-  }
-
-  // -----------------------------------------------------
-  // BANK AND CARD SOURCES
-  // -----------------------------------------------------
-
-  function setupSources() {
-    $("sourceType")?.addEventListener("change", event => {
-      const type = event.target.value;
-
-      showElement("bankSourceFields", type === "bank");
-      showElement("cardSourceFields", type === "card");
-    });
-
-    $("addSourceButton")?.addEventListener("click", () => {
-      const type = $("sourceType")?.value;
-      const account = $("sourceAccount")?.value.trim();
-
-      if (!["mpesa", "tkash", "airtel", "bank", "card", "wallet"].includes(type)) {
-        return toast("Choose a valid source type.");
-      }
-
-      if (!account && type !== "wallet") {
-        return toast("Enter the account reference.");
-      }
-
-      state.sources[type] = {
-        ...state.sources[type],
-        enabled: true,
-        account,
-        bankName: $("bankName")?.value.trim() || "",
-        cardName: $("cardName")?.value.trim() || "",
-        last4: String($("cardLast4")?.value || "").slice(-4)
-      };
-
-      save();
-      renderEverything();
-
-      toast(
-        "Source details saved locally. This does not connect or verify a bank account."
-      );
-    });
-  }
-
-  // -----------------------------------------------------
-  // PROFILE, SETTINGS AND SECURITY
-  // -----------------------------------------------------
-
-  function setupSettings() {
-    $("themeSelect")?.addEventListener("change", event => {
-      applyTheme(event.target.value);
-      save();
-    });
-
-    $("saveReceivingMethod")?.addEventListener("click", () => {
-      const selected = $("receivingMethod")?.value;
-
-      if (!selected || !(selected in state.receiving)) {
-        return toast("Select a valid receiving method.");
-      }
-
-      Object.keys(state.receiving).forEach(key => {
-        state.receiving[key] = key === selected;
-      });
-
-      save();
-      toast("Receiving preference saved locally.");
-    });
-
-    $("changePinButton")?.addEventListener("click", async () => {
-      const current = prompt("Enter your current PIN:");
-
-      if (current === null) return;
-
-      if (!(await verifyPin(current))) {
-        return toast("Current PIN is incorrect.");
-      }
-
-      const next = prompt("Enter a new 4–6 digit PIN:");
-
-      if (!next || !/^\d{4,6}$/.test(next)) {
-        return toast("Enter a valid 4–6 digit PIN.");
-      }
-
-      await setPin(next);
-      save();
-
-      addSecurityEvent("Local PIN changed.");
-      save();
-
-      toast("Local PIN updated.");
-    });
-
-    $("changePasswordButton")?.addEventListener("click", async () => {
-      const current = prompt("Enter your current password:");
-
-      if (current === null) return;
-
-      if (!(await verifyPassword(current))) {
-        return toast("Current password is incorrect.");
-      }
-
-      const next = prompt("Enter a new password of at least 8 characters:");
-
-      if (!next || next.length < 8) {
-        return toast("Password must have at least 8 characters.");
-      }
-
-      await setPassword(next);
-      save();
-
-      addSecurityEvent("Local password changed.");
-      save();
-
-      toast("Local password updated.");
-    });
-
-    $("resetDemoButton")?.addEventListener("click", () => {
-      askConfirmation(
-        "Reset local demo",
-        "This clears the BEAST data saved in this browser on this device.",
-        () => {
-          localStorage.removeItem(STORAGE_KEY);
-          sessionStorage.removeItem(SESSION_KEY);
-          location.reload();
-        }
-      );
-    });
-
-    $("runSecurityCheckButton")?.addEventListener("click", () => {
-      const secure = window.isSecureContext;
-
-      const result = secure
-        ? "Secure browser context detected. This does not guarantee account or transaction security."
-        : "Warning: this page is not running in a secure browser context.";
-
-      setText("securityCheckResult", result);
-
-      addSecurityEvent("Local security check performed.");
-      save();
-
-      renderSecurityEvents();
-    });
-
-    $("markAllReadButton")?.addEventListener("click", () => {
-      state.notifications.forEach(item => {
-        item.read = true;
-      });
-
-      save();
-      renderNotifications();
-
-      toast("Notifications marked as read.");
-    });
-
-    $("historyFilter")?.addEventListener("change", renderTransactions);
-
-    $("downloadStatementButton")?.addEventListener("click", () => {
-      const lines = [
-        ["Date", "Type", "Amount", "Description"],
-        ...state.transactions.map(item => [
-          item.createdAt || "",
-          item.type || "",
-          item.amount || 0,
-          item.description || ""
-        ])
-      ];
-
-      const csv = lines.map(row =>
-        row.map(value =>
-          `"${String(value).replace(/"/g, '""')}"`
-        ).join(",")
-      ).join("\n");
-
-      const blob = new Blob([csv], {
-        type: "text/csv;charset=utf-8;"
-      });
-
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-
-      link.href = url;
-      link.download = "beast-statement.csv";
-      link.click();
-
-      URL.revokeObjectURL(url);
-
-      toast("Local transaction statement exported.");
-    });
-
-    $("requestBeastCardButton")?.addEventListener("click", () => {
-      toast("Card issuance requires a configured card-issuing provider.");
-    });
-
-    $("openOwnerPanelButton")?.addEventListener(() => {});
-  }
-
-  // -----------------------------------------------------
-  // WEBSOCKET ANNOUNCEMENTS
-  // Wallet credits are not applied from unverified messages.
-  // -----------------------------------------------------
-
-  function connectAnnouncements() {
-    if (socketRetry) {
-      clearTimeout(socketRetry);
-      socketRetry = null;
-    }
-
-    if (socket && (
-      socket.readyState === WebSocket.OPEN ||
-      socket.readyState === WebSocket.CONNECTING
-    )) {
-      return;
-    }
-
-    try {
-      const wsURL = SERVER_URL.replace(/^http/, "ws");
-
-      socket = new WebSocket(wsURL);
-
-      socket.onmessage = event => {
-        let data;
-
-        try {
-          data = JSON.parse(event.data);
-        } catch {
-          return;
-        }
-
-        if (data.type === "announcement" && typeof data.message === "string") {
-          announcementText = data.message;
-
-          const banner = $("announcementBanner");
-
-          if (banner) {
-            banner.textContent = `📢 ${announcementText}`;
-            banner.classList.remove("hidden");
-          }
-        }
-
-        if (data.type === "wallet_credit" || data.type === "mpesa_success") {
-          /*
-           * Do not credit a wallet solely because the browser received
-           * a WebSocket message. Real wallet credits must be fetched from
-           * or verified by an authenticated server endpoint.
-           */
-          addNotification(
-            "Payment update",
-            "A payment event was received. Refresh verified account data " +
-            "from the server before changing your displayed balance."
-          );
-
-          save();
-          renderNotifications();
-        }
-      };
-
-      socket.onclose = () => {
-        socketRetry = setTimeout(connectAnnouncements, 5000);
-      };
-
-      socket.onerror = () => {
-        try {
-          socket.close();
-        } catch {}
-      };
-    } catch {
-      socketRetry = setTimeout(connectAnnouncements, 10000);
-    }
-  }
-
-  // -----------------------------------------------------
-  // INITIALIZATION
-  // -----------------------------------------------------
-
-  function init() {
-    applyTheme(state.settings.theme);
-
-    setupNavigation();
-    setupRegistration();
-    setupLogin();
-    setupConfirmation();
-    setupSend();
-    setupBulk();
-    setupReceive();
-    setupWithdraw();
-    setupLipa();
-    setupSources();
-    setupSettings();
-
-    showRegistrationStep(1);
-
-    if (isLoggedIn()) {
-      showScreen("money");
-    } else {
-      showScreen("welcome");
-    }
-
-    connectAnnouncements();
-  }
-
-  init();
+"use strict";
+
+/* ==========================================
+BEAST SUPER-APP
+Frontend prototype controller
+========================================== */
+
+(() => {
+const $ = (selector, root = document) => root.querySelector(selector);
+const $$ = (selector, root = document) =>
+Array.from(root.querySelectorAll(selector));
+
+const STORAGE_KEY = "beast.prototype.v1";
+
+const state = {
+user: null,
+balance: 0,
+transactions: [],
+banks: [],
+notifications: [],
+currentScreen: "welcome-screen",
+previousScreen: "home-screen",
+balanceHidden: false,
+verifiedRecipient: null,
+messageTimer: null
+};
+
+const money = (value) =>
+new Intl.NumberFormat("en-KE", {
+minimumFractionDigits: 2,
+maximumFractionDigits: 2
+}).format(Number(value) || 0);
+
+const escapeHTML = (value) =>
+String(value ?? "").replace(/[&<>"']/g, (char) => ({
+"&": "&",
+"<": "<",
+">": ">",
+'"': """,
+"'": "'"
+})[char]);
+
+function readStorage() {
+try {
+const raw = localStorage.getItem(STORAGE_KEY);
+if (!raw) return null;
+
+  const parsed = JSON.parse(raw);
+
+  return parsed && typeof parsed === "object"
+    ? parsed
+    : null;
+} catch (error) {
+  console.warn("BEAST local storage is unavailable.", error);
+  return null;
+}
+
+}
+
+function saveStorage() {
+try {
+localStorage.setItem(STORAGE_KEY, JSON.stringify({
+user: state.user,
+balance: state.balance,
+transactions: state.transactions,
+banks: state.banks,
+notifications: state.notifications
+}));
+} catch (error) {
+console.warn("BEAST could not save prototype data.", error);
+showMessage(
+"Your browser could not save this demo data. It may not persist.",
+"error"
+);
+}
+}
+
+function loadStorage() {
+const saved = readStorage();
+if (!saved) return;
+
+state.user = saved.user || null;
+state.balance = Number.isFinite(Number(saved.balance))
+  ? Math.max(0, Number(saved.balance))
+  : 0;
+
+state.transactions = Array.isArray(saved.transactions)
+  ? saved.transactions.slice(0, 200)
+  : [];
+
+state.banks = Array.isArray(saved.banks)
+  ? saved.banks.slice(0, 50)
+  : [];
+
+state.notifications = Array.isArray(saved.notifications)
+  ? saved.notifications.slice(0, 100)
+  : [];
+
+}
+
+function showMessage(message, type = "info") {
+const box = $("#app-message");
+if (!box) {
+window.alert(message);
+return;
+}
+
+clearTimeout(state.messageTimer);
+
+box.textContent = message;
+box.className = "app-message " + (
+  type === "error" ? "error" :
+  type === "success" ? "success" : ""
+);
+box.hidden = false;
+
+state.messageTimer = setTimeout(() => {
+  box.hidden = true;
+}, 5000);
+
+}
+
+function showModal(title, message, confirmText = "") {
+const backdrop = $("#modal-backdrop");
+if (!backdrop) {
+window.alert(message);
+return;
+}
+
+$("#modal-title").textContent = title;
+$("#modal-content").textContent = message;
+
+const confirmButton = $("#modal-confirm");
+confirmButton.hidden = !confirmText;
+
+if (confirmText) {
+  confirmButton.textContent = confirmText;
+}
+
+backdrop.hidden = false;
+
+}
+
+function closeModal() {
+$("#modal-backdrop").hidden = true;
+$("#modal-confirm").onclick = null;
+}
+
+function showScreen(screenId) {
+const target = document.getElementById(screenId);
+if (!target || !target.classList.contains("page") &&
+!target.classList.contains("screen")) {
+showMessage("That screen is not available.", "error");
+return;
+}
+
+if (state.currentScreen !== screenId) {
+  state.previousScreen = state.currentScreen;
+}
+
+state.currentScreen = screenId;
+
+$$(".screen").forEach((screen) => {
+  screen.hidden = screen.id !== screenId;
 });
+
+$$(".page").forEach((page) => {
+  const active = page.id === screenId;
+  page.hidden = !active;
+  page.classList.toggle("active", active);
+});
+
+const inMainApp = screenId !== "welcome-screen" &&
+                  screenId !== "auth-screen";
+
+$("#app-screen").hidden = !inMainApp;
+
+$("#welcome-screen").hidden = screenId !== "welcome-screen";
+$("#auth-screen").hidden = screenId !== "auth-screen";
+
+$$(".nav-item").forEach((button) => {
+  button.classList.toggle(
+    "active",
+    button.dataset.screen === screenId ||
+    (screenId === "home-screen" &&
+     button.dataset.screen === "home-screen")
+  );
+});
+
+$$(".menu-item[data-screen]").forEach((button) => {
+  button.classList.toggle(
+    "active",
+    button.dataset.screen === screenId
+  );
+});
+
+closeMenu();
+
+if (inMainApp) {
+  renderAccount();
+  if (screenId === "history-screen") renderHistory();
+  if (screenId === "banks-screen") renderBanks();
+  if (screenId === "statements-screen") renderStatements();
+  if (screenId === "notifications-screen") renderNotifications();
+}
+
+window.scrollTo({ top: 0, behavior: "auto" });
+
+}
+
+function openMenu() {
+$("#side-menu").classList.add("open");
+$("#side-menu").setAttribute("aria-hidden", "false");
+$("#menu-backdrop").hidden = false;
+}
+
+function closeMenu() {
+$("#side-menu").classList.remove("open");
+$("#side-menu").setAttribute("aria-hidden", "true");
+$("#menu-backdrop").hidden = true;
+}
+
+function renderAccount() {
+const name = state.user?.name || "BEAST Member";
+
+$$("[data-user-name]").forEach((element) => {
+  element.textContent = name;
+});
+
+$("#account-balance").textContent = state.balanceHidden
+  ? "••••••"
+  : money(state.balance);
+
+$("#profile-name").textContent = name;
+$("#profile-phone").textContent = state.user?.phone || "Not set";
+$("#profile-id").textContent = state.user?.id || "Demo account";
+
+renderRecentTransactions();
+
+}
+
+function createNotification(message) {
+state.notifications.unshift({
+id: cryptoRandomId(),
+message,
+date: new Date().toISOString()
+});
+
+state.notifications = state.notifications.slice(0, 100);
+saveStorage();
+
+}
+
+function cryptoRandomId() {
+try {
+if (window.crypto?.randomUUID) {
+return window.crypto.randomUUID();
+}
+} catch (_) {
+// Fall through to a non-security identifier.
+}
+
+return Date.now().toString(36) +
+  Math.random().toString(36).slice(2, 9);
+
+}
+
+function recordTransaction({
+type,
+description,
+amount,
+status = "demo",
+reference = ""
+}) {
+const transaction = {
+id: cryptoRandomId(),
+type,
+description,
+amount: Number(amount) || 0,
+status,
+reference,
+date: new Date().toISOString()
+};
+
+state.transactions.unshift(transaction);
+state.transactions = state.transactions.slice(0, 200);
+
+createNotification(
+  `${description}: KES ${money(amount)} (${status}).`
+);
+
+saveStorage();
+renderAccount();
+
+return transaction;
+
+}
+
+function renderRecentTransactions() {
+const list = $("#recent-transactions");
+if (!list) return;
+
+const recent = state.transactions.slice(0, 4);
+
+if (!recent.length) {
+  list.innerHTML =
+    '<div class="empty-state">Your recent activity will appear here.</div>';
+  return;
+}
+
+list.innerHTML = recent.map(transactionHTML).join("");
+
+}
+
+function transactionHTML(transaction) {
+const incoming = transaction.type === "received";
+const sign = incoming ? "+" :
+["sent", "withdraw", "payment"].includes(transaction.type) ? "−" : "";
+
+const icon = incoming ? "↓" :
+  transaction.type === "withdraw" ? "♙" :
+  transaction.type === "payment" ? "▣" : "↗";
+
+return `
+  <div class="transaction-item">
+    <span class="transaction-icon">${icon}</span>
+    <div class="transaction-details">
+      <strong>${escapeHTML(transaction.description)}</strong>
+      <small>${escapeHTML(new Date(transaction.date).toLocaleString())}
+        · ${escapeHTML(transaction.status)}</small>
+    </div>
+    <div class="transaction-amount ${incoming ? "received" : "sent"}">
+      ${sign} KES ${money(transaction.amount)}
+    </div>
+  </div>
+`;
+
+}
+
+function renderHistory() {
+const list = $("#transaction-history");
+const filter = $("#history-filter")?.value || "all";
+
+const filtered = state.transactions.filter((transaction) => {
+  if (filter === "all") return true;
+  return transaction.type === filter;
+});
+
+if (!filtered.length) {
+  list.innerHTML =
+    '<div class="empty-state">No matching transactions.</div>';
+  return;
+}
+
+list.innerHTML = filtered.map(transactionHTML).join("");
+
+}
+
+function renderBanks() {
+const list = $("#bank-list");
+if (!list) return;
+
+if (!state.banks.length) {
+  list.innerHTML =
+    '<div class="empty-state">No demo bank references saved.</div>';
+  return;
+}
+
+list.innerHTML = state.banks.map((bank) => `
+  <div class="transaction-item">
+    <span class="transaction-icon">▥</span>
+    <div class="transaction-details">
+      <strong>${escapeHTML(bank.name)}</strong>
+      <small>${escapeHTML(bank.nickname)} · •••• ${escapeHTML(bank.last4)}</small>
+    </div>
+    <span class="field-note">DEMO</span>
+  </div>
+`).join("");
+
+}
+
+function renderStatements() {
+const total = (types) =>
+state.transactions
+.filter((transaction) => types.includes(transaction.type))
+.reduce((sum, transaction) => sum + transaction.amount, 0);
+
+$("#total-received").textContent =
+  "KES " + money(total(["received"]));
+
+$("#total-sent").textContent =
+  "KES " + money(total(["sent"]));
+
+$("#total-withdrawn").textContent =
+  "KES " + money(total(["withdraw"]));
+
+}
+
+function renderNotifications() {
+const list = $("#notification-list");
+if (!list) return;
+
+if (!state.notifications.length) {
+  list.innerHTML =
+    '<div class="empty-state">You are all caught up.</div>';
+  return;
+}
+
+list.innerHTML = state.notifications.map((item) => `
+  <div class="transaction-item">
+    <span class="transaction-icon">♧</span>
+    <div class="transaction-details">
+      <strong>${escapeHTML(item.message)}</strong>
+      <small>${escapeHTML(new Date(item.date).toLocaleString())}</small>
+    </div>
+  </div>
+`).join("");
+
+}
+
+function openAuth(tab = "login") {
+setAuthTab(tab);
+showScreen("auth-screen");
+}
+
+function setAuthTab(tab) {
+const register = tab === "register";
+
+$("#login-form").hidden = register;
+$("#register-form").hidden = !register;
+
+$$("[data-auth-tab]").forEach((button) => {
+  button.classList.toggle(
+    "active",
+    button.dataset.authTab === tab
+  );
+});
+
+}
+
+function startDemo() {
+if (!state.user) {
+state.user = {
+id: "DEMO-" + cryptoRandomId().slice(0, 8).toUpperCase(),
+name: "BEAST Member",
+phone: "",
+mode: "demo"
+};
+
+  saveStorage();
+}
+
+showScreen("home-screen");
+
+showMessage(
+  "Demo mode active. No real funds or live payment credentials are available.",
+  "info"
+);
+
+}
+
+function logout() {
+const confirmed = window.confirm(
+"Log out of BEAST on this device?"
+);
+
+if (!confirmed) return;
+
+state.user = null;
+saveStorage();
+showScreen("welcome-screen");
+
+}
+
+function parseAmount(value) {
+const amount = Number(value);
+
+if (!Number.isFinite(amount) ||
+    amount <= 0 ||
+    amount > 100000000) {
+  return null;
+}
+
+return amount;
+
+}
+
+function validateKenyanPhone(value) {
+const digits = String(value).replace(/\D/g, "");
+
+return /^(?:254[17]\d{8}|0[17]\d{8})$/.test(digits);
+
+}
+
+function verifyRecipient() {
+const value = $("#send-recipient").value.trim();
+const status = $("#recipient-status");
+
+state.verifiedRecipient = null;
+
+if (!value) {
+  status.textContent = "Enter the recipient's phone or BEAST ID.";
+  return;
+}
+
+if (validateKenyanPhone(value)) {
+  status.textContent =
+    "Format looks valid. The actual recipient has NOT been verified.";
+  showMessage(
+    "Phone format checked only. A real recipient must be verified by the backend.",
+    "info"
+  );
+  return;
+}
+
+if (/^[A-Za-z0-9_-]{4,40}$/.test(value)) {
+  status.textContent =
+    "ID format looks valid. The actual BEAST account has NOT been verified.";
+  showMessage(
+    "Account ID format checked only. No live account lookup was performed.",
+    "info"
+  );
+  return;
+}
+
+status.textContent = "Enter a valid phone number or account ID.";
+showMessage("Please check the recipient details.", "error");
+
+}
+
+function explainPayment(service, amount) {
+showModal(
+service + " — Demo",
+"Amount: KES ${money(amount)}.\n\n" +
+"This frontend has not initiated or verified a real payment. " +
+"No real funds have been sent or deducted. A secure backend and " +
+"verified payment-provider response are required to complete this service."
+);
+}
+
+function handleSend(event) {
+event.preventDefault();
+
+const recipient = $("#send-recipient").value.trim();
+const amount = parseAmount($("#send-amount").value);
+const source = $("#send-source").value;
+
+if (!recipient || amount === null) {
+  showMessage("Enter a valid recipient and amount.", "error");
+  return;
+}
+
+if (source === "mpesa") {
+  explainPayment("M-PESA Send Money", amount);
+  return;
+}
+
+if (amount > state.balance) {
+  showMessage(
+    "Insufficient demo balance. No money has been moved.",
+    "error"
+  );
+  return;
+}
+
+showModal(
+  "Review demo transfer",
+  `Recipient: ${recipient}\n` +
+  `Amount: KES ${money(amount)}\n\n` +
+  "This is a simulated transfer and does not deliver money. " +
+  "Do you want to record it in this device's demo history?",
+  "RECORD DEMO"
+);
+
+$("#modal-confirm").onclick = () => {
+  closeModal();
+
+  state.balance -= amount;
+
+  recordTransaction({
+    type: "sent",
+    description: "Demo transfer to " + recipient,
+    amount,
+    status: "simulated"
+  });
+
+  $("#send-form").reset();
+  $("#recipient-status").textContent =
+    "Verify the recipient before continuing.";
+
+  showScreen("history-screen");
+  showMessage(
+    "Demo transaction recorded locally. No real payment occurred.",
+    "success"
+  );
+};
+
+}
+
+function handleWithdraw(event) {
+event.preventDefault();
+
+const phone = $("#withdraw-phone").value.trim();
+const amount = parseAmount($("#withdraw-amount").value);
+
+if (!phone || amount === null) {
+  showMessage("Enter a valid phone number and amount.", "error");
+  return;
+}
+
+explainPayment("Withdrawal", amount);
+
+}
+
+function handleLipa(event) {
+event.preventDefault();
+
+const business = $("#lipa-business").value.trim();
+const amount = parseAmount($("#lipa-amount").value);
+
+if (!business || amount === null) {
+  showMessage("Enter the business number and a valid amount.", "error");
+  return;
+}
+
+explainPayment("Lipa Na BEAST", amount);
+
+}
+
+function handleBankSave(event) {
+event.preventDefault();
+
+const name = $("#bank-name").value;
+const nickname = $("#bank-nickname").value.trim();
+const last4 = $("#bank-last4").value.trim();
+
+if (!name || !nickname || !/^\d{4}$/.test(last4)) {
+  showMessage("Complete the bank demo-reference fields.", "error");
+  return;
+}
+
+if (state.banks.length >= 50) {
+  showMessage("Demo bank-reference limit reached.", "error");
+  return;
+}
+
+state.banks.push({
+  name,
+  nickname,
+  last4
+});
+
+saveStorage();
+renderBanks();
+$("#bank-form").reset();
+
+showMessage(
+  "Demo bank reference saved locally. No bank account was connected.",
+  "success"
+);
+
+}
+
+function handleReceiveRequest() {
+const amount = parseAmount($("#receive-amount").value);
+
+if (amount === null) {
+  showMessage("Enter a valid expected amount.", "error");
+  return;
+}
+
+showModal(
+  "Receive Money — Demo",
+  `Expected amount: KES ${money(amount)}.\n\n` +
+  "This screen does not create a real payment request or confirm incoming funds."
+);
+
+}
+
+function exportStatement() {
+const rows = [
+["Date", "Type", "Description", "Amount KES", "Status"],
+...state.transactions.map((transaction) => [
+transaction.date,
+transaction.type,
+transaction.description,
+transaction.amount.toFixed(2),
+transaction.status
+])
+];
+
+const csv = rows.map((row) =>
+  row.map((value) => {
+    let text = String(value ?? "");
+
+    // Avoid spreadsheet formula injection in exported text.
+    if (/^[\s]*[=+\-@]/.test(text)) {
+      text = "'" + text;
+    }
+
+    return '"' + text.replace(/"/g, '""') + '"';
+  }).join(",")
+).join("\r\n");
+
+const blob = new Blob([csv], {
+  type: "text/csv;charset=utf-8;"
+});
+
+const url = URL.createObjectURL(blob);
+const link = document.createElement("a");
+
+link.href = url;
+link.download = "beast-demo-statement.csv";
+
+document.body.appendChild(link);
+link.click();
+link.remove();
+
+setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+showMessage(
+  "Demo statement exported. It is not an official bank statement.",
+  "success"
+);
+
+}
+
+function saveSettings() {
+const theme = $("#theme-select").value;
+
+document.body.classList.toggle(
+  "light-theme",
+  theme === "light"
+);
+
+try {
+  localStorage.setItem("beast.theme", theme);
+} catch (_) {
+  // Theme remains active for this page session.
+}
+
+showMessage("Display settings updated.", "success");
+
+}
+
+function loadSettings() {
+try {
+const theme = localStorage.getItem("beast.theme");
+
+  if (theme === "light" || theme === "dark") {
+    document.body.classList.toggle(
+      "light-theme",
+      theme === "light"
+    );
+
+    $("#theme-select").value = theme;
+  }
+} catch (_) {
+  // Continue with default theme.
+}
+
+}
+
+function runSecurityChecks() {
+const results = [];
+
+results.push(
+  "HTTPS: " +
+  (location.protocol === "https:" ||
+   location.hostname === "localhost" ||
+   location.hostname === "127.0.0.1"
+    ? "Secure context or local development"
+    : "Not HTTPS — do not enter sensitive information")
+);
+
+results.push(
+  "Prototype mode: active. No real-money transfer is verified by this frontend."
+);
+
+results.push(
+  "Storage: browser-local demo data may be edited or cleared by the device owner."
+);
+
+results.push(
+  "Backend security: cannot be verified by this browser-only check."
+);
+
+$("#security-results").replaceChildren();
+
+const paragraph = document.createElement("p");
+paragraph.textContent = results.join("\n\n");
+paragraph.style.whiteSpace = "pre-line";
+
+$("#security-results").appendChild(paragraph);
+
+}
+
+function handleForgotPassword() {
+showModal(
+"Account recovery",
+"Account recovery is not connected yet. Configure a secure backend recovery flow before using real accounts."
+);
+}
+
+function handleCardOptions() {
+showModal(
+"BEAST Card",
+"This is a visual card prototype. Issuing a real card requires a supported regulated issuer and secure integration."
+);
+}
+
+function handleReceiveMethod(method) {
+const name = method === "agent" ? "Agent" : "Merchant Deposit";
+
+showModal(
+  name + " — Demo",
+  "This is a prototype workflow. It does not accept deposits or verify that money has been received."
+);
+
+}
+
+function installEvents() {
+document.addEventListener("click", (event) => {
+const screenButton = event.target.closest("[data-screen]");
+
+  if (screenButton) {
+    event.preventDefault();
+    showScreen(screenButton.dataset.screen);
+    return;
+  }
+
+  const authButton = event.target.closest("[data-auth-tab]");
+
+  if (authButton) {
+    setAuthTab(authButton.dataset.authTab);
+    return;
+  }
+
+  const actionButton = event.target.closest("[data-action]");
+
+  if (!actionButton) return;
+
+  const action = actionButton.dataset.action;
+
+  switch (action) {
+    case "open-menu":
+      openMenu();
+      break;
+
+    case "close-menu":
+      closeMenu();
+      break;
+
+    case "back":
+      showScreen(
+        state.currentScreen === "home-screen"
+          ? "home-screen"
+          : state.previousScreen
+      );
+      break;
+
+    case "toggle-balance":
+      state.balanceHidden = !state.balanceHidden;
+      renderAccount();
+      break;
+
+    case "demo-login":
+      startDemo();
+      break;
+
+    case "logout":
+      logout();
+      break;
+
+    case "verify-recipient":
+      verifyRecipient();
+      break;
+
+    case "receive-request":
+      handleReceiveRequest();
+      break;
+
+    case "export-statement":
+      exportStatement();
+      break;
+
+    case "save-settings":
+      saveSettings();
+      break;
+
+    case "run-security-checks":
+      runSecurityChecks();
+      break;
+
+    case "forgot-password":
+      handleForgotPassword();
+      break;
+
+    case "card-options":
+      handleCardOptions();
+      break;
+
+    case "close-modal":
+      closeModal();
+      break;
+
+    case "receive-method":
+      handleReceiveMethod(actionButton.dataset.method);
+      break;
+  }
+});
+
+$("#menu-backdrop").addEventListener("click", closeMenu);
+
+$("#modal-backdrop").addEventListener("click", (event) => {
+  if (event.target.id === "modal-backdrop") {
+    closeModal();
+  }
+});
+
+$("#login-form").addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  showMessage(
+    "Live sign-in is not connected. Use Explore Demo or connect a secure authentication backend.",
+    "error"
+  );
+});
+
+$("#register-form").addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const name = $("#register-name").value.trim();
+  const phone = $("#register-phone").value.trim();
+  const password = $("#register-password").value;
+  const confirm = $("#register-confirm").value;
+
+  if (password.length < 8) {
+    showMessage("Use a password with at least 8 characters.", "error");
+    return;
+  }
+
+  if (password !== confirm) {
+    showMessage("The passwords do not match.", "error");
+    return;
+  }
+
+  if (!validateKenyanPhone(phone)) {
+    showMessage("Enter a valid Kenyan mobile number.", "error");
+    return;
+  }
+
+  showModal(
+    "Registration not connected",
+    "The form is valid, but account creation requires a secure backend. No password has been saved."
+  );
+});
+
+$("#send-form").addEventListener("submit", handleSend);
+$("#withdraw-form").addEventListener("submit", handleWithdraw);
+$("#lipa-form").addEventListener("submit", handleLipa);
+$("#bank-form").addEventListener("submit", handleBankSave);
+
+$("#history-filter").addEventListener("change", renderHistory);
+$("#theme-select").addEventListener("change", saveSettings);
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeMenu();
+    closeModal();
+  }
+});
+
+window.addEventListener("online", () => {
+  showMessage(
+    "Network connection restored. Live payment verification is still not configured by this frontend.",
+    "info"
+  );
+});
+
+window.addEventListener("offline", () => {
+  showMessage(
+    "You are offline. Only local prototype features are available.",
+    "error"
+  );
+});
+
+}
+
+function initialize() {
+loadStorage();
+loadSettings();
+installEvents();
+renderAccount();
+renderHistory();
+renderBanks();
+renderStatements();
+renderNotifications();
+
+// Start at welcome. Existing demo data remains saved locally.
+showScreen("welcome-screen");
+
+console.info(
+  "BEAST frontend initialized. Prototype mode; no live payments are verified."
+);
+
+}
+
+if (document.readyState === "loading") {
+document.addEventListener("DOMContentLoaded", initialize);
+} else {
+initialize();
+}
+})();

@@ -1,782 +1,394 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#070908">
-  <meta name="description" content="BEAST — Kenya-first financial services prototype">
-  <title>BEAST — Money Without Limits</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#030908">
+  <meta name="description" content="BEAST — One Number. One Beast. A Kenya-focused financial services prototype.">
+  <title>BEAST — One Number. One Beast.</title>
   <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
-  <script src="app.js" defer></script>
-</head>
-<body>
+</head><body>
+  <div class="app-shell"><!-- SPLASH / WELCOME -->
+<section id="welcome-screen" class="screen welcome-screen">
+  <div class="welcome-content">
+    <div class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 120 130" role="img">
+        <path d="M60 3 69 20 85 12 81 31 101 31 88 47 101 60 91 79 80 104 60 125 40 104 29 79 19 60 32 47 19 31 39 31 35 12 51 20Z" fill="currentColor"/>
+        <path d="M60 24 72 37 87 36 80 51 86 65 75 88 60 101 45 88 34 65 40 51 33 36 48 37Z" fill="#06100d"/>
+        <path d="M41 48 51 43 57 49 63 49 69 43 79 48 73 59 79 70 68 76 60 88 52 76 41 70 47 59Z" fill="currentColor"/>
+        <path d="M49 54 55 57 60 54 65 57 71 54 67 64 60 67 53 64Z" fill="#06100d"/>
+        <path d="M48 71 55 73 60 70 65 73 72 71 66 82 60 86 54 82Z" fill="#06100d"/>
+      </svg>
+    </div>
 
-<div id="toast" class="toast" role="status" aria-live="polite"></div>
-<div id="announcementBanner" class="announcement-banner hidden"></div>
+    <p class="brand-kicker">WELCOME TO</p>
+    <h1 class="brand-title">BEAST</h1>
+    <p class="brand-tagline">ONE NUMBER. ONE BEAST.</p>
 
-<header class="topbar">
-  <button class="icon-btn" id="menuButton" aria-label="Open menu">☰</button>
+    <div class="welcome-copy">
+      <h2>MONEY TRANSFER BEAST</h2>
+      <p>Kenya payment prototype</p>
+    </div>
 
-  <a class="brand" href="#" aria-label="BEAST home">
-    <span class="brand-mark">B</span>
-    <span>
-      <strong>BEAST</strong>
-      <small>ONE NUMBER. ONE BEAST.</small>
-    </span>
-  </a>
+    <div class="kenya-colors" aria-label="Inspired by Kenya">
+      <span></span><span></span><span></span>
+    </div>
 
-  <div class="topbar-actions">
-    <button class="icon-btn" id="settingsButton" aria-label="Settings">⚙</button>
-    <button class="icon-btn" id="notificationButton" aria-label="Notifications">
-      ♧<span class="badge hidden" id="notificationBadge">0</span>
+    <p class="welcome-motto">Fast <span>•</span> Secure <span>•</span> Simple</p>
+
+    <button class="btn btn-gold btn-large" data-screen="auth-screen">
+      Welcome to BEAST
     </button>
+
+    <p class="prototype-note">DEMO EXPERIENCE · REAL MONEY TRANSFERS ARE NOT GUARANTEED</p>
   </div>
-</header>
+</section>
 
-<aside id="drawerBackdrop" class="drawer-backdrop"></aside>
-<aside id="menuDrawer" class="drawer" aria-label="Main navigation">
-  <div class="drawer-head">
-    <div class="brand-mark">B</div>
-    <div>
-      <strong>MONEY TRANSFER BEAST</strong>
-      <small>Kenya payment prototype</small>
-    </div>
-    <button id="closeDrawer" class="icon-btn" aria-label="Close menu">✕</button>
+<!-- AUTHENTICATION -->
+<section id="auth-screen" class="screen auth-screen" hidden>
+  <header class="auth-brand">
+    <div class="mini-lion">♛</div>
+    <h1>BEAST</h1>
+    <p>ONE NUMBER. ONE BEAST.</p>
+  </header>
+
+  <div class="auth-heading">
+    <h2>Welcome to BEAST</h2>
+    <p>Create your prototype account or sign in to continue.</p>
   </div>
 
-  <nav class="drawer-nav">
-    <button data-menu="home">🏠 Home</button>
-    <button data-menu="send">↗ Send Money</button>
-    <button data-menu="receive">↙ Receive Money</button>
-    <button data-menu="withdraw">💸 Withdraw</button>
-    <button data-menu="lipa">🛍 Lipa Na</button>
-    <button data-menu="beastCard">💳 BEAST Card</button>
-    <button data-menu="banks">🏦 Banks & Accounts</button>
-    <button data-menu="history">🧾 Transaction History</button>
-    <button data-menu="statements">📊 Statements</button>
-    <button data-menu="connect">🌐 BEAST Connect</button>
-    <button data-menu="security">🛡 BEAST Guard</button>
-    <button data-menu="notifications">🔔 Notifications</button>
-    <button data-menu="profile">👤 My Profile</button>
-    <button data-menu="settings">⚙ Settings & Appearance</button>
-    <button data-menu="admin">👑 Owner Panel</button>
-    <button id="logoutButton">↪ Log Out</button>
-  </nav>
-</aside>
+  <div class="auth-tabs">
+    <button class="auth-tab active" data-auth-tab="login">Sign in</button>
+    <button class="auth-tab" data-auth-tab="register">Create account</button>
+  </div>
 
-<main class="app-shell">
+  <form id="login-form" class="form-card">
+    <label for="login-identity">Phone number or BEAST ID</label>
+    <input id="login-identity" name="identity" autocomplete="username" placeholder="07XX XXX XXX" required>
 
-  <!-- WELCOME -->
-  <section id="welcomeScreen" class="app-screen active">
-    <div class="welcome-hero">
-      <div class="welcome-logo">B</div>
-      <span class="pill green">KENYA PAYMENT PROTOTYPE</span>
-      <h1 class="welcome-title">MONEY TRANSFER BEAST</h1>
-      <p class="welcome-sub">One number. One connection. One BEAST.</p>
-      <div class="welcome-note panel">
-        A Kenya-first payment experience designed around your identity,
-        payment accounts and BEAST ID.
-      </div>
-    </div>
+    <label for="login-password">Password</label>
+    <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Enter password" required>
 
-    <div class="panel welcome-actions">
-      <h2>Welcome to BEAST</h2>
-      <p class="muted">Create your prototype account or sign in to continue.</p>
-      <button id="showLoginButton" class="primary-btn full">SIGN IN</button>
-      <button id="showRegisterButton" class="secondary-btn full">CREATE ACCOUNT</button>
-      <button id="demoModeButton" class="secondary-btn full">🧪 EXPLORE DEMO</button>
-      <p class="tiny center">DEMO MODE — balances and transactions may be simulated.
-        No real-money transfer is guaranteed.</p>
-    </div>
-  </section>
+    <button class="btn btn-green btn-large" type="submit">SIGN IN</button>
+    <button class="text-button" type="button" data-action="forgot-password">Forgot password?</button>
+  </form>
 
-  <!-- LOGIN -->
-  <section id="loginScreen" class="app-screen">
-    <div class="page-head">
-      <button class="back-btn" data-back="welcomeScreen">‹</button>
-      <div>
-        <h1>Welcome back</h1>
-        <p>Sign in to your BEAST account.</p>
-      </div>
-    </div>
+  <form id="register-form" class="form-card" hidden>
+    <label for="register-name">Full name</label>
+    <input id="register-name" name="name" autocomplete="name" placeholder="Your full name" required>
 
-    <div class="panel">
-      <label>Phone number or BEAST ID
-        <input id="loginPhone" autocomplete="username"
-          placeholder="07XX XXX XXX or BEAST ID">
-      </label>
+    <label for="register-phone">Phone number</label>
+    <input id="register-phone" name="phone" type="tel" autocomplete="tel" placeholder="07XX XXX XXX" required>
 
-      <label>Password
-        <input id="loginPassword" type="password"
-          autocomplete="current-password" placeholder="Enter password">
-      </label>
+    <label for="register-password">Create password</label>
+    <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required>
 
-      <button id="loginSubmitButton" class="primary-btn full">SIGN IN</button>
-      <button id="loginToRegister" class="secondary-btn full">CREATE ACCOUNT</button>
-      <p class="tiny">Keep your password and PIN private.</p>
-    </div>
-  </section>
+    <label for="register-confirm">Confirm password</label>
+    <input id="register-confirm" name="confirm" type="password" autocomplete="new-password" minlength="8" placeholder="Repeat password" required>
 
-  <!-- REGISTRATION -->
-  <section id="registrationScreen" class="app-screen">
-    <div class="page-head">
-      <button class="back-btn" data-back="welcomeScreen">‹</button>
-      <div>
-        <h1>Create your account</h1>
-        <p>Start with your identity details.</p>
-      </div>
-    </div>
+    <button class="btn btn-gold btn-large" type="submit">CREATE ACCOUNT</button>
+  </form>
 
-    <div class="stepper">
-      <div class="step active" id="regStep1">1. Identity</div>
-      <div class="step" id="regStep2">2. Security</div>
-      <div class="step" id="regStep3">3. Confirm</div>
-    </div>
+  <button class="btn btn-outline btn-large" data-action="demo-login">♧ &nbsp; EXPLORE DEMO</button>
 
-    <div class="panel">
-      <div id="registrationIdentity">
-        <h2>Your identity</h2>
+  <div class="notice-card">
+    <span class="notice-icon">♧</span>
+    <p><strong>DEMO MODE</strong><br>Balances and transactions may be simulated. No real-money transfer is guaranteed.</p>
+  </div>
 
-        <label>Full name
-          <input id="regName" autocomplete="name" placeholder="Full legal name">
-        </label>
+  <button class="text-button" data-screen="welcome-screen">← Back to welcome</button>
+</section>
 
-        <label>Kenyan phone number
-          <input id="regPhone" type="tel" autocomplete="tel"
-            placeholder="+254 7XX XXX XXX">
-        </label>
+<!-- MAIN APP -->
+<section id="app-screen" class="screen app-screen" hidden>
 
-        <label>National ID number
-          <input id="regNationalId" inputmode="numeric"
-            autocomplete="off" placeholder="National ID number">
-        </label>
+  <header class="topbar">
+    <button class="icon-button" data-action="open-menu" aria-label="Open menu">☰</button>
+    <a href="#" class="topbar-brand" data-screen="home-screen">
+      <span class="mini-lion">♛</span>
+      <span><strong>BEAST</strong><small>ONE NUMBER. ONE BEAST.</small></span>
+    </a>
+    <button class="icon-button notification-button" data-screen="notifications-screen" aria-label="Notifications">♧<span class="notification-dot"></span></button>
+  </header>
 
-        <button id="registrationNext" class="primary-btn full">CONTINUE</button>
-      </div>
+  <div id="app-message" class="app-message" role="status" aria-live="polite" hidden></div>
 
-      <div id="registrationSecurity" class="hidden">
-        <h2>Secure your account</h2>
-
-        <label>Create password
-          <input id="regPassword" type="password"
-            autocomplete="new-password" placeholder="Create a strong password">
-        </label>
-
-        <label>Confirm password
-          <input id="regPasswordConfirm" type="password"
-            autocomplete="new-password" placeholder="Confirm password">
-        </label>
-
-        <label>Create 4-digit transaction PIN
-          <input id="regPin" type="password" inputmode="numeric"
-            maxlength="4" autocomplete="new-password" placeholder="4-digit PIN">
-        </label>
-
-        <label>Confirm transaction PIN
-          <input id="regPinConfirm" type="password" inputmode="numeric"
-            maxlength="4" autocomplete="new-password" placeholder="Confirm PIN">
-        </label>
-
-        <button id="registrationSecurityNext" class="primary-btn full">CONTINUE</button>
-        <button id="registrationPrevious" class="secondary-btn full">BACK</button>
-      </div>
-
-      <div id="registrationConfirm" class="hidden">
-        <h2>Review your details</h2>
-        <div id="registrationSummary" class="summary-box"></div>
-
-        <label class="terms-row">
-          <input id="regTerms" type="checkbox">
-          I agree to the terms and privacy notice.
-        </label>
-
-        <button id="finishRegistration" class="primary-btn full">
-          CREATE BEAST ACCOUNT
-        </button>
-        <button id="registrationConfirmBack" class="secondary-btn full">BACK</button>
-      </div>
-
-      <p class="tiny">
-        Identity verification requires an authorized verification provider.
-        Entering an ID number alone does not verify your identity.
-      </p>
-    </div>
-  </section>
-
-  <!-- DASHBOARD -->
-  <section id="moneyScreen" class="app-screen">
-    <div class="page-head">
-      <div>
-        <span class="pill green">BEAST ACCOUNT</span>
-        <h1>Hello, <span id="dashboardName">BEAST Member</span></h1>
-        <p>Your financial overview.</p>
-      </div>
-      <span id="dashboardBeastId" class="beast-id-chip">BEAST ID</span>
-    </div>
-
-    <div class="balance-card">
-      <div>
-        <span>TOTAL ACCOUNT BALANCE</span>
-        <span class="pill green">KES</span>
-      </div>
-      <strong id="totalBalance">KES 0.00</strong>
-      <small>Prototype balance — not proof of available real funds.</small>
-      <div class="two-col">
-        <button class="primary-btn full" data-menu="send">↗ Send</button>
-        <button class="secondary-btn full" data-menu="receive">↙ Receive</button>
-      </div>
-    </div>
-
-    <h2 class="section-title">Quick actions</h2>
-    <div class="quick-actions">
-      <button class="square-card green-card" data-menu="send">
-        <span>↗</span><b>Send Money</b><small>Phone or BEAST ID</small>
-      </button>
-      <button class="square-card blue-card" data-menu="receive">
-        <span>↙</span><b>Receive</b><small>Incoming payments</small>
-      </button>
-      <button class="square-card" data-menu="withdraw">
-        <span>💸</span><b>Withdraw</b><small>Cash out</small>
-      </button>
-      <button class="square-card" data-menu="lipa">
-        <span>🛍</span><b>Lipa Na</b><small>Pay a business</small>
-      </button>
-      <button class="square-card black-card" data-menu="beastCard">
-        <span>💳</span><b>BEAST Card</b><small>Card interface</small>
-      </button>
-      <button class="square-card" data-menu="banks">
-        <span>🏦</span><b>Bank Accounts</b><small>Manage connections</small>
-      </button>
-    </div>
-
-    <h2 class="section-title">Your payment sources</h2>
-    <p class="tiny">Only verified, connected providers can move real money.</p>
-    <div id="sourceList" class="source-grid"></div>
-
-    <h2 class="section-title">Recent activity</h2>
-    <div id="recentTransactions" class="list"></div>
-
-    <button class="secondary-btn full" data-menu="history">VIEW ALL TRANSACTIONS</button>
-  </section>
-
-  <!-- SEND -->
-  <section id="sendScreen" class="app-screen">
-    <div class="page-head">
-      <button class="back-btn" data-back="moneyScreen">‹</button>
-      <div><h1>Send money</h1><p>Confirm the recipient before proceeding.</p></div>
-    </div>
-
-    <div class="panel">
-      <label>Recipient phone or BEAST ID
-        <input id="sendPhone" autocomplete="off" placeholder="07XX XXX XXX or BEAST ID">
-      </label>
-      <button id="verifyRecipient" class="secondary-btn">VERIFY RECIPIENT</button>
-      <div id="recipientVerification" class="verification hidden"></div>
-
-      <label>Amount (KES)
-        <input id="sendAmount" type="number" min="1" step="1" inputmode="numeric" placeholder="0">
-      </label>
-
-      <label>Pay from
-        <select id="sendSource"></select>
-      </label>
-
-      <div id="sendCostPreview" class="cost-box">Fee and total will appear here.</div>
-      <button id="sendMoneyButton" class="primary-btn full">CONTINUE</button>
-      <p class="tiny">A real transfer requires a verified recipient, server authorization and provider confirmation.</p>
-    </div>
-  </section>
-
-  <!-- BULK SEND -->
-  <section id="bulkScreen" class="app-screen">
-    <div class="page-head">
-      <button class="back-btn" data-back="moneyScreen">‹</button>
-      <div><h1>Bulk send</h1><p>Prototype batch-payment workspace.</p></div>
-    </div>
-    <div class="panel">
-      <label>Recipients — one phone number per line
-        <textarea id="bulkRecipients" placeholder="0712345678&#10;0723456789"></textarea>
-      </label>
-      <label>Amount per recipient (KES)
-        <input id="bulkAmount" type="number" min="1" step="1" placeholder="500">
-      </label>
-      <label>Pay from
-        <select id="bulkSource"></select>
-      </label>
-      <button id="previewBulkButton" class="secondary-btn full">PREVIEW BATCH</button>
-      <div id="bulkPreview" class="bulk-preview-wrap"></div>
-      <button id="executeBulkButton" class="primary-btn full">CONTINUE</button>
-      <div id="bulkResults" class="bulk-result-wrap"></div>
-    </div>
-  </section>
-
-  <!-- RECEIVE -->
-  <section id="receiveScreen" class="app-screen">
-    <div class="page-head">
-      <button class="back-btn" data-back="moneyScreen">‹</button>
-      <div><h1>Receive money</h1><p>Choose how to receive or deposit.</p></div>
-    </div>
-
-    <div class="receive-tabs">
-      <button class="receive-tab active" data-receive-tab="buyer">🛍 Merchant</button>
-      <button class="receive-tab" data-receive-tab="deposit">＋ Deposit</button>
-      <button class="receive-tab" data-receive-tab="agent">🤝 Agent</button>
-    </div>
-
-    <div id="receiveBuyerPanel" class="receive-tab-panel active">
-      <div class="panel">
-        <span class="pill blue">DEMO WORKFLOW</span>
-        <h2>Customer payment</h2>
-        <p class="muted">For testing the merchant experience only.</p>
-        <label>Customer demo account
-          <select id="buyerAccount">
-            <option value="">Choose demo customer</option>
-          </select>
-        </label>
-        <label>Demo customer password
-          <input id="buyerPassword" type="password" autocomplete="off">
-        </label>
-        <button id="buyerLoginButton" class="secondary-btn full">CONTINUE AS DEMO CUSTOMER</button>
-        <div id="buyerSourceSelection" class="hidden">
-          <label>Payment source
-            <select id="buyerSource">
-              <option value="mpesa">M-PESA demo</option>
-              <option value="airtel">Airtel Money demo</option>
-              <option value="tkash">T-Kash demo</option>
-              <option value="bank">Bank demo</option>
-              <option value="wallet">BEAST Wallet demo</option>
-            </select>
-          </label>
-          <label>Amount (KES)
-            <input id="buyerAmount" type="number" min="1" step="1" placeholder="0">
-          </label>
-          <button id="buyerPayButton" class="primary-btn full">PAY IN DEMO</button>
+  <!-- HOME -->
+  <section id="home-screen" class="page active">
+    <div class="account-banner">
+      <div class="account-greeting">
+        <span class="avatar-lion">♛</span>
+        <div>
+          <strong>BEAST ACCOUNT</strong>
+          <p>Hello, <span data-user-name>BEAST Member</span></p>
+          <small>Your financial overview.</small>
         </div>
-        <div id="buyerReceipt" class="receipt-box hidden"></div>
+        <span class="status-dot"></span>
+      </div>
+
+      <div class="balance-label">
+        <span>TOTAL ACCOUNT BALANCE</span>
+        <button class="icon-button" data-action="toggle-balance" aria-label="Hide or show balance">◉</button>
+      </div>
+      <div class="balance-amount"><span>KES</span> <strong id="account-balance">0.00</strong></div>
+      <p class="demo-disclaimer">Prototype balance — not proof of available real funds.</p>
+
+      <div class="balance-actions">
+        <button class="btn btn-green" data-screen="send-screen">↗ &nbsp; Send</button>
+        <button class="btn btn-gold" data-screen="receive-screen">↙ &nbsp; Receive</button>
       </div>
     </div>
 
-    <div id="receiveDepositPanel" class="receive-tab-panel">
-      <div class="panel">
-        <h2>Deposit to BEAST</h2>
-        <label>Deposit from
-          <select id="depositSource">
-            <option value="mpesa">M-PESA</option>
-            <option value="airtel">Airtel Money</option>
-            <option value="tkash">T-Kash</option>
-            <option value="bank">Bank account</option>
-            <option value="card">Card</option>
-          </select>
-        </label>
-        <label>Amount (KES)
-          <input id="depositAmount" type="number" min="1" step="1" placeholder="0">
-        </label>
-        <button id="depositButton" class="primary-btn full">CONTINUE DEPOSIT</button>
-        <p class="tiny">A real deposit must be confirmed by the provider before crediting any balance.</p>
-      </div>
+    <h3 class="section-title">Quick actions</h3>
+    <div class="quick-grid">
+      <button class="quick-card" data-screen="send-screen"><span class="quick-icon green">↗</span><strong>Send Money</strong><small>Phone or BEAST ID</small></button>
+      <button class="quick-card" data-screen="receive-screen"><span class="quick-icon green">⇩</span><strong>Receive Money</strong><small>Incoming payments</small></button>
+      <button class="quick-card" data-screen="withdraw-screen"><span class="quick-icon green">♙</span><strong>Withdraw</strong><small>Cash out</small></button>
+      <button class="quick-card" data-screen="lipa-screen"><span class="quick-icon gold">▣</span><strong>Lipa Na BEAST</strong><small>Pay a business</small></button>
+      <button class="quick-card" data-screen="card-screen"><span class="quick-icon green">▤</span><strong>BEAST Card</strong><small>Card interface</small></button>
+      <button class="quick-card" data-screen="banks-screen"><span class="quick-icon green">▥</span><strong>Banks & Accounts</strong><small>Manage connections</small></button>
     </div>
 
-    <div id="receiveAgentPanel" class="receive-tab-panel">
-      <div class="panel">
-        <h2>Agent deposit</h2>
-        <label>Agent phone number
-          <input id="agentPhone" type="tel" placeholder="+254 7XX XXX XXX">
-        </label>
-        <label>Agent store number
-          <input id="agentStoreNumber" placeholder="Store number">
-        </label>
-        <label>Amount (KES)
-          <input id="agentAmount" type="number" min="1" step="1" placeholder="0">
-        </label>
-        <button id="agentDepositButton" class="primary-btn full">VERIFY AGENT</button>
-      </div>
+    <div class="section-heading">
+      <h3 class="section-title">Recent activity</h3>
+      <button class="text-button" data-screen="history-screen">See all</button>
+    </div>
+    <div id="recent-transactions" class="transaction-list">
+      <div class="empty-state">Your recent activity will appear here.</div>
+    </div>
+  </section>
+
+  <!-- SEND MONEY -->
+  <section id="send-screen" class="page" hidden>
+    <div class="page-heading"><button class="back-button" data-action="back">←</button><div><h2>Send Money</h2><p>Confirm the recipient before proceeding.</p></div></div>
+    <form id="send-form" class="form-card">
+      <label for="send-recipient">Recipient phone or BEAST ID</label>
+      <input id="send-recipient" name="recipient" placeholder="07XX XXX XXX or BEAST ID" required>
+      <button type="button" class="btn btn-outline" data-action="verify-recipient">VERIFY RECIPIENT</button>
+      <p id="recipient-status" class="field-note">Verify the recipient before continuing.</p>
+      <label for="send-amount">Amount (KES)</label>
+      <input id="send-amount" name="amount" type="number" min="1" step="1" inputmode="numeric" placeholder="0" required>
+      <label for="send-source">Pay from</label>
+      <select id="send-source" name="source"><option value="demo">BEAST demo wallet</option><option value="mpesa">M-PESA (requires backend)</option></select>
+      <p class="field-note">Fees and total will be displayed before confirmation.</p>
+      <button class="btn btn-green btn-large" type="submit">CONTINUE</button>
+      <p class="security-note">A real transfer requires a verified recipient, server authorization and provider confirmation.</p>
+    </form>
+  </section>
+
+  <!-- RECEIVE MONEY -->
+  <section id="receive-screen" class="page" hidden>
+    <div class="page-heading"><button class="back-button" data-action="back">←</button><div><h2>Receive Money</h2><p>Choose a demo receiving method.</p></div></div>
+    <div class="choice-grid">
+      <button class="choice-card" data-action="receive-method" data-method="merchant"><span>▣</span><strong>Merchant Deposit</strong><small>Business payment demo</small></button>
+      <button class="choice-card" data-action="receive-method" data-method="agent"><span>♙</span><strong>Agent</strong><small>Agent workflow demo</small></button>
+    </div>
+    <div class="form-card">
+      <label for="receive-amount">Expected amount (KES)</label>
+      <input id="receive-amount" type="number" min="1" step="1" placeholder="0">
+      <p class="field-note">This screen does not confirm receipt of funds.</p>
+      <button class="btn btn-green btn-large" data-action="receive-request">CONTINUE</button>
     </div>
   </section>
 
   <!-- WITHDRAW -->
-  <section id="withdrawScreen" class="app-screen">
-    <div class="page-head">
-      <button class="back-btn" data-back="moneyScreen">‹</button>
-      <div><h1>Withdraw</h1><p>Review fees before confirming.</p></div>
-    </div>
-    <div class="panel">
-      <label>Withdraw from
-        <select id="withdrawSource"></select>
-      </label>
-      <label>Agent phone number
-        <input id="withdrawAgentPhone" type="tel" placeholder="+254 7XX XXX XXX">
-      </label>
-      <label>Agent store number
-        <input id="withdrawStoreNumber" placeholder="Store number">
-      </label>
-      <label>Amount (KES)
-        <input id="withdrawAmount" type="number" min="1" step="1" placeholder="0">
-      </label>
-      <div id="withdrawCostPreview" class="cost-box"></div>
-      <button id="withdrawButton" class="primary-btn full">CONTINUE WITHDRAWAL</button>
-    </div>
+  <section id="withdraw-screen" class="page" hidden>
+    <div class="page-heading"><button class="back-button" data-action="back">←</button><div><h2>Withdraw</h2><p>Review the withdrawal details.</p></div></div>
+    <form id="withdraw-form" class="form-card">
+      <label for="withdraw-source">Withdraw from</label>
+      <select id="withdraw-source"><option>M-PESA (Demo)</option><option>BEAST Demo Wallet</option></select>
+      <label for="withdraw-phone">Agent or recipient phone</label>
+      <input id="withdraw-phone" type="tel" placeholder="+254 7XX XXX XXX" required>
+      <label for="withdraw-agent">Agent / store number</label>
+      <input id="withdraw-agent" placeholder="Demo store number">
+      <label for="withdraw-amount">Amount (KES)</label>
+      <input id="withdraw-amount" type="number" min="1" step="1" placeholder="0" required>
+      <button class="btn btn-green btn-large" type="submit">CONTINUE WITHDRAWAL</button>
+    </form>
   </section>
 
-  <!-- LIPA NA -->
-  <section id="lipaScreen" class="app-screen">
-    <div class="page-head">
-      <button class="back-btn" data-back="moneyScreen">‹</button>
-      <div><h1>Lipa Na BEAST</h1><p>Business payments prototype.</p></div>
-    </div>
-    <div class="panel">
-      <label>Payment type
-        <select id="lipaType">
-          <option value="till">Buy Goods — Till</option>
-          <option value="paybill">Pay Bill</option>
-          <option value="account">Account / Other</option>
-          <option value="pochi">Pochi la Biashara</option>
-        </select>
-      </label>
-      <label>Payment provider
-        <select id="lipaProvider">
-          <option value="mpesa">M-PESA</option>
-          <option value="airtel">Airtel Money</option>
-          <option value="tkash">T-Kash</option>
-          <option value="bank">Bank</option>
-          <option value="card">Card</option>
-          <option value="wallet">BEAST Wallet</option>
-        </select>
-      </label>
-      <label>Business number / Till / Phone
-        <input id="lipaBusinessNumber" inputmode="numeric" placeholder="Enter business number">
-      </label>
-      <label>Account number (if required)
-        <input id="lipaAccountNumber" placeholder="Account number">
-      </label>
-      <label>Amount (KES)
-        <input id="lipaAmount" type="number" min="1" step="1" placeholder="0">
-      </label>
-      <button id="lipaButton" class="primary-btn full">CONTINUE PAYMENT</button>
-    </div>
+  <!-- LIPA NA BEAST -->
+  <section id="lipa-screen" class="page" hidden>
+    <div class="page-heading"><button class="back-button" data-action="back">←</button><div><h2>Lipa Na BEAST</h2><p>Business payments prototype.</p></div></div>
+    <form id="lipa-form" class="form-card">
+      <label for="lipa-type">Payment type</label>
+      <select id="lipa-type"><option>Buy Goods — Till</option><option>Paybill</option><option>Phone payment demo</option></select>
+      <label for="lipa-provider">Payment provider</label>
+      <select id="lipa-provider"><option>M-PESA</option><option>BEAST Demo Wallet</option></select>
+      <label for="lipa-business">Business number / Till / Phone</label>
+      <input id="lipa-business" placeholder="Enter business number" required>
+      <label for="lipa-account">Account number (if required)</label>
+      <input id="lipa-account" placeholder="Account number">
+      <label for="lipa-amount">Amount (KES)</label>
+      <input id="lipa-amount" type="number" min="1" step="1" placeholder="0" required>
+      <button class="btn btn-green btn-large" type="submit">CONTINUE PAYMENT</button>
+    </form>
   </section>
 
   <!-- BEAST CARD -->
-  <section id="beastCardScreen" class="app-screen">
-    <div class="page-head">
-      <button class="back-btn" data-back="moneyScreen">‹</button>
-      <div><h1>BEAST Card</h1><p>Your card-management prototype.</p></div>
+  <section id="card-screen" class="page" hidden>
+    <div class="page-heading"><button class="back-button" data-action="back">←</button><div><h2>BEAST Card</h2><p>Your card-management prototype.</p></div></div>
+    <div class="virtual-card">
+      <div class="card-top"><span class="card-brand">♛ BEAST</span><span class="card-chip">▦</span></div>
+      <p class="card-number">•••• &nbsp; •••• &nbsp; •••• &nbsp; 0000</p>
+      <div class="card-bottom"><div><small>BEAST MEMBER</small><strong>PROTOTYPE ONLY</strong></div><span class="card-network">●●</span></div>
     </div>
-    <div class="beast-card-visual">
-      <div class="beast-card-top"><span>🦁 BEAST</span><span>VIRTUAL</span></div>
-      <div class="beast-card-chip">▦</div>
-      <div class="beast-card-number">•••• &nbsp; •••• &nbsp; •••• &nbsp; <span id="beastCardLast4">0000</span></div>
-      <div class="beast-card-bottom">
-        <span id="beastCardHolder">BEAST MEMBER</span>
-        <strong>BEAST</strong>
-      </div>
-    </div>
-    <div class="panel">
-      <span class="pill blue">PROTOTYPE ONLY</span>
-      <h2>Card controls</h2>
-      <p class="muted">This screen does not issue a usable bank card or payment credential.</p>
-      <div class="setting-row"><div><b>Virtual card</b><small>UI preview only</small></div><span class="pill red">NOT ISSUED</span></div>
-      <button id="requestBeastCardButton" class="primary-btn full">EXPLORE CARD OPTIONS</button>
-    </div>
+    <div class="notice-card"><p><strong>Virtual card preview</strong><br>This interface does not issue a usable bank card or payment credential.</p></div>
+    <button class="btn btn-outline btn-large" data-action="card-options">EXPLORE CARD OPTIONS</button>
   </section>
 
-  <!-- BANKS -->
-  <section id="banksScreen" class="app-screen">
-    <div class="page-head">
-      <button class="back-btn" data-back="moneyScreen">‹</button>
-      <div><h1>Banks & accounts</h1><p>Account connection interface.</p></div>
-    </div>
-    <div class="panel">
-      <span class="pill blue">CONNECTIONS NOT LIVE</span>
-      <h2>Popular Kenyan banks</h2>
-      <p class="muted">Choose a bank to preview its account-connection form. This does not connect to a bank.</p>
-      <label>Bank
-        <select id="bankConnectName">
-          <option value="">Choose bank</option>
-          <option>KCB Bank</option>
-          <option>Equity Bank</option>
-          <option>Co-operative Bank</option>
-          <option>Absa Bank Kenya</option>
-          <option>NCBA Bank</option>
-          <option>DTB Kenya</option>
-          <option>Stanbic Bank Kenya</option>
-          <option>Family Bank</option>
-          <option>I&amp;M Bank</option>
-          <option>Other</option>
-        </select>
-      </label>
-      <label>Account nickname
-        <input id="bankConnectNickname" placeholder="e.g. Salary account">
-      </label>
-      <label>Last 4 digits (demo reference only)
-        <input id="bankConnectLast4" inputmode="numeric" maxlength="4" placeholder="0000">
-      </label>
-      <button id="bankConnectButton" class="primary-btn full">SAVE DEMO ACCOUNT</button>
-      <div id="bankConnectResult" class="summary-box hidden"></div>
-    </div>
-    <div id="bankAccountList" class="list"></div>
+  <!-- BANK ACCOUNTS -->
+  <section id="banks-screen" class="page" hidden>
+    <div class="page-heading"><button class="back-button" data-action="back">←</button><div><h2>Banks & Accounts</h2><p>Account connection interface.</p></div></div>
+    <div class="notice-card"><p><strong>ⓘ CONNECTIONS NOT LIVE</strong><br>Preview Kenyan bank-account connections. This demo does not connect to a bank.</p></div>
+    <form id="bank-form" class="form-card">
+      <label for="bank-name">Bank</label>
+      <select id="bank-name"><option value="">Choose bank</option><option>Equity Bank</option><option>KCB Bank</option><option>Co-operative Bank</option><option>Absa Bank Kenya</option><option>NCBA Bank</option><option>Other</option></select>
+      <label for="bank-nickname">Account nickname</label>
+      <input id="bank-nickname" placeholder="e.g. Salary account" required>
+      <label for="bank-last4">Last 4 digits (demo reference only)</label>
+      <input id="bank-last4" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="0000" required>
+      <button class="btn btn-gold btn-large" type="submit">SAVE DEMO ACCOUNT</button>
+    </form>
+    <div id="bank-list" class="transaction-list"></div>
   </section>
 
-  <!-- HISTORY -->
-  <section id="historyScreen" class="app-screen">
-    <div class="page-head">
-      <button class="back-btn" data-back="moneyScreen">‹</button>
-      <div><h1>Transaction history</h1><p>Review activity and receipts.</p></div>
+  <!-- TRANSACTION HISTORY -->
+  <section id="history-screen" class="page" hidden>
+    <div class="page-heading"><button class="back-button" data-action="back">←</button><div><h2>Transaction History</h2><p>Review activity and receipts.</p></div></div>
+    <div class="form-card">
+      <label for="history-filter">Filter transactions</label>
+      <select id="history-filter"><option value="all">All transactions</option><option value="sent">Sent Money</option><option value="received">Received Money</option><option value="withdraw">Withdrawals</option><option value="payment">Payments</option></select>
     </div>
-    <div class="panel">
-      <label>Filter transactions
-        <select id="historyFilter">
-          <option value="all">All transactions</option>
-          <option value="send">Sent</option>
-          <option value="receive">Received</option>
-          <option value="deposit">Deposits</option>
-          <option value="withdraw">Withdrawals</option>
-          <option value="payment">Payments</option>
-        </select>
-      </label>
-      <div id="historyList" class="list"></div>
-    </div>
+    <div id="transaction-history" class="transaction-list"><div class="empty-state">No transactions to display.</div></div>
   </section>
 
   <!-- STATEMENTS -->
-  <section id="statementsScreen" class="app-screen">
-    <div class="page-head">
-      <button class="back-btn" data-back="moneyScreen">‹</button>
-      <div><h1>Statements</h1><p>Prototype activity summary.</p></div>
-    </div>
-    <div id="statementsSummary" class="statements-grid"></div>
-    <div class="panel">
-      <button id="downloadStatementButton" class="secondary-btn full">EXPORT DEMO STATEMENT</button>
-      <p class="tiny">Exports are summaries of locally stored prototype activity, not bank statements.</p>
-    </div>
+  <section id="statements-screen" class="page" hidden>
+    <div class="page-heading"><button class="back-button" data-action="back">←</button><div><h2>Statements</h2><p>Prototype activity summary.</p></div></div>
+    <button class="btn btn-gold btn-large" data-action="export-statement">EXPORT DEMO STATEMENT</button>
+    <div class="notice-card"><p>Exports are summaries of locally stored prototype activity, not bank statements.</p></div>
+    <div class="stat-card"><span>Total received</span><strong id="total-received">KES 0.00</strong></div>
+    <div class="stat-card"><span>Total sent</span><strong id="total-sent">KES 0.00</strong></div>
+    <div class="stat-card"><span>Total withdrawn</span><strong id="total-withdrawn">KES 0.00</strong></div>
   </section>
 
-  <!-- CONNECT -->
-  <section id="connectScreen" class="app-screen">
-    <div class="page-head">
-      <button class="back-btn" data-back="moneyScreen">‹</button>
-      <div><h1>BEAST Connect</h1><p>Services and future integrations.</p></div>
-    </div>
-    <div class="service-list">
-      <button class="service-row" data-menu="beastCard">
-        <span class="service-icon">💳</span>
-        <span><strong>BEAST Card</strong><small>Virtual card interface preview</small></span><b>›</b>
-      </button>
-      <button class="service-row" data-menu="banks">
-        <span class="service-icon">🏦</span>
-        <span><strong>Bank accounts</strong><small>Preview supported Kenyan banks</small></span><b>›</b>
-      </button>
-      <div class="service-row">
-        <span class="service-icon">📱</span>
-        <span><strong>Mobile money</strong><small>M-PESA, Airtel Money and T-Kash — provider integration required</small></span>
-      </div>
-      <div class="service-row">
-        <span class="service-icon">🛡️</span>
-        <span><strong>BEAST GUARD</strong><small>Browser security warnings and device checks</small></span>
-      </div>
-    </div>
+  <!-- BEAST CONNECT -->
+  <section id="connect-screen" class="page" hidden>
+    <div class="page-heading"><button class="back-button" data-action="back">←</button><div><h2>BEAST Connect</h2><p>Services and future integrations.</p></div></div>
+    <button class="integration-card" data-screen="card-screen"><span>💳</span><div><strong>BEAST Card</strong><small>Virtual card interface preview</small></div><span>›</span></button>
+    <button class="integration-card" data-screen="banks-screen"><span>🏦</span><div><strong>Bank accounts</strong><small>Preview supported Kenyan banks</small></div><span>›</span></button>
+    <div class="integration-card"><span>📱</span><div><strong>Mobile money</strong><small>M-PESA, Airtel Money and T-Kash — provider integration required</small></div></div>
+    <button class="integration-card" data-screen="guard-screen"><span>🛡</span><div><strong>BEAST Guard</strong><small>Browser security warnings and device checks</small></div><span>›</span></button>
   </section>
 
   <!-- PROFILE -->
-  <section id="profileScreen" class="app-screen">
-    <div class="page-head">
-      <button class="back-btn" data-back="moneyScreen">‹</button>
-      <div><h1>My profile</h1><p>Your BEAST account information.</p></div>
+  <section id="profile-screen" class="page" hidden>
+    <div class="page-heading"><button class="back-button" data-action="back">←</button><div><h2>My Profile</h2><p>Your BEAST account information.</p></div></div>
+    <div class="profile-card">
+      <div class="profile-avatar">♛</div>
+      <h3 data-user-name>BEAST Member</h3>
+      <p>BEAST account holder</p>
     </div>
-    <div class="panel">
-      <div class="summary-box">
-        <div><strong>Full name</strong><p id="profileName">Not set</p></div>
-        <div><strong>Phone number</strong><p id="profilePhone">Not set</p></div>
-        <div><strong>BEAST ID</strong><p id="profileBeastId">Not assigned</p></div>
-      </div>
-      <p class="tiny">Avoid displaying your full National ID in public or shared-device environments.</p>
-      <button id="profileSecurityButton" class="secondary-btn full">SECURITY SETTINGS</button>
-    </div>
+    <div class="info-row"><span>Full name</span><strong id="profile-name">Not set</strong></div>
+    <div class="info-row"><span>Phone number</span><strong id="profile-phone">Not set</strong></div>
+    <div class="info-row"><span>BEAST ID</span><strong id="profile-id">Not assigned</strong></div>
+    <div class="notice-card"><p>Never enter your national ID, PIN or password into untrusted pages.</p></div>
+    <button class="btn btn-gold btn-large" data-screen="settings-screen">SECURITY SETTINGS</button>
   </section>
 
   <!-- SETTINGS -->
-  <section id="settingsScreen" class="app-screen">
-    <div class="page-head">
-      <button class="back-btn" data-back="moneyScreen">‹</button>
-      <div><h1>Settings</h1><p>Personalize your BEAST experience.</p></div>
+  <section id="settings-screen" class="page" hidden>
+    <div class="page-heading"><button class="back-button" data-action="back">←</button><div><h2>Settings</h2><p>Personalize your BEAST experience.</p></div></div>
+    <div class="form-card">
+      <label for="theme-select">Appearance</label>
+      <select id="theme-select"><option value="dark">Dark — Emerald & Gold</option><option value="light">Light</option></select>
+      <label for="payment-provider-setting">Payment provider</label>
+      <select id="payment-provider-setting"><option>M-PESA</option><option>BEAST Demo Wallet</option></select>
+      <label for="account-reference">Account reference (demo only)</label>
+      <input id="account-reference" placeholder="Phone, nickname or demo reference">
+      <button class="btn btn-green btn-large" data-action="save-settings">SAVE SETTINGS</button>
     </div>
-
-    <div class="panel">
-      <h2>Appearance</h2>
-      <label>Choose theme
-        <select id="themeSelect">
-          <option value="dark">🖤 Dark — Emerald & Gold</option>
-          <option value="light">🤍 Light — Emerald Green</option>
-          <option value="gold">👑 Gold Luxury — Black & Gold</option>
-        </select>
-      </label>
-      <p class="tiny">Your choice should be saved on this device.</p>
-    </div>
-
-    <div class="panel">
-      <h2>Payment sources</h2>
-      <p class="tiny">These are prototype account references. Adding one does not link a real financial account.</p>
-
-      <label>Source type
-        <select id="sourceType">
-          <option value="mpesa">M-PESA</option>
-          <option value="airtel">Airtel Money</option>
-          <option value="tkash">T-Kash</option>
-          <option value="bank">Bank account</option>
-          <option value="card">Card</option>
-          <option value="wallet">BEAST Wallet</option>
-        </select>
-      </label>
-      <label>Account reference
-        <input id="sourceAccount" placeholder="Phone, nickname or demo reference">
-      </label>
-      <label>Bank (if applicable)
-        <select id="bankName">
-          <option value="">Choose bank</option>
-          <option>KCB Bank</option>
-          <option>Equity Bank</option>
-          <option>Co-operative Bank</option>
-          <option>Absa Bank Kenya</option>
-          <option>NCBA Bank</option>
-          <option>DTB Kenya</option>
-          <option>Stanbic Bank Kenya</option>
-          <option>Family Bank</option>
-          <option>I&amp;M Bank</option>
-          <option>Other</option>
-        </select>
-      </label>
-      <label>Card label (if applicable)
-        <input id="cardName" placeholder="e.g. Demo Visa">
-      </label>
-      <label>Last 4 digits (demo reference only)
-        <input id="cardLast4" inputmode="numeric" maxlength="4" placeholder="0000">
-      </label>
-      <label>Demo balance (KES — not real funds)
-        <input id="sourceBalance" type="number" min="0" step="1" placeholder="0">
-      </label>
-      <button id="addSourceButton" class="primary-btn full">SAVE DEMO SOURCE</button>
-    </div>
-
-    <div class="panel">
-      <h2>Receiving methods</h2>
-      <label>Default receiving method
-        <select id="receivingMethod">
-          <option value="wallet">BEAST Wallet</option>
-          <option value="mpesa">M-PESA</option>
-          <option value="airtel">Airtel Money</option>
-          <option value="tkash">T-Kash</option>
-          <option value="bank">Bank account</option>
-          <option value="card">Card</option>
-        </select>
-      </label>
-      <button id="saveReceivingMethod" class="secondary-btn full">SAVE PREFERENCE</button>
-    </div>
-
-    <div class="panel">
-      <h2>Account security</h2>
-      <button id="changePinButton" class="secondary-btn full">CHANGE TRANSACTION PIN</button>
-      <button id="changePasswordButton" class="secondary-btn full">CHANGE PASSWORD</button>
-      <button id="resetDemoButton" class="danger-btn full">RESET DEMO DATA</button>
-    </div>
+    <button class="btn btn-outline btn-large" data-action="logout">LOG OUT</button>
   </section>
 
-  <!-- SECURITY -->
-  <section id="securityScreen" class="app-screen">
-    <div class="page-head">
-      <button class="back-btn" data-back="moneyScreen">‹</button>
-      <div><h1>BEAST GUARD</h1><p>Device and account safety controls.</p></div>
-    </div>
-
-    <div class="panel">
-      <span class="pill green">SAFETY CENTRE</span>
-      <h2>Security preferences</h2>
-      <div class="setting-row">
-        <div><b>Security warnings</b><small>Show warnings when browser checks detect an issue.</small></div>
-        <input id="securityWarningsToggle" type="checkbox" checked>
-      </div>
-      <div class="setting-row">
-        <div><b>Face Guard</b><small>Optional camera check for multiple visible faces.</small></div>
-        <input id="faceGuardToggle" type="checkbox">
-      </div>
-      <div class="setting-row">
-        <div><b>Screen security warnings</b><small>Warn about unsupported or suspicious screen conditions where detectable.</small></div>
-        <input id="screenGuardToggle" type="checkbox" checked>
-      </div>
-      <button id="runSecurityCheckButton" class="primary-btn full">RUN AVAILABLE CHECKS</button>
-      <div id="securityCheckResult" class="summary-box"></div>
-      <p class="tiny">Web browsers cannot reliably detect every screenshot or screen recording. Face Guard requires permission and a supported local detection model; unknown results must not be treated as verification.</p>
-    </div>
-
-    <div class="panel">
-      <h2>Recent security activity</h2>
-      <div id="securityEvents" class="list"></div>
-    </div>
+  <!-- BEAST GUARD -->
+  <section id="guard-screen" class="page" hidden>
+    <div class="page-heading"><button class="back-button" data-action="back">←</button><div><h2>BEAST Guard</h2><p>Device and account safety controls.</p></div></div>
+    <div class="setting-row"><div><strong>Security warnings</strong><p>Show warnings about risky browser checks.</p></div><input type="checkbox" id="guard-warnings" checked></div>
+    <div class="setting-row"><div><strong>Screen security warning</strong><p>Warn about suspicious screen conditions when detectable.</p></div><input type="checkbox" id="guard-screen-check" checked></div>
+    <div class="setting-row"><div><strong>Demo protection notices</strong><p>Display reminders about prototype limitations.</p></div><input type="checkbox" id="guard-demo" checked></div>
+    <button class="btn btn-gold btn-large" data-action="run-security-checks">RUN AVAILABLE CHECKS</button>
+    <div id="security-results" class="notice-card"><p>Security checks have not been run.</p></div>
   </section>
 
   <!-- NOTIFICATIONS -->
-  <section id="notificationsScreen" class="app-screen">
-    <div class="page-head">
-      <button class="back-btn" data-back="moneyScreen">‹</button>
-      <div><h1>Notifications</h1><p>Announcements and account alerts.</p></div>
-    </div>
-    <div class="panel">
-      <button id="markAllReadButton" class="secondary-btn">MARK ALL AS READ</button>
-      <div id="notificationsList" class="list"></div>
-    </div>
+  <section id="notifications-screen" class="page" hidden>
+    <div class="page-heading"><button class="back-button" data-action="back">←</button><div><h2>Notifications</h2><p>BEAST account updates.</p></div></div>
+    <div id="notification-list" class="transaction-list"><div class="empty-state">You're all caught up.</div></div>
   </section>
 
-  <!-- OWNER -->
-  <section id="adminScreen" class="app-screen">
-    <div class="page-head">
-      <button class="back-btn" data-back="moneyScreen">‹</button>
-      <div><h1>Owner Panel</h1><p>Business reporting and administration.</p></div>
-    </div>
-    <div class="panel">
-      <span class="pill blue">SERVER PANEL</span>
-      <h2>BEAST business dashboard</h2>
-      <p class="muted">Use the separately secured server owner panel for actual administrative functions.</p>
-      <button id="openOwnerPanelButton" class="primary-btn full">OPEN OWNER PANEL</button>
-      <p class="tiny">This screen does not grant administrative privileges.</p>
-    </div>
+  <!-- OWNER PANEL PLACEHOLDER -->
+  <section id="owner-screen" class="page" hidden>
+    <div class="page-heading"><button class="back-button" data-action="back">←</button><div><h2>Owner Panel</h2><p>Restricted management interface.</p></div></div>
+    <div class="notice-card"><p>Owner functions must be authorized and enforced by the backend. This frontend does not grant administrator privileges.</p></div>
   </section>
 
-</main>
+  <!-- MOBILE NAVIGATION -->
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <button class="nav-item active" data-screen="home-screen"><span>⌂</span><small>Home</small></button>
+    <button class="nav-item" data-screen="connect-screen"><span>◎</span><small>Connect</small></button>
+    <button class="nav-item" data-screen="profile-screen"><span>♙</span><small>Profile</small></button>
+  </nav>
 
-<nav class="bottom-nav" aria-label="Primary navigation">
-  <button class="active" data-tab="home"><span>⌂</span><small>Money</small></button>
-  <button data-tab="connect"><span>◎</span><small>Connect</small></button>
-  <button data-tab="profile"><span>♙</span><small>Profile</small></button>
-</nav>
+  <!-- SIDE MENU -->
+  <div id="menu-backdrop" class="menu-backdrop" hidden></div>
+  <aside id="side-menu" class="side-menu" aria-label="App menu" aria-hidden="true">
+    <div class="menu-header">
+      <div class="topbar-brand"><span class="mini-lion">♛</span><span><strong>BEAST</strong><small>ONE NUMBER. ONE BEAST.</small></span></div>
+      <button class="icon-button" data-action="close-menu" aria-label="Close menu">×</button>
+    </div>
+    <button class="menu-item active" data-screen="home-screen">⌂ &nbsp; Home</button>
+    <button class="menu-item" data-screen="send-screen">↗ &nbsp; Send Money</button>
+    <button class="menu-item" data-screen="receive-screen">⇩ &nbsp; Receive Money</button>
+    <button class="menu-item" data-screen="withdraw-screen">♙ &nbsp; Withdraw</button>
+    <button class="menu-item" data-screen="lipa-screen">▣ &nbsp; Lipa Na BEAST</button>
+    <button class="menu-item" data-screen="card-screen">▤ &nbsp; BEAST Card</button>
+    <button class="menu-item" data-screen="banks-screen">▥ &nbsp; Banks & Accounts</button>
+    <button class="menu-item" data-screen="history-screen">◷ &nbsp; Transaction History</button>
+    <button class="menu-item" data-screen="statements-screen">▤ &nbsp; Statements</button>
+    <button class="menu-item" data-screen="connect-screen">◎ &nbsp; BEAST Connect</button>
+    <button class="menu-item" data-screen="guard-screen">⬡ &nbsp; BEAST Guard</button>
+    <button class="menu-item" data-screen="notifications-screen">♧ &nbsp; Notifications</button>
+    <button class="menu-item" data-screen="profile-screen">♙ &nbsp; My Profile</button>
+    <button class="menu-item" data-screen="settings-screen">⚙ &nbsp; Settings & Appearance</button>
+    <button class="menu-item" data-screen="owner-screen">♜ &nbsp; Owner Panel</button>
+    <button class="menu-item" data-action="logout">⇥ &nbsp; Log Out</button>
+    <p class="menu-footer">Your Money. Your Identity. Your BEAST.</p>
+  </aside>
 
-<!-- PIN MODAL -->
-<div id="pinModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="pinModalTitle">
-  <div class="modal-card">
-    <button id="closePinModal" class="modal-close" aria-label="Close">✕</button>
-    <h2 id="pinModalTitle">Authorize transaction</h2>
-    <p id="pinModalDescription" class="muted">Enter your transaction PIN to continue.</p>
-    <label>Transaction PIN
-      <input id="transactionPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off">
-    </label>
-    <span id="pinError"></span>
-    <button id="confirmPinButton" class="primary-btn full">AUTHORIZE</button>
-  </div>
-</div>
+</section>
 
-<!-- CONFIRMATION MODAL -->
-<div id="confirmModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
-  <div class="modal-card">
-    <button id="closeConfirmModal" class="modal-close" aria-label="Close">✕</button>
-    <h2 id="confirmModalTitle">Confirm action</h2>
-    <p id="confirmModalMessage" class="muted">Review this action before proceeding.</p>
-    <button id="confirmActionButton" class="primary-btn full">CONFIRM</button>
-    <button id="cancelActionButton" class="secondary-btn full">CANCEL</button>
-  </div>
+<!-- GLOBAL MODAL -->
+<div id="modal-backdrop" class="modal-backdrop" hidden>
+  <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <button class="modal-close" data-action="close-modal" aria-label="Close dialog">×</button>
+    <h2 id="modal-title">BEAST</h2>
+    <div id="modal-content"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-action="close-modal">CLOSE</button>
+      <button id="modal-confirm" class="btn btn-green" hidden>CONFIRM</button>
+    </div>
+  </section>
 </div>
 
 <footer class="app-footer">
-  <p>🦁 BEAST — Kenya payment prototype</p>
-  <p>Demo balances are not real funds. Provider and bank integrations require authorization.</p>
+  <span class="footer-brand">♛ BEAST</span>
+  <span>🔒 Secure prototype</span>
+  <span>⚡ Fast</span>
+  <span>🛡 Built for Kenya</span>
 </footer>
 
-</body>
+  </div>  <script src="app.js" defer></script></body>
 </html>
