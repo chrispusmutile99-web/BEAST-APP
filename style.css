@@ -197,3 +197,86 @@ h1 { font-size: 22px; margin-bottom: 16px; }
 .section-heading { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
 .eyebrow { font-size: 10px; color: var(--muted); letter-spacing: 1px; display: block; margin-bottom: 4px; }
 .status-badge { background: var(--panel-2); color: var(--gold); font-size: 10px; padding: 4px 8px; border-radius: 4px; }
+/* ===== NEW TRAVEL UI ===== */
+.gold-text { color: var(--gold); }
+.travel-hero { text-align: center; padding: 20px 0; }
+.travel-globe { font-size: 100px; text-align: center; margin: 10px 0 20px; filter: drop-shadow(0 0 20px rgba(0,224,138,0.3)); }
+.travel-role-btn { 
+  display: flex; align-items: center; background: var(--panel); border: 1px solid var(--border); 
+  border-radius: 16px; padding: 16px; margin-bottom: 12px; width: 100%; text-align: left; cursor: pointer;
+}
+.travel-role-btn:active { background: var(--panel-2); }
+.role-icon { font-size: 24px; margin-right: 16px; background: var(--panel-2); padding: 10px; border-radius: 12px; }
+.role-text { flex: 1; }
+.role-text b { display: block; font-size: 15px; color: var(--text); margin-bottom: 4px; }
+.role-text small { font-size: 11px; color: var(--muted); }
+.role-arrow { font-size: 24px; color: var(--green); }
+
+/* Registration */
+.progress-steps { display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+.step { width: 28px; height: 28px; border-radius: 50%; background: var(--panel-2); color: var(--muted); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border: 1px solid var(--border); }
+.step.active { background: var(--green); color: #000; border-color: var(--green); }
+.step-line { width: 30px; height: 2px; background: var(--border); }
+.transport-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.transport-card { position: relative; cursor: pointer; }
+.transport-card input { position: absolute; opacity: 0; }
+.tc-content { display: flex; flex-direction: column; align-items: center; padding: 12px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; text-align: center; }
+.transport-card input:checked + .tc-content { border-color: var(--green); background: rgba(0,224,138,0.05); }
+.tc-content span { font-size: 24px; margin-bottom: 8px; }
+.tc-content b { font-size: 11px; color: var(--text); margin-bottom: 2px; }
+.tc-content small { font-size: 9px; color: var(--muted); }
+
+/* Radar */
+.radar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.radar-circle { width: 260px; height: 260px; border-radius: 50%; border: 2px solid var(--green); position: relative; background: radial-gradient(circle, rgba(0,224,138,0.05) 0%, transparent 70%); overflow: hidden; box-shadow: 0 0 30px rgba(0,224,138,0.15), inset 0 0 20px rgba(0,224,138,0.1); margin: 0 auto; }
+.radar-circle.scanning .radar-sweep { opacity: 1; animation: radarRotate 2s linear infinite; }
+.radar-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.radar-lion { font-size: 40px; color: var(--gold); z-index: 10; filter: drop-shadow(0 0 10px rgba(201,162,39,0.5)); }
+.scan-status-bar { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--gold); color: #000; padding: 10px; border-radius: 20px; font-size: 12px; font-weight: bold; margin: 20px 0; }
+.radar-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.stat { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.stat span { font-size: 16px; }
+.stat b { font-size: 14px; color: var(--text); }
+.stat small { font-size: 10px; color: var(--muted); }
+
+/* Passenger List */
+.passenger-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+.passenger-card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
+.p-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.p-info { display: flex; gap: 12px; align-items: center; }
+.p-avatar { background: var(--panel-2); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 2px solid var(--green); }
+.p-details b { display: block; font-size: 14px; }
+.p-details small { font-size: 11px; color: var(--muted); }
+.p-distance { text-align: right; }
+.p-distance b { font-size: 14px; color: var(--text); }
+.p-tags { display: flex; gap: 8px; margin-bottom: 12px; }
+.tag { font-size: 10px; padding: 4px 8px; border-radius: 4px; background: var(--panel-2); color: var(--text); display: flex; align-items: center; gap: 4px; }
+.tag.vehicle { background: rgba(0,224,138,0.15); color: var(--green); border: 1px solid var(--green); }
+.tag.eta { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+
+/* Active Trip */
+.trip-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.map-view { background: #111d17; border: 1px solid var(--border); border-radius: 16px; height: 200px; position: relative; overflow: hidden; margin-bottom: 16px; background-image: radial-gradient(#2a3a31 1px, transparent 1px); background-size: 20px 20px; }
+.map-pin { position: absolute; font-size: 24px; }
+.map-pin.pickup { top: 20%; right: 20%; }
+.map-pin.driver { bottom: 20%; left: 30%; }
+.map-line { position: absolute; top: 30%; left: 35%; width: 80px; height: 2px; background: var(--green); transform: rotate(-45deg); transform-origin: left; }
+.map-label { position: absolute; top: 28%; right: 15%; background: var(--panel); padding: 4px 8px; border-radius: 4px; font-size: 10px; color: var(--text); border: 1px solid var(--border); }
+.passenger-card-large { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
+.p-large-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.p-large-icon { font-size: 24px; background: var(--panel-2); padding: 10px; border-radius: 50%; }
+.p-large-info { flex: 1; }
+.p-large-info b { display: block; font-size: 14px; }
+.p-large-info small { font-size: 11px; color: var(--green); }
+.p-large-distance { text-align: right; }
+.p-large-distance b { display: block; font-size: 14px; }
+.p-large-distance small { font-size: 11px; color: var(--muted); }
+.p-large-actions { display: flex; flex-direction: column; gap: 8px; }
+
+/* Completed */
+.completed-hero { text-align: center; padding: 20px 0; }
+.check-circle { width: 80px; height: 80px; border-radius: 50%; background: rgba(0,224,138,0.1); border: 2px solid var(--green); color: var(--green); font-size: 40px; display: flex; align-items: center; justify-content: center; margin: 20px auto; box-shadow: 0 0 20px rgba(0,224,138,0.3); }
+.earnings-panel { display: flex; justify-content: space-between; align-items: center; background: var(--panel); border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin: 20px 0; }
+.earnings-panel b { font-size: 20px; color: var(--text); }
+.plus-badge { background: rgba(0,224,138,0.15); color: var(--green); padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: bold; }
+.rating-stars { font-size: 24px; margin-bottom: 8px; }
