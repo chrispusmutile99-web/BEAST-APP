@@ -14,6 +14,7 @@
     <button class="brand" data-page="home" aria-label="BEAST home"><span class="brand-lion">♛</span><span><strong>BEAST</strong><small>ONE NUMBER. ONE BEAST.</small></span></button>
     <button class="icon-btn" data-page="shield" aria-label="BEAST Shield">◉</button>
   </header>
+  
   <nav id="drawer" class="drawer">
     <button id="menuClose" class="icon-btn close-menu">✕</button>
     <h3>BEAST MENU</h3>
@@ -26,6 +27,7 @@
   <div id="scrim" class="scrim hidden"></div>
 
   <main>
+    <!-- ================= EXISTING MONEY PAGES ================= -->
     <section class="page active" id="register">
       <div class="hero">
         <div class="lion-mark">♛</div><div class="hero-title">BEAST</div>
@@ -202,6 +204,89 @@
       <h3 class="section-title">Saved accounts</h3><div id="banksList" class="panel list">No linked accounts yet.</div>
     </section>
 
+    <!-- ================= EXISTING TRAVEL PAGE ================= -->
+    <section class="page" id="travel">
+      <button class="back" data-page="home">← Home</button><h1>BEAST Travel</h1>
+      <div class="tabs">
+        <button class="tab active" data-travel-mode="passenger">🧍 Passenger</button>
+        <button class="tab" data-travel-mode="driver">🛵 Driver</button>
+        <button class="tab" data-travel-mode="backend">⚙️ API</button>
+      </div>
+      
+      <!-- Passenger Mode -->
+      <div id="travelPassenger" class="tab-panel">
+        <form id="travelRideForm" class="panel form">
+          <h2>Request a Ride</h2>
+          <label>Town / City<input name="town" required placeholder="e.g. Kakamega"></label>
+          <label>Pickup Location<input name="pickup" required placeholder="e.g. Malava Junction"></label>
+          <label>Destination<input name="destination" required placeholder="e.g. Town Center"></label>
+          <label>Transport Type<select name="vehicle"><option>Boda boda</option><option>Huba</option><option>Matatu</option><option>Private car</option><option>Taxi</option><option>Any available</option></select></label>
+          <label>Note (optional)<input name="note" placeholder="e.g. I have luggage"></label>
+          <button class="btn primary full">FIND DRIVER</button>
+        </form>
+        <div id="travelRadarStatus" class="notice hidden"></div>
+        <h3 class="section-title">Your Requests</h3>
+        <div id="travelPassengerRides" class="panel list">No demo ride requests yet.</div>
+      </div>
+
+      <!-- Driver Mode -->
+      <div id="travelDriver" class="tab-panel hidden">
+        <form id="travelDriverForm" class="panel form">
+          <h2>Driver Profile</h2>
+          <label>Full Name<input name="name" required></label>
+          <label>Vehicle Type<select name="vehicle"><option>Boda boda</option><option>Huba</option><option>Matatu</option><option>Private car</option><option>Taxi</option></select></label>
+          <label>Operating Town<input name="town" required placeholder="e.g. Kakamega"></label>
+          <label>Vehicle Registration<input name="registration" placeholder="e.g. KMEA 123X"></label>
+          <button class="btn secondary full">SAVE PROFILE</button>
+        </form>
+        <h3 class="section-title">Nearby Requests</h3>
+        <div id="travelDriverRequests" class="panel list">No matching demo requests.</div>
+        <button id="travelClearRides" class="btn danger full">CLEAR ALL DEMO RIDES</button>
+      </div>
+
+      <!-- Backend Mode -->
+      <div id="travelBackend" class="tab-panel hidden">
+        <div class="panel form">
+          <h2>Backend Connection</h2>
+          <label>API Base URL<input id="travelApiBase" value="https://beast-server-8u92.onrender.com"></label>
+          <button id="travelBackendCheck" class="btn primary full">CHECK SERVER STATUS</button>
+          <div id="travelBackendStatus" class="verify-box">Not checked yet.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= NEW PAGES ================= -->
+    <section class="page" id="market">
+      <button class="back" data-page="home">← Home</button><h1>🛒 Marketplace</h1>
+      <div class="notice">Demo interface — no live sellers or payments connected yet.</div>
+      <div class="panel list">Business listings will appear here.</div>
+    </section>
+
+    <section class="page" id="business">
+      <button class="back" data-page="home">← Home</button><h1>🏢 BEAST Business</h1>
+      <div class="notice">Demo interface — subscriptions and dashboards are not yet live.</div>
+      <div class="panel list">Business accounts, sales and inventory will appear here.</div>
+    </section>
+
+    <section class="page" id="ai">
+      <button class="back" data-page="home">← Home</button><h1>🤖 BEAST AI</h1>
+      <div class="notice">Demo entry point. BEAST AI is not yet connected.</div>
+      <div class="action-grid">
+        <button><span>💬</span><b>Customer AI</b></button>
+        <button><span>🏪</span><b>Business AI</b></button>
+        <button><span>📢</span><b>Advertising AI</b></button>
+        <button><span>🛡️</span><b>Fraud Detection</b></button>
+        <button><span>📊</span><b>Financial Analytics</b></button>
+        <button><span>🧠</span><b>Admin AI</b></button>
+      </div>
+    </section>
+
+    <section class="page" id="notifications">
+      <button class="back" data-page="home">← Home</button><h1>🔔 Notifications</h1>
+      <div class="panel list" id="notif-list">No notifications yet.</div>
+    </section>
+
+    <!-- ================= EXISTING SHIELD & MISC ================= -->
     <section class="page" id="shield">
       <button class="back" data-page="home">← Home</button><h1>BEAST Shield</h1>
       <div class="scanner-panel">
@@ -218,9 +303,36 @@
     <section class="page" id="history"><button class="back" data-page="home">← Home</button><h1>Transaction History</h1><div id="historyList" class="panel list">No transactions yet.</div></section>
     <section class="page" id="settings"><button class="back" data-page="home">← Home</button><h1>Settings</h1><div class="panel form"><h3>Account security</h3><button id="logout" class="btn secondary full">LOG OUT OF DEMO</button><p class="fine-print">Local demo data is stored in this browser. This is not suitable for real financial accounts.</p></div></section>
   </main>
+
+  <!-- ================= NEW BOTTOM NAV ================= -->
+  <nav id="beast-nav">
+    <button class="bnav-btn active" data-page="home">💰<span>Money</span></button>
+    <button class="bnav-btn" data-page="travel">🌍<span>Travel</span></button>
+    <button class="bnav-btn" data-page="market">🛒<span>Market</span></button>
+    <button class="bnav-btn" data-page="ai">🤖<span>AI</span></button>
+    <button class="bnav-btn" id="moreBtn">☰<span>More</span></button>
+  </nav>
+
+  <!-- ================= MORE MENU OVERLAY ================= -->
+  <div id="beast-more" class="bm-overlay hidden">
+    <div class="bm-sheet">
+      <div class="bm-head">
+        <strong>More</strong>
+        <button id="bm-close" aria-label="Close">✕</button>
+      </div>
+      <div class="bm-grid">
+        <button class="bm-tile" data-page="business">🏢<span>Business</span></button>
+        <button class="bm-tile" data-page="card">💳<span>BEAST Card</span></button>
+        <button class="bm-tile" data-page="shield">🛡️<span>Shield</span></button>
+        <button class="bm-tile" data-page="notifications">🔔<span>Alerts</span></button>
+        <button class="bm-tile" data-page="banks">🏦<span>Accounts</span></button>
+        <button class="bm-tile" data-page="settings">⚙️<span>Settings</span></button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast" class="toast hidden" role="status"></div>
 </div>
 <script src="app.js"></script>
 </body>
 </html>
- 
