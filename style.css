@@ -152,6 +152,26 @@ h1 { font-size: 22px; margin-bottom: 16px; }
 .shield-features span { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 18px; color: var(--green); }
 .shield-features small { font-size: 8px; color: var(--muted); }
 
+/* ===== TRAVEL RADAR ===== */
+.radar-container { display: flex; justify-content: center; margin: 20px 0; }
+.radar-circle { width: 260px; height: 260px; border-radius: 50%; border: 2px solid var(--green); position: relative; background: radial-gradient(circle, rgba(0,224,138,0.05) 0%, transparent 70%); overflow: hidden; box-shadow: 0 0 20px rgba(0,224,138,0.2), inset 0 0 20px rgba(0,224,138,0.1); }
+.radar-grid { position: absolute; inset: 0; border-radius: 50%; background-image: linear-gradient(rgba(0,224,138,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(0,224,138,0.2) 1px, transparent 1px); background-size: 40px 40px; opacity: 0.3; }
+.radar-sweep { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(from 0deg, transparent 0deg, rgba(0,224,138,0.6) 90deg, transparent 180deg); opacity: 0; }
+.radar-circle.scanning .radar-sweep { opacity: 1; animation: radarRotate 2s linear infinite; }
+@keyframes radarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.radar-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.radar-btn { background: var(--green-dark); border: 2px solid var(--green); border-radius: 50%; width: 120px; height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--green); cursor: pointer; z-index: 10; box-shadow: 0 0 15px rgba(0,224,138,0.4); transition: all 0.2s; }
+.radar-btn:active { transform: scale(0.95); }
+.radar-btn.scanning-active { background: rgba(0,224,138,0.2); border-color: #fff; color: #fff; }
+.radar-icon { font-size: 20px; margin-bottom: 4px; }
+.radar-text { font-size: 10px; font-weight: bold; letter-spacing: 1px; text-align: center; line-height: 1.2; }
+.radar-controls { display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 16px; }
+.radar-label { font-size: 12px; color: var(--muted); }
+.radius-pills { display: flex; gap: 8px; }
+.radius-pill { background: var(--panel); border: 1px solid var(--border); color: var(--muted); padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
+.radius-pill.active { background: var(--green); color: #000; border-color: var(--green); font-weight: bold; }
+.radar-status-text { text-align: center; font-size: 12px; color: var(--gold); margin-bottom: 20px; min-height: 18px; }
+
 /* TOAST */
 .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--panel-2); color: var(--text); padding: 12px 20px; border-radius: 30px; font-size: 13px; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 2000; transition: opacity 0.3s; max-width: 90%; text-align: center; }
 .toast.hidden { opacity: 0; pointer-events: none; }
