@@ -20,7 +20,7 @@
     <button data-page="home">Home</button><button data-page="send">Send Money</button>
     <button data-page="receive">Receive & Payment Settings</button><button data-page="withdraw">Withdraw</button>
     <button data-page="lipa">Lipa Na</button><button data-page="card">BEAST Card</button>
-    <button data-page="banks">Linked Accounts</button><button data-page="shield">BEAST Shield</button>
+    <button data-page="banks">Linked Accounts</button><button data-page="travel">🦁 BEAST Travel</button><button data-page="shield">BEAST Shield</button>
     <button data-page="history">Transaction History</button><button data-page="settings">Settings</button>
   </nav>
   <div id="scrim" class="scrim hidden"></div>
@@ -41,18 +41,6 @@
         <div class="two-col"><label>Create PIN<input name="pin" type="password" inputmode="numeric" minlength="4" maxlength="6" required></label><label>Create password<input name="password" type="password" minlength="8" required></label></div>
         <label class="check-row"><input type="checkbox" required> I agree to the <button type="button" id="terms" class="inline-btn">demo terms</button></label>
         <button class="btn primary full">CREATE ACCOUNT & SCAN</button>
-      </form>
-    </section>
-
-    <section class="page" id="login">
-      <div class="hero"><div class="lion-mark">♛</div><div class="hero-title">BEAST</div><p>WELCOME BACK</p><span class="pill">DEMO ACCOUNT LOGIN</span></div>
-      <div class="notice warning"><b>DEMO PROTOTYPE</b><br>Never enter real financial credentials.</div>
-      <form id="loginForm" class="panel form">
-        <h2>Log in to BEAST</h2>
-        <label>Registered phone number<input name="phone" type="tel" required placeholder="+254 7XX XXX XXX"></label>
-        <label>Demo PIN<input name="pin" type="password" inputmode="numeric" minlength="4" maxlength="6" required></label>
-        <button class="btn primary full">LOG IN</button>
-        <p class="fine-print">Your demo account and activity remain saved after logout.</p>
       </form>
     </section>
 
@@ -229,83 +217,7 @@
 
     <section class="page" id="history"><button class="back" data-page="home">← Home</button><h1>Transaction History</h1><div id="historyList" class="panel list">No transactions yet.</div></section>
     <section class="page" id="settings"><button class="back" data-page="home">← Home</button><h1>Settings</h1><div class="panel form"><h3>Account security</h3><button id="logout" class="btn secondary full">LOG OUT OF DEMO</button><p class="fine-print">Local demo data is stored in this browser. This is not suitable for real financial accounts.</p></div></section>
-    <section class="page" id="termsPage">
-      <button class="back" data-page="register">← Back to Registration</button>
-
-      <div class="panel form terms-panel">
-        <div class="scanner-brand">
-          <span>♛</span>
-          <b>BEAST<small>ONE NUMBER. ONE BEAST.</small></b>
-        </div>
-
-        <h1>TERMS &amp; CONDITIONS</h1>
-        <p class="fine-print">Draft for future services · Kenya · Version 1.0</p>
-
-        <div class="notice warning">
-          <b>IMPORTANT NOTICE</b>
-          <p>These terms are a draft for review, not approved live-service terms. This BEAST prototype does not process real money or perform official identity verification.</p>
-        </div>
-
-        <h3>1. Introduction</h3>
-        <p>These draft terms describe the proposed rules for using BEAST, a planned digital wallet and payment platform. Before live launch, the operator's legal identity, contact details, applicable licences and final terms must be confirmed.</p>
-
-        <h3>2. Registration and eligibility</h3>
-        <p>Users may be asked to provide a phone number, national identification details and other information required by applicable law. Users must provide accurate information and must not register using another person's identity.</p>
-
-        <h3>3. Identity and BEAST ID</h3>
-        <p>A BEAST ID is intended to identify a registered account. In this prototype, IDs and suggested names are demonstrations only. They are not globally reserved, and no government database or live account registry is connected.</p>
-
-        <h3>4. Account security</h3>
-        <p>Users should keep their PIN, password and authentication codes confidential. A future live service must provide appropriate security controls and a process for reporting suspected account compromise.</p>
-
-        <h3>5. Wallet balances and deposits</h3>
-        <p>Any balance displayed in this prototype is simulated and is not electronic money, a bank deposit or a promise of funds. Live deposits and withdrawals may only be offered through approved and properly integrated providers.</p>
-
-        <h3>6. Transfers and payments</h3>
-        <p>Planned routes may include BEAST-to-BEAST transfers, bank transfers, mobile money, merchant payments, agent withdrawals and other supported payment methods. Availability depends on authorised integrations and applicable requirements. No real transfer is made by this prototype.</p>
-
-        <h3>7. Fees and limits</h3>
-        <p>Before a live transaction is confirmed, the service should disclose applicable fees, limits and the total amount payable. Fees may vary by route and may be changed only under the final published terms and applicable law.</p>
-
-        <h3>8. Receipts and disputes</h3>
-        <p>A future live service should provide transaction references and records. Users should report incorrect, delayed, duplicate or unauthorised transactions through the official support channel. Resolution will follow the final service rules and applicable law.</p>
-
-        <h3>9. Cards and linked accounts</h3>
-        <p>Any card or linked-account display in this prototype is illustrative. Card issuance, bank linking and payment functions require authorised providers and must not be treated as active unless expressly confirmed by the live service.</p>
-
-        <h3>10. BEAST Shield</h3>
-        <p>Shield animations and camera permission tests are demonstrations. They do not verify identity, guarantee security or detect fraud. A live service must explain its real security checks and obtain consent where required.</p>
-
-        <h3>11. Privacy and personal information</h3>
-        <p>A live BEAST service must explain what personal information it collects, why it is used, who receives it, how long it is retained and how users can exercise applicable data-protection rights. Personal information must be handled under applicable Kenyan data-protection law.</p>
-
-        <h3>12. Acceptable use</h3>
-        <p>Users must not use the service for fraud, impersonation, money laundering, terrorist financing, unlawful payments, unauthorised access or any other prohibited activity.</p>
-
-        <h3>13. Service availability</h3>
-        <p>Future services may be affected by maintenance, network failures, provider outages, security events or legal requirements. Any live-service suspension and complaint procedures must be described in the final terms.</p>
-
-        <h3>14. Complaints and support</h3>
-        <p>Before launch, the operator must publish a valid support contact and a clear complaint-handling process. Do not rely on this draft as a support contact or as confirmation that a regulated service is operating.</p>
-
-        <h3>15. Legal compliance</h3>
-        <p>Before handling real funds in Kenya, the operator must obtain qualified legal advice and determine which licences, approvals, payment-provider agreements and regulatory obligations apply. These draft terms do not establish regulatory approval.</p>
-
-        <h3>16. Changes to these terms</h3>
-        <p>The final terms should state how users will be notified of changes and when changes take effect. Material changes should be communicated in accordance with applicable law.</p>
-
-        <h3>17. Liability and applicable law</h3>
-        <p>The final terms must be reviewed by a qualified Kenyan lawyer and must not exclude rights or liabilities that cannot lawfully be excluded. Applicable law and dispute procedures must be confirmed before launch.</p>
-
-        <div class="notice warning">
-          <b>DRAFT — NOT FINAL LEGAL ADVICE</b>
-          <p>This page is an initial product draft. It must be reviewed and completed by a qualified Kenyan lawyer before any live financial service launches.</p>
-        </div>
-
-        <button class="btn primary full" data-page="register">BACK TO REGISTRATION</button>
-      </div>
-    </section>  
-</main>
+  </main>
   <div id="toast" class="toast hidden" role="status"></div>
 </div>
 <script src="app.js"></script>
