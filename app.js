@@ -85,4 +85,4 @@ $('#travelBackendCheck').onclick=async()=>{const out=$('#travelBackendStatus');l
 travelRenderPassenger();
 
 if(S.profile){go('home')}else{go('register')}
-})();
+})(); 
