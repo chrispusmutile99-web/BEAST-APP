@@ -100,17 +100,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
 .bnav-btn span { font-size: 10px; }
 .bnav-btn.active { color: var(--green); }
 
-/* MORE SHEET */
-.bm-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.6); display: flex; align-items: flex-end; }
-.bm-sheet { width: 100%; max-width: 480px; margin: 0 auto; background: var(--panel); border-radius: 24px 24px 0 0; padding: 20px; border-top: 2px solid var(--green); animation: slideUp 0.3s ease; }
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-.bm-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.bm-head strong { font-size: 18px; }
-.bm-head button { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }
-.bm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding-bottom: 20px; }
-.bm-tile { background: var(--panel-2); border: 1px solid var(--border); border-radius: 16px; padding: 16px 8px; color: var(--text); display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; font-size: 20px; }
-.bm-tile span { font-size: 11px; }
-
 /* BEAST CARD UI */
 .beast-card { background: linear-gradient(135deg, #0b3d2c, #00e08a33); border: 1px solid var(--green); border-radius: 20px; padding: 24px; margin-bottom: 16px; position: relative; overflow: hidden; }
 .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
@@ -152,26 +141,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
 .shield-features span { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 18px; color: var(--green); }
 .shield-features small { font-size: 8px; color: var(--muted); }
 
-/* ===== TRAVEL RADAR ===== */
-.radar-container { display: flex; justify-content: center; margin: 20px 0; }
-.radar-circle { width: 260px; height: 260px; border-radius: 50%; border: 2px solid var(--green); position: relative; background: radial-gradient(circle, rgba(0,224,138,0.05) 0%, transparent 70%); overflow: hidden; box-shadow: 0 0 20px rgba(0,224,138,0.2), inset 0 0 20px rgba(0,224,138,0.1); }
-.radar-grid { position: absolute; inset: 0; border-radius: 50%; background-image: linear-gradient(rgba(0,224,138,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(0,224,138,0.2) 1px, transparent 1px); background-size: 40px 40px; opacity: 0.3; }
-.radar-sweep { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(from 0deg, transparent 0deg, rgba(0,224,138,0.6) 90deg, transparent 180deg); opacity: 0; }
-.radar-circle.scanning .radar-sweep { opacity: 1; animation: radarRotate 2s linear infinite; }
-@keyframes radarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-.radar-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-.radar-btn { background: var(--green-dark); border: 2px solid var(--green); border-radius: 50%; width: 120px; height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--green); cursor: pointer; z-index: 10; box-shadow: 0 0 15px rgba(0,224,138,0.4); transition: all 0.2s; }
-.radar-btn:active { transform: scale(0.95); }
-.radar-btn.scanning-active { background: rgba(0,224,138,0.2); border-color: #fff; color: #fff; }
-.radar-icon { font-size: 20px; margin-bottom: 4px; }
-.radar-text { font-size: 10px; font-weight: bold; letter-spacing: 1px; text-align: center; line-height: 1.2; }
-.radar-controls { display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 16px; }
-.radar-label { font-size: 12px; color: var(--muted); }
-.radius-pills { display: flex; gap: 8px; }
-.radius-pill { background: var(--panel); border: 1px solid var(--border); color: var(--muted); padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
-.radius-pill.active { background: var(--green); color: #000; border-color: var(--green); font-weight: bold; }
-.radar-status-text { text-align: center; font-size: 12px; color: var(--gold); margin-bottom: 20px; min-height: 18px; }
-
 /* TOAST */
 .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--panel-2); color: var(--text); padding: 12px 20px; border-radius: 30px; font-size: 13px; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 2000; transition: opacity 0.3s; max-width: 90%; text-align: center; }
 .toast.hidden { opacity: 0; pointer-events: none; }
@@ -197,14 +166,12 @@ h1 { font-size: 22px; margin-bottom: 16px; }
 .section-heading { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
 .eyebrow { font-size: 10px; color: var(--muted); letter-spacing: 1px; display: block; margin-bottom: 4px; }
 .status-badge { background: var(--panel-2); color: var(--gold); font-size: 10px; padding: 4px 8px; border-radius: 4px; }
-/* ===== NEW TRAVEL UI ===== */
+
+/* ================= NEW TRAVEL UI ================= */
 .gold-text { color: var(--gold); }
 .travel-hero { text-align: center; padding: 20px 0; }
 .travel-globe { font-size: 100px; text-align: center; margin: 10px 0 20px; filter: drop-shadow(0 0 20px rgba(0,224,138,0.3)); }
-.travel-role-btn { 
-  display: flex; align-items: center; background: var(--panel); border: 1px solid var(--border); 
-  border-radius: 16px; padding: 16px; margin-bottom: 12px; width: 100%; text-align: left; cursor: pointer;
-}
+.travel-role-btn { display: flex; align-items: center; background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; width: 100%; text-align: left; cursor: pointer; }
 .travel-role-btn:active { background: var(--panel-2); }
 .role-icon { font-size: 24px; margin-right: 16px; background: var(--panel-2); padding: 10px; border-radius: 12px; }
 .role-text { flex: 1; }
@@ -212,7 +179,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
 .role-text small { font-size: 11px; color: var(--muted); }
 .role-arrow { font-size: 24px; color: var(--green); }
 
-/* Registration */
 .progress-steps { display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
 .step { width: 28px; height: 28px; border-radius: 50%; background: var(--panel-2); color: var(--muted); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border: 1px solid var(--border); }
 .step.active { background: var(--green); color: #000; border-color: var(--green); }
@@ -226,7 +192,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
 .tc-content b { font-size: 11px; color: var(--text); margin-bottom: 2px; }
 .tc-content small { font-size: 9px; color: var(--muted); }
 
-/* Radar */
 .radar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .radar-circle { width: 260px; height: 260px; border-radius: 50%; border: 2px solid var(--green); position: relative; background: radial-gradient(circle, rgba(0,224,138,0.05) 0%, transparent 70%); overflow: hidden; box-shadow: 0 0 30px rgba(0,224,138,0.15), inset 0 0 20px rgba(0,224,138,0.1); margin: 0 auto; }
 .radar-circle.scanning .radar-sweep { opacity: 1; animation: radarRotate 2s linear infinite; }
@@ -239,7 +204,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
 .stat b { font-size: 14px; color: var(--text); }
 .stat small { font-size: 10px; color: var(--muted); }
 
-/* Passenger List */
 .passenger-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
 .passenger-card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
 .p-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
@@ -254,7 +218,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
 .tag.vehicle { background: rgba(0,224,138,0.15); color: var(--green); border: 1px solid var(--green); }
 .tag.eta { background: transparent; border: 1px solid var(--border); color: var(--muted); }
 
-/* Active Trip */
 .trip-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
 .map-view { background: #111d17; border: 1px solid var(--border); border-radius: 16px; height: 200px; position: relative; overflow: hidden; margin-bottom: 16px; background-image: radial-gradient(#2a3a31 1px, transparent 1px); background-size: 20px 20px; }
 .map-pin { position: absolute; font-size: 24px; }
@@ -273,7 +236,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
 .p-large-distance small { font-size: 11px; color: var(--muted); }
 .p-large-actions { display: flex; flex-direction: column; gap: 8px; }
 
-/* Completed */
 .completed-hero { text-align: center; padding: 20px 0; }
 .check-circle { width: 80px; height: 80px; border-radius: 50%; background: rgba(0,224,138,0.1); border: 2px solid var(--green); color: var(--green); font-size: 40px; display: flex; align-items: center; justify-content: center; margin: 20px auto; box-shadow: 0 0 20px rgba(0,224,138,0.3); }
 .earnings-panel { display: flex; justify-content: space-between; align-items: center; background: var(--panel); border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin: 20px 0; }
