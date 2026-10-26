@@ -204,7 +204,7 @@
       <h3 class="section-title">Saved accounts</h3><div id="banksList" class="panel list">No linked accounts yet.</div>
     </section>
 
-    <!-- ================= EXISTING TRAVEL PAGE ================= -->
+    <!-- ================= NEW TRAVEL PAGE WITH RADAR ================= -->
     <section class="page" id="travel">
       <button class="back" data-page="home">← Home</button><h1>BEAST Travel</h1>
       <div class="tabs">
@@ -229,19 +229,52 @@
         <div id="travelPassengerRides" class="panel list">No demo ride requests yet.</div>
       </div>
 
-      <!-- Driver Mode -->
+      <!-- Driver Mode (RADAR) -->
       <div id="travelDriver" class="tab-panel hidden">
+        <!-- Registration Form -->
         <form id="travelDriverForm" class="panel form">
-          <h2>Driver Profile</h2>
+          <h2>Driver Registration</h2>
+          <p class="fine-print" style="text-align:left; margin-bottom:12px;">You must register your vehicle to start scanning for passengers.</p>
           <label>Full Name<input name="name" required></label>
           <label>Vehicle Type<select name="vehicle"><option>Boda boda</option><option>Huba</option><option>Matatu</option><option>Private car</option><option>Taxi</option></select></label>
           <label>Operating Town<input name="town" required placeholder="e.g. Kakamega"></label>
-          <label>Vehicle Registration<input name="registration" placeholder="e.g. KMEA 123X"></label>
-          <button class="btn secondary full">SAVE PROFILE</button>
+          <label>Vehicle Registration<input name="registration" placeholder="e.g. KMEA 123X" required></label>
+          <button class="btn primary full">SAVE PROFILE & CONTINUE</button>
         </form>
-        <h3 class="section-title">Nearby Requests</h3>
-        <div id="travelDriverRequests" class="panel list">No matching demo requests.</div>
-        <button id="travelClearRides" class="btn danger full">CLEAR ALL DEMO RIDES</button>
+
+        <!-- Radar Interface -->
+        <div id="travelRadarUI" class="hidden">
+          <div class="radar-container">
+            <div class="radar-circle" id="radarScanner">
+              <div class="radar-sweep"></div>
+              <div class="radar-grid"></div>
+              <div class="radar-center">
+                <button id="scanRadarBtn" class="radar-btn">
+                  <span class="radar-icon">🟢</span>
+                  <span class="radar-text">SCAN FOR<br>PASSENGERS</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="radar-controls">
+            <span class="radar-label">Radius:</span>
+            <div class="radius-pills">
+              <button class="radius-pill active" data-radius="1">1km</button>
+              <button class="radius-pill" data-radius="3">3km</button>
+              <button class="radius-pill" data-radius="5">5km</button>
+              <button class="radius-pill" data-radius="10">10km</button>
+            </div>
+          </div>
+
+          <div id="radarStatus" class="radar-status-text">System Ready. Tap Scan.</div>
+          
+          <h3 class="section-title">Nearby Requests</h3>
+          <div id="travelDriverRequests" class="panel list">No matching demo requests.</div>
+          
+          <button id="travelClearRides" class="btn danger full" style="margin-top: 12px;">CLEAR ALL DEMO RIDES</button>
+          <button id="resetDriverProfile" class="btn secondary full" style="margin-top: 8px; font-size:12px;">Reset Driver Profile</button>
+        </div>
       </div>
 
       <!-- Backend Mode -->
