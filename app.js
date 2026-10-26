@@ -13,7 +13,7 @@ function fmt(n){return 'KSh '+Number(n||0).toLocaleString('en-KE',{minimumFracti
 function fee(n){return n>0?Math.min(100,Math.max(5,Math.ceil(n*.01))):0}
 function toast(msg){$('#toast').textContent=msg;$('#toast').classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.add('hidden'),3200)}
 
-// NEW ROUTER: handles both old sidebar and new bottom nav
+// ================= ROUTER =================
 function go(id){
   const p=$('#'+id);
   if(!p)return;
@@ -43,7 +43,7 @@ function go(id){
   if(id==='shield')setShieldReady();
 }
 
-// Bind all buttons with data-page attribute (Drawer + Action Grid + Bottom Nav)
+// Bind all buttons with data-page attribute
 $$('[data-page]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();go(b.dataset.page)}));
 
 function closeMenu(){$('#drawer').classList.remove('open');$('#scrim').classList.add('hidden')}
@@ -55,6 +55,7 @@ $('#scrim').onclick=closeMenu;
 $('#moreBtn').onclick = () => { $('#beast-more').classList.remove('hidden'); };
 $('#bm-close').onclick = () => { $('#beast-more').classList.add('hidden'); };
 
+// ================= MONEY LOGIC =================
 function tx(type,amount,note){S.tx.unshift({type,amount:Number(amount),note,date:new Date().toISOString()});save();render()}
 function txHtml(t){return `<p><b>${esc(t.note)}</b><br><small>${esc(new Date(t.date).toLocaleString())}</small><br>${fmt(t.amount)}</p>`}
 
@@ -464,10 +465,18 @@ function travelRenderDriver(){
   const box=$('#travelDriverRequests');
   if(!box)return;
   const profile=travelState.driver;
+  
+  // Toggle UI based on registration
+  const hasProfile = !!profile;
+  $('#travelDriverForm').classList.toggle('hidden', hasProfile);
+  $('#travelRadarUI').classList.toggle('hidden', !hasProfile);
+
+  if(!hasProfile) return;
+
   const list=travelState.rides.filter(r=>r.status==='requested'||(r.status==='accepted'&&r.driverName===profile?.name)||(r.status==='picked'&&r.driverName===profile?.name));
   const compatible=list.filter(r=>!profile||r.town.toLowerCase()===profile.town.toLowerCase());
   const filtered=compatible.filter(r=>!profile||r.vehicle==='Any available'||r.vehicle===profile.vehicle);
-  box.innerHTML=filtered.length?filtered.map(r=>travelRideCard(r,true)).join(''):'No matching demo requests. Passenger and driver data are shared only in this browser.';
+  box.innerHTML=filtered.length?filtered.map(r=>travelRideCard(r,true)).join(''):'No matching demo requests.';
   travelBindRideButtons();
 }
 
@@ -491,18 +500,72 @@ $('#travelRideForm').onsubmit=e=>{
   toast('Demo ride request created. Live driver matching is not connected.');
 };
 
-$('#travelDriverForm').onsubmit=e=>{
+// ================= DRIVER RADAR LOGIC =================
+let currentRadius = 1;
+let isScanning = false;
+
+$('#travelDriverForm').onsubmit = (e) => {
   e.preventDefault();
-  const f=new FormData(e.currentTarget);
-  travelState.driver={
-    name:String(f.get('name')).trim(),
-    vehicle:String(f.get('vehicle')),
-    town:String(f.get('town')).trim(),
-    registration:String(f.get('registration')||'').trim(),
-    savedAt:new Date().toISOString()
+  const f = new FormData(e.currentTarget);
+  travelState.driver = {
+    name: String(f.get('name')).trim(),
+    vehicle: String(f.get('vehicle')),
+    town: String(f.get('town')).trim(),
+    registration: String(f.get('registration') || '').trim(),
+    savedAt: new Date().toISOString()
   };
-  travelSave();travelRenderDriver();
-  toast('Demo driver profile saved. Identity and vehicle category are not verified.');
+  travelSave();
+  travelRenderDriver();
+  toast('Driver profile saved. Ready to scan.');
+};
+
+$('#resetDriverProfile').onclick = () => {
+  if(confirm('Reset driver profile? You will need to register again.')) {
+    travelState.driver = null;
+    travelSave();
+    travelRenderDriver();
+  }
+};
+
+$$('.radius-pill').forEach(btn => {
+  btn.onclick = () => {
+    $$('.radius-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentRadius = Number(btn.dataset.radius);
+  };
+});
+
+$('#scanRadarBtn').onclick = () => {
+  if (isScanning) return;
+  isScanning = true;
+  
+  const radar = $('#radarScanner');
+  const btn = $('#scanRadarBtn');
+  const status = $('#radarStatus');
+  
+  radar.classList.add('scanning');
+  btn.classList.add('scanning-active');
+  btn.innerHTML = '<span class="radar-text">SCANNING...</span>';
+  status.textContent = `Scanning for passengers within ${currentRadius}km...`;
+  
+  setTimeout(() => {
+    isScanning = false;
+    radar.classList.remove('scanning');
+    btn.classList.remove('scanning-active');
+    btn.innerHTML = '<span class="radar-icon">🟢</span><span class="radar-text">SCAN FOR<br>PASSENGERS</span>';
+    
+    const availableRides = travelState.rides.filter(r => r.status === 'requested');
+    
+    if (availableRides.length > 0) {
+      status.textContent = `📡 Found ${availableRides.length} passenger(s) nearby!`;
+      toast('Passenger found! Check requests below.');
+    } else {
+      status.textContent = 'No passengers found in this radius. Try again later.';
+      toast('No passengers found.');
+    }
+    
+    travelRenderDriver();
+  }, 2500);
 };
 
 $('#travelClearRides').onclick=()=>{
@@ -526,6 +589,7 @@ $('#travelBackendCheck').onclick=async()=>{
 };
 
 travelRenderPassenger();
+travelRenderDriver();
 
 // INITIAL LOAD
 if(S.profile){go('home')}else{go('register')}
