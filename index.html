@@ -10,28 +10,43 @@
 <body>
 <div class="app-shell">
   <header class="topbar">
-    <button class="icon-btn">☰</button>
-    <button class="brand" data-page="home"><span class="brand-lion">♛</span><span><strong>BEAST</strong><small>ONE NUMBER. ONE BEAST.</small></span></button>
-    <button class="icon-btn" data-page="shield">◉</button>
+    <button class="icon-btn" id="menuOpen" aria-label="Open menu">☰</button>
+    <button class="brand" data-page="home" aria-label="BEAST home"><span class="brand-lion">♛</span><span><strong>BEAST</strong><small>ONE NUMBER. ONE BEAST.</small></span></button>
+    <button class="icon-btn" data-page="shield" aria-label="BEAST Shield">◉</button>
   </header>
+  
+  <nav id="drawer" class="drawer">
+    <button id="menuClose" class="icon-btn close-menu">✕</button>
+    <h3>BEAST MENU</h3>
+    <button data-page="home">Home</button><button data-page="send">Send Money</button>
+    <button data-page="receive">Receive & Payment Settings</button><button data-page="withdraw">Withdraw</button>
+    <button data-page="lipa">Lipa Na</button><button data-page="card">BEAST Card</button>
+    <button data-page="banks">Linked Accounts</button><button data-page="travel">🦁 BEAST Travel</button><button data-page="shield">BEAST Shield</button>
+    <button data-page="history">Transaction History</button><button data-page="settings">Settings</button>
+  </nav>
+  <div id="scrim" class="scrim hidden"></div>
 
   <main>
-    <!-- ================= AUTH ================= -->
+    <!-- ================= REGISTRATION ================= -->
     <section class="page active" id="register">
-      <div class="hero"><div class="hero-title">BEAST</div><p class="muted">ONE NUMBER. ONE BEAST.</p></div>
+      <div class="hero"><div class="lion-mark">♛</div><div class="hero-title">BEAST</div><p>ONE NUMBER. ONE BEAST.</p><span class="pill">SECURE WALLET EXPERIENCE</span></div>
+      <div class="notice warning"><b>DEMO PROTOTYPE</b><br>Identity checks, payments, and linking are simulated. Do not enter real data.</div>
       <form id="registerForm" class="panel form">
-        <h2>Create Account</h2>
-        <label>Full Name<input name="name" required placeholder="John Doe"></label>
-        <label>Phone Number<input name="phone" required placeholder="+254 7XX XXX XXX"></label>
-        <div class="two-col"><label>PIN<input name="pin" type="password" required minlength="4"></label><label>Password<input name="password" type="password" required minlength="4"></label></div>
-        <label class="terms-row"><input type="checkbox" required> I agree to Terms & Conditions</label>
-        <button class="btn primary full" style="margin-top:16px;">REGISTER</button>
+        <h2>Create your BEAST account</h2>
+        <label>Phone number<input name="phone" required placeholder="+254 7XX XXX XXX"></label>
+        <label>National ID number<input name="id" required placeholder="Demo ID only"></label>
+        <button type="button" class="btn secondary" id="verifyIdentity">CHECK NAME (DEMO)</button>
+        <label>Full legal name<input name="name" required placeholder="Name as shown on ID"></label>
+        <div class="two-col"><label>Create PIN<input name="pin" type="password" required minlength="4"></label><label>Create password<input name="password" type="password" required minlength="8"></label></div>
+        <label class="terms-row"><input type="checkbox" required style="width:auto;"> I agree to Terms & Conditions</label>
+        <button class="btn primary full" style="margin-top:16px;">CREATE ACCOUNT & SCAN</button>
         <p class="switch-auth">Already have an account? <button type="button" class="link-btn" id="goToLogin">Log In</button></p>
       </form>
     </section>
 
+    <!-- ================= LOGIN ================= -->
     <section class="page" id="login">
-      <div class="hero"><div class="hero-title">BEAST</div><h2>Welcome Back</h2></div>
+      <div class="hero"><div class="lion-mark">♛</div><h2>Welcome Back</h2></div>
       <form id="loginForm" class="panel form">
         <h2>Login</h2>
         <label>Phone Number<input name="phone" required placeholder="+254 7XX XXX XXX"></label>
@@ -56,47 +71,69 @@
         <button data-page="receive"><span>⇩</span><b>Receive</b><small>Default destination</small></button>
         <button data-page="withdraw"><span>⇧</span><b>Withdraw</b><small>Linked accounts</small></button>
         <button data-page="lipa"><span>▣</span><b>Lipa Na</b><small>Merchant payments</small></button>
+        <button data-page="card"><span>▰</span><b>BEAST Card</b><small>Virtual / physical</small></button>
         <button data-page="banks"><span>▥</span><b>Linked Accounts</b><small>Bank & mobile money</small></button>
+        <button data-page="shield"><span>◉</span><b>BEAST Shield</b><small>Security scanner</small></button>
         <button data-page="history"><span>◴</span><b>History</b><small>Demo activity</small></button>
       </div>
       <h3 class="section-title">Recent activity</h3><div id="recent" class="panel list">No activity yet.</div>
     </section>
 
-    <!-- ================= MONEY ================= -->
+    <!-- ================= MONEY PAGES ================= -->
     <section class="page" id="send"><button class="back" data-page="home">← Home</button><h1>Send Money</h1><form id="sendForm" class="panel form"><label>Recipient Phone<input name="recipient" required></label><label>Amount (KSh)<input name="amount" type="number" required></label><button class="btn primary full">SEND</button></form></section>
     <section class="page" id="withdraw"><button class="back" data-page="home">← Home</button><h1>Withdraw</h1><form id="withdrawForm" class="panel form"><label>Destination<select name="dest"><option>M-PESA</option><option>Bank</option></select></label><label>Phone/Account<input name="acc" required></label><label>Amount (KSh)<input name="amount" type="number" required></label><button class="btn primary full">WITHDRAW</button></form></section>
     <section class="page" id="lipa"><button class="back" data-page="home">← Home</button><h1>Lipa Na</h1><form id="lipaForm" class="panel form"><label>Merchant / Paybill<input name="merchant" required></label><label>Amount (KSh)<input name="amount" type="number" required></label><button class="btn primary full">PAY</button></form></section>
     <section class="page" id="banks"><button class="back" data-page="home">← Home</button><h1>Linked Accounts</h1><form id="bankForm" class="panel form"><label>Bank Name<input name="bank" required></label><label>Account Number<input name="acc" required></label><button class="btn primary full">LINK ACCOUNT</button></form><div id="banksList" class="panel list">No accounts linked.</div></section>
     <section class="page" id="history"><button class="back" data-page="home">← Home</button><h1>History</h1><div id="historyList" class="panel list">No activity yet.</div></section>
-    <section class="page" id="card"><button class="back" data-page="home">← Home</button><h1>Card</h1><div class="panel">Virtual Card Module</div></section>
-    <section class="page" id="shield"><button class="back" data-page="home">← Home</button><h1>Shield</h1><div class="panel">Security Module</div></section>
 
-    <!-- ================= TRAVEL ================= -->
+    <!-- ================= CARD (From Baseline) ================= -->
+    <section class="page" id="card">
+      <button class="back" data-page="home">← Home</button><h1>BEAST Card</h1>
+      <div class="beast-card" id="beastCardVisual">
+        <div class="card-top"><div class="card-brand"><span>♛</span><b>BEAST<small>ONE NUMBER. ONE BEAST.</small></b></div><span class="card-type" id="cardTypeLabel">PREVIEW</span></div>
+        <div class="lion-art">🦁</div>
+        <div class="chip-row"><span class="chip"></span><span class="contactless">)))</span></div>
+        <div class="card-number">•••• &nbsp; •••• &nbsp; •••• &nbsp; <span id="cardLast4">0000</span></div>
+        <div class="card-bottom"><div><small>CARDHOLDER</small><b id="cardholder">BEAST MEMBER</b><small id="cardBeastId">BEAST ID • BEAST-000001</small></div><div class="card-pay">BEAST<br>PAY</div></div>
+      </div>
+      <div class="notice warning" id="cardNotice">Demo prototype. No real card has been issued.</div>
+      <div id="cardStatus" class="panel status-panel" style="text-align:center; font-weight:bold; color:var(--gold);">STATUS: PREVIEW ONLY</div>
+      <div id="cardControls" class="panel form hidden"><h3>Card Controls</h3><button id="freeze" class="btn secondary full">FREEZE CARD ❄️</button><button id="cardQr" class="btn secondary full">SHOW QR CODE</button></div>
+      <div id="getCardOptions" class="two-col card-actions" style="margin-top:16px;"><button id="getVirtual" class="btn primary">GET VIRTUAL — FREE</button><button id="orderPhysical" class="btn gold">ORDER PHYSICAL — KSh 100*</button></div>
+      <p class="fine-print">*Physical card price is proposed.</p>
+    </section>
+
+    <!-- ================= SHIELD ================= -->
+    <section class="page" id="shield"><button class="back" data-page="home">← Home</button><h1>BEAST Shield</h1><div class="panel form"><button id="scanNow" class="btn primary full">RUN DEMO SCAN</button><button id="lockdown" class="btn danger full">LOCK ACCOUNT</button></div></section>
+
+    <!-- ================= TRAVEL (From Baseline) ================= -->
     <section class="page" id="travel">
       <div id="travelWelcome">
-        <div class="travel-hero"><div class="hero-title">BEAST<br><span class="gold-text">TRAVEL</span></div></div>
-        <button class="travel-role-btn" id="btnPassengerMode"><div class="role-icon">🧍</div><div class="role-text"><b>I'm a Passenger</b><small>Find a ride</small></div></button>
-        <button class="travel-role-btn" id="btnDriverMode"><div class="role-icon">🛵</div><div class="role-text"><b>I'm a Driver</b><small>Earn with BEAST</small></div></button>
+        <div class="travel-hero"><div class="lion-mark">♛</div><h1>BEAST<br><span class="gold-text">TRAVEL</span></h1><p class="muted">SAFE RIDES • SMARTER JOURNEYS</p></div>
+        <div class="travel-globe">🌍</div>
+        <button class="travel-role-btn" id="btnPassengerMode"><div class="role-icon">🧍</div><div class="role-text"><b>I'm a Passenger</b><small>Find a ride near you (Free)</small></div></button>
+        <button class="travel-role-btn" id="btnDriverMode"><div class="role-icon">🛵</div><div class="role-text"><b>I'm a Driver</b><small>Earn with BEAST Travel</small></div></button>
       </div>
-      <div id="travelPassenger" class="hidden"><button class="back" id="backToWelcomePassenger">← Back</button><h1>Request a Ride</h1><form id="travelPassengerForm" class="panel form"><label>Pickup<input name="pickup" required></label><label>Destination<input name="destination" required></label><button class="btn primary full">REQUEST RIDE</button></form></div>
+      <div id="travelPassenger" class="hidden"><button class="back" id="backToWelcomePassenger">← Back</button><h1>Request a Ride</h1><form id="travelPassengerForm" class="panel form"><label>Pickup<input name="pickup" required></label><label>Destination<input name="destination" required></label><button class="btn primary full">REQUEST RIDE</button></form><div id="passengerWaiting" class="hidden panel" style="text-align:center;">Finding driver...</div></div>
       <div id="travelDriverRegister" class="hidden"><button class="back" id="backToWelcome">← Back</button><h1>Driver Registration</h1><form id="travelDriverForm" class="panel form"><label>Full Name<input name="name" required></label><label>Town<input name="town" required></label><label>Registration<input name="registration" required></label><button class="btn primary full">PAY & CONTINUE</button></form></div>
       <div id="travelRadarUI" class="hidden"><div class="radar-container"><div class="radar-circle" id="radarScanner"><div class="radar-sweep"></div><div class="radar-center"><div class="radar-lion">♛</div></div></div></div></div>
     </section>
 
-    <!-- ================= MARKET ================= -->
+    <!-- ================= UPDATED MARKET TAB ================= -->
     <section class="page" id="market">
-      <div class="market-tabs">
-        <button class="market-tab active" id="tabMarketplace">🛍️ Marketplace</button>
-        <button class="market-tab" id="tabMyBusiness">🏢 My Business</button>
+      <div class="segmented-control">
+        <button class="seg-btn active" id="btnShopMode">🛍️ Marketplace</button>
+        <button class="seg-btn" id="btnBusinessMode">🏢 My Business</button>
       </div>
 
-      <div id="marketplaceView">
-        <input type="text" class="search-bar" placeholder="🔍 Search products...">
-        <div class="banner"><div><h3>Top Deals</h3><small>Up to 50% Off</small></div></div>
+      <!-- SHOP MODE -->
+      <div id="shopMode">
+        <div class="market-search"><input type="text" placeholder="🔍 Search products..."></div>
         <div class="product-grid" id="publicProductList"></div>
       </div>
 
-      <div id="myBusinessView" class="hidden">
+      <!-- BUSINESS MODE -->
+      <div id="businessMode" class="hidden">
         <div class="biz-stats">
           <div class="b-stat"><b>KES 145,000</b><small>Total Sales</small></div>
           <div class="b-stat"><b>KES 140,650</b><small>Net Earnings</small></div>
@@ -124,6 +161,7 @@
         </div>
       </div>
 
+      <!-- MY PRODUCTS VIEW -->
       <div id="myProductsView" class="hidden">
         <button class="back" onclick="showBusinessDashboard()">← Back</button>
         <h2>My Products</h2>
@@ -132,7 +170,7 @@
     </section>
   </main>
 
-  <!-- ================= WIZARD MODAL ================= -->
+  <!-- ================= MULTI-STEP WIZARD MODAL ================= -->
   <div id="wizardModal" class="modal-overlay hidden">
     <div class="modal-content">
       <div class="wizard-header"><h2>Create Product</h2><button class="icon-btn" onclick="closeWizard()">✕</button></div>
@@ -152,12 +190,26 @@
   <div id="aiFloatBtn" class="ai-float-btn hidden">🤖</div>
   <button id="fabAddProduct" class="fab hidden" onclick="openWizard()">+</button>
 
+  <!-- ================= BOTTOM NAV ================= -->
   <nav id="beast-nav" class="hidden">
     <button class="bnav-btn active" data-page="home">💰<span>Money</span></button>
     <button class="bnav-btn" data-page="travel">🛵<span>Travel</span></button>
     <button class="bnav-btn" data-page="market">🛒<span>Market</span></button>
     <button class="bnav-btn" id="moreBtn">☰<span>More</span></button>
   </nav>
+
+  <!-- ================= MORE MENU ================= -->
+  <div id="beast-more" class="bm-overlay hidden">
+    <div class="bm-sheet">
+      <div class="bm-head"><strong>More</strong><button id="bm-close">✕</button></div>
+      <div class="bm-grid">
+        <button class="bm-tile" data-page="shield">🛡️<span>Shield</span></button>
+        <button class="bm-tile" data-page="card">💳<span>Card</span></button>
+        <button class="bm-tile" data-page="history">📜<span>History</span></button>
+        <button class="bm-tile" data-page="settings">⚙️<span>Settings</span></button>
+      </div>
+    </div>
+  </div>
 
   <div id="toast" class="toast hidden" role="status"></div>
 </div>
