@@ -5,7 +5,235 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#03100c">
 <title>BEAST — One Number. One Beast.</title>
-<link rel="stylesheet" href="style.css">
+<style>
+:root { --bg: #0b0f0d; --panel: #121814; --panel-2: #1a221d; --border: #223028; --text: #e8f5ee; --muted: #8a9a90; --green: #00e08a; --green-dark: #0b3d2c; --gold: #c9a227; --red: #ff4d4d; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+.app-shell { max-width: 480px; margin: 0 auto; min-height: 100vh; padding-bottom: 80px; position: relative; }
+.hidden { display: none !important; }
+
+/* HEADER */
+.topbar { display: flex; justify-content: space-between; align-items: center; padding: 16px; position: sticky; top: 0; background: rgba(11,15,13,0.9); backdrop-filter: blur(10px); z-index: 100; }
+.icon-btn { background: none; border: none; color: var(--text); font-size: 20px; cursor: pointer; }
+.brand { display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--text); cursor: pointer; }
+.brand-lion { color: var(--gold); font-size: 24px; }
+.brand span { display: flex; flex-direction: column; text-align: left; }
+.brand strong { font-size: 16px; letter-spacing: 1px; }
+.brand small { font-size: 8px; color: var(--muted); letter-spacing: 0.5px; }
+
+/* DRAWER MENU */
+.drawer { position: fixed; top: 0; left: -280px; width: 260px; height: 100vh; background: var(--panel); border-right: 1px solid var(--border); z-index: 2000; padding: 20px; transition: transform 0.3s ease; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+.drawer.open { transform: translateX(280px); }
+.drawer h3 { color: var(--muted); font-size: 12px; margin-bottom: 10px; letter-spacing: 1px; }
+.drawer button { background: none; border: none; color: var(--text); text-align: left; padding: 12px; font-size: 14px; border-radius: 8px; cursor: pointer; }
+.drawer button:active { background: var(--panel-2); }
+.close-menu { align-self: flex-end; margin-bottom: 10px; }
+.scrim { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1500; }
+
+/* PAGES */
+.page { display: none; padding: 16px; animation: fadeIn 0.3s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+h1 { font-size: 22px; margin-bottom: 16px; }
+h2 { font-size: 18px; margin-bottom: 8px; }
+.back { background: none; border: none; color: var(--green); font-size: 14px; margin-bottom: 16px; cursor: pointer; padding: 0; }
+.section-title { font-size: 16px; margin: 24px 0 12px; color: var(--muted); }
+
+/* CARDS & PANELS */
+.panel { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+.wallet-card { background: linear-gradient(135deg, var(--green-dark), #051a12); border: 1px solid var(--green); border-radius: 20px; padding: 24px; position: relative; overflow: hidden; margin-bottom: 20px; }
+.wallet-card::before { content: ''; position: absolute; top: -50%; right: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0,224,138,0.1) 0%, transparent 70%); pointer-events: none; }
+.wallet-top { display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; letter-spacing: 1px; margin-bottom: 16px; }
+.live-dot { color: var(--gold); font-size: 10px; }
+.muted { color: var(--muted); font-size: 12px; }
+.small { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+.balance-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-bottom: 4px; }
+.balance { font-size: 28px; font-weight: bold; margin-bottom: 20px; }
+.balance strong { color: var(--green); }
+.quick-row { display: flex; gap: 8px; }
+.quick-row button { flex: 1; background: rgba(255,255,255,0.1); border: none; border-radius: 12px; padding: 10px; color: var(--text); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; cursor: pointer; }
+.quick-row button:active { background: rgba(255,255,255,0.2); }
+
+/* ACTION GRID */
+.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.action-grid button { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; align-items: flex-start; color: var(--text); cursor: pointer; text-align: left; }
+.action-grid button:active { background: var(--panel-2); }
+.action-grid button span { font-size: 20px; margin-bottom: 8px; }
+.action-grid button b { font-size: 14px; margin-bottom: 2px; }
+.action-grid button small { font-size: 11px; color: var(--muted); }
+
+/* FORMS & INPUTS */
+.form label { display: block; margin-bottom: 12px; font-size: 13px; color: var(--muted); }
+.form input, .form select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); font-size: 14px; margin-top: 6px; outline: none; }
+.form input:focus, .form select:focus { border-color: var(--green); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.btn { background: var(--panel-2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%; text-align: center; }
+.btn:active { transform: scale(0.98); }
+.btn.primary { background: var(--green); color: #000; border: none; }
+.btn.gold { background: var(--gold); color: #000; border: none; }
+.btn.secondary { background: var(--panel-2); }
+.btn.danger { background: rgba(255,77,77,0.2); color: var(--red); border: 1px solid var(--red); }
+.full { width: 100%; margin-top: 8px; }
+
+/* NOTICES */
+.notice { background: rgba(201,162,39,0.1); border: 1px solid rgba(201,162,39,0.3); border-radius: 12px; padding: 14px; font-size: 12px; color: var(--gold); margin-bottom: 16px; line-height: 1.5; }
+.notice.warning { background: rgba(255,77,77,0.1); border-color: rgba(255,77,77,0.3); color: var(--red); }
+.fine-print { font-size: 10px; color: var(--muted); margin-top: 12px; text-align: center; }
+
+/* TABS */
+.tabs { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
+.tab { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; color: var(--muted); font-size: 12px; white-space: nowrap; cursor: pointer; }
+.tab.active { background: var(--green); color: #000; border-color: var(--green); font-weight: 600; }
+
+/* BOTTOM NAVIGATION */
+#beast-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; display: flex; justify-content: space-around; background: rgba(11,15,13,0.95); backdrop-filter: blur(10px); border-top: 1px solid var(--border); padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); max-width: 480px; margin: 0 auto; }
+.bnav-btn { flex: 1; background: none; border: none; color: var(--muted); font-size: 18px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+.bnav-btn span { font-size: 10px; }
+.bnav-btn.active { color: var(--green); }
+
+/* BOTTOM SHEET (MORE MENU) */
+.bm-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.6); display: flex; align-items: flex-end; }
+.bm-sheet { width: 100%; max-width: 480px; margin: 0 auto; background: var(--panel); border-radius: 24px 24px 0 0; padding: 20px; border-top: 2px solid var(--green); animation: slideUp 0.3s ease; }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.bm-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.bm-head strong { font-size: 18px; }
+.bm-head button { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }
+.bm-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding-bottom: 20px; }
+.bm-tile { background: var(--panel-2); border: 1px solid var(--border); border-radius: 16px; padding: 16px 8px; color: var(--text); display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; font-size: 20px; }
+.bm-tile span { font-size: 11px; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--panel-2); color: var(--text); padding: 12px 20px; border-radius: 30px; font-size: 13px; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 2000; transition: opacity 0.3s; max-width: 90%; text-align: center; }
+.toast.hidden { opacity: 0; pointer-events: none; }
+
+/* ================= TRAVEL UI ================= */
+.gold-text { color: var(--gold); }
+.travel-hero { text-align: center; padding: 20px 0; }
+.travel-globe { font-size: 100px; text-align: center; margin: 10px 0 20px; filter: drop-shadow(0 0 20px rgba(0,224,138,0.3)); }
+.travel-role-btn { display: flex; align-items: center; background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; width: 100%; text-align: left; cursor: pointer; }
+.role-icon { font-size: 24px; margin-right: 16px; background: var(--panel-2); padding: 10px; border-radius: 12px; }
+.role-text { flex: 1; }
+.role-text b { display: block; font-size: 15px; color: var(--text); margin-bottom: 4px; }
+.role-text small { font-size: 11px; color: var(--muted); }
+.role-arrow { font-size: 24px; color: var(--green); }
+.progress-steps { display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+.step { width: 28px; height: 28px; border-radius: 50%; background: var(--panel-2); color: var(--muted); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border: 1px solid var(--border); }
+.step.active { background: var(--green); color: #000; border-color: var(--green); }
+.step-line { width: 30px; height: 2px; background: var(--border); }
+.transport-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.transport-card { position: relative; cursor: pointer; }
+.transport-card input { position: absolute; opacity: 0; }
+.tc-content { display: flex; flex-direction: column; align-items: center; padding: 12px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; text-align: center; }
+.transport-card input:checked + .tc-content { border-color: var(--green); background: rgba(0,224,138,0.05); }
+.tc-content span { font-size: 24px; margin-bottom: 8px; }
+.tc-content b { font-size: 11px; color: var(--text); margin-bottom: 2px; }
+.tc-content small { font-size: 9px; color: var(--muted); }
+.radar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.radar-circle { width: 260px; height: 260px; border-radius: 50%; border: 2px solid var(--green); position: relative; background: radial-gradient(circle, rgba(0,224,138,0.05) 0%, transparent 70%); overflow: hidden; box-shadow: 0 0 30px rgba(0,224,138,0.15), inset 0 0 20px rgba(0,224,138,0.1); margin: 0 auto; }
+.radar-circle.scanning .radar-sweep { opacity: 1; animation: radarRotate 2s linear infinite; }
+.radar-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.radar-lion { font-size: 40px; color: var(--gold); z-index: 10; filter: drop-shadow(0 0 10px rgba(201,162,39,0.5)); }
+@keyframes radarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.scan-status-bar { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--gold); color: #000; padding: 10px; border-radius: 20px; font-size: 12px; font-weight: bold; margin: 20px 0; }
+.radar-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.stat { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.stat span { font-size: 16px; }
+.stat b { font-size: 14px; color: var(--text); }
+.stat small { font-size: 10px; color: var(--muted); }
+.passenger-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+.passenger-card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
+.p-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.p-info { display: flex; gap: 12px; align-items: center; }
+.p-avatar { background: var(--panel-2); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 2px solid var(--green); }
+.p-details b { display: block; font-size: 14px; }
+.p-details small { font-size: 11px; color: var(--muted); }
+.p-distance { text-align: right; }
+.p-distance b { font-size: 14px; color: var(--text); }
+.p-tags { display: flex; gap: 8px; margin-bottom: 12px; }
+.tag { font-size: 10px; padding: 4px 8px; border-radius: 4px; background: var(--panel-2); color: var(--text); display: flex; align-items: center; gap: 4px; }
+.tag.vehicle { background: rgba(0,224,138,0.15); color: var(--green); border: 1px solid var(--green); }
+.map-view { background: #111d17; border: 1px solid var(--border); border-radius: 16px; height: 200px; position: relative; overflow: hidden; margin-bottom: 16px; background-image: radial-gradient(#2a3a31 1px, transparent 1px); background-size: 20px 20px; }
+.map-pin { position: absolute; font-size: 24px; }
+.map-pin.pickup { top: 20%; right: 20%; }
+.map-pin.driver { bottom: 20%; left: 30%; }
+.map-line { position: absolute; top: 30%; left: 35%; width: 80px; height: 2px; background: var(--green); transform: rotate(-45deg); transform-origin: left; }
+.map-label { position: absolute; top: 28%; right: 15%; background: var(--panel); padding: 4px 8px; border-radius: 4px; font-size: 10px; color: var(--text); border: 1px solid var(--border); }
+.passenger-card-large { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
+.p-large-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.p-large-icon { font-size: 24px; background: var(--panel-2); padding: 10px; border-radius: 50%; }
+.p-large-info { flex: 1; }
+.p-large-info b { display: block; font-size: 14px; }
+.p-large-info small { font-size: 11px; color: var(--green); }
+.p-large-distance { text-align: right; }
+.p-large-distance b { display: block; font-size: 14px; }
+.p-large-distance small { font-size: 11px; color: var(--muted); }
+.p-large-actions { display: flex; flex-direction: column; gap: 8px; }
+.completed-hero { text-align: center; padding: 20px 0; }
+.check-circle { width: 80px; height: 80px; border-radius: 50%; background: rgba(0,224,138,0.1); border: 2px solid var(--green); color: var(--green); font-size: 40px; display: flex; align-items: center; justify-content: center; margin: 20px auto; box-shadow: 0 0 20px rgba(0,224,138,0.3); }
+.earnings-panel { display: flex; justify-content: space-between; align-items: center; background: var(--panel); border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin: 20px 0; }
+.earnings-panel b { font-size: 20px; color: var(--text); }
+.plus-badge { background: rgba(0,224,138,0.15); color: var(--green); padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: bold; }
+.rating-stars { font-size: 24px; margin-bottom: 8px; }
+
+/* ================= COMBINED MARKET & BUSINESS ================= */
+.segmented-control { display: flex; background: var(--panel); border-radius: 12px; padding: 4px; margin-bottom: 20px; border: 1px solid var(--border); }
+.seg-btn { flex: 1; background: none; border: none; color: var(--muted); padding: 10px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+.seg-btn.active { background: var(--green); color: #000; }
+
+/* Shop Mode */
+.market-search input { width: 100%; background: var(--panel); border: 1px solid var(--border); border-radius: 30px; padding: 14px 20px; color: var(--text); outline: none; font-size:14px; margin-bottom: 16px; }
+.market-categories { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 4px; }
+.cat-pill { background: var(--panel); border: 1px solid var(--border); padding: 8px 16px; border-radius: 20px; font-size: 12px; white-space: nowrap; }
+.cat-pill.active { background: var(--green); color: #000; border-color: var(--green); font-weight: bold; }
+.market-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.product-card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+.prod-img { height: 100px; }
+.prod-info { padding: 12px; }
+.prod-info b { display: block; font-size: 13px; margin-bottom: 4px; }
+.prod-info small { color: var(--green); font-weight: bold; font-size: 12px; }
+
+/* Business Mode */
+.biz-dashboard { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
+.biz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.biz-badge { background: var(--gold); color: #000; font-size: 10px; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
+.biz-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.biz-stat-box { background: var(--bg); padding: 12px; border-radius: 12px; border: 1px solid var(--border); }
+.biz-stat-box small { color: var(--muted); font-size: 11px; display: block; margin-bottom: 4px; }
+.biz-stat-box b { font-size: 16px; color: var(--green); }
+.biz-tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 24px; }
+.biz-tool-btn { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px 4px; display: flex; flex-direction: column; align-items: center; color: var(--text); cursor: pointer; }
+.biz-tool-btn span { font-size: 20px; margin-bottom: 6px; }
+.biz-tool-btn b { font-size: 10px; text-align: center; }
+.biz-subscriptions h3 { font-size: 14px; margin-bottom: 12px; color: var(--muted); }
+.sub-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.sub-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; font-size: 11px; }
+.sub-card b { display: block; font-size: 13px; color: var(--text); margin-bottom: 4px; }
+.sub-card small { color: var(--muted); display: block; margin-bottom: 8px; }
+.sub-card.active { border-color: var(--green); background: rgba(0,224,138,0.05); }
+.sub-card ul { list-style: none; padding: 0; margin: 0; color: var(--muted); font-size: 9px; text-align: left; }
+.sub-card ul li { margin-bottom: 4px; }
+
+/* ================= AI TAB ================= */
+.ai-header { text-align: center; margin-bottom: 24px; }
+.ai-globe { font-size: 60px; margin-bottom: 12px; filter: drop-shadow(0 0 15px rgba(0,224,138,0.4)); }
+.ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ai-card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; align-items: flex-start; cursor: pointer; text-align:left; }
+.ai-card span { font-size: 24px; margin-bottom: 12px; }
+.ai-card b { font-size: 13px; margin-bottom: 4px; }
+.ai-card small { font-size: 10px; color: var(--muted); }
+
+/* AI Chat Interface */
+#aiChatContainer { display: flex; flex-direction: column; height: 70vh; background: var(--bg); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
+.ai-chat-header { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--panel); border-bottom: 1px solid var(--border); }
+.ai-chat-header h3 { font-size: 16px; margin: 0; }
+.ai-chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+.msg { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.4; }
+.msg.ai { background: var(--panel-2); color: var(--text); align-self: flex-start; border-bottom-left-radius: 2px; }
+.msg.user { background: var(--green); color: #000; align-self: flex-end; border-bottom-right-radius: 2px; }
+.ai-chat-input { display: flex; gap: 8px; padding: 12px; background: var(--panel); border-top: 1px solid var(--border); }
+.ai-chat-input input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 10px 16px; color: var(--text); outline: none; }
+.ai-chat-input .btn { width: auto; padding: 10px 20px; border-radius: 20px; }
+</style>
 </head>
 <body>
 <div class="app-shell">
@@ -65,80 +293,7 @@
       <h3 class="section-title">Recent activity</h3><div id="recent" class="panel list">No activity yet.</div>
     </section>
 
-    <!-- ================= MONEY PAGES ================= -->
-    <section class="page" id="send">
-      <button class="back" data-page="home">← Home</button><h1>Send Money</h1>
-      <form id="sendForm" class="panel form">
-        <label>Recipient phone or BEAST ID<input name="recipient" required placeholder="Phone / BEAST-000001"></label>
-        <button type="button" id="verifyRecipient" class="btn secondary">VERIFY RECIPIENT (DEMO)</button>
-        <div class="verify-box">Recipient name <b id="recipientName">Not verified</b></div>
-        <label>Payment source<select name="source"><option>BEAST Wallet</option><option>Linked Bank Account</option><option>M-PESA</option><option>Airtel Money</option><option>BEAST Card (demo)</option></select></label>
-        <label>Amount (KSh)<input id="sendAmount" name="amount" type="number" min="1" step="1" required></label>
-        <div class="fee-box">Estimated demo fee <b id="sendFee">KSh 0.00</b><br>Total <b id="sendTotal">KSh 0.00</b></div>
-        <label>Confirm with demo PIN<input name="pin" type="password" required></label>
-        <button class="btn primary full">SCAN & CONFIRM DEMO TRANSFER</button>
-      </form>
-    </section>
-
-    <section class="page" id="receive">
-      <button class="back" data-page="home">← Home</button><h1>Receive Money</h1>
-      <div class="tabs"><button class="tab active" data-receive-tab="collect">Collect payment</button><button class="tab" data-receive-tab="settings">Payment settings</button><button class="tab" data-receive-tab="movement">Deposit / withdraw</button></div>
-      <div id="receiveCollect" class="tab-panel">
-        <div class="panel"><div class="section-heading"><div><span class="eyebrow">YOUR DEFAULT DESTINATION</span><h2 id="destinationSummary">BEAST Wallet</h2></div><span class="status-badge">DEFAULT</span></div><p class="muted" id="destinationNumberSummary">Incoming payments use your selected default destination.</p></div>
-        <form id="buyerLogin" class="panel form">
-          <h2>Buyer authorization</h2>
-          <label>Buyer's phone or BEAST ID<input name="buyer" required></label>
-          <label>Buyer password (demo only)<input name="password" type="password" required></label>
-          <label>Buyer PIN (demo only)<input name="pin" type="password" required></label>
-          <button class="btn primary full">CONTINUE TO SHIELD SCAN</button>
-        </form>
-        <form id="collectForm" class="panel form hidden">
-          <h2>Confirm collection</h2>
-          <label>Payment source<select name="source"><option>BEAST Wallet</option><option>M-PESA</option></select></label>
-          <div class="verify-box">Seller's destination <b id="destination">BEAST Wallet</b></div>
-          <label>Amount (KSh)<input name="amount" type="number" min="1" required></label>
-          <button class="btn primary full">SCAN & AUTHORIZE DEMO PAYMENT</button>
-        </form>
-      </div>
-      <div id="receiveSettings" class="tab-panel hidden">
-        <form id="destinationForm" class="panel form">
-          <h2>Default destination</h2>
-          <label>Destination<select name="destination" id="destinationSelect"><option>BEAST Wallet</option><option>M-PESA</option><option>Airtel Money</option><option>Bank Account</option></select></label>
-          <label>Reference<input name="destNumber"></label>
-          <label>Name<input name="destName"></label>
-          <button class="btn primary full">SAVE</button>
-        </form>
-      </div>
-    </section>
-
-    <section class="page" id="withdraw">
-      <button class="back" data-page="home">← Home</button><h1>Withdraw</h1>
-      <form id="withdrawForm" class="panel form">
-        <label>Source<select name="source" id="withdrawSource"><option>BEAST Wallet</option><option>Linked Bank Account</option><option>M-PESA</option></select></label>
-        <div id="linkedBankSummary" class="verify-box">Linked bank details.</div>
-        <label>Destination type<select name="destinationType"><option>Agent / BEAST number</option><option>M-PESA</option><option>Bank Account</option></select></label>
-        <label>Account number<input name="destination" required></label>
-        <button type="button" id="verifyAgent" class="btn secondary">VERIFY DESTINATION (DEMO)</button><div class="verify-box">Verified details <b id="agentName">Not verified</b></div>
-        <label>Amount (KSh)<input name="amount" type="number" min="1" required></label>
-        <button class="btn primary full">SCAN & CONFIRM WITHDRAWAL</button>
-      </form>
-    </section>
-
-    <section class="page" id="lipa">
-      <button class="back" data-page="home">← Home</button><h1>Lipa Na BEAST</h1>
-      <div class="service-grid">
-        <button data-service="Pochi la Biashara">Pochi la Biashara</button><button data-service="Buy Goods / Till">Buy Goods</button><button data-service="Paybill">Paybill</button><button data-service="GlobalPay">GlobalPay</button>
-      </div>
-      <form id="lipaForm" class="panel form">
-        <div class="section-heading"><div><span class="eyebrow">SELECTED SERVICE</span><h2 id="lipaTitle">Pochi la Biashara</h2></div></div>
-        <div id="lipaFields"></div>
-        <label>Amount (KSh)<input name="amount" type="number" min="1" required></label>
-        <button type="button" id="verifyBusiness" class="btn secondary">VERIFY DETAILS</button><div class="verify-box">Business <b id="businessName">Not verified</b></div>
-        <button class="btn primary full">CONFIRM PAYMENT</button>
-      </form>
-    </section>
-
-    <!-- ================= UPDATED CARD PAGE ================= -->
+    <!-- ================= CARD ================= -->
     <section class="page" id="card">
       <button class="back" data-page="home">← Home</button><h1>BEAST Card</h1>
       
@@ -157,10 +312,7 @@
       </div>
 
       <div class="notice warning" id="cardNotice">Demo prototype. No real card has been issued.</div>
-
-      <div id="cardStatus" class="panel status-panel" style="text-align:center; font-weight:bold; color:var(--gold);">
-        STATUS: PREVIEW ONLY
-      </div>
+      <div id="cardStatus" class="panel status-panel" style="text-align:center; font-weight:bold; color:var(--gold);">STATUS: PREVIEW ONLY</div>
 
       <div id="cardControls" class="panel form hidden">
         <h3>Card Controls</h3>
@@ -172,35 +324,7 @@
         <button id="getVirtual" class="btn primary">GET VIRTUAL — FREE</button>
         <button id="orderPhysical" class="btn gold">ORDER PHYSICAL — KSh 100*</button>
       </div>
-      <p class="fine-print">*Physical card price is proposed.</p>
     </section>
-
-    <section class="page" id="banks">
-      <button class="back" data-page="home">← Home</button><h1>Linked Accounts</h1>
-      <form id="bankForm" class="panel form">
-        <label>Account type<select name="type"><option>Bank Account</option><option>M-PESA</option></select></label>
-        <label>Provider<select name="provider"><option>Equity Bank</option><option>Safaricom M-PESA</option></select></label>
-        <label>Nickname<input name="nickname" required></label>
-        <label>Reference<input name="reference" required></label>
-        <label>Holder name<input name="holder" required></label>
-        <button class="btn primary full">SAVE</button>
-      </form>
-      <h3 class="section-title">Saved accounts</h3><div id="banksList" class="panel list">No linked accounts yet.</div>
-    </section>
-
-    <!-- ================= SHIELD ================= -->
-    <section class="page" id="shield">
-      <button class="back" data-page="home">← Home</button><h1>BEAST Shield</h1>
-      <div class="scanner-panel">
-        <div class="scanner" id="scannerVisual"><div class="scan-ring ring-one"></div><div class="scan-ring ring-two"></div><div class="scan-ring ring-three"></div><div class="scan-sweep"></div><div class="scan-lion">♛</div></div>
-        <h2 id="shieldStatus">READY TO SCAN</h2><p id="shieldMessage">Security checks simulated.</p>
-        <div class="progress-track"><div id="scanProgress"></div></div>
-      </div>
-      <div class="panel form"><button id="scanNow" class="btn primary full">RUN DEMO SCAN</button><button id="lockdown" class="btn danger full">LOCK ACCOUNT</button></div>
-    </section>
-
-    <section class="page" id="history"><button class="back" data-page="home">← Home</button><h1>Transaction History</h1><div id="historyList" class="panel list">No transactions yet.</div></section>
-    <section class="page" id="settings"><button class="back" data-page="home">← Home</button><h1>Settings</h1><div class="panel form"><button id="logout" class="btn secondary full">LOG OUT OF DEMO</button></div></section>
 
     <!-- ================= TRAVEL ================= -->
     <section class="page" id="travel">
@@ -232,13 +356,6 @@
         <div class="radar-container"><div class="radar-circle" id="radarScanner"><div class="radar-sweep"></div><div class="radar-grid"></div><div class="radar-center"><div class="radar-lion">♛</div></div></div></div>
         <div class="scan-status-bar"><div class="scan-text">SCANNING...</div></div>
         <div id="travelDriverRequests" class="passenger-list"></div>
-      </div>
-      <div id="travelActiveTrip" class="hidden">
-        <div class="trip-header"><h2 id="tripTitle">On the Way</h2></div>
-        <button class="btn primary full" id="btnArrived">✔ Arrived at Pickup</button>
-      </div>
-      <div id="travelTripCompleted" class="hidden">
-        <div class="completed-hero"><div class="check-circle">✔</div><h2>Trip Completed!</h2><button class="btn primary full" id="btnScanAgain">🔄 Scan Again</button></div>
       </div>
     </section>
 
@@ -286,7 +403,6 @@
         <div class="ai-chat-input"><input type="text" id="aiInputBox" placeholder="Ask me anything..."><button id="aiSendBtn" class="btn primary">Send</button></div>
       </div>
     </section>
-
   </main>
 
   <!-- ================= BOTTOM NAV ================= -->
@@ -313,6 +429,7 @@
 
   <div id="toast" class="toast hidden" role="status"></div>
 </div>
+<!-- Make sure to link to your app.js -->
 <script src="app.js"></script>
 </body>
 </html>
