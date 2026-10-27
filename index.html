@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#03100c">
 <title>BEAST — One Number. One Beast.</title>
 <style>
-:root { --bg: #0b0f0d; --panel: #121814; --panel-2: #1a221d; --border: #223028; --text: #e8f5ee; --muted: #8a9a90; --green: #00e08a; --green-dark: #0b3d2c; --gold: #c9a227; --red: #ff4d4d; }
+:root { --bg: #0b0f0d; --panel: #121814; --panel-2: #1a221d; --border: #223028; --text: #e8f5ee; --muted: #8a9a90; --green: #00e08a; --green-dark: #0b3d2c; --gold: #c9a227; --red: #ff4d4d; --blue: #00d2ff; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
 .app-shell { max-width: 480px; margin: 0 auto; min-height: 100vh; padding-bottom: 80px; position: relative; }
@@ -21,15 +21,6 @@ body { background: var(--bg); color: var(--text); font-family: system-ui, -apple
 .brand strong { font-size: 16px; letter-spacing: 1px; }
 .brand small { font-size: 8px; color: var(--muted); letter-spacing: 0.5px; }
 
-/* DRAWER MENU */
-.drawer { position: fixed; top: 0; left: -280px; width: 260px; height: 100vh; background: var(--panel); border-right: 1px solid var(--border); z-index: 2000; padding: 20px; transition: transform 0.3s ease; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
-.drawer.open { transform: translateX(280px); }
-.drawer h3 { color: var(--muted); font-size: 12px; margin-bottom: 10px; letter-spacing: 1px; }
-.drawer button { background: none; border: none; color: var(--text); text-align: left; padding: 12px; font-size: 14px; border-radius: 8px; cursor: pointer; }
-.drawer button:active { background: var(--panel-2); }
-.close-menu { align-self: flex-end; margin-bottom: 10px; }
-.scrim { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1500; }
-
 /* PAGES */
 .page { display: none; padding: 16px; animation: fadeIn 0.3s ease; }
 .page.active { display: block; }
@@ -37,7 +28,7 @@ body { background: var(--bg); color: var(--text); font-family: system-ui, -apple
 h1 { font-size: 22px; margin-bottom: 16px; }
 h2 { font-size: 18px; margin-bottom: 8px; }
 .back { background: none; border: none; color: var(--green); font-size: 14px; margin-bottom: 16px; cursor: pointer; padding: 0; }
-.section-title { font-size: 16px; margin: 24px 0 12px; color: var(--muted); }
+.section-title { font-size: 16px; margin: 24px 0 12px; color: var(--muted); display: flex; justify-content: space-between; }
 
 /* CARDS & PANELS */
 .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
@@ -46,18 +37,15 @@ h2 { font-size: 18px; margin-bottom: 8px; }
 .wallet-top { display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; letter-spacing: 1px; margin-bottom: 16px; }
 .live-dot { color: var(--gold); font-size: 10px; }
 .muted { color: var(--muted); font-size: 12px; }
-.small { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
 .balance-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-bottom: 4px; }
 .balance { font-size: 28px; font-weight: bold; margin-bottom: 20px; }
 .balance strong { color: var(--green); }
 .quick-row { display: flex; gap: 8px; }
 .quick-row button { flex: 1; background: rgba(255,255,255,0.1); border: none; border-radius: 12px; padding: 10px; color: var(--text); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; cursor: pointer; }
-.quick-row button:active { background: rgba(255,255,255,0.2); }
 
 /* ACTION GRID */
 .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .action-grid button { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; align-items: flex-start; color: var(--text); cursor: pointer; text-align: left; }
-.action-grid button:active { background: var(--panel-2); }
 .action-grid button span { font-size: 20px; margin-bottom: 8px; }
 .action-grid button b { font-size: 14px; margin-bottom: 2px; }
 .action-grid button small { font-size: 11px; color: var(--muted); }
@@ -65,39 +53,28 @@ h2 { font-size: 18px; margin-bottom: 8px; }
 /* FORMS & INPUTS */
 .form label { display: block; margin-bottom: 12px; font-size: 13px; color: var(--muted); }
 .form input, .form select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); font-size: 14px; margin-top: 6px; outline: none; }
-.form input:focus, .form select:focus { border-color: var(--green); }
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .btn { background: var(--panel-2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%; text-align: center; }
-.btn:active { transform: scale(0.98); }
 .btn.primary { background: var(--green); color: #000; border: none; }
-.btn.gold { background: var(--gold); color: #000; border: none; }
 .btn.secondary { background: var(--panel-2); }
 .btn.danger { background: rgba(255,77,77,0.2); color: var(--red); border: 1px solid var(--red); }
-.full { width: 100%; margin-top: 8px; }
+.btn.full { width: 100%; margin-top: 8px; }
+.link-btn { background: none; border: none; color: var(--green); cursor: pointer; text-decoration: underline; font-size: 13px; }
 
-/* NOTICES */
-.notice { background: rgba(201,162,39,0.1); border: 1px solid rgba(201,162,39,0.3); border-radius: 12px; padding: 14px; font-size: 12px; color: var(--gold); margin-bottom: 16px; line-height: 1.5; }
-.notice.warning { background: rgba(255,77,77,0.1); border-color: rgba(255,77,77,0.3); color: var(--red); }
-.fine-print { font-size: 10px; color: var(--muted); margin-top: 12px; text-align: center; }
+/* LIST */
+.list p { padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.list p:last-child { border-bottom: none; }
 
-/* TABS */
-.tabs { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
-.tab { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; color: var(--muted); font-size: 12px; white-space: nowrap; cursor: pointer; }
-.tab.active { background: var(--green); color: #000; border-color: var(--green); font-weight: 600; }
-
-/* BOTTOM NAVIGATION */
+/* BOTTOM NAV */
 #beast-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; display: flex; justify-content: space-around; background: rgba(11,15,13,0.95); backdrop-filter: blur(10px); border-top: 1px solid var(--border); padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); max-width: 480px; margin: 0 auto; }
 .bnav-btn { flex: 1; background: none; border: none; color: var(--muted); font-size: 18px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
 .bnav-btn span { font-size: 10px; }
 .bnav-btn.active { color: var(--green); }
 
-/* BOTTOM SHEET (MORE MENU) */
+/* MORE MENU */
 .bm-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.6); display: flex; align-items: flex-end; }
-.bm-sheet { width: 100%; max-width: 480px; margin: 0 auto; background: var(--panel); border-radius: 24px 24px 0 0; padding: 20px; border-top: 2px solid var(--green); animation: slideUp 0.3s ease; }
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.bm-sheet { width: 100%; max-width: 480px; margin: 0 auto; background: var(--panel); border-radius: 24px 24px 0 0; padding: 20px; border-top: 2px solid var(--green); }
 .bm-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.bm-head strong { font-size: 18px; }
-.bm-head button { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }
 .bm-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding-bottom: 20px; }
 .bm-tile { background: var(--panel-2); border: 1px solid var(--border); border-radius: 16px; padding: 16px 8px; color: var(--text); display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; font-size: 20px; }
 .bm-tile span { font-size: 11px; }
@@ -106,167 +83,71 @@ h2 { font-size: 18px; margin-bottom: 8px; }
 .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--panel-2); color: var(--text); padding: 12px 20px; border-radius: 30px; font-size: 13px; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 2000; transition: opacity 0.3s; max-width: 90%; text-align: center; }
 .toast.hidden { opacity: 0; pointer-events: none; }
 
-/* ================= TRAVEL UI ================= */
-.gold-text { color: var(--gold); }
-.travel-hero { text-align: center; padding: 20px 0; }
-.travel-globe { font-size: 100px; text-align: center; margin: 10px 0 20px; filter: drop-shadow(0 0 20px rgba(0,224,138,0.3)); }
-.travel-role-btn { display: flex; align-items: center; background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; width: 100%; text-align: left; cursor: pointer; }
-.role-icon { font-size: 24px; margin-right: 16px; background: var(--panel-2); padding: 10px; border-radius: 12px; }
-.role-text { flex: 1; }
-.role-text b { display: block; font-size: 15px; color: var(--text); margin-bottom: 4px; }
-.role-text small { font-size: 11px; color: var(--muted); }
-.role-arrow { font-size: 24px; color: var(--green); }
-.progress-steps { display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
-.step { width: 28px; height: 28px; border-radius: 50%; background: var(--panel-2); color: var(--muted); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border: 1px solid var(--border); }
-.step.active { background: var(--green); color: #000; border-color: var(--green); }
-.step-line { width: 30px; height: 2px; background: var(--border); }
-.transport-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
-.transport-card { position: relative; cursor: pointer; }
-.transport-card input { position: absolute; opacity: 0; }
-.tc-content { display: flex; flex-direction: column; align-items: center; padding: 12px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; text-align: center; }
-.transport-card input:checked + .tc-content { border-color: var(--green); background: rgba(0,224,138,0.05); }
-.tc-content span { font-size: 24px; margin-bottom: 8px; }
-.tc-content b { font-size: 11px; color: var(--text); margin-bottom: 2px; }
-.tc-content small { font-size: 9px; color: var(--muted); }
-.radar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.radar-circle { width: 260px; height: 260px; border-radius: 50%; border: 2px solid var(--green); position: relative; background: radial-gradient(circle, rgba(0,224,138,0.05) 0%, transparent 70%); overflow: hidden; box-shadow: 0 0 30px rgba(0,224,138,0.15), inset 0 0 20px rgba(0,224,138,0.1); margin: 0 auto; }
-.radar-circle.scanning .radar-sweep { opacity: 1; animation: radarRotate 2s linear infinite; }
-.radar-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-.radar-lion { font-size: 40px; color: var(--gold); z-index: 10; filter: drop-shadow(0 0 10px rgba(201,162,39,0.5)); }
-@keyframes radarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-.scan-status-bar { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--gold); color: #000; padding: 10px; border-radius: 20px; font-size: 12px; font-weight: bold; margin: 20px 0; }
-.radar-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
-.stat { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.stat span { font-size: 16px; }
-.stat b { font-size: 14px; color: var(--text); }
-.stat small { font-size: 10px; color: var(--muted); }
-.passenger-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
-.passenger-card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
-.p-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-.p-info { display: flex; gap: 12px; align-items: center; }
-.p-avatar { background: var(--panel-2); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 2px solid var(--green); }
-.p-details b { display: block; font-size: 14px; }
-.p-details small { font-size: 11px; color: var(--muted); }
-.p-distance { text-align: right; }
-.p-distance b { font-size: 14px; color: var(--text); }
-.p-tags { display: flex; gap: 8px; margin-bottom: 12px; }
-.tag { font-size: 10px; padding: 4px 8px; border-radius: 4px; background: var(--panel-2); color: var(--text); display: flex; align-items: center; gap: 4px; }
-.tag.vehicle { background: rgba(0,224,138,0.15); color: var(--green); border: 1px solid var(--green); }
-.map-view { background: #111d17; border: 1px solid var(--border); border-radius: 16px; height: 200px; position: relative; overflow: hidden; margin-bottom: 16px; background-image: radial-gradient(#2a3a31 1px, transparent 1px); background-size: 20px 20px; }
-.map-pin { position: absolute; font-size: 24px; }
-.map-pin.pickup { top: 20%; right: 20%; }
-.map-pin.driver { bottom: 20%; left: 30%; }
-.map-line { position: absolute; top: 30%; left: 35%; width: 80px; height: 2px; background: var(--green); transform: rotate(-45deg); transform-origin: left; }
-.map-label { position: absolute; top: 28%; right: 15%; background: var(--panel); padding: 4px 8px; border-radius: 4px; font-size: 10px; color: var(--text); border: 1px solid var(--border); }
-.passenger-card-large { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
-.p-large-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-.p-large-icon { font-size: 24px; background: var(--panel-2); padding: 10px; border-radius: 50%; }
-.p-large-info { flex: 1; }
-.p-large-info b { display: block; font-size: 14px; }
-.p-large-info small { font-size: 11px; color: var(--green); }
-.p-large-distance { text-align: right; }
-.p-large-distance b { display: block; font-size: 14px; }
-.p-large-distance small { font-size: 11px; color: var(--muted); }
-.p-large-actions { display: flex; flex-direction: column; gap: 8px; }
-.completed-hero { text-align: center; padding: 20px 0; }
-.check-circle { width: 80px; height: 80px; border-radius: 50%; background: rgba(0,224,138,0.1); border: 2px solid var(--green); color: var(--green); font-size: 40px; display: flex; align-items: center; justify-content: center; margin: 20px auto; box-shadow: 0 0 20px rgba(0,224,138,0.3); }
-.earnings-panel { display: flex; justify-content: space-between; align-items: center; background: var(--panel); border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin: 20px 0; }
-.earnings-panel b { font-size: 20px; color: var(--text); }
-.plus-badge { background: rgba(0,224,138,0.15); color: var(--green); padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: bold; }
-.rating-stars { font-size: 24px; margin-bottom: 8px; }
+/* MARKET TABS */
+.market-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+.market-tab { flex: 1; padding: 12px; text-align: center; background: none; border: none; color: var(--muted); font-weight: bold; cursor: pointer; border-bottom: 2px solid transparent; }
+.market-tab.active { color: var(--green); border-bottom-color: var(--green); }
 
-/* ================= COMBINED MARKET & BUSINESS ================= */
-.segmented-control { display: flex; background: var(--panel); border-radius: 12px; padding: 4px; margin-bottom: 20px; border: 1px solid var(--border); }
-.seg-btn { flex: 1; background: none; border: none; color: var(--muted); padding: 10px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-.seg-btn.active { background: var(--green); color: #000; }
+/* PRODUCTS */
+.search-bar { width: 100%; padding: 12px 20px; border-radius: 30px; border: 1px solid var(--border); background: var(--panel); color: var(--text); margin-bottom: 16px; }
+.product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.product-card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 12px; }
+.prod-img { width: 100%; height: 100px; background: var(--panel-2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 30px; margin-bottom: 8px; }
+.product-card b { font-size: 13px; display: block; margin-bottom: 4px; }
+.product-card small { color: var(--green); font-weight: bold; font-size: 12px; }
 
-/* Shop Mode */
-.market-search input { width: 100%; background: var(--panel); border: 1px solid var(--border); border-radius: 30px; padding: 14px 20px; color: var(--text); outline: none; font-size:14px; margin-bottom: 16px; }
-.market-categories { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 4px; }
-.cat-pill { background: var(--panel); border: 1px solid var(--border); padding: 8px 16px; border-radius: 20px; font-size: 12px; white-space: nowrap; }
-.cat-pill.active { background: var(--green); color: #000; border-color: var(--green); font-weight: bold; }
-.market-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.product-card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
-.prod-img { height: 100px; }
-.prod-info { padding: 12px; }
-.prod-info b { display: block; font-size: 13px; margin-bottom: 4px; }
-.prod-info small { color: var(--green); font-weight: bold; font-size: 12px; }
+/* BANNER */
+.banner { background: linear-gradient(90deg, var(--green-dark), var(--green)); border-radius: 16px; padding: 20px; margin-bottom: 16px; color: #000; display: flex; justify-content: space-between; align-items: center; }
+.banner h3 { font-size: 18px; margin-bottom: 4px; }
+.banner small { font-size: 12px; }
 
-/* Business Mode */
-.biz-dashboard { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
-.biz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-.biz-badge { background: var(--gold); color: #000; font-size: 10px; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
-.biz-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-.biz-stat-box { background: var(--bg); padding: 12px; border-radius: 12px; border: 1px solid var(--border); }
-.biz-stat-box small { color: var(--muted); font-size: 11px; display: block; margin-bottom: 4px; }
-.biz-stat-box b { font-size: 16px; color: var(--green); }
-.biz-tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 24px; }
-.biz-tool-btn { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px 4px; display: flex; flex-direction: column; align-items: center; color: var(--text); cursor: pointer; }
-.biz-tool-btn span { font-size: 20px; margin-bottom: 6px; }
-.biz-tool-btn b { font-size: 10px; text-align: center; }
-.biz-subscriptions h3 { font-size: 14px; margin-bottom: 12px; color: var(--muted); }
-.sub-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-.sub-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; font-size: 11px; }
-.sub-card b { display: block; font-size: 13px; color: var(--text); margin-bottom: 4px; }
-.sub-card small { color: var(--muted); display: block; margin-bottom: 8px; }
-.sub-card.active { border-color: var(--green); background: rgba(0,224,138,0.05); }
-.sub-card ul { list-style: none; padding: 0; margin: 0; color: var(--muted); font-size: 9px; text-align: left; }
-.sub-card ul li { margin-bottom: 4px; }
+/* SELLER DASHBOARD */
+.seller-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.s-stat { background: var(--panel); padding: 12px; border-radius: 12px; text-align: center; border: 1px solid var(--border); }
+.s-stat b { display: block; font-size: 16px; color: var(--green); }
+.s-stat small { font-size: 10px; color: var(--muted); }
+.seller-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-/* ================= AI TAB ================= */
-.ai-header { text-align: center; margin-bottom: 24px; }
-.ai-globe { font-size: 60px; margin-bottom: 12px; filter: drop-shadow(0 0 15px rgba(0,224,138,0.4)); }
-.ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.ai-card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; align-items: flex-start; cursor: pointer; text-align:left; }
-.ai-card span { font-size: 24px; margin-bottom: 12px; }
-.ai-card b { font-size: 13px; margin-bottom: 4px; }
-.ai-card small { font-size: 10px; color: var(--muted); }
-
-/* AI Chat Interface */
-#aiChatContainer { display: flex; flex-direction: column; height: 70vh; background: var(--bg); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
-.ai-chat-header { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--panel); border-bottom: 1px solid var(--border); }
-.ai-chat-header h3 { font-size: 16px; margin: 0; }
-.ai-chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-.msg { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.4; }
-.msg.ai { background: var(--panel-2); color: var(--text); align-self: flex-start; border-bottom-left-radius: 2px; }
-.msg.user { background: var(--green); color: #000; align-self: flex-end; border-bottom-right-radius: 2px; }
-.ai-chat-input { display: flex; gap: 8px; padding: 12px; background: var(--panel); border-top: 1px solid var(--border); }
-.ai-chat-input input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 10px 16px; color: var(--text); outline: none; }
-.ai-chat-input .btn { width: auto; padding: 10px 20px; border-radius: 20px; }
+/* FLOATING AI */
+.ai-float-btn { position: fixed; bottom: 90px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--panel-2); border: 2px solid var(--green); display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; z-index: 500; box-shadow: 0 4px 15px rgba(0,224,138,0.3); }
+.ai-panel { position: fixed; bottom: 160px; right: 20px; width: 300px; background: var(--panel); border: 1px solid var(--green); border-radius: 16px; padding: 16px; z-index: 500; box-shadow: 0 10px 30px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 12px; }
+.ai-panel h4 { color: var(--green); font-size: 14px; }
+.ai-chat-box { background: var(--bg); border-radius: 8px; padding: 10px; font-size: 12px; color: var(--text); height: 100px; overflow-y: auto; }
+.ai-input-row { display: flex; gap: 8px; }
+.ai-input-row input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px; color: var(--text); font-size: 12px; }
 </style>
 </head>
 <body>
 <div class="app-shell">
   <header class="topbar">
-    <button class="icon-btn" id="menuOpen" aria-label="Open menu">☰</button>
-    <button class="brand" data-page="home" aria-label="BEAST home"><span class="brand-lion">♛</span><span><strong>BEAST</strong><small>ONE NUMBER. ONE BEAST.</small></span></button>
-    <button class="icon-btn" data-page="shield" aria-label="BEAST Shield">◉</button>
+    <button class="icon-btn" id="menuOpen">☰</button>
+    <button class="brand" data-page="home"><span class="brand-lion">♛</span><span><strong>BEAST</strong><small>ONE NUMBER. ONE BEAST.</small></span></button>
+    <button class="icon-btn" data-page="shield">◉</button>
   </header>
-  
-  <nav id="drawer" class="drawer">
-    <button id="menuClose" class="icon-btn close-menu">✕</button>
-    <h3>BEAST MENU</h3>
-    <button data-page="home">Home</button><button data-page="send">Send Money</button>
-    <button data-page="receive">Receive & Payment Settings</button><button data-page="withdraw">Withdraw</button>
-    <button data-page="lipa">Lipa Na</button><button data-page="card">BEAST Card</button>
-    <button data-page="banks">Linked Accounts</button><button data-page="travel">🦁 BEAST Travel</button><button data-page="shield">BEAST Shield</button>
-    <button data-page="history">Transaction History</button><button data-page="settings">Settings</button>
-  </nav>
-  <div id="scrim" class="scrim hidden"></div>
 
   <main>
-    <!-- ================= REGISTRATION ================= -->
+    <!-- ================= AUTHENTICATION ================= -->
     <section class="page active" id="register">
-      <div class="hero"><div class="lion-mark">♛</div><div class="hero-title">BEAST</div><p>ONE NUMBER. ONE BEAST.</p><span class="pill">SECURE WALLET EXPERIENCE</span></div>
-      <div class="notice warning"><b>DEMO PROTOTYPE</b><br>Identity checks, payments, and linking are simulated. Do not enter real data.</div>
+      <div style="text-align:center; padding: 20px 0;"><div style="font-size:60px; color:var(--gold);">♛</div><h1>BEAST</h1><p class="muted">ONE NUMBER. ONE BEAST.</p></div>
       <form id="registerForm" class="panel form">
-        <h2>Create your BEAST account</h2>
-        <label>Phone number<input name="phone" required placeholder="+254 7XX XXX XXX"></label>
-        <label>National ID number<input name="id" required placeholder="Demo ID only"></label>
-        <button type="button" class="btn secondary" id="verifyIdentity">CHECK NAME (DEMO)</button>
-        <label>Full legal name<input name="name" required placeholder="Name as shown on ID"></label>
-        <div class="two-col"><label>Create PIN<input name="pin" type="password" required minlength="4"></label><label>Create password<input name="password" type="password" required minlength="8"></label></div>
-        <button class="btn primary full">CREATE ACCOUNT & SCAN</button>
+        <h2>Create Account</h2>
+        <label>Full Name<input name="name" required placeholder="John Doe"></label>
+        <label>Phone Number<input name="phone" required placeholder="+254 7XX XXX XXX"></label>
+        <div class="two-col"><label>PIN<input name="pin" type="password" required minlength="4"></label><label>Password<input name="password" type="password" required minlength="4"></label></div>
+        <label style="display:flex; gap:8px; align-items:center; font-size:12px; margin-top:12px;"><input type="checkbox" required style="width:auto;"> I agree to Terms & Conditions</label>
+        <button class="btn primary full" style="margin-top:16px;">REGISTER</button>
+        <p style="text-align:center; margin-top:16px; font-size:12px;">Already have an account? <button type="button" class="link-btn" id="goToLogin">Log In</button></p>
+      </form>
+    </section>
+
+    <section class="page" id="login">
+      <div style="text-align:center; padding: 20px 0;"><div style="font-size:60px; color:var(--gold);">♛</div><h1>Welcome Back</h1></div>
+      <form id="loginForm" class="panel form">
+        <h2>Login</h2>
+        <label>Phone Number<input name="phone" required placeholder="+254 7XX XXX XXX"></label>
+        <label>PIN<input name="pin" type="password" required></label>
+        <button class="btn primary full" style="margin-top:16px;">LOG IN</button>
+        <p style="text-align:center; margin-top:16px; font-size:12px;">New to BEAST? <button type="button" class="link-btn" id="goToRegister">Register</button></p>
       </form>
     </section>
 
@@ -285,151 +166,125 @@ h2 { font-size: 18px; margin-bottom: 8px; }
         <button data-page="receive"><span>⇩</span><b>Receive</b><small>Default destination</small></button>
         <button data-page="withdraw"><span>⇧</span><b>Withdraw</b><small>Linked accounts</small></button>
         <button data-page="lipa"><span>▣</span><b>Lipa Na</b><small>Merchant payments</small></button>
-        <button data-page="card"><span>▰</span><b>BEAST Card</b><small>Virtual / physical</small></button>
         <button data-page="banks"><span>▥</span><b>Linked Accounts</b><small>Bank & mobile money</small></button>
-        <button data-page="shield"><span>◉</span><b>BEAST Shield</b><small>Security scanner</small></button>
         <button data-page="history"><span>◴</span><b>History</b><small>Demo activity</small></button>
       </div>
       <h3 class="section-title">Recent activity</h3><div id="recent" class="panel list">No activity yet.</div>
     </section>
 
-    <!-- ================= CARD ================= -->
-    <section class="page" id="card">
-      <button class="back" data-page="home">← Home</button><h1>BEAST Card</h1>
-      
-      <div class="beast-card" id="beastCardVisual">
-        <div class="card-top">
-          <div class="card-brand"><span>♛</span><b>BEAST<small>ONE NUMBER. ONE BEAST.</small></b></div>
-          <span class="card-type" id="cardTypeLabel">PREVIEW</span>
-        </div>
-        <div class="lion-art">🦁</div>
-        <div class="chip-row"><span class="chip"></span><span class="contactless">)))</span></div>
-        <div class="card-number">•••• &nbsp; •••• &nbsp; •••• &nbsp; <span id="cardLast4">0000</span></div>
-        <div class="card-bottom">
-          <div><small>CARDHOLDER</small><b id="cardholder">BEAST MEMBER</b><small id="cardBeastId">BEAST ID • BEAST-000001</small></div>
-          <div class="card-pay">BEAST<br>PAY</div>
-        </div>
-      </div>
-
-      <div class="notice warning" id="cardNotice">Demo prototype. No real card has been issued.</div>
-      <div id="cardStatus" class="panel status-panel" style="text-align:center; font-weight:bold; color:var(--gold);">STATUS: PREVIEW ONLY</div>
-
-      <div id="cardControls" class="panel form hidden">
-        <h3>Card Controls</h3>
-        <button id="freeze" class="btn secondary full">FREEZE CARD ❄️</button>
-        <button id="cardQr" class="btn secondary full">SHOW QR CODE</button>
-      </div>
-
-      <div id="getCardOptions" class="two-col card-actions" style="margin-top:16px;">
-        <button id="getVirtual" class="btn primary">GET VIRTUAL — FREE</button>
-        <button id="orderPhysical" class="btn gold">ORDER PHYSICAL — KSh 100*</button>
-      </div>
+    <!-- ================= MONEY PAGES ================= -->
+    <section class="page" id="send">
+      <button class="back" data-page="home">← Home</button><h1>Send Money</h1>
+      <form id="sendForm" class="panel form">
+        <label>Recipient Phone<input name="recipient" required></label>
+        <label>Amount (KSh)<input name="amount" type="number" required></label>
+        <button class="btn primary full">SEND</button>
+      </form>
     </section>
 
-    <!-- ================= TRAVEL ================= -->
-    <section class="page" id="travel">
-      <div id="travelWelcome">
-        <div class="travel-hero"><div class="lion-mark">♛</div><h1>BEAST<br><span class="gold-text">TRAVEL</span></h1><p class="muted">SAFE RIDES • SMARTER JOURNEYS</p></div>
-        <div class="travel-globe">🌍</div>
-        <button class="travel-role-btn" id="btnPassengerMode"><div class="role-icon">🧍</div><div class="role-text"><b>I'm a Passenger</b><small>Find a ride near you (Free)</small></div></button>
-        <button class="travel-role-btn" id="btnDriverMode"><div class="role-icon">🛵</div><div class="role-text"><b>I'm a Driver</b><small>Earn with BEAST Travel</small></div></button>
-      </div>
-      <div id="travelPassenger" class="hidden">
-        <button class="back" id="backToWelcomePassenger">← Back</button><h1>Request a Ride</h1>
-        <form id="travelPassengerForm" class="panel form">
-          <label>Pickup<input name="pickup" required placeholder="e.g. Malava Junction"></label>
-          <label>Destination<input name="destination" required placeholder="e.g. Kakamega Town"></label>
-          <button class="btn primary full">REQUEST RIDE</button>
-        </form>
-        <div id="passengerWaiting" class="hidden panel" style="text-align:center;">Finding driver...</div>
-      </div>
-      <div id="travelDriverRegister" class="hidden">
-        <button class="back" id="backToWelcome">← Back</button><h1>Driver Registration</h1>
-        <form id="travelDriverForm" class="panel form">
-          <label>Full Name<input name="name" required></label>
-          <label>Operating Town<input name="town" required></label>
-          <label>Vehicle Registration<input name="registration" required></label>
-          <button class="btn primary full">PAY SUBSCRIPTION & CONTINUE</button>
-        </form>
-      </div>
-      <div id="travelRadarUI" class="hidden">
-        <div class="radar-container"><div class="radar-circle" id="radarScanner"><div class="radar-sweep"></div><div class="radar-grid"></div><div class="radar-center"><div class="radar-lion">♛</div></div></div></div>
-        <div class="scan-status-bar"><div class="scan-text">SCANNING...</div></div>
-        <div id="travelDriverRequests" class="passenger-list"></div>
-      </div>
+    <section class="page" id="withdraw">
+      <button class="back" data-page="home">← Home</button><h1>Withdraw</h1>
+      <form id="withdrawForm" class="panel form">
+        <label>Destination<select name="dest"><option>M-PESA</option><option>Bank</option></select></label>
+        <label>Phone/Account<input name="acc" required></label>
+        <label>Amount (KSh)<input name="amount" type="number" required></label>
+        <button class="btn primary full">WITHDRAW</button>
+      </form>
     </section>
 
-    <!-- ================= MARKET & BUSINESS ================= -->
+    <section class="page" id="lipa">
+      <button class="back" data-page="home">← Home</button><h1>Lipa Na</h1>
+      <form id="lipaForm" class="panel form">
+        <label>Merchant / Paybill<input name="merchant" required></label>
+        <label>Amount (KSh)<input name="amount" type="number" required></label>
+        <button class="btn primary full">PAY</button>
+      </form>
+    </section>
+
+    <section class="page" id="banks">
+      <button class="back" data-page="home">← Home</button><h1>Linked Accounts</h1>
+      <form id="bankForm" class="panel form">
+        <label>Bank Name<input name="bank" required></label>
+        <label>Account Number<input name="acc" required></label>
+        <button class="btn primary full">LINK ACCOUNT</button>
+      </form>
+      <div id="banksList" class="panel list">No accounts linked.</div>
+    </section>
+
+    <section class="page" id="history">
+      <button class="back" data-page="home">← Home</button><h1>History</h1>
+      <div id="historyList" class="panel list">No activity yet.</div>
+    </section>
+
+    <!-- ================= MARKET TAB (EXACT) ================= -->
     <section class="page" id="market">
-      <div class="segmented-control">
-        <button class="seg-btn active" id="btnShopMode">🛍️ Shop</button>
-        <button class="seg-btn" id="btnBusinessMode">🏢 My Business</button>
+      <div class="market-tabs">
+        <button class="market-tab active" id="tabMarketplace">Marketplace</button>
+        <button class="market-tab" id="tabMyShop">My Shop</button>
       </div>
-      <div id="shopMode">
-        <div class="market-search"><input type="text" placeholder="🔍 Search products..."></div>
-        <div class="market-grid">
-          <div class="product-card"><div class="prod-img" style="background:#1a221d; display:flex; align-items:center; justify-content:center; font-size:30px;">⌚</div><div class="prod-info"><b>Smart Watch</b><small>KES 2,999</small><button class="btn primary" style="margin-top:8px; padding:6px;">Add to Cart</button></div></div>
-          <div class="product-card"><div class="prod-img" style="background:#1a221d; display:flex; align-items:center; justify-content:center; font-size:30px;">👟</div><div class="prod-info"><b>Running Shoes</b><small>KES 3,500</small><button class="btn primary" style="margin-top:8px; padding:6px;">Add to Cart</button></div></div>
+
+      <!-- Marketplace View -->
+      <div id="marketplaceView">
+        <input type="text" class="search-bar" placeholder="🔍 Search products or shops...">
+        <div class="banner">
+          <div><h3>Top Deals</h3><small>Up to 50% Off</small></div>
+          <button class="btn primary" style="width:auto; padding:6px 12px; font-size:12px;">Shop Now</button>
+        </div>
+        <div class="product-grid" id="productList">
+          <!-- Products injected via JS -->
         </div>
       </div>
-      <div id="businessMode" class="hidden">
-        <div class="biz-dashboard">
-          <div class="biz-header"><div><small class="muted">Business Dashboard</small><h2>Welcome, Merchant</h2></div><div class="biz-badge">Premium</div></div>
-          <div class="biz-stats-grid">
-            <div class="biz-stat-box"><small>Today's Sales</small><b>KES 48,750</b></div>
-            <div class="biz-stat-box"><small>Monthly Sales</small><b>KES 520,000</b></div>
-          </div>
-          <div class="biz-tools-grid">
-            <button class="biz-tool-btn"><span>📊</span><b>Reports</b></button><button class="biz-tool-btn"><span>📦</span><b>Inventory</b></button>
-          </div>
+
+      <!-- My Shop View -->
+      <div id="myShopView" class="hidden">
+        <div class="seller-stats">
+          <div class="s-stat"><b>KES 145,000</b><small>Total Sales</small></div>
+          <div class="s-stat"><b>32</b><small>Orders</small></div>
+          <div class="s-stat"><b>KES 7,250</b><small>Commission</small></div>
+        </div>
+        <div class="seller-actions">
+          <button class="btn primary" onclick="alert('Add Product Modal')">+ Add Product</button>
+          <button class="btn secondary" onclick="alert('Withdraw Funds to Wallet')">Withdraw Funds</button>
+          <button class="btn secondary" onclick="alert('My Products')">My Products</button>
+          <button class="btn secondary" onclick="alert('Orders')">Orders</button>
         </div>
       </div>
     </section>
 
-    <!-- ================= AI ================= -->
-    <section class="page" id="ai">
-      <h1>BEAST AI</h1>
-      <div class="ai-grid" id="aiSelectionGrid">
-        <button class="ai-card" data-ai="admin"><span>🧠</span><b>Admin AI</b></button>
-        <button class="ai-card" data-ai="customer"><span>💬</span><b>Customer AI</b></button>
-        <button class="ai-card" data-ai="fraud"><span>🛡️</span><b>Fraud Detection</b></button>
-        <button class="ai-card" data-ai="business"><span>🏪</span><b>Business AI</b></button>
-        <button class="ai-card" data-ai="advertising"><span>📢</span><b>Advertising AI</b></button>
-        <button class="ai-card" data-ai="analytics"><span>📊</span><b>Analytics AI</b></button>
-      </div>
-      <div id="aiChatContainer" class="hidden">
-        <div class="ai-chat-header"><button id="backToAIGrid" class="back">← Back</button><h3 id="aiChatTitle">AI Assistant</h3></div>
-        <div id="aiChatMessages" class="ai-chat-messages"></div>
-        <div class="ai-chat-input"><input type="text" id="aiInputBox" placeholder="Ask me anything..."><button id="aiSendBtn" class="btn primary">Send</button></div>
-      </div>
-    </section>
   </main>
 
-  <!-- ================= BOTTOM NAV ================= -->
-  <nav id="beast-nav">
+  <!-- ================= FLOATING AI ================= -->
+  <div id="aiFloatBtn" class="ai-float-btn hidden" onclick="document.getElementById('aiPanel').classList.toggle('hidden')">🤖</div>
+  <div id="aiPanel" class="ai-panel hidden">
+    <h4>BEAST AI Search</h4>
+    <div class="ai-chat-box" id="aiMessages">Hi! How can I help you find something in BEAST?</div>
+    <div class="ai-input-row">
+      <input type="text" id="aiInput" placeholder="Ask me...">
+      <button class="btn primary" style="width:auto; padding:8px;" id="aiSendBtn">Send</button>
+    </div>
+  </div>
+
+  <!-- ================= NAV & MODALS ================= -->
+  <nav id="beast-nav" class="hidden">
     <button class="bnav-btn active" data-page="home">💰<span>Money</span></button>
-    <button class="bnav-btn" data-page="travel">🛵<span>Travel</span></button>
     <button class="bnav-btn" data-page="market">🛒<span>Market</span></button>
-    <button class="bnav-btn" data-page="ai">🤖<span>AI</span></button>
     <button class="bnav-btn" id="moreBtn">☰<span>More</span></button>
   </nav>
 
-  <!-- ================= MORE MENU ================= -->
   <div id="beast-more" class="bm-overlay hidden">
     <div class="bm-sheet">
       <div class="bm-head"><strong>More</strong><button id="bm-close">✕</button></div>
       <div class="bm-grid">
-        <button class="bm-tile" data-page="shield">🛡️<span>Shield</span></button>
-        <button class="bm-tile" data-page="card">💳<span>Card</span></button>
+        <button class="bm-tile" data-page="send">↗<span>Send</span></button>
+        <button class="bm-tile" data-page="withdraw">⇧<span>Withdraw</span></button>
+        <button class="bm-tile" data-page="banks">🏦<span>Banks</span></button>
         <button class="bm-tile" data-page="history">📜<span>History</span></button>
-        <button class="bm-tile" data-page="settings">⚙️<span>Settings</span></button>
       </div>
     </div>
   </div>
 
   <div id="toast" class="toast hidden" role="status"></div>
 </div>
-<!-- Make sure to link to your app.js -->
 <script src="app.js"></script>
 </body>
 </html>
