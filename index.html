@@ -43,14 +43,12 @@ h2 { font-size: 18px; margin-bottom: 8px; }
 .quick-row { display: flex; gap: 8px; }
 .quick-row button { flex: 1; background: rgba(255,255,255,0.1); border: none; border-radius: 12px; padding: 10px; color: var(--text); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; cursor: pointer; }
 
-/* ACTION GRID */
+/* GRIDS & FORMS */
 .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .action-grid button { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; align-items: flex-start; color: var(--text); cursor: pointer; text-align: left; }
 .action-grid button span { font-size: 20px; margin-bottom: 8px; }
 .action-grid button b { font-size: 14px; margin-bottom: 2px; }
 .action-grid button small { font-size: 11px; color: var(--muted); }
-
-/* FORMS & INPUTS */
 .form label { display: block; margin-bottom: 12px; font-size: 13px; color: var(--muted); }
 .form input, .form select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); font-size: 14px; margin-top: 6px; outline: none; }
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -60,25 +58,40 @@ h2 { font-size: 18px; margin-bottom: 8px; }
 .btn.full { width: 100%; margin-top: 8px; }
 .link-btn { background: none; border: none; color: var(--green); cursor: pointer; text-decoration: underline; font-size: 13px; }
 
-/* LISTS */
-.list p { padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-.list p:last-child { border-bottom: none; }
+/* MARKET TABS */
+.market-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+.market-tab { flex: 1; padding: 12px; text-align: center; background: none; border: none; color: var(--muted); font-weight: bold; cursor: pointer; border-bottom: 2px solid transparent; }
+.market-tab.active { color: var(--green); border-bottom-color: var(--green); }
+.search-bar { width: 100%; padding: 12px 20px; border-radius: 30px; border: 1px solid var(--border); background: var(--panel); color: var(--text); margin-bottom: 16px; }
+.banner { background: linear-gradient(90deg, var(--green-dark), var(--green)); border-radius: 16px; padding: 20px; margin-bottom: 16px; color: #000; display: flex; justify-content: space-between; align-items: center; }
+.product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.product-card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 12px; }
+.prod-img { width: 100%; height: 100px; background: var(--panel-2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 30px; margin-bottom: 8px; }
+.product-card b { font-size: 13px; display: block; margin-bottom: 4px; }
+.product-card small { color: var(--green); font-weight: bold; font-size: 12px; }
 
-/* BOTTOM NAVIGATION */
+/* BIZ DASHBOARD */
+.biz-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.b-stat { background: var(--panel); border: 1px solid var(--border); padding: 12px; border-radius: 12px; text-align: center; }
+.b-stat b { display: block; font-size: 16px; color: var(--green); }
+.b-stat small { font-size: 10px; color: var(--muted); }
+.biz-tools { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.b-tool { background: var(--panel); border: 1px solid var(--border); padding: 16px; border-radius: 12px; text-align: left; cursor: pointer; color: var(--text); }
+.b-tool b { display: block; font-size: 13px; margin-bottom: 4px; }
+.b-tool small { font-size: 10px; color: var(--muted); }
+
+/* NAV & TOAST */
 #beast-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; display: flex; justify-content: space-around; background: rgba(11,15,13,0.95); backdrop-filter: blur(10px); border-top: 1px solid var(--border); padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); max-width: 480px; margin: 0 auto; }
 .bnav-btn { flex: 1; background: none; border: none; color: var(--muted); font-size: 18px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
 .bnav-btn span { font-size: 10px; }
 .bnav-btn.active { color: var(--green); }
-
-/* TOAST */
-.toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--panel-2); color: var(--text); padding: 12px 20px; border-radius: 30px; font-size: 13px; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 2000; transition: opacity 0.3s; max-width: 90%; text-align: center; }
+.toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--panel-2); color: var(--text); padding: 12px 20px; border-radius: 30px; font-size: 13px; border: 1px solid var(--border); z-index: 2000; transition: opacity 0.3s; max-width: 90%; text-align: center; }
 .toast.hidden { opacity: 0; pointer-events: none; }
 
-/* AI FLOATING */
-.ai-float-btn { position: fixed; bottom: 90px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--panel-2); border: 2px solid var(--green); display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; z-index: 500; box-shadow: 0 4px 15px rgba(0,224,138,0.3); }
-.ai-panel { position: fixed; bottom: 160px; right: 20px; width: 300px; background: var(--panel); border: 1px solid var(--green); border-radius: 16px; padding: 16px; z-index: 500; box-shadow: 0 10px 30px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 12px; }
-.ai-panel h4 { color: var(--green); font-size: 14px; }
-.ai-chat-box { background: var(--bg); border-radius: 8px; padding: 10px; font-size: 12px; color: var(--text); height: 100px; overflow-y: auto; }
+/* AI */
+.ai-float-btn { position: fixed; bottom: 90px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--panel-2); border: 2px solid var(--green); display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; z-index: 500; }
+.ai-panel { position: fixed; bottom: 160px; right: 20px; width: 300px; background: var(--panel); border: 1px solid var(--green); border-radius: 16px; padding: 16px; z-index: 500; display: flex; flex-direction: column; gap: 12px; }
+.ai-chat-box { background: var(--bg); border-radius: 8px; padding: 10px; font-size: 12px; height: 100px; overflow-y: auto; }
 .ai-input-row { display: flex; gap: 8px; }
 .ai-input-row input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px; color: var(--text); font-size: 12px; }
 </style>
@@ -86,12 +99,13 @@ h2 { font-size: 18px; margin-bottom: 8px; }
 <body>
 <div class="app-shell">
   <header class="topbar">
-    <button class="icon-btn" id="menuOpen">☰</button>
+    <button class="icon-btn">☰</button>
     <button class="brand" data-page="home"><span class="brand-lion">♛</span><span><strong>BEAST</strong><small>ONE NUMBER. ONE BEAST.</small></span></button>
     <button class="icon-btn" data-page="shield">◉</button>
   </header>
 
   <main>
+    <!-- AUTH -->
     <section class="page active" id="register">
       <div style="text-align:center; padding: 20px 0;"><div style="font-size:60px; color:var(--gold);">♛</div><h1>BEAST</h1><p class="muted">ONE NUMBER. ONE BEAST.</p></div>
       <form id="registerForm" class="panel form">
@@ -116,6 +130,7 @@ h2 { font-size: 18px; margin-bottom: 8px; }
       </form>
     </section>
 
+    <!-- HOME -->
     <section class="page" id="home">
       <div class="wallet-card">
         <div class="wallet-top"><span>♛ BEAST WALLET</span><span class="live-dot">● DEMO</span></div>
@@ -136,37 +151,69 @@ h2 { font-size: 18px; margin-bottom: 8px; }
       <h3 class="section-title">Recent activity</h3><div id="recent" class="panel list">No activity yet.</div>
     </section>
 
-    <section class="page" id="send">
-      <button class="back" data-page="home">← Home</button><h1>Send Money</h1>
-      <form id="sendForm" class="panel form"><label>Recipient Phone<input name="recipient" required></label><label>Amount (KSh)<input name="amount" type="number" required></label><button class="btn primary full">SEND</button></form>
-    </section>
-
-    <section class="page" id="withdraw">
-      <button class="back" data-page="home">← Home</button><h1>Withdraw</h1>
-      <form id="withdrawForm" class="panel form"><label>Destination<select name="dest"><option>M-PESA</option><option>Bank</option></select></label><label>Phone/Account<input name="acc" required></label><label>Amount (KSh)<input name="amount" type="number" required></label><button class="btn primary full">WITHDRAW</button></form>
-    </section>
-
-    <section class="page" id="lipa">
-      <button class="back" data-page="home">← Home</button><h1>Lipa Na</h1>
-      <form id="lipaForm" class="panel form"><label>Merchant / Paybill<input name="merchant" required></label><label>Amount (KSh)<input name="amount" type="number" required></label><button class="btn primary full">PAY</button></form>
-    </section>
-
-    <section class="page" id="banks">
-      <button class="back" data-page="home">← Home</button><h1>Linked Accounts</h1>
-      <form id="bankForm" class="panel form"><label>Bank Name<input name="bank" required></label><label>Account Number<input name="acc" required></label><button class="btn primary full">LINK ACCOUNT</button></form>
-      <div id="banksList" class="panel list">No accounts linked.</div>
-    </section>
-
-    <section class="page" id="history">
-      <button class="back" data-page="home">← Home</button><h1>History</h1>
-      <div id="historyList" class="panel list">No activity yet.</div>
-    </section>
-
+    <!-- MONEY PAGES -->
+    <section class="page" id="send"><button class="back" data-page="home">← Home</button><h1>Send Money</h1><form id="sendForm" class="panel form"><label>Recipient Phone<input name="recipient" required></label><label>Amount (KSh)<input name="amount" type="number" required></label><button class="btn primary full">SEND</button></form></section>
+    <section class="page" id="withdraw"><button class="back" data-page="home">← Home</button><h1>Withdraw</h1><form id="withdrawForm" class="panel form"><label>Destination<select name="dest"><option>M-PESA</option><option>Bank</option></select></label><label>Phone/Account<input name="acc" required></label><label>Amount (KSh)<input name="amount" type="number" required></label><button class="btn primary full">WITHDRAW</button></form></section>
+    <section class="page" id="lipa"><button class="back" data-page="home">← Home</button><h1>Lipa Na</h1><form id="lipaForm" class="panel form"><label>Merchant / Paybill<input name="merchant" required></label><label>Amount (KSh)<input name="amount" type="number" required></label><button class="btn primary full">PAY</button></form></section>
+    <section class="page" id="banks"><button class="back" data-page="home">← Home</button><h1>Linked Accounts</h1><form id="bankForm" class="panel form"><label>Bank Name<input name="bank" required></label><label>Account Number<input name="acc" required></label><button class="btn primary full">LINK ACCOUNT</button></form><div id="banksList" class="panel list">No accounts linked.</div></section>
+    <section class="page" id="history"><button class="back" data-page="home">← Home</button><h1>History</h1><div id="historyList" class="panel list">No activity yet.</div></section>
     <section class="page" id="card"><button class="back" data-page="home">← Home</button><h1>Card</h1><div class="panel">Virtual Card Module</div></section>
     <section class="page" id="shield"><button class="back" data-page="home">← Home</button><h1>Shield</h1><div class="panel">Security Module</div></section>
-    <section class="page" id="market"><button class="back" data-page="home">← Home</button><h1>Market</h1><div class="panel">Marketplace Module</div></section>
+
+    <!-- UPDATED MARKET TAB (12 INCOME SOURCES) -->
+    <section class="page" id="market">
+      <h1>Marketplace & Business</h1>
+      <div class="market-tabs">
+        <button class="market-tab active" id="tabMarketplace">Shopping</button>
+        <button class="market-tab" id="tabMyShop">Business Hub</button>
+      </div>
+
+      <!-- SHOPPING VIEW -->
+      <div id="marketplaceView">
+        <input type="text" class="search-bar" placeholder="🔍 Search products...">
+        <div class="banner"><div><h3>Top Deals</h3><small>Up to 50% Off</small></div><button class="btn primary" style="width:auto; padding:6px 12px; font-size:12px;">Shop Now</button></div>
+        <div class="product-grid" id="productList">
+          <div class="product-card"><div class="prod-img">👟</div><b>Running Shoes</b><small>KES 3,500</small><button class="btn primary full" style="padding:8px; font-size:12px; margin-top:8px;" onclick="buy(3500)">Buy Now</button></div>
+          <div class="product-card"><div class="prod-img">🎧</div><b>Headphones</b><small>KES 1,200</small><button class="btn primary full" style="padding:8px; font-size:12px; margin-top:8px;" onclick="buy(1200)">Buy Now</button></div>
+        </div>
+      </div>
+
+      <!-- BUSINESS HUB VIEW (12 INCOME SOURCES) -->
+      <div id="myShopView" class="hidden">
+        <div class="biz-stats">
+          <div class="b-stat"><b>KES 145k</b><small>Sales</small></div>
+          <div class="b-stat"><b>32</b><small>Orders</small></div>
+          <div class="b-stat"><b>KES 7,250</b><small>Commission</small></div>
+        </div>
+        
+        <h3 class="section-title">Commerce Tools</h3>
+        <div class="biz-tools">
+          <button class="b-tool" onclick="alert('Marketplace: List your products and pay 3% commission on sales.')"><b>🛒 Marketplace</b><small>Sell Products</small></button>
+          <button class="b-tool" onclick="alert('Deals: Offer discounts to attract customers.')"><b>🏷️ Deals</b><small>Cashback offers</small></button>
+          <button class="b-tool" onclick="alert('Advertising: Boost your products to the top of the feed.')"><b>📢 Advertising</b><small>Boost Sales</small></button>
+          <button class="b-tool" onclick="alert('Premium Shop: Pay for a verified gold badge.')"><b>⭐ Premium</b><small>Verified Badge</small></button>
+        </div>
+
+        <h3 class="section-title">Business Services</h3>
+        <div class="biz-tools">
+          <button class="b-tool" onclick="alert('Business Account: KES 500/mo for inventory and reports.')"><b>🏢 Business Acct</b><small>KES 500/mo</small></button>
+          <button class="b-tool" onclick="alert('API: Integrate BEAST payments into your website.')"><b>🔌 Business API</b><small>Developer tools</small></button>
+          <button class="b-tool" onclick="alert('Cloud: Store your receipts and invoices.')"><b>☁️ Cloud Tools</b><small>Digital storage</small></button>
+          <button class="b-tool" onclick="alert('Academy: Learn how to grow your business.')"><b>🎓 Academy</b><small>Sell courses</small></button>
+        </div>
+
+        <h3 class="section-title">Network & Services</h3>
+        <div class="biz-tools">
+          <button class="b-tool" onclick="alert('Agent Network: Earn commission signing up merchants.')"><b>🤝 Agent Network</b><small>Earn commissions</small></button>
+          <button class="b-tool" onclick="alert('Bill Payments: Pay utilities and earn cashback.')"><b>🧾 Bill Payments</b><small>Utility pay</small></button>
+          <button class="b-tool" onclick="alert('Referral: Invite a friend and earn KES 50.')"><b>👥 Referral</b><small>Invite & Earn</small></button>
+          <button class="b-tool" onclick="alert('Advertising AI: Let AI write your ads.')"><b>🤖 Advertising AI</b><small>AI Ad generation</small></button>
+        </div>
+      </div>
+    </section>
   </main>
 
+  <!-- AI FLOATING -->
   <div id="aiFloatBtn" class="ai-float-btn hidden">🤖</div>
   <div id="aiPanel" class="ai-panel hidden">
     <h4>BEAST AI Search</h4>
@@ -186,7 +233,7 @@ h2 { font-size: 18px; margin-bottom: 8px; }
 <script>
 const $ = (s, root=document) => root.querySelector(s);
 const $$ = (s, root=document) => [...root.querySelectorAll(s)];
-const STORE='beastFinalV2';
+const STORE='beastFinalV3';
 let S=load(), toastTimer=null;
 
 function load(){try{return {profile:null,balance:0,tx:[],banks:[],...JSON.parse(localStorage.getItem(STORE)||'{}')}}catch{return {profile:null,balance:0,tx:[],banks:[]}}}
@@ -240,31 +287,25 @@ function renderBanks() {
   $('#banksList').innerHTML = S.banks.map(b => `<p><b>${b.bank}</b><br>${b.acc}</p>`).join('') || 'No accounts linked.';
 }
 
-$('#sendForm').onsubmit = (e) => {
-  e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount'));
-  if(amt > S.balance) return toast('Insufficient balance');
-  S.balance -= amt; S.tx.unshift({note: 'Sent to ' + f.get('recipient'), amount: amt});
-  save(); go('home'); toast('Money sent!');
-};
+$('#sendForm').onsubmit = (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount')); if(amt > S.balance) return toast('Insufficient balance'); S.balance -= amt; S.tx.unshift({note: 'Sent to ' + f.get('recipient'), amount: amt}); save(); go('home'); toast('Money sent!'); };
+$('#withdrawForm').onsubmit = (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount')); if(amt > S.balance) return toast('Insufficient balance'); S.balance -= amt; S.tx.unshift({note: 'Withdrawn to ' + f.get('dest'), amount: amt}); save(); go('home'); toast('Withdrawal successful!'); };
+$('#lipaForm').onsubmit = (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount')); if(amt > S.balance) return toast('Insufficient balance'); S.balance -= amt; S.tx.unshift({note: 'Paid ' + f.get('merchant'), amount: amt}); save(); go('home'); toast('Payment successful!'); };
+$('#bankForm').onsubmit = (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); S.banks.push({bank: f.get('bank'), acc: f.get('acc')}); save(); renderBanks(); e.target.reset(); toast('Bank linked!'); };
 
-$('#withdrawForm').onsubmit = (e) => {
-  e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount'));
-  if(amt > S.balance) return toast('Insufficient balance');
-  S.balance -= amt; S.tx.unshift({note: 'Withdrawn to ' + f.get('dest'), amount: amt});
-  save(); go('home'); toast('Withdrawal successful!');
-};
+function buy(price) {
+  if(price > S.balance) return toast('Insufficient balance');
+  S.balance -= price; S.tx.unshift({note: 'Marketplace purchase', amount: price});
+  save(); render(); toast('Purchase successful!');
+}
 
-$('#lipaForm').onsubmit = (e) => {
-  e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount'));
-  if(amt > S.balance) return toast('Insufficient balance');
-  S.balance -= amt; S.tx.unshift({note: 'Paid ' + f.get('merchant'), amount: amt});
-  save(); go('home'); toast('Payment successful!');
+// MARKET TABS
+$('#tabMarketplace').onclick = () => {
+  $('#tabMarketplace').classList.add('active'); $('#tabMyShop').classList.remove('active');
+  $('#marketplaceView').classList.remove('hidden'); $('#myShopView').classList.add('hidden');
 };
-
-$('#bankForm').onsubmit = (e) => {
-  e.preventDefault(); const f = new FormData(e.currentTarget);
-  S.banks.push({bank: f.get('bank'), acc: f.get('acc')});
-  save(); renderBanks(); e.target.reset(); toast('Bank linked!');
+$('#tabMyShop').onclick = () => {
+  $('#tabMyShop').classList.add('active'); $('#tabMarketplace').classList.remove('active');
+  $('#myShopView').classList.remove('hidden'); $('#marketplaceView').classList.add('hidden');
 };
 
 $('#aiFloatBtn').onclick = () => $('#aiPanel').classList.toggle('hidden');
