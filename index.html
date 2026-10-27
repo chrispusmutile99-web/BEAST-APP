@@ -30,10 +30,19 @@ h2 { font-size: 18px; margin-bottom: 8px; }
 .back { background: none; border: none; color: var(--green); font-size: 14px; margin-bottom: 16px; cursor: pointer; padding: 0; }
 .section-title { font-size: 16px; margin: 24px 0 12px; color: var(--muted); }
 
-/* CARDS & PANELS */
+/* PANELS & FORMS */
 .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+.form label { display: block; margin-bottom: 12px; font-size: 13px; color: var(--muted); }
+.form input, .form select, .form textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); font-size: 14px; margin-top: 6px; outline: none; font-family: inherit; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.btn { background: var(--panel-2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%; text-align: center; }
+.btn.primary { background: var(--green); color: #000; border: none; }
+.btn.secondary { background: var(--panel-2); }
+.btn.full { width: 100%; margin-top: 8px; }
+.link-btn { background: none; border: none; color: var(--green); cursor: pointer; text-decoration: underline; font-size: 13px; }
+
+/* HOME WALLET */
 .wallet-card { background: linear-gradient(135deg, var(--green-dark), #051a12); border: 1px solid var(--green); border-radius: 20px; padding: 24px; position: relative; overflow: hidden; margin-bottom: 20px; }
-.wallet-card::before { content: ''; position: absolute; top: -50%; right: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0,224,138,0.1) 0%, transparent 70%); pointer-events: none; }
 .wallet-top { display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; letter-spacing: 1px; margin-bottom: 16px; }
 .live-dot { color: var(--gold); font-size: 10px; }
 .muted { color: var(--muted); font-size: 12px; }
@@ -42,26 +51,24 @@ h2 { font-size: 18px; margin-bottom: 8px; }
 .balance strong { color: var(--green); }
 .quick-row { display: flex; gap: 8px; }
 .quick-row button { flex: 1; background: rgba(255,255,255,0.1); border: none; border-radius: 12px; padding: 10px; color: var(--text); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; cursor: pointer; }
-
-/* GRIDS & FORMS */
 .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .action-grid button { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; align-items: flex-start; color: var(--text); cursor: pointer; text-align: left; }
 .action-grid button span { font-size: 20px; margin-bottom: 8px; }
 .action-grid button b { font-size: 14px; margin-bottom: 2px; }
 .action-grid button small { font-size: 11px; color: var(--muted); }
-.form label { display: block; margin-bottom: 12px; font-size: 13px; color: var(--muted); }
-.form input, .form select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); font-size: 14px; margin-top: 6px; outline: none; }
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.btn { background: var(--panel-2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%; text-align: center; }
-.btn.primary { background: var(--green); color: #000; border: none; }
-.btn.secondary { background: var(--panel-2); }
-.btn.full { width: 100%; margin-top: 8px; }
-.link-btn { background: none; border: none; color: var(--green); cursor: pointer; text-decoration: underline; font-size: 13px; }
+
+/* BOTTOM NAV */
+#beast-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; display: flex; justify-content: space-around; background: rgba(11,15,13,0.95); backdrop-filter: blur(10px); border-top: 1px solid var(--border); padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); max-width: 480px; margin: 0 auto; }
+.bnav-btn { flex: 1; background: none; border: none; color: var(--muted); font-size: 18px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+.bnav-btn span { font-size: 10px; }
+.bnav-btn.active { color: var(--green); }
 
 /* MARKET TABS */
 .market-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
 .market-tab { flex: 1; padding: 12px; text-align: center; background: none; border: none; color: var(--muted); font-weight: bold; cursor: pointer; border-bottom: 2px solid transparent; }
 .market-tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+/* SHOP VIEW */
 .search-bar { width: 100%; padding: 12px 20px; border-radius: 30px; border: 1px solid var(--border); background: var(--panel); color: var(--text); margin-bottom: 16px; }
 .banner { background: linear-gradient(90deg, var(--green-dark), var(--green)); border-radius: 16px; padding: 20px; margin-bottom: 16px; color: #000; display: flex; justify-content: space-between; align-items: center; }
 .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -70,30 +77,47 @@ h2 { font-size: 18px; margin-bottom: 8px; }
 .product-card b { font-size: 13px; display: block; margin-bottom: 4px; }
 .product-card small { color: var(--green); font-weight: bold; font-size: 12px; }
 
-/* BIZ DASHBOARD */
-.biz-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
-.b-stat { background: var(--panel); border: 1px solid var(--border); padding: 12px; border-radius: 12px; text-align: center; }
-.b-stat b { display: block; font-size: 16px; color: var(--green); }
-.b-stat small { font-size: 10px; color: var(--muted); }
-.biz-tools { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.b-tool { background: var(--panel); border: 1px solid var(--border); padding: 16px; border-radius: 12px; text-align: left; cursor: pointer; color: var(--text); }
-.b-tool b { display: block; font-size: 13px; margin-bottom: 4px; }
-.b-tool small { font-size: 10px; color: var(--muted); }
+/* BUSINESS DASHBOARD */
+.biz-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.b-stat { background: var(--panel); border: 1px solid var(--border); padding: 16px; border-radius: 12px; text-align: center; }
+.b-stat b { display: block; font-size: 18px; color: var(--green); margin-bottom: 4px; }
+.b-stat small { font-size: 11px; color: var(--muted); }
+.category-title { font-size: 14px; color: var(--gold); margin: 20px 0 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+.biz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.biz-tool { background: var(--panel); border: 1px solid var(--border); padding: 16px; border-radius: 12px; text-align: left; cursor: pointer; color: var(--text); position: relative; }
+.biz-tool b { display: block; font-size: 13px; margin-bottom: 4px; }
+.biz-tool small { font-size: 10px; color: var(--muted); }
 
-/* NAV & TOAST */
-#beast-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; display: flex; justify-content: space-around; background: rgba(11,15,13,0.95); backdrop-filter: blur(10px); border-top: 1px solid var(--border); padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); max-width: 480px; margin: 0 auto; }
-.bnav-btn { flex: 1; background: none; border: none; color: var(--muted); font-size: 18px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
-.bnav-btn span { font-size: 10px; }
-.bnav-btn.active { color: var(--green); }
-.toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--panel-2); color: var(--text); padding: 12px 20px; border-radius: 30px; font-size: 13px; border: 1px solid var(--border); z-index: 2000; transition: opacity 0.3s; max-width: 90%; text-align: center; }
-.toast.hidden { opacity: 0; pointer-events: none; }
+/* MY PRODUCTS VIEW */
+.product-list-item { display: flex; justify-content: space-between; align-items: center; background: var(--panel); padding: 16px; border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--border); }
+.product-list-item .icon { font-size: 24px; margin-right: 12px; }
+.product-list-item .info { flex: 1; }
+.product-list-item b { display: block; font-size: 14px; margin-bottom: 2px; }
+.product-list-item small { color: var(--muted); font-size: 11px; }
 
-/* AI */
-.ai-float-btn { position: fixed; bottom: 90px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--panel-2); border: 2px solid var(--green); display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; z-index: 500; }
-.ai-panel { position: fixed; bottom: 160px; right: 20px; width: 300px; background: var(--panel); border: 1px solid var(--green); border-radius: 16px; padding: 16px; z-index: 500; display: flex; flex-direction: column; gap: 12px; }
+/* FLOATING + BUTTON */
+.fab { position: fixed; bottom: 90px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--green); color: #000; font-size: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,224,138,0.4); z-index: 800; border: none; }
+
+/* MULTI-STEP WIZARD MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; display: flex; align-items: flex-end; }
+.modal-content { width: 100%; max-width: 480px; margin: 0 auto; background: var(--panel); border-radius: 24px 24px 0 0; padding: 24px; border-top: 2px solid var(--green); max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s ease; }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.wizard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.wizard-header h2 { font-size: 18px; margin: 0; }
+.wizard-progress { display: flex; gap: 4px; margin-bottom: 24px; }
+.w-progress-bar { flex: 1; height: 4px; background: var(--border); border-radius: 2px; }
+.w-progress-bar.active { background: var(--green); }
+
+/* AI FLOATING */
+.ai-float-btn { position: fixed; bottom: 90px; left: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--panel-2); border: 2px solid var(--green); display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; z-index: 500; box-shadow: 0 4px 15px rgba(0,224,138,0.3); }
+.ai-panel { position: fixed; bottom: 160px; left: 20px; width: 300px; background: var(--panel); border: 1px solid var(--green); border-radius: 16px; padding: 16px; z-index: 500; display: flex; flex-direction: column; gap: 12px; }
 .ai-chat-box { background: var(--bg); border-radius: 8px; padding: 10px; font-size: 12px; height: 100px; overflow-y: auto; }
 .ai-input-row { display: flex; gap: 8px; }
 .ai-input-row input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px; color: var(--text); font-size: 12px; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--panel-2); color: var(--text); padding: 12px 20px; border-radius: 30px; font-size: 13px; border: 1px solid var(--border); z-index: 3000; transition: opacity 0.3s; max-width: 90%; text-align: center; }
+.toast.hidden { opacity: 0; pointer-events: none; }
 </style>
 </head>
 <body>
@@ -160,58 +184,125 @@ h2 { font-size: 18px; margin-bottom: 8px; }
     <section class="page" id="card"><button class="back" data-page="home">← Home</button><h1>Card</h1><div class="panel">Virtual Card Module</div></section>
     <section class="page" id="shield"><button class="back" data-page="home">← Home</button><h1>Shield</h1><div class="panel">Security Module</div></section>
 
-    <!-- UPDATED MARKET TAB (12 INCOME SOURCES) -->
+    <!-- MARKET TAB -->
     <section class="page" id="market">
-      <h1>Marketplace & Business</h1>
+      <h1>BEAST Market</h1>
       <div class="market-tabs">
-        <button class="market-tab active" id="tabMarketplace">Shopping</button>
-        <button class="market-tab" id="tabMyShop">Business Hub</button>
+        <button class="market-tab active" id="tabMarketplace">🛍️ Marketplace</button>
+        <button class="market-tab" id="tabMyBusiness">🏢 My Business</button>
       </div>
 
       <!-- SHOPPING VIEW -->
       <div id="marketplaceView">
         <input type="text" class="search-bar" placeholder="🔍 Search products...">
         <div class="banner"><div><h3>Top Deals</h3><small>Up to 50% Off</small></div><button class="btn primary" style="width:auto; padding:6px 12px; font-size:12px;">Shop Now</button></div>
-        <div class="product-grid" id="productList">
-          <div class="product-card"><div class="prod-img">👟</div><b>Running Shoes</b><small>KES 3,500</small><button class="btn primary full" style="padding:8px; font-size:12px; margin-top:8px;" onclick="buy(3500)">Buy Now</button></div>
-          <div class="product-card"><div class="prod-img">🎧</div><b>Headphones</b><small>KES 1,200</small><button class="btn primary full" style="padding:8px; font-size:12px; margin-top:8px;" onclick="buy(1200)">Buy Now</button></div>
+        <div class="product-grid" id="publicProductList">
+          <!-- Public products will appear here -->
         </div>
       </div>
 
-      <!-- BUSINESS HUB VIEW (12 INCOME SOURCES) -->
-      <div id="myShopView" class="hidden">
+      <!-- MY BUSINESS DASHBOARD -->
+      <div id="myBusinessView" class="hidden">
         <div class="biz-stats">
-          <div class="b-stat"><b>KES 145k</b><small>Sales</small></div>
-          <div class="b-stat"><b>32</b><small>Orders</small></div>
-          <div class="b-stat"><b>KES 7,250</b><small>Commission</small></div>
-        </div>
-        
-        <h3 class="section-title">Commerce Tools</h3>
-        <div class="biz-tools">
-          <button class="b-tool" onclick="alert('Marketplace: List your products and pay 3% commission on sales.')"><b>🛒 Marketplace</b><small>Sell Products</small></button>
-          <button class="b-tool" onclick="alert('Deals: Offer discounts to attract customers.')"><b>🏷️ Deals</b><small>Cashback offers</small></button>
-          <button class="b-tool" onclick="alert('Advertising: Boost your products to the top of the feed.')"><b>📢 Advertising</b><small>Boost Sales</small></button>
-          <button class="b-tool" onclick="alert('Premium Shop: Pay for a verified gold badge.')"><b>⭐ Premium</b><small>Verified Badge</small></button>
+          <div class="b-stat"><b>KES 145,000</b><small>Total Sales</small></div>
+          <div class="b-stat"><b>KES 140,650</b><small>Net Earnings</small></div>
         </div>
 
-        <h3 class="section-title">Business Services</h3>
-        <div class="biz-tools">
-          <button class="b-tool" onclick="alert('Business Account: KES 500/mo for inventory and reports.')"><b>🏢 Business Acct</b><small>KES 500/mo</small></button>
-          <button class="b-tool" onclick="alert('API: Integrate BEAST payments into your website.')"><b>🔌 Business API</b><small>Developer tools</small></button>
-          <button class="b-tool" onclick="alert('Cloud: Store your receipts and invoices.')"><b>☁️ Cloud Tools</b><small>Digital storage</small></button>
-          <button class="b-tool" onclick="alert('Academy: Learn how to grow your business.')"><b>🎓 Academy</b><small>Sell courses</small></button>
+        <h3 class="category-title">📦 Commerce & Selling</h3>
+        <div class="biz-grid">
+          <button class="biz-tool" onclick="showMyProducts()"><b>🛒 My Products</b><small>Manage your items</small></button>
+          <button class="biz-tool" onclick="alert('Advertising: Boost your products to the top.')"><b>📢 Advertising</b><small>Boost your sales</small></button>
+          <button class="biz-tool" onclick="alert('Deals: Create a discount for customers.')"><b>🏷️ Deals</b><small>Offer discounts</small></button>
+          <button class="biz-tool" onclick="alert('Premium: Get a verified gold badge.')"><b>⭐ Premium</b><small>Verified badge</small></button>
         </div>
 
-        <h3 class="section-title">Network & Services</h3>
-        <div class="biz-tools">
-          <button class="b-tool" onclick="alert('Agent Network: Earn commission signing up merchants.')"><b>🤝 Agent Network</b><small>Earn commissions</small></button>
-          <button class="b-tool" onclick="alert('Bill Payments: Pay utilities and earn cashback.')"><b>🧾 Bill Payments</b><small>Utility pay</small></button>
-          <button class="b-tool" onclick="alert('Referral: Invite a friend and earn KES 50.')"><b>👥 Referral</b><small>Invite & Earn</small></button>
-          <button class="b-tool" onclick="alert('Advertising AI: Let AI write your ads.')"><b>🤖 Advertising AI</b><small>AI Ad generation</small></button>
+        <h3 class="category-title">⚙️ Business Services</h3>
+        <div class="biz-grid">
+          <button class="biz-tool" onclick="alert('Business Account: KES 500/mo for Pro features.')"><b>🏢 Business Acct</b><small>Upgrade to Pro</small></button>
+          <button class="biz-tool" onclick="alert('API: Integrate BEAST into your website.')"><b>🔌 Business API</b><small>Developer tools</small></button>
+          <button class="biz-tool" onclick="alert('Cloud: Store receipts and invoices.')"><b>☁️ Cloud Tools</b><small>Digital storage</small></button>
+          <button class="biz-tool" onclick="alert('Academy: Learn how to grow your business.')"><b>🎓 Academy</b><small>Sell courses</small></button>
         </div>
+
+        <h3 class="category-title">🤝 Network & Operations</h3>
+        <div class="biz-grid">
+          <button class="biz-tool" onclick="alert('Agent Network: Earn commission signing up merchants.')"><b>🏪 Agent Network</b><small>Earn commissions</small></button>
+          <button class="biz-tool" onclick="alert('Bill Payments: Pay utilities.')"><b>🧾 Bill Payments</b><small>Utility pay</small></button>
+          <button class="biz-tool" onclick="alert('Referral: Invite a friend and earn KES 50.')"><b>👥 Referral</b><small>Invite & Earn</small></button>
+          <button class="biz-tool" onclick="alert('Advertising AI: Let AI write your ads.')"><b>🤖 Advertising AI</b><small>AI Ad generation</small></button>
+        </div>
+      </div>
+
+      <!-- MY PRODUCTS VIEW (Shows when My Products is clicked) -->
+      <div id="myProductsView" class="hidden">
+        <button class="back" onclick="showBusinessDashboard()">← Back to Dashboard</button>
+        <h2>My Products</h2>
+        <div id="myProductsList"></div>
       </div>
     </section>
   </main>
+
+  <!-- MULTI-STEP WIZARD MODAL -->
+  <div id="wizardModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="wizard-header">
+        <h2>Create Product</h2>
+        <button class="icon-btn" onclick="closeWizard()">✕</button>
+      </div>
+      <div class="wizard-progress" id="wizardProgress">
+        <div class="w-progress-bar active"></div>
+        <div class="w-progress-bar"></div>
+        <div class="w-progress-bar"></div>
+        <div class="w-progress-bar"></div>
+      </div>
+
+      <!-- STEP 1: DETAILS -->
+      <div id="wizardStep1">
+        <form id="wizardForm1" class="form" onsubmit="nextStep(2); return false;">
+          <label>Product Name<input name="name" required placeholder="e.g. Running Shoes"></label>
+          <label>Category<select name="category"><option>Shoes</option><option>Electronics</option><option>Fashion</option><option>Home</option></select></label>
+          <label>Description<textarea name="desc" rows="3" placeholder="Describe your product..."></textarea></label>
+          <button class="btn primary full" style="margin-top:16px;">Next: Photos →</button>
+        </form>
+      </div>
+
+      <!-- STEP 2: PHOTOS -->
+      <div id="wizardStep2" class="hidden">
+        <div class="form">
+          <label>Upload Photos</label>
+          <div style="border: 2px dashed var(--border); padding: 30px; text-align: center; border-radius: 12px; cursor: pointer; color: var(--muted);">
+            <div style="font-size: 30px; margin-bottom: 8px;">📸</div>
+            Tap to upload images (Demo)
+          </div>
+          <button class="btn primary full" style="margin-top:16px;" onclick="nextStep(3)">Next: Pricing →</button>
+          <button class="btn secondary full" onclick="nextStep(1)">← Back</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: PRICING -->
+      <div id="wizardStep3" class="hidden">
+        <form id="wizardForm3" class="form" onsubmit="nextStep(4); return false;">
+          <label>Selling Price (KSh)<input name="price" type="number" required placeholder="3500"></label>
+          <label>Stock Quantity<input name="stock" type="number" required placeholder="10"></label>
+          <button class="btn primary full" style="margin-top:16px;">Next: Boost →</button>
+          <button type="button" class="btn secondary full" onclick="nextStep(2)">← Back</button>
+        </form>
+      </div>
+
+      <!-- STEP 4: BOOST & PUBLISH -->
+      <div id="wizardStep4" class="hidden">
+        <div class="form">
+          <div class="panel">
+            <h3 style="margin-bottom: 8px;">🚀 Boost this product?</h3>
+            <p class="muted" style="font-size: 12px; margin-bottom: 12px;">Pay KES 500 to appear at the top of the Marketplace for 7 days.</p>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" id="boostCheckbox" style="width: auto;"> Yes, boost this product (KES 500)</label>
+          </div>
+          <button class="btn primary full" style="margin-top:16px;" onclick="publishProduct()">Publish Product</button>
+          <button class="btn secondary full" onclick="nextStep(3)">← Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- AI FLOATING -->
   <div id="aiFloatBtn" class="ai-float-btn hidden">🤖</div>
@@ -220,6 +311,9 @@ h2 { font-size: 18px; margin-bottom: 8px; }
     <div class="ai-chat-box" id="aiMessages">Hi! How can I help you?</div>
     <div class="ai-input-row"><input type="text" id="aiInput" placeholder="Ask me..."><button class="btn primary" style="width:auto; padding:8px;" id="aiSendBtn">Send</button></div>
   </div>
+
+  <!-- FLOATING + BUTTON (Only visible in My Products view) -->
+  <button id="fabAddProduct" class="fab hidden" onclick="openWizard()">+</button>
 
   <nav id="beast-nav" class="hidden">
     <button class="bnav-btn active" data-page="home">💰<span>Money</span></button>
@@ -233,10 +327,10 @@ h2 { font-size: 18px; margin-bottom: 8px; }
 <script>
 const $ = (s, root=document) => root.querySelector(s);
 const $$ = (s, root=document) => [...root.querySelectorAll(s)];
-const STORE='beastFinalV3';
+const STORE='beastFinalV4';
 let S=load(), toastTimer=null;
 
-function load(){try{return {profile:null,balance:0,tx:[],banks:[],...JSON.parse(localStorage.getItem(STORE)||'{}')}}catch{return {profile:null,balance:0,tx:[],banks:[]}}}
+function load(){try{return {profile:null,balance:0,tx:[],banks:[],myProducts:[],publicProducts:[],...JSON.parse(localStorage.getItem(STORE)||'{}')}}catch{return {profile:null,balance:0,tx:[],banks:[],myProducts:[],publicProducts:[]}}}
 function save(){localStorage.setItem(STORE,JSON.stringify(S))}
 function fmt(n){return 'KSh '+Number(n||0).toLocaleString('en-KE',{minimumFractionDigits:2,maximumFractionDigits:2})}
 function toast(msg){$('#toast').textContent=msg;$('#toast').classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.add('hidden'),3200)}
@@ -248,8 +342,10 @@ function go(id){
   $$('.bnav-btn').forEach(b=>b.classList.toggle('active', b.dataset.page === id));
   if(id === 'home' || id === 'history') render();
   if(id === 'banks') renderBanks();
+  if(id === 'market') renderMarket();
 }
 
+// AUTH
 $('#goToLogin').onclick = () => go('login');
 $('#goToRegister').onclick = () => go('register');
 
@@ -273,6 +369,7 @@ function loginSuccess() {
   go('home'); toast('Logged in successfully');
 }
 
+// RENDER DATA
 function render() {
   if(!S.profile) return;
   $('#hello').textContent = S.profile.name.split(' ')[0];
@@ -287,27 +384,173 @@ function renderBanks() {
   $('#banksList').innerHTML = S.banks.map(b => `<p><b>${b.bank}</b><br>${b.acc}</p>`).join('') || 'No accounts linked.';
 }
 
+// MONEY ACTIONS
 $('#sendForm').onsubmit = (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount')); if(amt > S.balance) return toast('Insufficient balance'); S.balance -= amt; S.tx.unshift({note: 'Sent to ' + f.get('recipient'), amount: amt}); save(); go('home'); toast('Money sent!'); };
 $('#withdrawForm').onsubmit = (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount')); if(amt > S.balance) return toast('Insufficient balance'); S.balance -= amt; S.tx.unshift({note: 'Withdrawn to ' + f.get('dest'), amount: amt}); save(); go('home'); toast('Withdrawal successful!'); };
 $('#lipaForm').onsubmit = (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount')); if(amt > S.balance) return toast('Insufficient balance'); S.balance -= amt; S.tx.unshift({note: 'Paid ' + f.get('merchant'), amount: amt}); save(); go('home'); toast('Payment successful!'); };
 $('#bankForm').onsubmit = (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); S.banks.push({bank: f.get('bank'), acc: f.get('acc')}); save(); renderBanks(); e.target.reset(); toast('Bank linked!'); };
 
-function buy(price) {
+// MARKET TABS
+$('#tabMarketplace').onclick = () => {
+  $('#tabMarketplace').classList.add('active'); $('#tabMyBusiness').classList.remove('active');
+  $('#marketplaceView').classList.remove('hidden'); $('#myBusinessView').classList.add('hidden');
+  $('#myProductsView').classList.add('hidden'); $('#fabAddProduct').classList.add('hidden');
+  renderMarket();
+};
+
+$('#tabMyBusiness').onclick = () => {
+  $('#tabMyBusiness').classList.add('active'); $('#tabMarketplace').classList.remove('active');
+  $('#myBusinessView').classList.remove('hidden'); $('#marketplaceView').classList.add('hidden');
+  $('#myProductsView').classList.add('hidden'); $('#fabAddProduct').classList.add('hidden');
+};
+
+function showMyProducts() {
+  $('#myBusinessView').classList.add('hidden');
+  $('#myProductsView').classList.remove('hidden');
+  $('#fabAddProduct').classList.remove('hidden');
+  renderMyProducts();
+}
+
+function showBusinessDashboard() {
+  $('#myProductsView').classList.add('hidden');
+  $('#myBusinessView').classList.remove('hidden');
+  $('#fabAddProduct').classList.add('hidden');
+}
+
+// RENDER PRODUCTS
+function renderMarket() {
+  // Default products if empty
+  if(S.publicProducts.length === 0) {
+    S.publicProducts = [
+      { name: 'Running Shoes', price: 3500, icon: '👟', seller: 'BEAST Store' },
+      { name: 'Headphones', price: 1200, icon: '🎧', seller: 'BEAST Store' }
+    ];
+    save();
+  }
+
+  $('#publicProductList').innerHTML = S.publicProducts.map(p => `
+    <div class="product-card">
+      <div class="prod-img">${p.icon}</div>
+      <b>${p.name}</b>
+      <small>KES ${p.price}</small>
+      <button class="btn primary full" style="padding:8px; font-size:12px; margin-top:8px;" onclick="buyProduct(${p.price}, '${p.name}')">Buy Now</button>
+    </div>
+  `).join('');
+}
+
+function renderMyProducts() {
+  if(S.myProducts.length === 0) {
+    $('#myProductsList').innerHTML = '<p class="muted" style="text-align:center; margin-top:20px;">No products yet. Tap the + button to add your first product.</p>';
+    return;
+  }
+
+  $('#myProductsList').innerHTML = S.myProducts.map(p => `
+    <div class="product-list-item">
+      <div class="icon">${p.icon}</div>
+      <div class="info">
+        <b>${p.name}</b>
+        <small>KES ${p.price} · ${p.stock} in stock</small>
+      </div>
+      <button class="btn secondary" style="width:auto; padding:8px 12px; font-size:12px;">Edit</button>
+    </div>
+  `).join('');
+}
+
+function buyProduct(price, name) {
   if(price > S.balance) return toast('Insufficient balance');
-  S.balance -= price; S.tx.unshift({note: 'Marketplace purchase', amount: price});
+  S.balance -= price; S.tx.unshift({note: 'Bought ' + name, amount: price});
   save(); render(); toast('Purchase successful!');
 }
 
-// MARKET TABS
-$('#tabMarketplace').onclick = () => {
-  $('#tabMarketplace').classList.add('active'); $('#tabMyShop').classList.remove('active');
-  $('#marketplaceView').classList.remove('hidden'); $('#myShopView').classList.add('hidden');
-};
-$('#tabMyShop').onclick = () => {
-  $('#tabMyShop').classList.add('active'); $('#tabMarketplace').classList.remove('active');
-  $('#myShopView').classList.remove('hidden'); $('#marketplaceView').classList.add('hidden');
-};
+// WIZARD LOGIC
+let currentStep = 1;
+let wizardData = {};
 
+function openWizard() {
+  currentStep = 1;
+  wizardData = {};
+  $('#wizardStep1').classList.remove('hidden');
+  $('#wizardStep2').classList.add('hidden');
+  $('#wizardStep3').classList.add('hidden');
+  $('#wizardStep4').classList.add('hidden');
+  updateProgress();
+  $('#wizardModal').classList.remove('hidden');
+}
+
+function closeWizard() {
+  $('#wizardModal').classList.add('hidden');
+}
+
+function nextStep(step) {
+  if(step === 2) {
+    const form = $('#wizardForm1');
+    if(!form.reportValidity()) return;
+    const f = new FormData(form);
+    wizardData.name = f.get('name');
+    wizardData.category = f.get('category');
+    wizardData.desc = f.get('desc');
+  }
+  if(step === 3) {
+    // In a real app, you would handle file upload here
+  }
+  if(step === 4) {
+    const form = $('#wizardForm3');
+    if(!form.reportValidity()) return;
+    const f = new FormData(form);
+    wizardData.price = Number(f.get('price'));
+    wizardData.stock = Number(f.get('stock'));
+  }
+
+  currentStep = step;
+  $('#wizardStep1').classList.add('hidden');
+  $('#wizardStep2').classList.add('hidden');
+  $('#wizardStep3').classList.add('hidden');
+  $('#wizardStep4').classList.add('hidden');
+  
+  $(`#wizardStep${step}`).classList.remove('hidden');
+  updateProgress();
+}
+
+function updateProgress() {
+  $$('.w-progress-bar').forEach((bar, i) => {
+    bar.classList.toggle('active', i < currentStep);
+  });
+}
+
+function publishProduct() {
+  const isBoosted = $('#boostCheckbox').checked;
+  const boostCost = 500;
+
+  if(isBoosted && S.balance < boostCost) {
+    return toast('Insufficient balance for Boost (KES 500).');
+  }
+
+  if(isBoosted) {
+    S.balance -= boostCost;
+    S.tx.unshift({note: 'Boosted product: ' + wizardData.name, amount: boostCost});
+  }
+
+  const newProduct = {
+    name: wizardData.name,
+    price: wizardData.price,
+    stock: wizardData.stock,
+    icon: '📦', // Default icon for new products
+    seller: S.profile.name
+  };
+
+  S.myProducts.push(newProduct);
+  S.publicProducts.unshift(newProduct); // Add to top of public marketplace
+
+  save();
+  closeWizard();
+  toast(isBoosted ? 'Product published and boosted to top!' : 'Product published successfully!');
+  
+  // Reset views
+  showMyProducts();
+  renderMarket();
+}
+
+// AI
 $('#aiFloatBtn').onclick = () => $('#aiPanel').classList.toggle('hidden');
 $('#aiSendBtn').onclick = () => {
   const input = $('#aiInput').value.toLowerCase(); const box = $('#aiMessages');
@@ -323,7 +566,9 @@ $('#moreBtn').onclick = () => $('#beast-more').classList.remove('hidden');
 $('#bm-close').onclick = () => $('#beast-more').classList.add('hidden');
 $$('[data-page]').forEach(b => b.onclick = () => go(b.dataset.page));
 
+// INIT
 if(S.profile) { loginSuccess(); } else { go('register'); }
+renderMarket(); // Load default products
 </script>
 </body>
 </html>
