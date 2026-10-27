@@ -71,4 +71,4 @@ h2 { font-size: 18px; margin-bottom: 8px; }
 .ai-panel h4 { color: var(--green); font-size: 14px; }
 .ai-chat-box { background: var(--bg); border-radius: 8px; padding: 10px; font-size: 12px; color: var(--text); height: 100px; overflow-y: auto; }
 .ai-input-row { display: flex; gap: 8px; }
-.ai-input-row input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px; color: var(--text); font-size: 12px; }
+.ai-input-row input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px; color: var(--text); font-size: 12px; } 
