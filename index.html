@@ -38,7 +38,7 @@ main{flex:1;overflow-y:auto;overscroll-behavior:contain;scroll-behavior:smooth;p
 main::-webkit-scrollbar{width:0}
 
 /* tab bar */
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--edge);background:rgba(3,16,10,.94)}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--edge);background:rgba(3,16,10,.94)}
 .tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 7px;border-radius:16px;color:var(--mute);font-weight:600;font-size:13px;position:relative;transition:background .2s,color .2s}
 .tab[aria-selected=true]{background:var(--raise);color:var(--green)}
 .tab[aria-selected=true]::before{content:"";position:absolute;top:0;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:var(--green)}
@@ -243,8 +243,9 @@ dialog input:focus{border-color:var(--green)}
 
     <!-- MAIN APP (Hidden until login) -->
     <div id="mainApp" hidden>
-      <!-- TAB 1: SUPER APP -->
-      <section id="tab-super" class="panel" role="tabpanel" aria-labelledby="t-super">
+      
+      <!-- TAB 1: MONEY -->
+      <section id="tab-money" class="panel" role="tabpanel" aria-labelledby="t-money">
         <p class="mute" style="margin-top:6px">Hello, <span id="userGreeting">Member</span></p>
         <h1>Send, pay, shop and grow.</h1>
 
@@ -276,15 +277,44 @@ dialog input:focus{border-color:var(--green)}
         <h2>Recent transactions</h2>
         <ul class="list" id="txList"></ul>
 
-        <!-- MARKETPLACE & MY BUSINESS -->
-        <h2 id="market">Marketplace</h2>
+        <h2 id="ai">BEAST AI</h2>
+        <div class="chat" id="chat" aria-live="polite"><div class="msg ai">Hi <span id="aiName">Member</span>. Pick a question below.</div></div>
+        <div class="chips" id="aiq">
+          <button class="chip" data-a="ai" data-k="rev">Today's revenue?</button>
+          <button class="chip" data-a="ai" data-k="top">Top performing?</button>
+          <button class="chip" data-a="ai" data-k="cost">Reduce expenses?</button>
+        </div>
+
+        <h2 id="shield">BEAST Shield</h2>
+        <div class="shield-hero">
+          <span data-ic="shield" data-s="56"></span>
+          <div><h3>Security status</h3><span class="ok" style="font-weight:700">All good</span><br><small>No suspicious activity.</small></div>
+        </div>
+      </section>
+
+      <!-- TAB 2: TRAVEL -->
+      <section id="tab-travel" class="panel" role="tabpanel" aria-labelledby="t-travel" hidden>
+        <p class="mute" style="margin-top:6px">BEAST Travel</p>
+        <h1>Safe rides, smarter journeys.</h1>
+        <div class="seg" role="group" aria-label="Choose your role">
+          <button data-a="role" data-r="passenger" aria-pressed="true">I'm a passenger</button>
+          <button data-a="role" data-r="driver" aria-pressed="false">I'm a driver</button>
+        </div>
+        <div id="tv"></div>
+      </section>
+
+      <!-- TAB 3: BUSINESS -->
+      <section id="tab-business" class="panel" role="tabpanel" aria-labelledby="t-business" hidden>
+        <p class="mute" style="margin-top:6px">BEAST Business</p>
+        <h1>Grow your business.</h1>
+
         <div class="seg" role="group" style="margin-bottom:16px;">
-          <button data-a="market-tab" data-r="shop" aria-pressed="true" id="btnShopMode" class="active">🛍️ Shop</button>
-          <button data-a="market-tab" data-r="biz" aria-pressed="false" id="btnBusinessMode">🏢 My Business</button>
+          <button data-a="market-tab" data-r="shop" aria-pressed="false" id="btnShopMode">🛍️ Shop</button>
+          <button data-a="market-tab" data-r="biz" aria-pressed="true" id="btnBusinessMode" class="active">🏢 My Business</button>
         </div>
 
         <!-- SHOP MODE -->
-        <div id="shopMode">
+        <div id="shopMode" hidden>
           <label class="search"><span data-ic="search" data-s="18"></span><input id="q" type="search" placeholder="Search products..." aria-label="Search products"></label>
           <div class="chips" id="cats"></div>
           <div class="prods" id="prods"></div>
@@ -292,7 +322,7 @@ dialog input:focus{border-color:var(--green)}
         </div>
 
         <!-- MY BUSINESS MODE (12 TOOLS) -->
-        <div id="businessMode" hidden>
+        <div id="businessMode">
           <div class="biz-dashboard">
             <div class="kpis">
               <div class="kpi"><small>Total Sales</small><b>KES 145,000</b></div>
@@ -332,39 +362,17 @@ dialog input:focus{border-color:var(--green)}
           <div id="myProductsList"></div>
         </div>
 
-        <h2 id="ai">BEAST AI</h2>
-        <div class="chat" id="chat" aria-live="polite"><div class="msg ai">Hi <span id="aiName">Member</span>. Pick a question below.</div></div>
-        <div class="chips" id="aiq">
-          <button class="chip" data-a="ai" data-k="rev">Today's revenue?</button>
-          <button class="chip" data-a="ai" data-k="top">Top performing?</button>
-          <button class="chip" data-a="ai" data-k="cost">Reduce expenses?</button>
-        </div>
-
-        <h2 id="shield">BEAST Shield</h2>
-        <div class="shield-hero">
-          <span data-ic="shield" data-s="56"></span>
-          <div><h3>Security status</h3><span class="ok" style="font-weight:700">All good</span><br><small>No suspicious activity.</small></div>
-        </div>
         <p class="foot">One app. 18 powerful ways.</p>
       </section>
 
-      <!-- TAB 2: TRAVEL -->
-      <section id="tab-travel" class="panel" role="tabpanel" aria-labelledby="t-travel" hidden>
-        <p class="mute" style="margin-top:6px">BEAST Travel</p>
-        <h1>Safe rides, smarter journeys.</h1>
-        <div class="seg" role="group" aria-label="Choose your role">
-          <button data-a="role" data-r="passenger" aria-pressed="true">I'm a passenger</button>
-          <button data-a="role" data-r="driver" aria-pressed="false">I'm a driver</button>
-        </div>
-        <div id="tv"></div>
-      </section>
     </div>
 
   </main>
 
   <nav class="tabs" role="tablist" aria-label="BEAST sections" id="bottomNav" hidden>
-    <button class="tab" role="tab" id="t-super" aria-selected="true" aria-controls="tab-super" data-a="tab" data-t="super"><span data-ic="home"></span>Super app</button>
+    <button class="tab" role="tab" id="t-money" aria-selected="true" aria-controls="tab-money" data-a="tab" data-t="money"><span data-ic="home"></span>Money</button>
     <button class="tab" role="tab" id="t-travel" aria-selected="false" aria-controls="tab-travel" data-a="tab" data-t="travel"><span data-ic="pin"></span>Travel</button>
+    <button class="tab" role="tab" id="t-business" aria-selected="false" aria-controls="tab-business" data-a="tab" data-t="business"><span data-ic="building"></span>Business</button>
   </nav>
 
   <!-- WIZARD MODAL -->
@@ -477,6 +485,7 @@ function loginSuccess(name){
   $('#userBeastId').textContent=S.profile.beastId;
   $('#aiName').textContent=S.profile.name.split(' ')[0];
   renderAll();
+  setTab('money'); // Default to money tab
 }
 
 // RENDER APP
@@ -547,7 +556,9 @@ function renderTravel(){
 
 // TABS
 function setTab(t){
-  $('#tab-super').hidden=t!=='super';$('#tab-travel').hidden=t!=='travel';
+  $('#tab-money').hidden=t!=='money';
+  $('#tab-travel').hidden=t!=='travel';
+  $('#tab-business').hidden=t!=='business';
   $$('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===t));
   $('#main').scrollTo({top:0,behavior:'auto'});
   if(t==='travel')renderTravel();
@@ -601,9 +612,11 @@ const A={
   svc:b=>{
     const t=b.dataset.t;
     if(t==='travel')return setTab('travel');
+    if(t==='market')return setTab('business');
+    if(t==='business')return setTab('business');
     if(t==='notif')return toast('Notifications coming soon');
     if(t==='card')return toast('BEAST Card is coming soon');
-    const el={wallet:'#wallet',market:'#market',business:'#business',ai:'#ai',shield:'#shield'}[t];
+    const el={wallet:'#wallet',ai:'#ai',shield:'#shield'}[t];
     if($(el))$(el).scrollIntoView({behavior:'smooth',block:'start'});
   },
   cat:b=>{S.cat=b.dataset.c;renderCats();renderMarket()},
