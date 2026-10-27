@@ -8,148 +8,98 @@
 <style>
 :root{
   --void:#03100A; --panel:#0A1D15; --raise:#102A1F; --edge:#1B4A36;
-  --green:#1DE58B; --green-d:#0FA862; --gold:#F6B930; --red:#FF5A5A;
-  --text:#E8F5EE; --mute:#8FB5A2; --ring:rgba(29,229,139,.3);
+  --green:#1DE58B; --green-d:#0FA862; --gold:#F6B930; --red:#FF5A5A; --blue:#7DB4FF;
+  --text:#E8F5EE; --mute:#8FB5A2;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{color-scheme:dark}
 body{background:#020906;color:var(--text);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;justify-content:center;-webkit-font-smoothing:antialiased}
 button,input{font:inherit;color:inherit}
 button{cursor:pointer;background:none;border:0}
-:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 [hidden]{display:none!important}
 .mute{color:var(--mute)}
-
-/* shell */
-.app{width:100%;max-width:440px;height:100dvh;position:relative;display:flex;flex-direction:column;overflow:hidden;
-  background:radial-gradient(120% 50% at 50% -8%,#0E3F2B 0%,transparent 62%),var(--void)}
-@media(min-width:480px){
-  body{padding:24px 0;min-height:100vh;align-items:center}
-  .app{height:min(900px,calc(100dvh - 48px));border:1px solid var(--edge);border-radius:36px;box-shadow:0 0 0 6px #04140D,0 30px 90px rgba(29,229,139,.14)}
-}
+.app{width:100%;max-width:440px;height:100dvh;position:relative;display:flex;flex-direction:column;overflow:hidden;background:var(--void)}
 .top{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px}
 .top-left { display: flex; align-items: center; gap: 12px; }
 .menu-btn { font-size: 24px; color: var(--text); cursor: pointer; }
 .brand{display:flex;align-items:center;gap:8px;color:var(--gold)}
-.wordmark{font:italic 900 24px/1 "Segoe UI","Helvetica Neue",Arial,sans-serif;letter-spacing:.01em;color:var(--text)}
-.top-r{display:flex;align-items:center;gap:10px}
-.icon-btn{position:relative;width:38px;height:38px;border-radius:50%;border:1px solid var(--edge);display:grid;place-items:center;background:var(--panel)}
-.icon-btn .dot{position:absolute;top:7px;right:8px;width:9px;height:9px;border-radius:50%;background:var(--gold);border:2px solid var(--panel)}
+.wordmark{font:italic 900 24px/1 "Segoe UI",sans-serif;letter-spacing:.01em;color:var(--text)}
 .avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(140deg,var(--green),#0B7A47);color:#02130B;font-weight:800;display:grid;place-items:center}
-main{flex:1;overflow-y:auto;overscroll-behavior:contain;scroll-behavior:smooth;padding:4px 16px 28px}
+main{flex:1;overflow-y:auto;scroll-behavior:smooth;padding:4px 16px 28px}
 main::-webkit-scrollbar{width:0}
 
-/* tab bar */
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--edge);background:rgba(3,16,10,.94)}
-.tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 7px;border-radius:16px;color:var(--mute);font-weight:600;font-size:13px;position:relative;transition:background .2s,color .2s}
-.tab[aria-selected=true]{background:var(--raise);color:var(--green)}
-.tab[aria-selected=true]::before{content:"";position:absolute;top:0;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:var(--green)}
+/* UI Elements */
+h1{font-size:22px;font-weight:800;margin-bottom:16px}
+h2{font-size:16px;font-weight:700;margin:24px 0 12px}
+.panel{background:var(--panel);border:1px solid var(--edge);border-radius:16px;padding:16px;margin-bottom:16px}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;padding:14px;border-radius:12px;font-weight:700;border:1px solid var(--edge);background:var(--raise);cursor:pointer;margin-top:8px}
+.btn.primary{background:var(--green);color:#000;border:none}
+.btn.ghost{background:transparent;color:var(--green);border:1px dashed var(--green)}
+.form-group{display:grid;gap:12px;margin-bottom:16px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:12px;color:var(--mute);font-weight:600}
+.field input, .field select{background:var(--void);border:1px solid var(--edge);border-radius:10px;padding:12px;color:var(--text);outline:none}
+.field input:focus{border-color:var(--green)}
+.card{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:14px;margin-bottom:10px}
+.row{display:flex;justify-content:space-between;align-items:center}
+.money{font-family:monospace;font-size:16px}
+.pos{color:var(--green)}
+.neg{color:var(--red)}
 
-/* type */
-h1{font-size:25px;line-height:1.15;letter-spacing:-.01em;font-weight:800}
-h2{font-size:17px;font-weight:700;margin:28px 0 10px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-h2 small{font-size:13px;font-weight:500;color:var(--mute)}
-h3{font-size:16px;font-weight:700}
-small{font-size:12.5px;color:var(--mute)}
+/* Drawer */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:3000;opacity:0;pointer-events:none;transition:.3s}
+.drawer-overlay.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;left:-300px;width:280px;height:100dvh;background:var(--void);z-index:3001;transition:.3s;padding:24px 20px;display:flex;flex-direction:column;overflow-y:auto;border-right:1px solid var(--edge)}
+.drawer.open{transform:translateX(300px)}
+.drawer-header{display:flex;justify-content:space-between;margin-bottom:24px}
+.drawer-header h3{font-size:14px;color:var(--mute);letter-spacing:1px}
+.drawer-menu{display:flex;flex-direction:column;gap:4px}
+.drawer-menu button{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;color:var(--text);font-size:14px;font-weight:600;text-align:left}
+.drawer-menu button:active{background:var(--panel)}
+.drawer-menu .logout{color:var(--red);margin-top:20px}
 
-/* buttons */
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 16px;border-radius:14px;font-weight:700;border:1px solid var(--edge);background:var(--raise);transition:transform .12s,filter .2s}
-.btn:active{transform:scale(.98)}
-.btn.primary{background:linear-gradient(180deg,#25F29A,#12C474);color:#03140C;border-color:transparent}
-.btn.ghost{background:transparent}
+/* Tabs & Grid */
+.seg{display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:12px;background:var(--panel);border:1px solid var(--edge);margin-bottom:16px}
+.seg button{padding:10px;border-radius:8px;font-weight:700;color:var(--mute);font-size:13px}
+.seg button[aria-selected=true]{background:var(--green);color:#000}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.money-card{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:14px 10px;display:flex;flex-direction:column;gap:4px;cursor:pointer}
+.money-card .icon{font-size:22px;margin-bottom:4px}
+.money-card b{font-size:12px;font-weight:700}
+.money-card small{font-size:10px;color:var(--mute)}
 
-/* wallet */
-.wallet{position:relative;overflow:hidden;border-radius:26px;padding:18px;background:linear-gradient(145deg,#0F4D35 0%,#0A2C20 55%,#08190F 100%);border:1px solid #1F6B49;margin-top:6px}
-.wallet .mark{position:absolute;right:-22px;top:-14px;width:160px;color:var(--gold);opacity:.1;pointer-events:none}
-.row{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.bal{font-size:35px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin:6px 0 2px}
-.bal small{font-size:15px;font-weight:600;margin-right:6px}
-.link{color:var(--green);font-weight:600;font-size:13px;padding:4px 2px}
+/* Toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green);color:#000;padding:12px 20px;border-radius:30px;font-weight:700;opacity:0;transition:.3s;z-index:9999;pointer-events:none;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* New Money Grid (Image Match) */
-.money-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:16px;}
-.money-card{background:#0A1D15;border:1px solid var(--edge);border-radius:16px;padding:16px 12px;display:flex;flex-direction:column;gap:6px;cursor:pointer;}
-.money-card .icon{font-size:28px;margin-bottom:4px;}
-.money-card b{font-size:13px;font-weight:700;color:var(--text);line-height:1.2;}
-.money-card small{font-size:11px;color:var(--mute);line-height:1.2;}
-
-/* Drawer Menu */
-.drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 3000; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
-.drawer-overlay.open { opacity: 1; pointer-events: auto; }
-.drawer { position: fixed; top: 0; left: -300px; width: 280px; height: 100dvh; background: var(--void); z-index: 3001; transition: transform 0.3s ease; padding: 24px 20px; display: flex; flex-direction: column; overflow-y: auto; border-right: 1px solid var(--edge); }
-.drawer.open { transform: translateX(300px); }
-.drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--edge); padding-bottom: 12px; }
-.drawer-header h3 { font-size: 14px; color: var(--mute); letter-spacing: 1px; }
-.drawer-user { margin-bottom: 24px; }
-.drawer-user b { font-size: 18px; display: block; margin-bottom: 4px; }
-.drawer-menu { display: flex; flex-direction: column; gap: 4px; }
-.drawer-menu button { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 10px; color: var(--text); font-size: 14px; font-weight: 600; text-align: left; transition: background 0.2s; }
-.drawer-menu button:hover { background: var(--panel); }
-.drawer-menu button span { font-size: 18px; }
-.drawer-menu .logout { color: var(--red); margin-top: auto; }
-
-/* sections */
-.svc{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 8px}
-.svc button{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12.5px;font-weight:600;padding:12px 0 10px;border-radius:16px;background:var(--panel);border:1px solid var(--edge)}
-.svc button svg{color:var(--green)}
-.svc button.gold svg{color:var(--gold)}
-
-/* lists */
-.list{list-style:none}
-.list li{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #123526}
-.list li:last-child{border-bottom:0}
-.list li>div{flex:1;min-width:0}
-.list b{display:block;font-weight:600}
-.txi{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--raise);color:var(--mute);flex:none}
-.txi.in{color:var(--green)}
-.amt{font-weight:700;font-variant-numeric:tabular-nums}
-.amt.pos{color:var(--green)}
-
-/* AI Chat */
-.chat{display:grid;gap:8px;padding:14px;border-radius:20px;background:var(--panel);border:1px solid var(--edge);min-height:120px;align-content:start}
-.msg{max-width:88%;padding:10px 13px;border-radius:16px;font-size:14.5px}
-.msg.ai{background:var(--raise);border-bottom-left-radius:5px}
-.msg.me{background:var(--green);color:#03140C;font-weight:600;justify-self:end;border-bottom-right-radius:5px}
-.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 4px;scrollbar-width:none}
-.chip{flex:none;padding:8px 14px;border-radius:99px;border:1px solid var(--edge);background:var(--panel);font-weight:600;font-size:13.5px;color:var(--mute);transition:all .15s}
-.chip:active{background:var(--green);color:#03140C;border-color:var(--green)}
-
-/* Shield */
-.shield-hero{display:flex;align-items:center;gap:14px;padding:16px;border-radius:22px;background:linear-gradient(135deg,#0C3524,#08190F);border:1px solid var(--edge)}
-.shield-hero svg{color:var(--green);flex:none}
-
-/* Overlays & Toast */
-.toast{position:absolute;left:16px;right:16px;bottom:88px;padding:12px 16px;border-radius:14px;background:#EAFBF2;color:#06210F;font-weight:700;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.5);transform:translateY(30px);opacity:0;pointer-events:none;transition:all .25s;z-index:20}
-.toast.on{transform:none;opacity:1}
+/* Sub-tabs inside Receive */
+.sub-tabs{display:flex;gap:8px;border-bottom:1px solid var(--edge);margin-bottom:16px}
+.sub-tab{padding:10px 14px;font-size:13px;font-weight:600;color:var(--mute);border-bottom:2px solid transparent;cursor:pointer}
+.sub-tab.active{color:var(--green);border-bottom-color:var(--green)}
+.account-option{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--edge);border-radius:12px;margin-bottom:10px;cursor:pointer}
+.account-option.active{border-color:var(--green);background:rgba(29,229,139,0.05)}
 </style>
 </head>
 <body>
 <div class="app" id="app">
 
-  <!-- DRAWER MENU -->
+  <!-- MENU DRAWER -->
   <div class="drawer-overlay" id="drawerOverlay" onclick="toggleMenu()"></div>
   <div class="drawer" id="drawerMenu">
-    <div class="drawer-header">
-      <h3>BEAST MENU</h3>
-      <button onclick="toggleMenu()" style="font-size:20px;">✕</button>
-    </div>
-    <div class="drawer-user">
-      <b>KRISH KRISHNA</b>
-      <small class="mute">BEAST ID: BEAST-00123</small>
-    </div>
+    <div class="drawer-header"><h3>BEAST MENU</h3><button onclick="toggleMenu()">✕</button></div>
+    <div style="margin-bottom:24px"><b>KRISH KRISHNA</b></div>
     <div class="drawer-menu">
-      <button data-a="tab" data-t="money"><span>🏠</span> Home</button>
-      <button onclick="toast('Send coming soon')"><span>📤</span> Send</button>
-      <button onclick="toast('Bulk Send coming soon')"><span>📥</span> Bulk Send</button>
-      <button onclick="toast('Receive coming soon')"><span>🤝</span> Receive</button>
-      <button onclick="toast('Withdraw coming soon')"><span>🏧</span> Withdraw</button>
-      <button onclick="toast('Lipa Na coming soon')"><span>🛒</span> Lipa Na</button>
-      <button onclick="toast('History coming soon')"><span>🧾</span> History</button>
-      <button onclick="toast('Statements coming soon')"><span>📊</span> Statements</button>
-      <button onclick="toast('Profile coming soon')"><span>👤</span> Profile</button>
-      <button onclick="toast('Security coming soon')"><span>🛡️</span> Security</button>
-      <button onclick="toast('Notifications coming soon')"><span>🔔</span> Notifications</button>
-      <button onclick="toast('Settings coming soon')"><span>⚙️</span> Settings</button>
+      <button onclick="showPage('home');toggleMenu()"><span>🏠</span> Home</button>
+      <button onclick="showPage('send');toggleMenu()"><span>📤</span> Send</button>
+      <button onclick="showPage('bulk');toggleMenu()"><span>📥</span> Bulk Send</button>
+      <button onclick="showPage('receive');toggleMenu()"><span>🤝</span> Receive</button>
+      <button onclick="showPage('withdraw');toggleMenu()"><span>🏧</span> Withdraw</button>
+      <button onclick="showPage('lipa');toggleMenu()"><span>🛒</span> Lipa Na</button>
+      <button onclick="showPage('history');toggleMenu()"><span>🧾</span> History</button>
+      <button onclick="showPage('statements');toggleMenu()"><span>📊</span> Statements</button>
+      <button onclick="showPage('profile');toggleMenu()"><span>👤</span> Profile</button>
+      <button onclick="showPage('security');toggleMenu()"><span>🛡️</span> Security</button>
+      <button onclick="showPage('settings');toggleMenu()"><span>⚙️</span> Settings</button>
       <button class="logout" onclick="location.reload()"><span>🚪</span> Logout</button>
     </div>
   </div>
@@ -158,419 +108,433 @@ small{font-size:12.5px;color:var(--mute)}
     <div class="top-left">
       <button class="menu-btn" onclick="toggleMenu()">☰</button>
       <div class="brand">
-        <svg width="30" height="26" viewBox="0 0 30 26" fill="currentColor" aria-hidden="true"><path d="M2 21 0 6l7 6 8-11 8 11 7-6-2 15z"/><rect x="2" y="23" width="26" height="3" rx="1.5"/></svg>
+        <svg width="30" height="26" viewBox="0 0 30 26" fill="currentColor"><path d="M2 21 0 6l7 6 8-11 8 11 7-6-2 15z"/><rect x="2" y="23" width="26" height="3" rx="1.5"/></svg>
         <span class="wordmark">BEAST</span>
       </div>
     </div>
-    <div class="top-r">
-      <button class="icon-btn" data-a="notif" aria-label="Notifications"><span data-ic="bell" data-s="20"></span><i class="dot"></i></button>
-      <div class="avatar" aria-label="John">K</div>
-    </div>
+    <div class="avatar">K</div>
   </header>
 
   <main id="main">
     
-    <!-- AUTH LOGIN -->
-    <div id="authView" style="text-align:center; padding-top:40px;">
-      <div style="font-size:60px; color:var(--gold); margin-bottom:12px;">♛</div>
-      <h1>BEAST</h1>
-      <p class="mute" style="margin-bottom:24px;">One app. 18 powerful ways.</p>
-      
-      <form id="loginForm" style="display:grid; gap:12px; text-align:left;">
-        <label class="field" style="display:flex; align-items:center; padding:0 12px; border-radius:14px; background:var(--panel); border:1px solid var(--edge);"><input id="loginPhone" placeholder="Phone Number" style="background:none; border:none; padding:12px 0; outline:none; flex:1;" required></label>
-        <label class="field" style="display:flex; align-items:center; padding:0 12px; border-radius:14px; background:var(--panel); border:1px solid var(--edge);"><input id="loginPin" type="password" placeholder="PIN" style="background:none; border:none; padding:12px 0; outline:none; flex:1;" required></label>
-        <button type="submit" class="btn primary" style="margin-top:8px;">LOG IN</button>
-      </form>
-      
-      <div style="display:flex; align-items:center; gap:10px; margin:24px 0;">
-        <hr style="flex:1; border-color:var(--edge);"> <small class="mute">OR</small> <hr style="flex:1; border-color:var(--edge);">
+    <!-- ================= LOGIN ================= -->
+    <div id="page-login">
+      <div style="text-align:center; padding:40px 0;">
+        <div style="font-size:60px; color:var(--gold); margin-bottom:12px;">♛</div>
+        <h1>BEAST</h1>
+        <p class="mute" style="margin-bottom:24px;">One app. 18 powerful ways.</p>
       </div>
-      
+      <form id="loginForm" class="form-group">
+        <div class="field"><label>Phone Number</label><input id="loginPhone" placeholder="07..." required></div>
+        <div class="field"><label>PIN</label><input id="loginPin" type="password" placeholder="****" required></div>
+        <button type="submit" class="btn primary">LOG IN</button>
+      </form>
       <button class="btn ghost" onclick="showRegister()">Create Account</button>
     </div>
 
-    <!-- REGISTER FORM -->
-    <div id="registerView" hidden style="text-align:center; padding-top:20px;">
-      <div style="font-size:40px; color:var(--gold); margin-bottom:12px;">♛</div>
+    <!-- ================= REGISTER ================= -->
+    <div id="page-register" hidden>
       <h1>Create Account</h1>
-      
-      <form id="registerForm" style="display:grid; gap:12px; text-align:left; margin-top:24px;">
-        <label class="field" style="display:flex; align-items:center; padding:0 12px; border-radius:14px; background:var(--panel); border:1px solid var(--edge);"><input id="regPhone" placeholder="Phone Number" style="background:none; border:none; padding:12px 0; outline:none; flex:1;" required></label>
-        <label class="field" style="display:flex; align-items:center; padding:0 12px; border-radius:14px; background:var(--panel); border:1px solid var(--edge);"><input id="regId" placeholder="ID Number" style="background:none; border:none; padding:12px 0; outline:none; flex:1;" required></label>
-        
-        <button type="button" class="btn ghost" style="border:1px dashed var(--green); color:var(--green);" onclick="runAIScanner()">
-          <span data-ic="spark" data-s="18"></span> Scan ID with AI
-        </button>
-        
-        <div id="nameCard" hidden style="background:var(--raise); border:1px solid var(--gold); padding:14px; border-radius:14px; display:flex; justify-content:space-between; align-items:center;">
-          <div style="text-align:left;">
-            <small class="mute" style="display:block; margin-bottom:2px;">Full Name</small>
-            <b id="scannedName" style="font-size:16px;">John Doe</b>
-          </div>
-          <button type="button" class="link" onclick="editName()">Edit</button>
+      <form id="registerForm" class="form-group">
+        <div class="field"><label>Phone Number</label><input id="regPhone" placeholder="07..." required></div>
+        <div class="field"><label>ID Number</label><input id="regId" placeholder="12345678" required></div>
+        <button type="button" class="btn ghost" onclick="runAIScanner()">✨ Scan ID with AI</button>
+        <div id="nameCard" class="card" hidden style="border-color:var(--gold); display:flex; justify-content:space-between; align-items:center;">
+          <div><small class="mute">Full Name</small><br><b id="scannedName"></b></div>
+          <button type="button" class="btn ghost" style="padding:4px 8px;margin:0;" onclick="editName()">Edit</button>
         </div>
-
-        <label class="field" id="manualNameField" style="display:flex; align-items:center; padding:0 12px; border-radius:14px; background:var(--panel); border:1px solid var(--edge);">
-          <input id="regName" placeholder="Full Name" style="background:none; border:none; padding:12px 0; outline:none; flex:1;" required>
-        </label>
-
-        <label class="field" style="display:flex; align-items:center; padding:0 12px; border-radius:14px; background:var(--panel); border:1px solid var(--edge);"><input id="regPass1" type="password" placeholder="Password" style="background:none; border:none; padding:12px 0; outline:none; flex:1;" required></label>
-        <label class="field" style="display:flex; align-items:center; padding:0 12px; border-radius:14px; background:var(--panel); border:1px solid var(--edge);"><input id="regPass2" type="password" placeholder="Confirm Password" style="background:none; border:none; padding:12px 0; outline:none; flex:1;" required></label>
-        <label class="field" style="display:flex; align-items:center; padding:0 12px; border-radius:14px; background:var(--panel); border:1px solid var(--edge);"><input id="regPin" type="password" placeholder="Create PIN" style="background:none; border:none; padding:12px 0; outline:none; flex:1;" required></label>
-        
-        <label style="display:flex; gap:8px; font-size:13px; align-items:center; margin-top:8px;">
-          <input type="checkbox" required> I agree to Terms & Conditions
-        </label>
-        
-        <button type="submit" class="btn primary" style="margin-top:8px;">REGISTER</button>
+        <div class="field" id="manualNameField"><label>Full Name</label><input id="regName" placeholder="John Doe" required></div>
+        <div class="field"><label>Password</label><input id="regPass1" type="password" required></div>
+        <div class="field"><label>Confirm Password</label><input id="regPass2" type="password" required></div>
+        <div class="field"><label>PIN</label><input id="regPin" type="password" required></div>
+        <label style="display:flex;gap:8px;font-size:12px;margin-top:8px;"><input type="checkbox" required> I agree to Terms</label>
+        <button type="submit" class="btn primary">REGISTER</button>
       </form>
-      <button class="btn ghost" style="margin-top:20px;" onclick="showLogin()">Already have an account? Log In</button>
+      <button class="btn ghost" style="margin-top:16px;" onclick="showPage('login')">Back to Login</button>
     </div>
 
-    <!-- CONFIRM DETAILS PAGE -->
-    <div id="confirmView" hidden style="text-align:center; padding-top:40px;">
-      <div style="font-size:40px; color:var(--green); margin-bottom:12px;">✔</div>
-      <h1>Confirm Your Details</h1>
-      <p class="mute" style="margin-bottom:24px;">Please review before generating your BEAST ID.</p>
-      
-      <div style="background:var(--panel); border:1px solid var(--edge); padding:20px; border-radius:16px; text-align:left; display:grid; gap:12px; margin-bottom:24px;">
-        <div><small class="mute" style="display:block;">Full Name</small><b id="confirmName" style="font-size:16px;"></b></div>
-        <div><small class="mute" style="display:block;">Phone Number</small><b id="confirmPhone" style="font-size:16px;"></b></div>
-        <div><small class="mute" style="display:block;">ID Number</small><b id="confirmId" style="font-size:16px;"></b></div>
+    <!-- ================= CONFIRM DETAILS ================= -->
+    <div id="page-confirm" hidden>
+      <h1>Confirm Details</h1>
+      <div class="card">
+        <small class="mute">Name</small><br><b id="confName"></b><br><br>
+        <small class="mute">Phone</small><br><b id="confPhone"></b><br><br>
+        <small class="mute">ID Number</small><br><b id="confId"></b>
       </div>
-      
       <button class="btn primary" onclick="generateId()">Confirm & Generate BEAST ID</button>
-      <button class="btn ghost" style="margin-top:12px;" onclick="backToRegister()">← Edit Details</button>
+      <button class="btn ghost" style="margin-top:10px;" onclick="showPage('register')">Edit Details</button>
     </div>
 
-    <!-- MAIN APP (Hidden until login) -->
-    <div id="mainApp" hidden>
+    <!-- ================= MAIN DASHBOARD (MONEY) ================= -->
+    <div id="page-home" hidden>
+      <p class="mute">Hello, <span id="userGreeting">Krish</span></p>
+      <h1>Send, pay, shop and grow.</h1>
       
-      <!-- TAB 1: MONEY -->
-      <section id="tab-money" class="panel" role="tabpanel" aria-labelledby="t-money">
-        <p class="mute" style="margin-top:6px">Hello, <span id="userGreeting">Member</span></p>
-        <h1>Send, pay, shop and grow.</h1>
+      <div class="panel" style="background:linear-gradient(145deg,#0F4D35,#0A2C20); border-color:#1F6B49; margin-bottom:24px;">
+        <div class="row"><small class="mute">Wallet balance</small><span style="font-size:12px;color:var(--gold);">● DEMO</span></div>
+        <div style="font-size:32px;font-weight:800;margin:8px 0;">KES <span id="walletBal">12,450.00</span></div>
+        <small class="mute">BEAST ID: <span id="userBeastId">BEAST-123456</span></small>
+      </div>
 
-        <div class="wallet" id="wallet">
-          <svg class="mark" viewBox="0 0 30 26" fill="currentColor" aria-hidden="true"><path d="M2 21 0 6l7 6 8-11 8 11 7-6-2 15z"/><rect x="2" y="23" width="26" height="3" rx="1.5"/></svg>
-          <div class="row"><small>Wallet balance</small><button class="link" data-a="hide" id="hideBtn">Hide</button></div>
-          <div class="bal" id="bal"></div>
-          <small>BEAST ID: <span id="userBeastId"></span></small>
+      <div class="grid-3">
+        <div class="money-card" onclick="showPage('send')"><div class="icon">📤</div><b>Send Money</b><small>Phone or ID</small></div>
+        <div class="money-card" onclick="showPage('receive')"><div class="icon">🤝</div><b>Receive</b><small>Buyer auth</small></div>
+        <div class="money-card" onclick="showPage('withdraw')"><div class="icon">🏧</div><b>Withdraw</b><small>Agent</small></div>
+        <div class="money-card" onclick="showPage('lipa')"><div class="icon">🛒</div><b>Lipa Na</b><small>Pay business</small></div>
+        <div class="money-card" onclick="showPage('history')"><div class="icon">🧾</div><b>History</b><small>Transactions</small></div>
+        <div class="money-card" onclick="showPage('statements')"><div class="icon">📊</div><b>Statements</b><small>30 days</small></div>
+      </div>
+    </div>
+
+    <!-- ================= SEND MONEY ================= -->
+    <div id="page-send" hidden>
+      <h1>Send Money</h1>
+      <div class="panel form-group">
+        <div class="field"><label>Recipient phone / BEAST ID</label><input id="sendRecip" placeholder="07... or BEAST-"></div>
+        <button class="btn ghost" onclick="toast('Recipient verified')">VERIFY RECIPIENT</button>
+        <div class="field"><label>Amount (KES)</label><input id="sendAmt" type="number" placeholder="0.00"></div>
+        <div class="field"><label>Source</label><select><option>M-PESA</option><option>BEAST Wallet</option></select></div>
+        <div style="background:var(--void);padding:10px;border-radius:8px;font-size:12px;">
+          Cost preview<br>
+          Amount: KES 0.00<br>
+          Fee: KES 0.00<br>
+          <b>Total deducted: KES 0.00</b>
         </div>
+        <div class="field"><label>PIN</label><input type="password" placeholder="****"></div>
+        <button class="btn primary" onclick="processTx('Sent money', -500); showPage('home')">SEND & AUTHORIZE</button>
+      </div>
+    </div>
 
-        <!-- NEW MONEY GRID (FROM IMAGE) -->
-        <div class="money-grid">
-          <div class="money-card" onclick="toast('Account Balance feature coming soon')">
-            <div class="icon">💰</div>
-            <b>Account Balance</b>
-            <small>Check access</small>
-          </div>
-          <div class="money-card" onclick="toast('Statements feature coming soon')">
-            <div class="icon">📊</div>
-            <b>Statements</b>
-            <small>Mini summary</small>
-          </div>
-          <div class="money-card" onclick="toast('Bulk Send feature coming soon')">
-            <div class="icon">📤</div>
-            <b>Bulk Send</b>
-            <small>Many at once</small>
-          </div>
+    <!-- ================= BULK SEND ================= -->
+    <div id="page-bulk" hidden>
+      <h1>Bulk Send</h1>
+      <div class="panel form-group">
+        <p class="mute" style="font-size:12px;">Paste list: phone,amount (one per line). Max 500.</p>
+        <textarea id="bulkList" style="width:100%;height:100px;background:var(--void);border:1px solid var(--edge);color:var(--text);border-radius:8px;padding:10px;font-family:monospace;" placeholder="0712345678,500&#10;BEAST-123456,1000"></textarea>
+        <div class="field"><label>Source</label><select><option>M-PESA</option><option>BEAST Wallet</option></select></div>
+        <div class="field"><label>PIN</label><input type="password" placeholder="****"></div>
+        <button class="btn primary" onclick="processTx('Bulk Send', -1500); showPage('home')">SEND BATCH & AUTHORIZE</button>
+      </div>
+    </div>
+
+    <!-- ================= RECEIVE ================= -->
+    <div id="page-receive" hidden>
+      <h1>Receive</h1>
+      <div class="sub-tabs">
+        <div class="sub-tab active" onclick="setRecvTab(1)">Buyer Payment</div>
+        <div class="sub-tab" onclick="setRecvTab(2)">Deposit/Withdraw</div>
+        <div class="sub-tab" onclick="setRecvTab(3)">Agent Deposit</div>
+      </div>
+
+      <!-- RECEIVE TAB 1: BUYER LOGIN -->
+      <div id="recvTab1" class="form-group">
+        <div class="panel form-group">
+          <h3>Buyer Login</h3>
+          <p class="mute" style="font-size:11px;">Balance never shown here.</p>
+          <div class="field"><label>Buyer Name</label><input placeholder="Alice Njeri"></div>
+          <div class="field"><label>Buyer Phone</label><input placeholder="07..."></div>
+          <div class="field"><label>Buyer ID</label><input placeholder="12345678"></div>
+          <div class="field"><label>Password & PIN</label><input type="password" placeholder="****"></div>
+          <button class="btn primary" onclick="setRecvTab(1.5)">LOGIN & CONTINUE</button>
         </div>
+      </div>
 
-        <h2 style="margin-top:24px;">Quick actions</h2>
-        <div class="money-grid">
-          <div class="money-card" onclick="toast('Send coming soon')">
-            <div class="icon">📤</div>
-            <b>Send</b>
-            <small>Phone / BEAST ID</small>
-          </div>
-          <div class="money-card" onclick="toast('Bulk Send coming soon')">
-            <div class="icon">📥</div>
-            <b>Bulk Send</b>
-            <small>Many recipients</small>
-          </div>
-          <div class="money-card" onclick="toast('Receive coming soon')">
-            <div class="icon">🤝</div>
-            <b>Receive</b>
-            <small>Buyer authorization</small>
-          </div>
+      <!-- RECEIVE TAB 1.5: CHOOSE ACCOUNT -->
+      <div id="recvTab1_5" class="form-group" hidden>
+        <h3>Choose Payment Account</h3>
+        <p class="mute" style="font-size:11px;margin-bottom:10px;">Signed in as Alice Njeri</p>
+        <div class="account-option active"><span style="font-size:24px;">🐾</span><div><b>BEAST Wallet</b><br><small class="mute">BEAST-123456</small></div></div>
+        <div class="account-option"><span style="font-size:24px;">📱</span><div><b>M-PESA</b><br><small class="mute">Balance hidden</small></div></div>
+        <div class="account-option"><span style="font-size:24px;">🏦</span><div><b>Equity Bank</b><br><small class="mute">•••• 4321</small></div></div>
+        <button class="btn primary" style="margin-top:10px;" onclick="setRecvTab(1.8)">CONTINUE</button>
+      </div>
+
+      <!-- RECEIVE TAB 1.8: PAYMENT CONFIRM -->
+      <div id="recvTab1_8" class="form-group" hidden>
+        <h3>Confirm Payment</h3>
+        <div style="background:var(--void);padding:10px;border-radius:8px;margin-bottom:10px;">
+          Paying to: <b>KRISH KRISHNA</b><br>
+          Where: <b>BEAST Wallet</b>
         </div>
-        
-        <div class="money-grid">
-          <div class="money-card" onclick="toast('Withdraw coming soon')">
-            <div class="icon">🏧</div>
-            <b>Withdraw</b>
-            <small>Agent cash-out</small>
-          </div>
-          <div class="money-card" onclick="toast('Lipa Na coming soon')">
-            <div class="icon">🛒</div>
-            <b>Lipa Na</b>
-            <small>Pay a business</small>
-          </div>
-          <div class="money-card" onclick="toast('History coming soon')">
-            <div class="icon">🧾</div>
-            <b>History</b>
-            <small>Transactions</small>
-          </div>
+        <div class="field"><label>Amount (KES)</label><input type="number" placeholder="0.00"></div>
+        <div class="field"><label>PIN</label><input type="password" placeholder="****"></div>
+        <button class="btn primary" onclick="processTx('Buyer Payment', 500); showPage('home')">PAY & AUTHORIZE</button>
+      </div>
+
+      <!-- RECEIVE TAB 2: DEPOSIT/WITHDRAW -->
+      <div id="recvTab2" class="form-group" hidden>
+        <h3>Deposit / Withdraw</h3>
+        <div class="field"><label>Route</label>
+          <select><option>M-PESA to BEAST</option><option>BEAST to M-PESA</option><option>Bank to BEAST</option></select>
         </div>
+        <div class="field"><label>Amount</label><input type="number" placeholder="0.00"></div>
+        <button class="btn primary" onclick="toast('Transfer initiated')">TRANSFER</button>
+      </div>
 
-        <div class="money-grid">
-          <div class="money-card" onclick="toast('Statements coming soon')">
-            <div class="icon">📊</div>
-            <b>Statements</b>
-            <small>Mini summary</small>
-          </div>
-          <div class="money-card" onclick="toast('Profile coming soon')">
-            <div class="icon">👤</div>
-            <b>Profile</b>
-            <small>BEAST identity</small>
-          </div>
-          <div class="money-card" onclick="toast('Security coming soon')">
-            <div class="icon">🛡️</div>
-            <b>Security</b>
-            <small>Security events</small>
-          </div>
+      <!-- RECEIVE TAB 3: AGENT DEPOSIT -->
+      <div id="recvTab3" class="form-group" hidden>
+        <h3>Agent Deposit</h3>
+        <div class="field"><label>Agent Code</label><input placeholder="AGENT-001"></div>
+        <div class="field"><label>Customer Phone</label><input placeholder="07..."></div>
+        <div class="field"><label>Customer ID</label><input placeholder="12345678"></div>
+        <button class="btn ghost" onclick="toast('Agent Verified')">VERIFY AGENT</button>
+        <div class="field"><label>Amount</label><input type="number" placeholder="0.00"></div>
+        <button class="btn primary" onclick="processTx('Agent Deposit', 1000); showPage('home')">AUTHORIZE DEPOSIT</button>
+      </div>
+    </div>
+
+    <!-- ================= WITHDRAW ================= -->
+    <div id="page-withdraw" hidden>
+      <h1>Withdraw</h1>
+      <div class="panel form-group">
+        <div class="field"><label>Agent ID</label><input placeholder="AGENT-001"></div>
+        <div class="field"><label>Source</label><select><option>M-PESA</option><option>BEAST Wallet</option></select></div>
+        <div class="field"><label>Amount</label><input type="number" placeholder="0.00"></div>
+        <div class="field"><label>PIN</label><input type="password" placeholder="****"></div>
+        <button class="btn primary" onclick="processTx('Withdraw', -500); showPage('home')">WITHDRAW & AUTHORIZE</button>
+      </div>
+    </div>
+
+    <!-- ================= LIPA NA ================= -->
+    <div id="page-lipa" hidden>
+      <h1>Lipa Na</h1>
+      <div class="panel form-group">
+        <div class="field"><label>Payment Method</label><select><option>M-PESA</option><option>Card</option></select></div>
+        <div class="field"><label>Payment Type</label><select><option>Pochi la Biashara</option><option>Buy Goods</option><option>Pay Bill</option></select></div>
+        <div class="field"><label>Account Number</label><input placeholder="07... or 123456"></div>
+        <div class="field"><label>Amount</label><input type="number" placeholder="0.00"></div>
+        <button class="btn primary" onclick="processTx('Lipa Na', -200); showPage('home')">PAY & AUTHORIZE</button>
+      </div>
+    </div>
+
+    <!-- ================= HISTORY ================= -->
+    <div id="page-history" hidden>
+      <h1>History</h1>
+      <div id="historyList"></div>
+    </div>
+
+    <!-- ================= STATEMENTS ================= -->
+    <div id="page-statements" hidden>
+      <h1>Statements</h1>
+      <div class="panel">
+        <h3>Last 30 Days</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
+          <div><small class="mute">Money In</small><br><b class="pos">KES 100.00</b></div>
+          <div><small class="mute">Money Out</small><br><b class="neg">KES 500.00</b></div>
+          <div><small class="mute">Net</small><br><b class="neg">KES -400.00</b></div>
+          <div><small class="mute">Fees Paid</small><br><b>KES 14.00</b></div>
         </div>
+      </div>
+      <h3>Recent Activity</h3>
+      <div id="statementList"></div>
+    </div>
 
-        <div class="money-grid">
-          <div class="money-card" onclick="toast('Settings coming soon')">
-            <div class="icon">⚙️</div>
-            <b>Settings</b>
-            <small>App controls</small>
-          </div>
+    <!-- ================= PROFILE ================= -->
+    <div id="page-profile" hidden>
+      <h1>BEAST Identity</h1>
+      <div class="panel">
+        <h2 style="margin-top:0;">KRISH KRISHNA</h2>
+        <p class="mute">BEAST ID: <b>BEAST-017335</b></p>
+        <p class="mute">Phone: 0712345678</p>
+        <p class="mute">ID: 12345678</p>
+        <p style="margin-top:12px;">Total balance: <b>KES 7,564.00</b></p>
+        <p class="mute" style="font-size:10px;margin-top:8px;">PIN: salted SHA-256<br>Password: salted SHA-256</p>
+      </div>
+    </div>
+
+    <!-- ================= SECURITY / SETTINGS ================= -->
+    <div id="page-security" hidden>
+      <h1>Security</h1>
+      <div class="panel"><p>Session locked. Verify your identity.</p></div>
+    </div>
+
+    <div id="page-settings" hidden>
+      <h1>Settings</h1>
+      <div class="panel">
+        <h3>Appearance</h3>
+        <div class="seg" style="margin-top:10px;">
+          <button class="active" style="background:var(--green);color:#000;">Dark</button>
+          <button>Light</button>
         </div>
+      </div>
+      <div class="panel">
+        <h3>Receiving Methods</h3>
+        <div class="card">BEAST Wallet - ON</div>
+        <div class="card">Pochi la Biashara - ON</div>
+        <div class="card">Till - OFF</div>
+        <div class="card">PayBill - OFF</div>
+      </div>
+      <div class="panel form-group">
+        <h3>Change PIN</h3>
+        <div class="field"><input type="password" placeholder="Current PIN"></div>
+        <div class="field"><input type="password" placeholder="New PIN"></div>
+        <button class="btn primary" onclick="toast('PIN Updated')">CHANGE PIN</button>
+      </div>
+    </div>
 
-        <h2 id="ai">BEAST AI</h2>
-        <div class="chat" id="chat" aria-live="polite"><div class="msg ai">Hi <span id="aiName">Member</span>. Pick a question below.</div></div>
-        <div class="chips" id="aiq">
-          <button class="chip" data-a="ai" data-k="rev">Today's revenue?</button>
-          <button class="chip" data-a="ai" data-k="top">Top performing?</button>
-          <button class="chip" data-a="ai" data-k="cost">Reduce expenses?</button>
+    <!-- ================= AI ================= -->
+    <div id="page-ai" hidden>
+      <h1>BEAST AI</h1>
+      <div class="panel" style="height:300px;display:flex;flex-direction:column;">
+        <div style="flex:1;overflow-y:auto;" id="chatBox">
+          <div style="background:var(--raise);padding:8px 12px;border-radius:12px;margin-bottom:8px;width:fit-content;">Hello. How can I help?</div>
         </div>
-
-        <h2 id="shield">BEAST Shield</h2>
-        <div class="shield-hero">
-          <span data-ic="shield" data-s="56"></span>
-          <div><h3>Security status</h3><span class="ok" style="font-weight:700">All good</span><br><small>No suspicious activity.</small></div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <input style="flex:1;background:var(--void);border:1px solid var(--edge);border-radius:20px;padding:10px;" id="aiInput" placeholder="Ask...">
+          <button class="btn primary" style="width:auto;padding:10px 16px;" onclick="sendAI()">Send</button>
         </div>
-      </section>
-
-      <!-- TAB 2: TRAVEL -->
-      <section id="tab-travel" class="panel" role="tabpanel" aria-labelledby="t-travel" hidden>
-        <p class="mute" style="margin-top:6px">BEAST Travel</p>
-        <h1>Safe rides, smarter journeys.</h1>
-        <div class="seg" role="group" aria-label="Choose your role">
-          <button data-a="role" data-r="passenger" aria-pressed="true">I'm a passenger</button>
-          <button data-a="role" data-r="driver" aria-pressed="false">I'm a driver</button>
-        </div>
-        <div id="tv"></div>
-      </section>
-
-      <!-- TAB 3: BUSINESS -->
-      <section id="tab-business" class="panel" role="tabpanel" aria-labelledby="t-business" hidden>
-        <p class="mute" style="margin-top:6px">BEAST Business</p>
-        <h1>Grow your business.</h1>
-
-        <div class="seg" role="group" style="margin-bottom:16px;">
-          <button data-a="market-tab" data-r="shop" aria-pressed="false" id="btnShopMode">🛍️ Shop</button>
-          <button data-a="market-tab" data-r="biz" aria-pressed="true" id="btnBusinessMode" class="active">🏢 My Business</button>
-        </div>
-
-        <div id="shopMode" hidden>
-          <label class="search"><span data-ic="search" data-s="18"></span><input id="q" type="search" placeholder="Search products..." aria-label="Search products"></label>
-          <div class="chips" id="cats"></div>
-          <div class="prods" id="prods"></div>
-          <div id="cartbar"></div>
-        </div>
-
-        <div id="businessMode">
-          <div class="biz-dashboard">
-            <div class="kpis">
-              <div class="kpi"><small>Total Sales</small><b>KES 145,000</b></div>
-              <div class="kpi"><small>Net Earnings</small><b class="up">KES 140,650</b></div>
-            </div>
-            
-            <div class="biz-cat">📦 Commerce & Selling</div>
-            <div class="biz-grid">
-              <button class="biz-tool" onclick="showMyProducts()"><b>🛒 My Products</b><small>Manage items</small></button>
-              <button class="biz-tool"><b>📢 Advertising</b><small>Boost sales</small></button>
-              <button class="biz-tool"><b>🏷️ Deals</b><small>Discounts</small></button>
-              <button class="biz-tool"><b>⭐ Premium</b><small>Gold badge</small></button>
-            </div>
-
-            <div class="biz-cat">⚙️ Business Services</div>
-            <div class="biz-grid">
-              <button class="biz-tool"><b>🏢 Business Acct</b><small>KES 500/mo</small></button>
-              <button class="biz-tool"><b>🔌 Business API</b><small>Developer</small></button>
-              <button class="biz-tool"><b>☁️ Cloud Tools</b><small>Storage</small></button>
-              <button class="biz-tool"><b>🎓 Academy</b><small>Courses</small></button>
-            </div>
-
-            <div class="biz-cat">🤝 Network & Ops</div>
-            <div class="biz-grid">
-              <button class="biz-tool"><b>🏪 Agent Network</b><small>Commissions</small></button>
-              <button class="biz-tool"><b>🧾 Bill Payments</b><small>Utilities</small></button>
-              <button class="biz-tool"><b>👥 Referral</b><small>Invite</small></button>
-              <button class="biz-tool"><b>🤖 Advertising AI</b><small>AI Ads</small></button>
-            </div>
-          </div>
-        </div>
-
-        <div id="myProductsView" hidden>
-          <button class="link" onclick="showBusinessDashboard()" style="margin-bottom:12px;">← Back to Dashboard</button>
-          <h2>My Products</h2>
-          <div id="myProductsList"></div>
-        </div>
-
-        <p class="foot">One app. 18 powerful ways.</p>
-      </section>
-
+      </div>
     </div>
 
   </main>
 
-  <nav class="tabs" role="tablist" aria-label="BEAST sections" id="bottomNav" hidden>
-    <button class="tab" role="tab" id="t-money" aria-selected="true" aria-controls="tab-money" data-a="tab" data-t="money"><span data-ic="home"></span>Money</button>
-    <button class="tab" role="tab" id="t-travel" aria-selected="false" aria-controls="tab-travel" data-a="tab" data-t="travel"><span data-ic="pin"></span>Travel</button>
-    <button class="tab" role="tab" id="t-business" aria-selected="false" aria-controls="tab-business" data-a="tab" data-t="business"><span data-ic="building"></span>Business</button>
+  <!-- BOTTOM NAV -->
+  <nav class="tabs" id="bottomNav" style="display:flex;justify-content:space-around;padding:10px 0;border-top:1px solid var(--edge);background:var(--void);" hidden>
+    <button onclick="showPage('home')" style="color:var(--green);display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;">💰<span>Money</span></button>
+    <button onclick="showPage('ai')" style="color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;">🤖<span>AI</span></button>
   </nav>
 
-  <!-- FLOATING AI -->
-  <div id="aiFloatBtn" style="position:fixed; bottom:90px; right:20px; width:60px; height:60px; border-radius:50%; background:var(--panel); border:2px solid var(--green); display:flex; align-items:center; justify-content:center; font-size:30px; cursor:pointer; z-index:500; box-shadow:0 4px 15px rgba(29,229,139,0.3);" hidden>🤖</div>
-
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="toast" id="toast">Message</div>
 </div>
 
 <script>
-const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
-const money=n=>n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-const int=n=>n.toLocaleString('en-US');
-
 // STATE
-const S={
-  profile:null,balance:12450,hide:false,cat:'All',q:'',cart:{},
-  tx:[
-    {n:'Payment received',w:'2 min ago',a:500},
-    {n:'Sent to Sarah',w:'Today, 10:24 AM',a:-2000},
-    {n:'Airtime purchase',w:'Today, 08:15 AM',a:-200},
-  ],
+const S = {
+  isLogged: false,
+  name: 'KRISH KRISHNA',
+  beastId: 'BEAST-017335',
+  balance: 12450,
+  tx: [
+    { n: 'Payment received', w: '2 min ago', a: 500 },
+    { n: 'Sent to Sarah', w: 'Today', a: -2000 }
+  ]
 };
 
-let tt;
-function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2400)}
+// NAVIGATION
+function toggleMenu() {
+  document.getElementById('drawerMenu').classList.toggle('open');
+  document.getElementById('drawerOverlay').classList.toggle('open');
+}
 
-// MENU
-window.toggleMenu = () => {
-  const menu = $('#drawerMenu');
-  const overlay = $('#drawerOverlay');
-  if(menu.classList.contains('open')) {
-    menu.classList.remove('open');
-    overlay.classList.remove('open');
-  } else {
-    menu.classList.add('open');
-    overlay.classList.add('open');
-  }
-};
+function showPage(id) {
+  document.querySelectorAll('main > div').forEach(el => el.hidden = true);
+  const page = document.getElementById('page-' + id);
+  if(page) page.hidden = false;
+  if(id === 'history') renderHistory();
+  if(id === 'statements') renderStatements();
+  window.scrollTo(0,0);
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 2500);
+}
 
 // AUTH
-window.showRegister = () => { $('#authView').hidden=true; $('#registerView').hidden=false; $('#confirmView').hidden=true; };
-window.showLogin = () => { $('#registerView').hidden=true; $('#authView').hidden=false; $('#confirmView').hidden=true; };
-
-// REGISTRATION FLOW
-let regData = {};
-window.runAIScanner = () => {
-  toast('AI scanning ID...');
-  setTimeout(() => {
-    const names = ['John Mwangi', 'Jane Wanjiku', 'Peter Ochieng', 'Mary Atieno'];
-    const foundName = names[Math.floor(Math.random()*names.length)];
-    $('#scannedName').textContent = foundName;
-    $('#nameCard').hidden = false;
-    $('#manualNameField').hidden = true;
-    regData.name = foundName;
-    toast('ID scanned successfully.');
-  }, 1200);
-};
-
-window.editName = () => {
-  $('#nameCard').hidden = true;
-  $('#manualNameField').hidden = false;
-  $('#regName').focus();
-  regData.name = null;
-};
-
-$('#registerForm').onsubmit = (e) => {
+document.getElementById('loginForm').onsubmit = (e) => {
   e.preventDefault();
-  const phone = $('#regPhone').value;
-  const id = $('#regId').value;
-  const pass1 = $('#regPass1').value;
-  const pass2 = $('#regPass2').value;
-  const name = regData.name || $('#regName').value;
-  const pin = $('#regPin').value;
-
-  if(pass1 !== pass2) return toast('Passwords do not match.');
-  if(!name) return toast('Please provide a name.');
-
-  regData = { phone, id, name, pin }; 
-  
-  $('#confirmName').textContent = name;
-  $('#confirmPhone').textContent = phone;
-  $('#confirmId').textContent = id;
-  
-  $('#registerView').hidden = true;
-  $('#confirmView').hidden = false;
+  loginSuccess();
 };
 
-window.backToRegister = () => {
-  $('#confirmView').hidden = true;
-  $('#registerView').hidden = false;
+document.getElementById('registerForm').onsubmit = (e) => {
+  e.preventDefault();
+  showPage('confirm');
+  document.getElementById('confName').textContent = document.getElementById('regName').value || 'John Doe';
+  document.getElementById('confPhone').textContent = document.getElementById('regPhone').value;
+  document.getElementById('confId').textContent = document.getElementById('regId').value;
 };
 
-window.generateId = () => {
-  const newId = 'BEAST-' + (Math.floor(Math.random()*900000)+100000);
-  loginSuccess(regData.name, newId);
-};
-
-$('#loginForm').onsubmit=(e)=>{
-  e.preventDefault(); 
-  loginSuccess('Krish Krishna', 'BEAST-00123');
-};
-
-function loginSuccess(name, id){
-  S.profile={name:name, beastId:id};
-  
-  $('#authView').hidden=true; 
-  $('#registerView').hidden=true; 
-  $('#confirmView').hidden=true;
-  
-  $('#mainApp').hidden=false; 
-  $('#bottomNav').hidden=false; 
-  $('#aiFloatBtn').hidden=false;
-  
-  $('#userGreeting').textContent=S.profile.name.split(' ')[0];
-  $('#userBeastId').textContent=S.profile.beastId;
-  $('#aiName').textContent=S.profile.name.split(' ')[0];
-  
-  renderBal();
-  setTab('money');
+function loginSuccess() {
+  S.isLogged = true;
+  showPage('home');
+  document.getElementById('bottomNav').hidden = false;
+  document.getElementById('userGreeting').textContent = S.name.split(' ')[0];
+  document.getElementById('userBeastId').textContent = S.beastId;
+  document.getElementById('walletBal').textContent = S.balance.toLocaleString();
+  renderHistory();
 }
 
-function renderBal(){$('#bal').innerHTML=S.hide?'<small>KES</small>••••••':`<small>KES</small>${money(S.balance)}`;$('#hideBtn').textContent=S.hide?'Show':'Hide'}
-
-// TABS
-function setTab(t){
-  $('#tab-money').hidden=t!=='money';
-  $('#tab-travel').hidden=t!=='travel';
-  $('#tab-business').hidden=t!=='business';
-  $$('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===t));
-  $('#main').scrollTo({top:0,behavior:'auto'});
+// REGISTRATION AI
+function runAIScanner() {
+  toast('AI Scanning ID...');
+  setTimeout(() => {
+    document.getElementById('nameCard').hidden = false;
+    document.getElementById('manualNameField').hidden = true;
+    document.getElementById('scannedName').textContent = 'John Mwangi';
+  }, 1000);
+}
+function editName() {
+  document.getElementById('nameCard').hidden = true;
+  document.getElementById('manualNameField').hidden = false;
+}
+function generateId() {
+  loginSuccess();
 }
 
-// ACTIONS
-const A={
-  tab:b=>{ setTab(b.dataset.t); toggleMenu(); },
-  hide:()=>{S.hide=!S.hide;renderBal()},
-};
-document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b&&A[b.dataset.a])A[b.dataset.a](b,e)});
+// RECEIVE TABS
+function setRecvTab(tabNum) {
+  document.querySelectorAll('.sub-tab').forEach((el, i) => el.classList.toggle('active', i === tabNum - 1 || (tabNum === 1.5 && i === 0) || (tabNum === 1.8 && i === 0)));
+  document.querySelectorAll('.form-group[id^="recvTab"]').forEach(el => el.hidden = true);
+  if(tabNum === 1) document.getElementById('recvTab1').hidden = false;
+  if(tabNum === 1.5) document.getElementById('recvTab1_5').hidden = false;
+  if(tabNum === 1.8) document.getElementById('recvTab1_8').hidden = false;
+  if(tabNum === 2) document.getElementById('recvTab2').hidden = false;
+  if(tabNum === 3) document.getElementById('recvTab3').hidden = false;
+}
+
+// TRANSACTIONS
+function processTx(note, amount) {
+  S.balance += amount;
+  S.tx.unshift({ n: note, w: 'Just now', a: amount });
+  document.getElementById('walletBal').textContent = S.balance.toLocaleString();
+  toast('Transaction successful');
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  list.innerHTML = S.tx.map(t => `
+    <div class="card" style="border-left:3px solid ${t.a > 0 ? 'var(--green)' : 'var(--red)'};">
+      <div class="row">
+        <b>${t.n}</b>
+        <b class="${t.a > 0 ? 'pos' : 'neg'}">${t.a > 0 ? '+' : ''}KES ${Math.abs(t.a).toFixed(2)}</b>
+      </div>
+      <small class="mute">${t.w} · Ref: BST-123456</small>
+    </div>
+  `).join('');
+}
+
+function renderStatements() {
+  const list = document.getElementById('statementList');
+  list.innerHTML = S.tx.slice(0, 3).map(t => `
+    <div class="card">
+      <b>${t.n}</b> <span style="float:right;" class="${t.a > 0 ? 'pos' : 'neg'}">${t.a > 0 ? '+' : ''}KES ${Math.abs(t.a).toFixed(2)}</span><br>
+      <small class="mute">${t.w}</small>
+    </div>
+  `).join('');
+}
+
+// AI
+function sendAI() {
+  const input = document.getElementById('aiInput');
+  const chat = document.getElementById('chatBox');
+  if(!input.value) return;
+  chat.innerHTML += `<div style="background:var(--green);color:#000;padding:8px 12px;border-radius:12px;margin-bottom:8px;width:fit-content;margin-left:auto;">${input.value}</div>`;
+  const q = input.value.toLowerCase();
+  input.value = '';
+  
+  setTimeout(() => {
+    let reply = "I'm not sure. Try asking about balance, send money, or history.";
+    if(q.includes('balance')) reply = `Your balance is KES ${S.balance.toLocaleString()}.`;
+    if(q.includes('send')) reply = "To send money, go to Send on the main dashboard.";
+    chat.innerHTML += `<div style="background:var(--raise);padding:8px 12px;border-radius:12px;margin-bottom:8px;width:fit-content;">${reply}</div>`;
+    chat.scrollTop = chat.scrollHeight;
+  }, 800);
+}
+
+// INIT
+showPage('login');
 </script>
 </body>
 </html>
