@@ -11,7 +11,6 @@ function save(){localStorage.setItem(STORE,JSON.stringify(S))}
 function fmt(n){return 'KSh '+Number(n||0).toLocaleString('en-KE',{minimumFractionDigits:2,maximumFractionDigits:2})}
 function toast(msg){$('#toast').textContent=msg;$('#toast').classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.add('hidden'),3200)}
 
-// ROUTING
 function go(id){
   $$('.page').forEach(p=>p.classList.remove('active'));
   const target = $('#'+id);
@@ -22,7 +21,6 @@ function go(id){
   if(id === 'banks') renderBanks();
 }
 
-// AUTH
 $('#goToLogin').onclick = () => go('login');
 $('#goToRegister').onclick = () => go('register');
 
@@ -30,9 +28,8 @@ $('#registerForm').onsubmit = (e) => {
   e.preventDefault();
   const f = new FormData(e.currentTarget);
   S.profile = { name: f.get('name'), phone: f.get('phone'), beastId: 'BEAST-' + Math.floor(100000 + Math.random() * 900000) };
-  S.balance = 5000; // Give demo balance to test payments
-  save();
-  loginSuccess();
+  S.balance = 5000;
+  save(); loginSuccess();
 };
 
 $('#loginForm').onsubmit = (e) => {
@@ -44,17 +41,14 @@ $('#loginForm').onsubmit = (e) => {
 function loginSuccess() {
   $('#beast-nav').classList.remove('hidden');
   $('#aiFloatBtn').classList.remove('hidden');
-  go('home');
-  toast('Logged in successfully');
+  go('home'); toast('Logged in successfully');
 }
 
-// RENDER DATA
 function render() {
   if(!S.profile) return;
   $('#hello').textContent = S.profile.name.split(' ')[0];
   $('#beastId').textContent = S.profile.beastId;
   $('#balance').textContent = S.balance.toLocaleString('en-KE', {minimumFractionDigits:2});
-  
   const txHtml = S.tx.map(t => `<p><b>${t.note}</b><br>${fmt(t.amount)}</p>`).join('');
   $('#recent').innerHTML = txHtml || 'No activity yet.';
   $('#historyList').innerHTML = txHtml || 'No activity yet.';
@@ -64,45 +58,33 @@ function renderBanks() {
   $('#banksList').innerHTML = S.banks.map(b => `<p><b>${b.bank}</b><br>${b.acc}</p>`).join('') || 'No accounts linked.';
 }
 
-// MONEY ACTIONS
 $('#sendForm').onsubmit = (e) => {
-  e.preventDefault();
-  const f = new FormData(e.currentTarget);
-  const amt = Number(f.get('amount'));
+  e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount'));
   if(amt > S.balance) return toast('Insufficient balance');
-  S.balance -= amt;
-  S.tx.unshift({note: 'Sent to ' + f.get('recipient'), amount: amt});
+  S.balance -= amt; S.tx.unshift({note: 'Sent to ' + f.get('recipient'), amount: amt});
   save(); go('home'); toast('Money sent!');
 };
 
 $('#withdrawForm').onsubmit = (e) => {
-  e.preventDefault();
-  const f = new FormData(e.currentTarget);
-  const amt = Number(f.get('amount'));
+  e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount'));
   if(amt > S.balance) return toast('Insufficient balance');
-  S.balance -= amt;
-  S.tx.unshift({note: 'Withdrawn to ' + f.get('dest'), amount: amt});
+  S.balance -= amt; S.tx.unshift({note: 'Withdrawn to ' + f.get('dest'), amount: amt});
   save(); go('home'); toast('Withdrawal successful!');
 };
 
 $('#lipaForm').onsubmit = (e) => {
-  e.preventDefault();
-  const f = new FormData(e.currentTarget);
-  const amt = Number(f.get('amount'));
+  e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount'));
   if(amt > S.balance) return toast('Insufficient balance');
-  S.balance -= amt;
-  S.tx.unshift({note: 'Paid ' + f.get('merchant'), amount: amt});
+  S.balance -= amt; S.tx.unshift({note: 'Paid ' + f.get('merchant'), amount: amt});
   save(); go('home'); toast('Payment successful!');
 };
 
 $('#bankForm').onsubmit = (e) => {
-  e.preventDefault();
-  const f = new FormData(e.currentTarget);
+  e.preventDefault(); const f = new FormData(e.currentTarget);
   S.banks.push({bank: f.get('bank'), acc: f.get('acc')});
   save(); renderBanks(); e.target.reset(); toast('Bank linked!');
 };
 
-// MARKET TABS
 $('#tabMarketplace').onclick = () => {
   $('#tabMarketplace').classList.add('active'); $('#tabMyShop').classList.remove('active');
   $('#marketplaceView').classList.remove('hidden'); $('#myShopView').classList.add('hidden');
@@ -112,7 +94,6 @@ $('#tabMyShop').onclick = () => {
   $('#myShopView').classList.remove('hidden'); $('#marketplaceView').classList.add('hidden');
 };
 
-// PRODUCTS
 const products = [
   {name: 'Smart Watch', price: 2999, icon: '⌚'},
   {name: 'Running Shoes', price: 3500, icon: '👟'},
@@ -121,7 +102,7 @@ const products = [
 ];
 
 function renderProducts() {
-  $('#productList').innerHTML = products.map((p, i) => `
+  $('#productList').innerHTML = products.map((p) => `
     <div class="product-card">
       <div class="prod-img">${p.icon}</div>
       <b>${p.name}</b>
@@ -133,28 +114,22 @@ function renderProducts() {
 
 window.addToCart = (price, name) => {
   if(price > S.balance) return toast('Insufficient balance');
-  S.balance -= price;
-  S.tx.unshift({note: 'Bought ' + name, amount: price});
+  S.balance -= price; S.tx.unshift({note: 'Bought ' + name, amount: price});
   save(); render(); toast('Added to cart & paid!');
 };
 
-// AI SEARCH
+$('#aiFloatBtn').onclick = () => $('#aiPanel').classList.toggle('hidden');
 $('#aiSendBtn').onclick = () => {
   const input = $('#aiInput').value.toLowerCase();
   const box = $('#aiMessages');
   box.innerHTML += `<br><b>You:</b> ${input}<br><b>AI:</b> `;
-  
   if(input.includes('send')) box.innerHTML += "Go to Money > Send.";
   else if(input.includes('receipt') || input.includes('history')) box.innerHTML += "Go to More > History.";
-  else if(input.includes('card')) box.innerHTML += "Go to More > Card.";
   else if(input.includes('withdraw')) box.innerHTML += "Go to Money > Withdraw.";
   else box.innerHTML += "I can help you find things like Send Money, History, or Cards.";
-  
-  $('#aiInput').value = '';
-  box.scrollTop = box.scrollHeight;
+  $('#aiInput').value = ''; box.scrollTop = box.scrollHeight;
 };
 
-// NAV
 $('#moreBtn').onclick = () => $('#beast-more').classList.remove('hidden');
 $('#bm-close').onclick = () => $('#beast-more').classList.add('hidden');
 $$('[data-page]').forEach(b => b.onclick = () => go(b.dataset.page));
