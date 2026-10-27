@@ -208,7 +208,8 @@ dialog input:focus{border-color:var(--green)}
   </header>
 
   <main id="main">
-    <!-- AUTH LOGIN / REGISTER OVERLAY -->
+    
+    <!-- AUTH LOGIN -->
     <div id="authView" style="text-align:center; padding-top:40px;">
       <div style="font-size:60px; color:var(--gold); margin-bottom:12px;">♛</div>
       <h1>BEAST</h1>
@@ -228,17 +229,60 @@ dialog input:focus{border-color:var(--green)}
     </div>
 
     <!-- REGISTER FORM -->
-    <div id="registerView" hidden style="text-align:center; padding-top:40px;">
-       <div style="font-size:60px; color:var(--gold); margin-bottom:12px;">♛</div>
+    <div id="registerView" hidden style="text-align:center; padding-top:20px;">
+      <div style="font-size:40px; color:var(--gold); margin-bottom:12px;">♛</div>
       <h1>Create Account</h1>
+      
       <form id="registerForm" style="display:grid; gap:12px; text-align:left; margin-top:24px;">
-        <label class="field"><input id="regName" placeholder="Full Name" required></label>
         <label class="field"><input id="regPhone" placeholder="Phone Number" required></label>
+        <label class="field"><input id="regId" placeholder="ID Number" required></label>
+        
+        <!-- AI SCANNER -->
+        <button type="button" class="btn ghost" style="border:1px dashed var(--green); color:var(--green);" onclick="runAIScanner()">
+          <span data-ic="spark" data-s="18"></span> Scan ID with AI
+        </button>
+        
+        <!-- NAME CARD -->
+        <div id="nameCard" hidden style="background:var(--raise); border:1px solid var(--gold); padding:14px; border-radius:14px; display:flex; justify-content:space-between; align-items:center;">
+          <div style="text-align:left;">
+            <small class="mute" style="display:block; margin-bottom:2px;">Full Name</small>
+            <b id="scannedName" style="font-size:16px;">John Doe</b>
+          </div>
+          <button type="button" class="link" onclick="editName()">Edit</button>
+        </div>
+
+        <!-- MANUAL NAME (Hidden if scanned) -->
+        <label class="field" id="manualNameField">
+          <input id="regName" placeholder="Full Name" required>
+        </label>
+
+        <label class="field"><input id="regPass1" type="password" placeholder="Password" required></label>
+        <label class="field"><input id="regPass2" type="password" placeholder="Confirm Password" required></label>
         <label class="field"><input id="regPin" type="password" placeholder="Create PIN" required></label>
-        <label style="display:flex; gap:8px; font-size:13px; align-items:center;"><input type="checkbox" required> I agree to Terms & Conditions</label>
+        
+        <label style="display:flex; gap:8px; font-size:13px; align-items:center; margin-top:8px;">
+          <input type="checkbox" required> I agree to Terms & Conditions
+        </label>
+        
         <button type="submit" class="btn primary" style="margin-top:8px;">REGISTER</button>
       </form>
-      <button class="btn ghost" style="margin-top:20px;" onclick="showLogin()">Back to Login</button>
+      <button class="btn ghost" style="margin-top:20px;" onclick="showLogin()">Already have an account? Log In</button>
+    </div>
+
+    <!-- CONFIRM DETAILS PAGE -->
+    <div id="confirmView" hidden style="text-align:center; padding-top:40px;">
+      <div style="font-size:40px; color:var(--green); margin-bottom:12px;">✔</div>
+      <h1>Confirm Your Details</h1>
+      <p class="mute" style="margin-bottom:24px;">Please review before generating your BEAST ID.</p>
+      
+      <div style="background:var(--panel); border:1px solid var(--edge); padding:20px; border-radius:16px; text-align:left; display:grid; gap:12px; margin-bottom:24px;">
+        <div><small class="mute" style="display:block;">Full Name</small><b id="confirmName" style="font-size:16px;"></b></div>
+        <div><small class="mute" style="display:block;">Phone Number</small><b id="confirmPhone" style="font-size:16px;"></b></div>
+        <div><small class="mute" style="display:block;">ID Number</small><b id="confirmId" style="font-size:16px;"></b></div>
+      </div>
+      
+      <button class="btn primary" onclick="generateId()">Confirm & Generate BEAST ID</button>
+      <button class="btn ghost" style="margin-top:12px;" onclick="backToRegister()">← Edit Details</button>
     </div>
 
     <!-- MAIN APP (Hidden until login) -->
@@ -313,7 +357,6 @@ dialog input:focus{border-color:var(--green)}
           <button data-a="market-tab" data-r="biz" aria-pressed="true" id="btnBusinessMode" class="active">🏢 My Business</button>
         </div>
 
-        <!-- SHOP MODE -->
         <div id="shopMode" hidden>
           <label class="search"><span data-ic="search" data-s="18"></span><input id="q" type="search" placeholder="Search products..." aria-label="Search products"></label>
           <div class="chips" id="cats"></div>
@@ -321,7 +364,6 @@ dialog input:focus{border-color:var(--green)}
           <div id="cartbar"></div>
         </div>
 
-        <!-- MY BUSINESS MODE (12 TOOLS) -->
         <div id="businessMode">
           <div class="biz-dashboard">
             <div class="kpis">
@@ -355,7 +397,6 @@ dialog input:focus{border-color:var(--green)}
           </div>
         </div>
 
-        <!-- MY PRODUCTS VIEW -->
         <div id="myProductsView" hidden>
           <button class="link" onclick="showBusinessDashboard()" style="margin-bottom:12px;">← Back to Dashboard</button>
           <h2>My Products</h2>
@@ -473,19 +514,92 @@ $('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet')e.target.close
 const tagCls=t=>t==='Huba'?'huba':t==='Matatu'?'matatu':'';
 
 // AUTH
-window.showRegister = () => { $('#authView').hidden=true; $('#registerView').hidden=false; };
-window.showLogin = () => { $('#registerView').hidden=true; $('#authView').hidden=false; };
-$('#loginForm').onsubmit=(e)=>{e.preventDefault(); loginSuccess($('#loginPhone').value||'John Doe');};
-$('#registerForm').onsubmit=(e)=>{e.preventDefault(); loginSuccess($('#regName').value||'John Doe');};
-function loginSuccess(name){
-  S.profile={name:name, beastId:'BEAST-'+(Math.floor(Math.random()*900000)+100000)};
-  $('#authView').hidden=true; $('#registerView').hidden=true;
-  $('#mainApp').hidden=false; $('#bottomNav').hidden=false; $('#aiFloatBtn').hidden=false;
+window.showRegister = () => { $('#authView').hidden=true; $('#registerView').hidden=false; $('#confirmView').hidden=true; };
+window.showLogin = () => { $('#registerView').hidden=true; $('#authView').hidden=false; $('#confirmView').hidden=true; };
+
+// REGISTRATION FLOW
+let regData = {};
+window.runAIScanner = () => {
+  toast('AI scanning ID...');
+  setTimeout(() => {
+    // Simulate AI finding a name
+    const names = ['John Mwangi', 'Jane Wanjiku', 'Peter Ochieng', 'Mary Atieno'];
+    const foundName = names[Math.floor(Math.random()*names.length)];
+    
+    $('#scannedName').textContent = foundName;
+    $('#nameCard').hidden = false;
+    $('#manualNameField').hidden = true;
+    regData.name = foundName;
+    toast('ID scanned successfully.');
+  }, 1200);
+};
+
+window.editName = () => {
+  $('#nameCard').hidden = true;
+  $('#manualNameField').hidden = false;
+  $('#regName').focus();
+  regData.name = null;
+};
+
+$('#registerForm').onsubmit = (e) => {
+  e.preventDefault();
+  const phone = $('#regPhone').value;
+  const id = $('#regId').value;
+  const pass1 = $('#regPass1').value;
+  const pass2 = $('#regPass2').value;
+  const name = regData.name || $('#regName').value;
+  const pin = $('#regPin').value;
+
+  if(pass1 !== pass2) return toast('Passwords do not match.');
+  if(!name) return toast('Please provide a name.');
+
+  regData = { phone, id, name, pin }; // store temp
+  
+  // Show Confirm View
+  $('#confirmName').textContent = name;
+  $('#confirmPhone').textContent = phone;
+  $('#confirmId').textContent = id;
+  
+  $('#registerView').hidden = true;
+  $('#confirmView').hidden = false;
+};
+
+window.backToRegister = () => {
+  $('#confirmView').hidden = true;
+  $('#registerView').hidden = false;
+};
+
+window.generateId = () => {
+  // Now create the final profile
+  const newId = 'BEAST-' + (Math.floor(Math.random()*900000)+100000);
+  loginSuccess(regData.name, newId);
+};
+
+$('#loginForm').onsubmit=(e)=>{
+  e.preventDefault(); 
+  loginSuccess('John Doe', 'BEAST-123456');
+};
+
+function loginSuccess(name, id){
+  S.profile={name:name, beastId:id};
+  
+  // Hide Auth screens
+  $('#authView').hidden=true; 
+  $('#registerView').hidden=true; 
+  $('#confirmView').hidden=true;
+  
+  // Show App
+  $('#mainApp').hidden=false; 
+  $('#bottomNav').hidden=false; 
+  $('#aiFloatBtn').hidden=false;
+  
+  // Update UI
   $('#userGreeting').textContent=S.profile.name.split(' ')[0];
   $('#userBeastId').textContent=S.profile.beastId;
   $('#aiName').textContent=S.profile.name.split(' ')[0];
+  
   renderAll();
-  setTab('money'); // Default to money tab
+  setTab('money');
 }
 
 // RENDER APP
