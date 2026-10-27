@@ -2,7 +2,7 @@
 'use strict';
 const $ = (s, root=document) => root.querySelector(s);
 const $$ = (s, root=document) => [...root.querySelectorAll(s)];
-const STORE='beastFinalV1';
+const STORE='beastFinalV2';
 const emptyState=()=>({profile:null,balance:0,tx:[],banks:[]});
 let S=load(),toastTimer=null;
 
@@ -21,6 +21,7 @@ function go(id){
   if(id === 'banks') renderBanks();
 }
 
+// AUTHENTICATION LINKS
 $('#goToLogin').onclick = () => go('login');
 $('#goToRegister').onclick = () => go('register');
 
@@ -28,7 +29,7 @@ $('#registerForm').onsubmit = (e) => {
   e.preventDefault();
   const f = new FormData(e.currentTarget);
   S.profile = { name: f.get('name'), phone: f.get('phone'), beastId: 'BEAST-' + Math.floor(100000 + Math.random() * 900000) };
-  S.balance = 5000;
+  S.balance = 5000; // Give demo balance
   save(); loginSuccess();
 };
 
@@ -44,11 +45,14 @@ function loginSuccess() {
   go('home'); toast('Logged in successfully');
 }
 
+// RENDER DATA
 function render() {
   if(!S.profile) return;
   $('#hello').textContent = S.profile.name.split(' ')[0];
   $('#beastId').textContent = S.profile.beastId;
+  $('#receiveBeastId').textContent = S.profile.beastId;
   $('#balance').textContent = S.balance.toLocaleString('en-KE', {minimumFractionDigits:2});
+  
   const txHtml = S.tx.map(t => `<p><b>${t.note}</b><br>${fmt(t.amount)}</p>`).join('');
   $('#recent').innerHTML = txHtml || 'No activity yet.';
   $('#historyList').innerHTML = txHtml || 'No activity yet.';
@@ -58,6 +62,7 @@ function renderBanks() {
   $('#banksList').innerHTML = S.banks.map(b => `<p><b>${b.bank}</b><br>${b.acc}</p>`).join('') || 'No accounts linked.';
 }
 
+// ENABLED MONEY FEATURES
 $('#sendForm').onsubmit = (e) => {
   e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount'));
   if(amt > S.balance) return toast('Insufficient balance');
@@ -85,6 +90,7 @@ $('#bankForm').onsubmit = (e) => {
   save(); renderBanks(); e.target.reset(); toast('Bank linked!');
 };
 
+// MARKET TABS & PRODUCTS
 $('#tabMarketplace').onclick = () => {
   $('#tabMarketplace').classList.add('active'); $('#tabMyShop').classList.remove('active');
   $('#marketplaceView').classList.remove('hidden'); $('#myShopView').classList.add('hidden');
@@ -118,6 +124,7 @@ window.addToCart = (price, name) => {
   save(); render(); toast('Added to cart & paid!');
 };
 
+// AI FLOATING SEARCH
 $('#aiFloatBtn').onclick = () => $('#aiPanel').classList.toggle('hidden');
 $('#aiSendBtn').onclick = () => {
   const input = $('#aiInput').value.toLowerCase();
@@ -130,6 +137,7 @@ $('#aiSendBtn').onclick = () => {
   $('#aiInput').value = ''; box.scrollTop = box.scrollHeight;
 };
 
+// NAVIGATION
 $('#moreBtn').onclick = () => $('#beast-more').classList.remove('hidden');
 $('#bm-close').onclick = () => $('#beast-more').classList.add('hidden');
 $$('[data-page]').forEach(b => b.onclick = () => go(b.dataset.page));
