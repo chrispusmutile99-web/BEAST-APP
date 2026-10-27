@@ -27,7 +27,7 @@
   <div id="scrim" class="scrim hidden"></div>
 
   <main>
-    <!-- ================= MONEY PAGES (Same as before) ================= -->
+    <!-- ================= REGISTRATION ================= -->
     <section class="page active" id="register">
       <div class="hero"><div class="lion-mark">♛</div><div class="hero-title">BEAST</div><p>ONE NUMBER. ONE BEAST.</p><span class="pill">SECURE WALLET EXPERIENCE</span></div>
       <div class="notice warning"><b>DEMO PROTOTYPE</b><br>Identity checks, payments, and linking are simulated. Do not enter real data.</div>
@@ -42,6 +42,7 @@
       </form>
     </section>
 
+    <!-- ================= HOME ================= -->
     <section class="page" id="home">
       <div class="wallet-card">
         <div class="wallet-top"><span>♛ BEAST WALLET</span><span class="live-dot">● DEMO</span></div>
@@ -64,110 +65,225 @@
       <h3 class="section-title">Recent activity</h3><div id="recent" class="panel list">No activity yet.</div>
     </section>
 
-    <!-- (Keep all other money pages: send, receive, withdraw, lipa, card, banks, shield, history, settings unchanged) -->
+    <!-- ================= MONEY PAGES ================= -->
+    <section class="page" id="send">
+      <button class="back" data-page="home">← Home</button><h1>Send Money</h1>
+      <form id="sendForm" class="panel form">
+        <label>Recipient phone or BEAST ID<input name="recipient" required placeholder="Phone / BEAST-000001"></label>
+        <button type="button" id="verifyRecipient" class="btn secondary">VERIFY RECIPIENT (DEMO)</button>
+        <div class="verify-box">Recipient name <b id="recipientName">Not verified</b></div>
+        <label>Payment source<select name="source"><option>BEAST Wallet</option><option>Linked Bank Account</option><option>M-PESA</option><option>Airtel Money</option><option>BEAST Card (demo)</option></select></label>
+        <label>Amount (KSh)<input id="sendAmount" name="amount" type="number" min="1" step="1" required></label>
+        <div class="fee-box">Estimated demo fee <b id="sendFee">KSh 0.00</b><br>Total <b id="sendTotal">KSh 0.00</b></div>
+        <label>Confirm with demo PIN<input name="pin" type="password" required></label>
+        <button class="btn primary full">SCAN & CONFIRM DEMO TRANSFER</button>
+      </form>
+    </section>
 
-    <!-- ================= BEAST TRAVEL ================= -->
+    <section class="page" id="receive">
+      <button class="back" data-page="home">← Home</button><h1>Receive Money</h1>
+      <div class="tabs"><button class="tab active" data-receive-tab="collect">Collect payment</button><button class="tab" data-receive-tab="settings">Payment settings</button><button class="tab" data-receive-tab="movement">Deposit / withdraw</button></div>
+      <div id="receiveCollect" class="tab-panel">
+        <div class="panel"><div class="section-heading"><div><span class="eyebrow">YOUR DEFAULT DESTINATION</span><h2 id="destinationSummary">BEAST Wallet</h2></div><span class="status-badge">DEFAULT</span></div><p class="muted" id="destinationNumberSummary">Incoming payments use your selected default destination.</p></div>
+        <form id="buyerLogin" class="panel form">
+          <h2>Buyer authorization</h2>
+          <label>Buyer's phone or BEAST ID<input name="buyer" required></label>
+          <label>Buyer password (demo only)<input name="password" type="password" required></label>
+          <label>Buyer PIN (demo only)<input name="pin" type="password" required></label>
+          <button class="btn primary full">CONTINUE TO SHIELD SCAN</button>
+        </form>
+        <form id="collectForm" class="panel form hidden">
+          <h2>Confirm collection</h2>
+          <label>Payment source<select name="source"><option>BEAST Wallet</option><option>M-PESA</option></select></label>
+          <div class="verify-box">Seller's destination <b id="destination">BEAST Wallet</b></div>
+          <label>Amount (KSh)<input name="amount" type="number" min="1" required></label>
+          <button class="btn primary full">SCAN & AUTHORIZE DEMO PAYMENT</button>
+        </form>
+      </div>
+      <div id="receiveSettings" class="tab-panel hidden">
+        <form id="destinationForm" class="panel form">
+          <h2>Default destination</h2>
+          <label>Destination<select name="destination" id="destinationSelect"><option>BEAST Wallet</option><option>M-PESA</option><option>Airtel Money</option><option>Bank Account</option></select></label>
+          <label>Reference<input name="destNumber"></label>
+          <label>Name<input name="destName"></label>
+          <button class="btn primary full">SAVE</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="page" id="withdraw">
+      <button class="back" data-page="home">← Home</button><h1>Withdraw</h1>
+      <form id="withdrawForm" class="panel form">
+        <label>Source<select name="source" id="withdrawSource"><option>BEAST Wallet</option><option>Linked Bank Account</option><option>M-PESA</option></select></label>
+        <div id="linkedBankSummary" class="verify-box">Linked bank details.</div>
+        <label>Destination type<select name="destinationType"><option>Agent / BEAST number</option><option>M-PESA</option><option>Bank Account</option></select></label>
+        <label>Account number<input name="destination" required></label>
+        <button type="button" id="verifyAgent" class="btn secondary">VERIFY DESTINATION (DEMO)</button><div class="verify-box">Verified details <b id="agentName">Not verified</b></div>
+        <label>Amount (KSh)<input name="amount" type="number" min="1" required></label>
+        <button class="btn primary full">SCAN & CONFIRM WITHDRAWAL</button>
+      </form>
+    </section>
+
+    <section class="page" id="lipa">
+      <button class="back" data-page="home">← Home</button><h1>Lipa Na BEAST</h1>
+      <div class="service-grid">
+        <button data-service="Pochi la Biashara">Pochi la Biashara</button><button data-service="Buy Goods / Till">Buy Goods</button><button data-service="Paybill">Paybill</button><button data-service="GlobalPay">GlobalPay</button>
+      </div>
+      <form id="lipaForm" class="panel form">
+        <div class="section-heading"><div><span class="eyebrow">SELECTED SERVICE</span><h2 id="lipaTitle">Pochi la Biashara</h2></div></div>
+        <div id="lipaFields"></div>
+        <label>Amount (KSh)<input name="amount" type="number" min="1" required></label>
+        <button type="button" id="verifyBusiness" class="btn secondary">VERIFY DETAILS</button><div class="verify-box">Business <b id="businessName">Not verified</b></div>
+        <button class="btn primary full">CONFIRM PAYMENT</button>
+      </form>
+    </section>
+
+    <!-- ================= UPDATED CARD PAGE ================= -->
+    <section class="page" id="card">
+      <button class="back" data-page="home">← Home</button><h1>BEAST Card</h1>
+      
+      <div class="beast-card" id="beastCardVisual">
+        <div class="card-top">
+          <div class="card-brand"><span>♛</span><b>BEAST<small>ONE NUMBER. ONE BEAST.</small></b></div>
+          <span class="card-type" id="cardTypeLabel">PREVIEW</span>
+        </div>
+        <div class="lion-art">🦁</div>
+        <div class="chip-row"><span class="chip"></span><span class="contactless">)))</span></div>
+        <div class="card-number">•••• &nbsp; •••• &nbsp; •••• &nbsp; <span id="cardLast4">0000</span></div>
+        <div class="card-bottom">
+          <div><small>CARDHOLDER</small><b id="cardholder">BEAST MEMBER</b><small id="cardBeastId">BEAST ID • BEAST-000001</small></div>
+          <div class="card-pay">BEAST<br>PAY</div>
+        </div>
+      </div>
+
+      <div class="notice warning" id="cardNotice">Demo prototype. No real card has been issued.</div>
+
+      <div id="cardStatus" class="panel status-panel" style="text-align:center; font-weight:bold; color:var(--gold);">
+        STATUS: PREVIEW ONLY
+      </div>
+
+      <div id="cardControls" class="panel form hidden">
+        <h3>Card Controls</h3>
+        <button id="freeze" class="btn secondary full">FREEZE CARD ❄️</button>
+        <button id="cardQr" class="btn secondary full">SHOW QR CODE</button>
+      </div>
+
+      <div id="getCardOptions" class="two-col card-actions" style="margin-top:16px;">
+        <button id="getVirtual" class="btn primary">GET VIRTUAL — FREE</button>
+        <button id="orderPhysical" class="btn gold">ORDER PHYSICAL — KSh 100*</button>
+      </div>
+      <p class="fine-print">*Physical card price is proposed.</p>
+    </section>
+
+    <section class="page" id="banks">
+      <button class="back" data-page="home">← Home</button><h1>Linked Accounts</h1>
+      <form id="bankForm" class="panel form">
+        <label>Account type<select name="type"><option>Bank Account</option><option>M-PESA</option></select></label>
+        <label>Provider<select name="provider"><option>Equity Bank</option><option>Safaricom M-PESA</option></select></label>
+        <label>Nickname<input name="nickname" required></label>
+        <label>Reference<input name="reference" required></label>
+        <label>Holder name<input name="holder" required></label>
+        <button class="btn primary full">SAVE</button>
+      </form>
+      <h3 class="section-title">Saved accounts</h3><div id="banksList" class="panel list">No linked accounts yet.</div>
+    </section>
+
+    <!-- ================= SHIELD ================= -->
+    <section class="page" id="shield">
+      <button class="back" data-page="home">← Home</button><h1>BEAST Shield</h1>
+      <div class="scanner-panel">
+        <div class="scanner" id="scannerVisual"><div class="scan-ring ring-one"></div><div class="scan-ring ring-two"></div><div class="scan-ring ring-three"></div><div class="scan-sweep"></div><div class="scan-lion">♛</div></div>
+        <h2 id="shieldStatus">READY TO SCAN</h2><p id="shieldMessage">Security checks simulated.</p>
+        <div class="progress-track"><div id="scanProgress"></div></div>
+      </div>
+      <div class="panel form"><button id="scanNow" class="btn primary full">RUN DEMO SCAN</button><button id="lockdown" class="btn danger full">LOCK ACCOUNT</button></div>
+    </section>
+
+    <section class="page" id="history"><button class="back" data-page="home">← Home</button><h1>Transaction History</h1><div id="historyList" class="panel list">No transactions yet.</div></section>
+    <section class="page" id="settings"><button class="back" data-page="home">← Home</button><h1>Settings</h1><div class="panel form"><button id="logout" class="btn secondary full">LOG OUT OF DEMO</button></div></section>
+
+    <!-- ================= TRAVEL ================= -->
     <section class="page" id="travel">
       <div id="travelWelcome">
         <div class="travel-hero"><div class="lion-mark">♛</div><h1>BEAST<br><span class="gold-text">TRAVEL</span></h1><p class="muted">SAFE RIDES • SMARTER JOURNEYS</p></div>
         <div class="travel-globe">🌍</div>
-        <div class="panel" style="text-align:center; margin-bottom:20px;"><h3>Welcome to BEAST Travel</h3><p class="muted">Find rides, move faster, reach further.</p></div>
-        <button class="travel-role-btn" id="btnPassengerMode"><div class="role-icon">🧍</div><div class="role-text"><b>I'm a Passenger</b><small>Find a ride near you (Free)</small></div><div class="role-arrow">›</div></button>
-        <button class="travel-role-btn" id="btnDriverMode"><div class="role-icon">🛵</div><div class="role-text"><b>I'm a Driver</b><small>Earn with BEAST Travel</small></div><div class="role-arrow">›</div></button>
+        <button class="travel-role-btn" id="btnPassengerMode"><div class="role-icon">🧍</div><div class="role-text"><b>I'm a Passenger</b><small>Find a ride near you (Free)</small></div></button>
+        <button class="travel-role-btn" id="btnDriverMode"><div class="role-icon">🛵</div><div class="role-text"><b>I'm a Driver</b><small>Earn with BEAST Travel</small></div></button>
       </div>
-      <!-- Travel Logic (Same as before) -->
-      <div id="travelPassenger" class="hidden">... (Passenger Form & Waiting) ...</div>
-      <div id="travelDriverRegister" class="hidden">... (Driver Form) ...</div>
-      <div id="travelRadarUI" class="hidden">... (Radar UI) ...</div>
-      <div id="travelActiveTrip" class="hidden">... (Active Trip) ...</div>
-      <div id="travelTripCompleted" class="hidden">... (Completed) ...</div>
+      <div id="travelPassenger" class="hidden">
+        <button class="back" id="backToWelcomePassenger">← Back</button><h1>Request a Ride</h1>
+        <form id="travelPassengerForm" class="panel form">
+          <label>Pickup<input name="pickup" required placeholder="e.g. Malava Junction"></label>
+          <label>Destination<input name="destination" required placeholder="e.g. Kakamega Town"></label>
+          <button class="btn primary full">REQUEST RIDE</button>
+        </form>
+        <div id="passengerWaiting" class="hidden panel" style="text-align:center;">Finding driver...</div>
+      </div>
+      <div id="travelDriverRegister" class="hidden">
+        <button class="back" id="backToWelcome">← Back</button><h1>Driver Registration</h1>
+        <form id="travelDriverForm" class="panel form">
+          <label>Full Name<input name="name" required></label>
+          <label>Operating Town<input name="town" required></label>
+          <label>Vehicle Registration<input name="registration" required></label>
+          <button class="btn primary full">PAY SUBSCRIPTION & CONTINUE</button>
+        </form>
+      </div>
+      <div id="travelRadarUI" class="hidden">
+        <div class="radar-container"><div class="radar-circle" id="radarScanner"><div class="radar-sweep"></div><div class="radar-grid"></div><div class="radar-center"><div class="radar-lion">♛</div></div></div></div>
+        <div class="scan-status-bar"><div class="scan-text">SCANNING...</div></div>
+        <div id="travelDriverRequests" class="passenger-list"></div>
+      </div>
+      <div id="travelActiveTrip" class="hidden">
+        <div class="trip-header"><h2 id="tripTitle">On the Way</h2></div>
+        <button class="btn primary full" id="btnArrived">✔ Arrived at Pickup</button>
+      </div>
+      <div id="travelTripCompleted" class="hidden">
+        <div class="completed-hero"><div class="check-circle">✔</div><h2>Trip Completed!</h2><button class="btn primary full" id="btnScanAgain">🔄 Scan Again</button></div>
+      </div>
     </section>
 
-    <!-- ================= NEW COMBINED MARKET & BUSINESS ================= -->
+    <!-- ================= MARKET & BUSINESS ================= -->
     <section class="page" id="market">
-      <!-- Toggle Switch -->
       <div class="segmented-control">
         <button class="seg-btn active" id="btnShopMode">🛍️ Shop</button>
         <button class="seg-btn" id="btnBusinessMode">🏢 My Business</button>
       </div>
-
-      <!-- SHOP MODE -->
       <div id="shopMode">
-        <div class="market-search"><input type="text" placeholder="🔍 Search products or shops..."></div>
-        <div class="market-categories">
-          <span class="cat-pill active">Electronics</span><span class="cat-pill">Fashion</span><span class="cat-pill">Home</span><span class="cat-pill">Groceries</span>
-        </div>
-        <h3 class="section-title" style="display:flex; justify-content:space-between;">Featured Products <span style="color:var(--green); font-size:12px;">See All</span></h3>
-        <div class="market-grid" id="shopProductGrid">
+        <div class="market-search"><input type="text" placeholder="🔍 Search products..."></div>
+        <div class="market-grid">
           <div class="product-card"><div class="prod-img" style="background:#1a221d; display:flex; align-items:center; justify-content:center; font-size:30px;">⌚</div><div class="prod-info"><b>Smart Watch</b><small>KES 2,999</small><button class="btn primary" style="margin-top:8px; padding:6px;">Add to Cart</button></div></div>
           <div class="product-card"><div class="prod-img" style="background:#1a221d; display:flex; align-items:center; justify-content:center; font-size:30px;">👟</div><div class="prod-info"><b>Running Shoes</b><small>KES 3,500</small><button class="btn primary" style="margin-top:8px; padding:6px;">Add to Cart</button></div></div>
         </div>
       </div>
-
-      <!-- BUSINESS MODE -->
       <div id="businessMode" class="hidden">
         <div class="biz-dashboard">
-          <div class="biz-header">
-            <div><small class="muted">Business Dashboard</small><h2>Welcome, Merchant</h2></div>
-            <div class="biz-badge">Premium</div>
-          </div>
-          
+          <div class="biz-header"><div><small class="muted">Business Dashboard</small><h2>Welcome, Merchant</h2></div><div class="biz-badge">Premium</div></div>
           <div class="biz-stats-grid">
             <div class="biz-stat-box"><small>Today's Sales</small><b>KES 48,750</b></div>
             <div class="biz-stat-box"><small>Monthly Sales</small><b>KES 520,000</b></div>
           </div>
-
           <div class="biz-tools-grid">
-            <button class="biz-tool-btn"><span>📊</span><b>Reports</b></button>
-            <button class="biz-tool-btn"><span>📦</span><b>Inventory</b></button>
-            <button class="biz-tool-btn"><span>💸</span><b>Expenses</b></button>
-            <button class="biz-tool-btn"><span>🛒</span><b>Orders</b></button>
-          </div>
-
-          <div class="biz-subscriptions">
-            <h3>Subscription Plans</h3>
-            <div class="sub-grid">
-              <div class="sub-card"><b>Free</b><small>KES 0</small><ul><li>Basic Sales</li><li>5 Products</li></ul></div>
-              <div class="sub-card active"><b>Pro</b><small>KES 500/mo</small><ul><li>Advanced Tools</li><li>Business AI</li></ul></div>
-              <div class="sub-card"><b>Premium</b><small>KES 1,500/mo</small><ul><li>All Features</li><li>Ads AI</li></ul></div>
-            </div>
+            <button class="biz-tool-btn"><span>📊</span><b>Reports</b></button><button class="biz-tool-btn"><span>📦</span><b>Inventory</b></button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ================= NEW BEAST AI ================= -->
+    <!-- ================= AI ================= -->
     <section class="page" id="ai">
       <h1>BEAST AI</h1>
-      <div class="ai-header">
-        <div class="ai-globe">🤖</div>
-        <h2>Your Intelligent Assistant</h2>
-        <p class="muted">Empowering your business & security</p>
-      </div>
-      
-      <!-- AI Selection Grid -->
       <div class="ai-grid" id="aiSelectionGrid">
-        <button class="ai-card" data-ai="admin"><span>🧠</span><b>Admin AI</b><small>Business insights & reports</small></button>
-        <button class="ai-card" data-ai="customer"><span>💬</span><b>Customer AI</b><small>Help & support</small></button>
-        <button class="ai-card" data-ai="fraud"><span>🛡️</span><b>Fraud Detection</b><small>Security monitoring</small></button>
-        <button class="ai-card" data-ai="business"><span>🏪</span><b>Business AI</b><small>Merchant tools</small></button>
-        <button class="ai-card" data-ai="advertising"><span>📢</span><b>Advertising AI</b><small>Campaign optimization</small></button>
-        <button class="ai-card" data-ai="analytics"><span>📊</span><b>Financial Analytics</b><small>Revenue & expenses</small></button>
+        <button class="ai-card" data-ai="admin"><span>🧠</span><b>Admin AI</b></button>
+        <button class="ai-card" data-ai="customer"><span>💬</span><b>Customer AI</b></button>
+        <button class="ai-card" data-ai="fraud"><span>🛡️</span><b>Fraud Detection</b></button>
+        <button class="ai-card" data-ai="business"><span>🏪</span><b>Business AI</b></button>
+        <button class="ai-card" data-ai="advertising"><span>📢</span><b>Advertising AI</b></button>
+        <button class="ai-card" data-ai="analytics"><span>📊</span><b>Analytics AI</b></button>
       </div>
-
-      <!-- AI Chat Interface (Hidden initially) -->
       <div id="aiChatContainer" class="hidden">
-        <div class="ai-chat-header">
-          <button id="backToAIGrid" class="back">← Back</button>
-          <h3 id="aiChatTitle">AI Assistant</h3>
-        </div>
-        <div id="aiChatMessages" class="ai-chat-messages">
-          <!-- Messages injected via JS -->
-        </div>
-        <div class="ai-chat-input">
-          <input type="text" id="aiInputBox" placeholder="Ask me anything...">
-          <button id="aiSendBtn" class="btn primary">Send</button>
-        </div>
+        <div class="ai-chat-header"><button id="backToAIGrid" class="back">← Back</button><h3 id="aiChatTitle">AI Assistant</h3></div>
+        <div id="aiChatMessages" class="ai-chat-messages"></div>
+        <div class="ai-chat-input"><input type="text" id="aiInputBox" placeholder="Ask me anything..."><button id="aiSendBtn" class="btn primary">Send</button></div>
       </div>
     </section>
 
