@@ -2,7 +2,7 @@
 'use strict';
 const $ = (s, root=document) => root.querySelector(s);
 const $$ = (s, root=document) => [...root.querySelectorAll(s)];
-const STORE='beastFinalV6'; // Bumped to merge everything
+const STORE='beastFinalV6';
 const emptyState=()=>({profile:null,balance:0,tx:[],banks:[],myProducts:[],publicProducts:[],card:{type:'Preview only',frozen:false,active:false}});
 let S=load(),toastTimer=null;
 
@@ -11,7 +11,6 @@ function save(){localStorage.setItem(STORE,JSON.stringify(S))}
 function fmt(n){return 'KSh '+Number(n||0).toLocaleString('en-KE',{minimumFractionDigits:2,maximumFractionDigits:2})}
 function toast(msg){$('#toast').textContent=msg;$('#toast').classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.add('hidden'),3200)}
 
-// ROUTER
 function go(id){
   $$('.page').forEach(p=>p.classList.remove('active'));
   const target = $('#'+id); if(target) target.classList.add('active');
@@ -24,7 +23,6 @@ function go(id){
   if(id === 'card') renderCard();
 }
 
-// AUTH
 $('#goToLogin').onclick = () => go('login');
 $('#goToRegister').onclick = () => go('register');
 
@@ -32,7 +30,7 @@ $('#registerForm').onsubmit = (e) => {
   e.preventDefault();
   const f = new FormData(e.currentTarget);
   S.profile = { name: f.get('name'), phone: f.get('phone'), beastId: 'BEAST-' + Math.floor(100000 + Math.random() * 900000) };
-  S.balance = 5000; // Give demo balance
+  S.balance = 5000;
   save(); loginSuccess();
 };
 
@@ -48,7 +46,6 @@ function loginSuccess() {
   go('home'); toast('Logged in successfully');
 }
 
-// RENDER DATA
 function render() {
   if(!S.profile) return;
   $('#hello').textContent = S.profile.name.split(' ')[0];
@@ -63,13 +60,11 @@ function renderBanks() {
   $('#banksList').innerHTML = S.banks.map(b => `<p><b>${b.bank}</b><br>${b.acc}</p>`).join('') || 'No accounts linked.';
 }
 
-// MONEY ACTIONS
 $('#sendForm').onsubmit = (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount')); if(amt > S.balance) return toast('Insufficient balance'); S.balance -= amt; S.tx.unshift({note: 'Sent to ' + f.get('recipient'), amount: amt}); save(); go('home'); toast('Money sent!'); };
 $('#withdrawForm').onsubmit = (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount')); if(amt > S.balance) return toast('Insufficient balance'); S.balance -= amt; S.tx.unshift({note: 'Withdrawn to ' + f.get('dest'), amount: amt}); save(); go('home'); toast('Withdrawal successful!'); };
 $('#lipaForm').onsubmit = (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount')); if(amt > S.balance) return toast('Insufficient balance'); S.balance -= amt; S.tx.unshift({note: 'Paid ' + f.get('merchant'), amount: amt}); save(); go('home'); toast('Payment successful!'); };
 $('#bankForm').onsubmit = (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); S.banks.push({bank: f.get('bank'), acc: f.get('acc')}); save(); renderBanks(); e.target.reset(); toast('Bank linked!'); };
 
-// CARD LOGIC
 function renderCard(){
   if(!S.profile) return;
   $('#cardholder').textContent = S.profile.name.toUpperCase();
@@ -94,7 +89,6 @@ $('#orderPhysical').onclick = () => { const cost = 100; if(S.balance < cost) ret
 $('#freeze').onclick = () => { S.card.frozen = !S.card.frozen; save(); renderCard(); };
 $('#cardQr').onclick = () => { alert('QR Code generated.'); };
 
-// TRAVEL LOGIC
 function resetTravel() {
   $('#travelWelcome').classList.remove('hidden'); $('#travelPassenger').classList.add('hidden');
   $('#travelDriverRegister').classList.add('hidden'); $('#travelRadarUI').classList.add('hidden');
@@ -105,7 +99,6 @@ $('#btnDriverMode').onclick = () => { $('#travelWelcome').classList.add('hidden'
 $('#travelDriverForm').onsubmit = (e) => { e.preventDefault(); if(!confirm('Pay KSh 200 monthly subscription? (Demo)')) return; localStorage.setItem('beastDriverReg', 'true'); $('#travelDriverRegister').classList.add('hidden'); $('#travelRadarUI').classList.remove('hidden'); $('#radarScanner').classList.add('scanning'); };
 $('#travelPassengerForm').onsubmit = (e) => { e.preventDefault(); $('#travelPassengerForm').classList.add('hidden'); $('#passengerWaiting').classList.remove('hidden'); setTimeout(() => { $('#passengerWaiting').innerHTML = '<h3>Driver Found!</h3><p>John Mwangi is on the way.</p>'; }, 3000); };
 
-// MARKET & 12 BUSINESS TOOLS
 function resetMarketToggle() {
   $('#btnShopMode').classList.add('active'); $('#btnBusinessMode').classList.remove('active');
   $('#shopMode').classList.remove('hidden'); $('#businessMode').classList.add('hidden');
@@ -130,33 +123,32 @@ function renderMarket() {
     </div>
   `).join('');
 }
-function buyProduct(price, name) { if(price > S.balance) return toast('Insufficient balance'); S.balance -= price; S.tx.unshift({note: 'Bought ' + name, amount: price}); save(); render(); toast('Purchase successful!'); }
+window.buyProduct = (price, name) => { if(price > S.balance) return toast('Insufficient balance'); S.balance -= price; S.tx.unshift({note: 'Bought ' + name, amount: price}); save(); render(); toast('Purchase successful!'); };
 
-function showMyProducts() {
+window.showMyProducts = () => {
   $('#businessMode').classList.add('hidden'); $('#myProductsView').classList.remove('hidden'); $('#fabAddProduct').classList.remove('hidden');
   if(S.myProducts.length === 0) { $('#myProductsList').innerHTML = '<p class="muted" style="text-align:center; margin-top:20px;">No products yet. Tap the + button to add.</p>'; return; }
   $('#myProductsList').innerHTML = S.myProducts.map(p => `
     <div class="product-list-item"><div class="icon">${p.icon}</div><div class="info"><b>${p.name}</b><small>KES ${p.price} · ${p.stock} in stock</small></div><button class="btn secondary" style="width:auto; padding:8px 12px; font-size:12px;">Edit</button></div>
   `).join('');
 }
-function showBusinessDashboard() { $('#myProductsView').classList.add('hidden'); $('#businessMode').classList.remove('hidden'); $('#fabAddProduct').classList.add('hidden'); }
+window.showBusinessDashboard = () => { $('#myProductsView').classList.add('hidden'); $('#businessMode').classList.remove('hidden'); $('#fabAddProduct').classList.add('hidden'); };
 
-// WIZARD
 let currentStep = 1; let wizardData = {};
-function openWizard() {
+window.openWizard = () => {
   currentStep = 1; wizardData = {};
   $('#wizardStep1').classList.remove('hidden'); $('#wizardStep2').classList.add('hidden'); $('#wizardStep3').classList.add('hidden'); $('#wizardStep4').classList.add('hidden');
   updateProgress(); $('#wizardModal').classList.remove('hidden');
 }
-function closeWizard() { $('#wizardModal').classList.add('hidden'); }
-function nextStep(step) {
+window.closeWizard = () => { $('#wizardModal').classList.add('hidden'); }
+window.nextStep = (step) => {
   if(step === 2) { const form = $('#wizardForm1'); if(!form.reportValidity()) return; const f = new FormData(form); wizardData.name = f.get('name'); wizardData.category = f.get('category'); wizardData.desc = f.get('desc'); }
   if(step === 4) { const form = $('#wizardForm3'); if(!form.reportValidity()) return; const f = new FormData(form); wizardData.price = Number(f.get('price')); wizardData.stock = Number(f.get('stock')); }
   currentStep = step; $('#wizardStep1').classList.add('hidden'); $('#wizardStep2').classList.add('hidden'); $('#wizardStep3').classList.add('hidden'); $('#wizardStep4').classList.add('hidden');
   $(`#wizardStep${step}`).classList.remove('hidden'); updateProgress();
 }
 function updateProgress() { $$('.w-progress-bar').forEach((bar, i) => { bar.classList.toggle('active', i < currentStep); }); }
-function publishProduct() {
+window.publishProduct = () => {
   const isBoosted = $('#boostCheckbox').checked; const boostCost = 500;
   if(isBoosted && S.balance < boostCost) return toast('Insufficient balance for Boost (KES 500).');
   if(isBoosted) { S.balance -= boostCost; S.tx.unshift({note: 'Boosted ' + wizardData.name, amount: boostCost}); }
@@ -166,7 +158,6 @@ function publishProduct() {
   showMyProducts(); renderMarket();
 }
 
-// AI
 $('#aiFloatBtn').onclick = () => {
   const input = prompt("BEAST AI: How can I help you? (Try: send, withdraw, history)");
   if(!input) return; const lower = input.toLowerCase();
@@ -175,11 +166,13 @@ $('#aiFloatBtn').onclick = () => {
   else toast("I can help you find Send, Withdraw, or History.");
 };
 
-// NAV
 $('#moreBtn').onclick = () => $('#beast-more').classList.remove('hidden');
 $('#bm-close').onclick = () => $('#beast-more').classList.add('hidden');
 $$('[data-page]').forEach(b => b.onclick = () => go(b.dataset.page));
 
-// INIT
+function closeMenu() { $('#drawer').classList.remove('open'); $('#scrim').classList.add('hidden'); }
+$('#menuOpen').onclick = () => { $('#drawer').classList.add('open'); $('#scrim').classList.remove('hidden'); };
+$('#menuClose').onclick = closeMenu; $('#scrim').onclick = closeMenu;
+
 if(S.profile) { loginSuccess(); } else { go('register'); }
 })();
