@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#03100c">
 <title>BEAST — One Number. One Beast.</title>
 <style>
-:root { --bg: #0b0f0d; --panel: #121814; --panel-2: #1a221d; --border: #223028; --text: #e8f5ee; --muted: #8a9a90; --green: #00e08a; --green-dark: #0b3d2c; --gold: #c9a227; --red: #ff4d4d; --blue: #00d2ff; }
+:root { --bg: #0b0f0d; --panel: #121814; --panel-2: #1a221d; --border: #223028; --text: #e8f5ee; --muted: #8a9a90; --green: #00e08a; --green-dark: #0b3d2c; --gold: #c9a227; --red: #ff4d4d; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
 .app-shell { max-width: 480px; margin: 0 auto; min-height: 100vh; padding-bottom: 80px; position: relative; }
@@ -57,7 +57,6 @@ h2 { font-size: 18px; margin-bottom: 8px; }
 .btn { background: var(--panel-2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%; text-align: center; }
 .btn.primary { background: var(--green); color: #000; border: none; }
 .btn.secondary { background: var(--panel-2); }
-.btn.danger { background: rgba(255,77,77,0.2); color: var(--red); border: 1px solid var(--red); }
 .btn.full { width: 100%; margin-top: 8px; }
 .link-btn { background: none; border: none; color: var(--green); cursor: pointer; text-decoration: underline; font-size: 13px; }
 
@@ -216,26 +215,22 @@ h2 { font-size: 18px; margin-bottom: 8px; }
       <div id="historyList" class="panel list">No activity yet.</div>
     </section>
 
-    <!-- ================= MARKET TAB (EXACT) ================= -->
+    <!-- ================= MARKET TAB ================= -->
     <section class="page" id="market">
       <div class="market-tabs">
         <button class="market-tab active" id="tabMarketplace">Marketplace</button>
         <button class="market-tab" id="tabMyShop">My Shop</button>
       </div>
 
-      <!-- Marketplace View -->
       <div id="marketplaceView">
         <input type="text" class="search-bar" placeholder="🔍 Search products or shops...">
         <div class="banner">
           <div><h3>Top Deals</h3><small>Up to 50% Off</small></div>
           <button class="btn primary" style="width:auto; padding:6px 12px; font-size:12px;">Shop Now</button>
         </div>
-        <div class="product-grid" id="productList">
-          <!-- Products injected via JS -->
-        </div>
+        <div class="product-grid" id="productList"></div>
       </div>
 
-      <!-- My Shop View -->
       <div id="myShopView" class="hidden">
         <div class="seller-stats">
           <div class="s-stat"><b>KES 145,000</b><small>Total Sales</small></div>
@@ -243,18 +238,16 @@ h2 { font-size: 18px; margin-bottom: 8px; }
           <div class="s-stat"><b>KES 7,250</b><small>Commission</small></div>
         </div>
         <div class="seller-actions">
-          <button class="btn primary" onclick="alert('Add Product Modal')">+ Add Product</button>
-          <button class="btn secondary" onclick="alert('Withdraw Funds to Wallet')">Withdraw Funds</button>
-          <button class="btn secondary" onclick="alert('My Products')">My Products</button>
-          <button class="btn secondary" onclick="alert('Orders')">Orders</button>
+          <button class="btn primary">+ Add Product</button>
+          <button class="btn secondary">Withdraw Funds</button>
+          <button class="btn secondary">My Products</button>
+          <button class="btn secondary">Orders</button>
         </div>
       </div>
     </section>
-
   </main>
 
-  <!-- ================= FLOATING AI ================= -->
-  <div id="aiFloatBtn" class="ai-float-btn hidden" onclick="document.getElementById('aiPanel').classList.toggle('hidden')">🤖</div>
+  <div id="aiFloatBtn" class="ai-float-btn hidden">🤖</div>
   <div id="aiPanel" class="ai-panel hidden">
     <h4>BEAST AI Search</h4>
     <div class="ai-chat-box" id="aiMessages">Hi! How can I help you find something in BEAST?</div>
@@ -264,7 +257,6 @@ h2 { font-size: 18px; margin-bottom: 8px; }
     </div>
   </div>
 
-  <!-- ================= NAV & MODALS ================= -->
   <nav id="beast-nav" class="hidden">
     <button class="bnav-btn active" data-page="home">💰<span>Money</span></button>
     <button class="bnav-btn" data-page="market">🛒<span>Market</span></button>
