@@ -12,7 +12,6 @@ body { background: var(--bg); color: var(--text); font-family: system-ui, -apple
 .app-shell { max-width: 480px; margin: 0 auto; min-height: 100vh; padding-bottom: 80px; position: relative; }
 .hidden { display: none !important; }
 
-/* HEADER */
 .topbar { display: flex; justify-content: space-between; align-items: center; padding: 16px; position: sticky; top: 0; background: rgba(11,15,13,0.9); backdrop-filter: blur(10px); z-index: 100; }
 .icon-btn { background: none; border: none; color: var(--text); font-size: 20px; cursor: pointer; }
 .brand { display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--text); cursor: pointer; }
@@ -21,7 +20,6 @@ body { background: var(--bg); color: var(--text); font-family: system-ui, -apple
 .brand strong { font-size: 16px; letter-spacing: 1px; }
 .brand small { font-size: 8px; color: var(--muted); letter-spacing: 0.5px; }
 
-/* DRAWER & PAGES */
 .drawer { position: fixed; top: 0; left: -280px; width: 260px; height: 100vh; background: var(--panel); border-right: 1px solid var(--border); z-index: 2000; padding: 20px; transition: transform 0.3s ease; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
 .drawer.open { transform: translateX(280px); }
 .drawer h3 { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
@@ -35,7 +33,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
 .back { background: none; border: none; color: var(--green); font-size: 14px; margin-bottom: 16px; cursor: pointer; padding: 0; }
 .section-title { font-size: 16px; margin: 24px 0 12px; color: var(--muted); }
 
-/* PANELS & BUTTONS */
 .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
 .btn { background: var(--panel-2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%; text-align: center; }
 .btn.primary { background: var(--green); color: #000; border: none; }
@@ -49,7 +46,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
 .switch-auth { text-align: center; margin-top: 16px; font-size: 12px; }
 .link-btn { background: none; border: none; color: var(--green); cursor: pointer; text-decoration: underline; font-size: 13px; }
 
-/* NAV & TOAST */
 #beast-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; display: flex; justify-content: space-around; background: rgba(11,15,13,0.95); backdrop-filter: blur(10px); border-top: 1px solid var(--border); padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); max-width: 480px; margin: 0 auto; }
 .bnav-btn { flex: 1; background: none; border: none; color: var(--muted); font-size: 18px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
 .bnav-btn.active { color: var(--green); }
@@ -64,7 +60,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
 .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--panel-2); color: var(--text); padding: 12px 20px; border-radius: 30px; font-size: 13px; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 2000; transition: opacity 0.3s; max-width: 90%; text-align: center; }
 .toast.hidden { opacity: 0; pointer-events: none; }
 
-/* BEAST CARD */
 .beast-card { background: linear-gradient(135deg, #0b3d2c, #00e08a33); border: 1px solid var(--green); border-radius: 20px; padding: 24px; margin-bottom: 16px; position: relative; overflow: hidden; transition: all 0.3s ease; }
 .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
 .card-brand { display: flex; gap: 6px; align-items: center; }
@@ -88,7 +83,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
 .status-panel.active { color: var(--green); border: 1px solid var(--green); }
 .status-panel.frozen { color: #00d2ff; border: 1px solid #00d2ff; }
 
-/* MARKET / BUSINESS DASHBOARD */
 .segmented-control { display: flex; background: var(--panel); border-radius: 12px; padding: 4px; margin-bottom: 20px; border: 1px solid var(--border); }
 .seg-btn { flex: 1; background: none; border: none; color: var(--muted); padding: 10px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
 .seg-btn.active { background: var(--green); color: #000; }
@@ -123,7 +117,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
 .w-progress-bar.active { background: var(--green); }
 .upload-box { border: 2px dashed var(--border); padding: 30px; text-align: center; border-radius: 12px; cursor: pointer; color: var(--muted); font-size: 24px; }
 
-/* TRAVEL */
 .travel-hero { text-align: center; padding: 20px 0; }
 .gold-text { color: var(--gold); }
 .travel-globe { font-size: 100px; text-align: center; margin: 10px 0 20px; }
@@ -137,8 +130,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
 .radar-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 .radar-lion { font-size: 40px; color: var(--gold); z-index: 10; }
 @keyframes radarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-/* AI */
 .ai-float-btn { position: fixed; bottom: 90px; left: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--panel-2); border: 2px solid var(--green); display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; z-index: 500; box-shadow: 0 4px 15px rgba(0,224,138,0.3); }
 </style>
 </head>
@@ -162,7 +153,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
   <div id="scrim" class="scrim hidden"></div>
 
   <main>
-    <!-- ================= REGISTRATION ================= -->
     <section class="page active" id="register">
       <div class="hero"><div class="lion-mark">♛</div><div class="hero-title">BEAST</div><p>ONE NUMBER. ONE BEAST.</p><span class="pill">SECURE WALLET EXPERIENCE</span></div>
       <div class="notice warning"><b>DEMO PROTOTYPE</b><br>Identity checks, payments, and linking are simulated. Do not enter real data.</div>
@@ -179,7 +169,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
       </form>
     </section>
 
-    <!-- ================= LOGIN ================= -->
     <section class="page" id="login">
       <div class="hero"><div class="lion-mark">♛</div><h2>Welcome Back</h2></div>
       <form id="loginForm" class="panel form">
@@ -191,7 +180,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
       </form>
     </section>
 
-    <!-- ================= HOME ================= -->
     <section class="page" id="home">
       <div class="wallet-card">
         <div class="wallet-top"><span>♛ BEAST WALLET</span><span class="live-dot">● DEMO</span></div>
@@ -214,14 +202,12 @@ h1 { font-size: 22px; margin-bottom: 16px; }
       <h3 class="section-title">Recent activity</h3><div id="recent" class="panel list">No activity yet.</div>
     </section>
 
-    <!-- ================= MONEY PAGES ================= -->
     <section class="page" id="send"><button class="back" data-page="home">← Home</button><h1>Send Money</h1><form id="sendForm" class="panel form"><label>Recipient Phone<input name="recipient" required></label><label>Amount (KSh)<input name="amount" type="number" required></label><button class="btn primary full">SEND</button></form></section>
     <section class="page" id="withdraw"><button class="back" data-page="home">← Home</button><h1>Withdraw</h1><form id="withdrawForm" class="panel form"><label>Destination<select name="dest"><option>M-PESA</option><option>Bank</option></select></label><label>Phone/Account<input name="acc" required></label><label>Amount (KSh)<input name="amount" type="number" required></label><button class="btn primary full">WITHDRAW</button></form></section>
     <section class="page" id="lipa"><button class="back" data-page="home">← Home</button><h1>Lipa Na</h1><form id="lipaForm" class="panel form"><label>Merchant / Paybill<input name="merchant" required></label><label>Amount (KSh)<input name="amount" type="number" required></label><button class="btn primary full">PAY</button></form></section>
     <section class="page" id="banks"><button class="back" data-page="home">← Home</button><h1>Linked Accounts</h1><form id="bankForm" class="panel form"><label>Bank Name<input name="bank" required></label><label>Account Number<input name="acc" required></label><button class="btn primary full">LINK ACCOUNT</button></form><div id="banksList" class="panel list">No accounts linked.</div></section>
     <section class="page" id="history"><button class="back" data-page="home">← Home</button><h1>History</h1><div id="historyList" class="panel list">No activity yet.</div></section>
 
-    <!-- ================= CARD ================= -->
     <section class="page" id="card">
       <button class="back" data-page="home">← Home</button><h1>BEAST Card</h1>
       <div class="beast-card" id="beastCardVisual">
@@ -238,10 +224,8 @@ h1 { font-size: 22px; margin-bottom: 16px; }
       <p class="fine-print">*Physical card price is proposed.</p>
     </section>
 
-    <!-- ================= SHIELD ================= -->
     <section class="page" id="shield"><button class="back" data-page="home">← Home</button><h1>BEAST Shield</h1><div class="panel form"><button id="scanNow" class="btn primary full">RUN DEMO SCAN</button><button id="lockdown" class="btn danger full">LOCK ACCOUNT</button></div></section>
 
-    <!-- ================= TRAVEL ================= -->
     <section class="page" id="travel">
       <div id="travelWelcome">
         <div class="travel-hero"><div class="lion-mark">♛</div><h1>BEAST<br><span class="gold-text">TRAVEL</span></h1><p class="muted">SAFE RIDES • SMARTER JOURNEYS</p></div>
@@ -254,7 +238,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
       <div id="travelRadarUI" class="hidden"><div class="radar-container"><div class="radar-circle" id="radarScanner"><div class="radar-sweep"></div><div class="radar-center"><div class="radar-lion">♛</div></div></div></div></div>
     </section>
 
-    <!-- ================= MARKET ================= -->
     <section class="page" id="market">
       <div class="segmented-control">
         <button class="seg-btn active" id="btnShopMode">🛍️ Marketplace</button>
@@ -302,7 +285,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
     </section>
   </main>
 
-  <!-- ================= WIZARD ================= -->
   <div id="wizardModal" class="modal-overlay hidden">
     <div class="modal-content">
       <div class="wizard-header"><h2>Create Product</h2><button class="icon-btn" onclick="closeWizard()">✕</button></div>
@@ -318,11 +300,9 @@ h1 { font-size: 22px; margin-bottom: 16px; }
     </div>
   </div>
 
-  <!-- ================= FLOATING ================= -->
   <div id="aiFloatBtn" class="ai-float-btn hidden">🤖</div>
   <button id="fabAddProduct" class="fab hidden" onclick="openWizard()">+</button>
 
-  <!-- ================= BOTTOM NAV ================= -->
   <nav id="beast-nav" class="hidden">
     <button class="bnav-btn active" data-page="home">💰<span>Money</span></button>
     <button class="bnav-btn" data-page="travel">🛵<span>Travel</span></button>
@@ -330,7 +310,6 @@ h1 { font-size: 22px; margin-bottom: 16px; }
     <button class="bnav-btn" id="moreBtn">☰<span>More</span></button>
   </nav>
 
-  <!-- ================= MORE MENU ================= -->
   <div id="beast-more" class="bm-overlay hidden">
     <div class="bm-sheet">
       <div class="bm-head"><strong>More</strong><button id="bm-close">✕</button></div>
@@ -345,6 +324,183 @@ h1 { font-size: 22px; margin-bottom: 16px; }
 
   <div id="toast" class="toast hidden" role="status"></div>
 </div>
-<script src="app.js"></script>
+
+<script>
+const $ = (s, root=document) => root.querySelector(s);
+const $$ = (s, root=document) => [...root.querySelectorAll(s)];
+const STORE='beastFinalV6';
+const emptyState=()=>({profile:null,balance:0,tx:[],banks:[],myProducts:[],publicProducts:[],card:{type:'Preview only',frozen:false,active:false}});
+let S=load(),toastTimer=null;
+
+function load(){try{return {...emptyState(),...JSON.parse(localStorage.getItem(STORE)||'{}')}}catch{return emptyState()}}
+function save(){localStorage.setItem(STORE,JSON.stringify(S))}
+function fmt(n){return 'KSh '+Number(n||0).toLocaleString('en-KE',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function toast(msg){$('#toast').textContent=msg;$('#toast').classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.add('hidden'),3200)}
+
+function go(id){
+  $$('.page').forEach(p=>p.classList.remove('active'));
+  const target = $('#'+id); if(target) target.classList.add('active');
+  closeMenu(); scrollTo(0,0);
+  $$('.bnav-btn').forEach(b=>b.classList.toggle('active', b.dataset.page === id));
+  if(id === 'home' || id === 'history') render();
+  if(id === 'banks') renderBanks();
+  if(id === 'market') { renderMarket(); resetMarketToggle(); }
+  if(id === 'travel') resetTravel();
+  if(id === 'card') renderCard();
+}
+
+$('#goToLogin').onclick = () => go('login');
+$('#goToRegister').onclick = () => go('register');
+
+$('#registerForm').onsubmit = (e) => {
+  e.preventDefault();
+  const f = new FormData(e.currentTarget);
+  S.profile = { name: f.get('name'), phone: f.get('phone'), beastId: 'BEAST-' + Math.floor(100000 + Math.random() * 900000) };
+  S.balance = 5000;
+  save(); loginSuccess();
+};
+
+$('#loginForm').onsubmit = (e) => {
+  e.preventDefault();
+  if(!S.profile) return toast('Please register first.');
+  loginSuccess();
+};
+
+function loginSuccess() {
+  $('#beast-nav').classList.remove('hidden');
+  $('#aiFloatBtn').classList.remove('hidden');
+  go('home'); toast('Logged in successfully');
+}
+
+function render() {
+  if(!S.profile) return;
+  $('#hello').textContent = S.profile.name.split(' ')[0];
+  $('#beastId').textContent = S.profile.beastId;
+  $('#balance').textContent = S.balance.toLocaleString('en-KE', {minimumFractionDigits:2});
+  const txHtml = S.tx.map(t => `<p><b>${t.note}</b><br>${fmt(t.amount)}</p>`).join('');
+  $('#recent').innerHTML = txHtml || 'No activity yet.';
+  $('#historyList').innerHTML = txHtml || 'No activity yet.';
+}
+
+function renderBanks() {
+  $('#banksList').innerHTML = S.banks.map(b => `<p><b>${b.bank}</b><br>${b.acc}</p>`).join('') || 'No accounts linked.';
+}
+
+$('#sendForm').onsubmit = (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount')); if(amt > S.balance) return toast('Insufficient balance'); S.balance -= amt; S.tx.unshift({note: 'Sent to ' + f.get('recipient'), amount: amt}); save(); go('home'); toast('Money sent!'); };
+$('#withdrawForm').onsubmit = (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount')); if(amt > S.balance) return toast('Insufficient balance'); S.balance -= amt; S.tx.unshift({note: 'Withdrawn to ' + f.get('dest'), amount: amt}); save(); go('home'); toast('Withdrawal successful!'); };
+$('#lipaForm').onsubmit = (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const amt = Number(f.get('amount')); if(amt > S.balance) return toast('Insufficient balance'); S.balance -= amt; S.tx.unshift({note: 'Paid ' + f.get('merchant'), amount: amt}); save(); go('home'); toast('Payment successful!'); };
+$('#bankForm').onsubmit = (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); S.banks.push({bank: f.get('bank'), acc: f.get('acc')}); save(); renderBanks(); e.target.reset(); toast('Bank linked!'); };
+
+function renderCard(){
+  if(!S.profile) return;
+  $('#cardholder').textContent = S.profile.name.toUpperCase();
+  $('#cardBeastId').textContent = 'BEAST ID • ' + S.profile.beastId;
+  $('#cardLast4').textContent = S.profile.beastId.slice(-4);
+  const visual = $('#beastCardVisual'); const typeLabel = $('#cardTypeLabel'); const statusBox = $('#cardStatus'); const controls = $('#cardControls'); const getOptions = $('#getCardOptions'); const notice = $('#cardNotice');
+  visual.classList.remove('frozen', 'active-card');
+  if(S.card.type === 'Preview only') {
+    typeLabel.textContent = 'PREVIEW'; statusBox.textContent = 'STATUS: PREVIEW ONLY'; statusBox.className = 'panel status-panel';
+    controls.classList.add('hidden'); getOptions.classList.remove('hidden'); notice.classList.remove('hidden');
+  } else if (S.card.type === 'Virtual') {
+    typeLabel.textContent = 'VIRTUAL CARD'; getOptions.classList.add('hidden'); notice.classList.add('hidden'); controls.classList.remove('hidden'); visual.classList.add('active-card');
+    if(S.card.frozen) { visual.classList.add('frozen'); statusBox.textContent = 'STATUS: FROZEN ❄️'; statusBox.className = 'panel status-panel frozen'; $('#freeze').textContent = 'UNFREEZE CARD ☀️'; } 
+    else { statusBox.textContent = 'STATUS: ACTIVE ✅'; statusBox.className = 'panel status-panel active'; $('#freeze').textContent = 'FREEZE CARD ❄️'; }
+  } else if (S.card.type === 'Physical ordered') {
+    typeLabel.textContent = 'PHYSICAL ORDER'; statusBox.textContent = 'STATUS: ORDER PLACED (Awaiting Delivery)'; statusBox.className = 'panel status-panel';
+    getOptions.classList.add('hidden'); controls.classList.add('hidden'); notice.classList.add('hidden');
+  }
+}
+$('#getVirtual').onclick = () => { S.card.type = 'Virtual'; S.card.active = true; S.card.frozen = false; save(); renderCard(); toast('Virtual card activated!'); };
+$('#orderPhysical').onclick = () => { const cost = 100; if(S.balance < cost) return toast('Insufficient balance (KSh 100 required).'); if(!confirm(`Pay KSh ${cost} from wallet for physical card? (Demo only)`)) return; S.balance -= cost; S.card.type = 'Physical ordered'; save(); renderCard(); render(); toast('Physical card ordered!'); };
+$('#freeze').onclick = () => { S.card.frozen = !S.card.frozen; save(); renderCard(); };
+$('#cardQr').onclick = () => { alert('QR Code generated.'); };
+
+function resetTravel() {
+  $('#travelWelcome').classList.remove('hidden'); $('#travelPassenger').classList.add('hidden');
+  $('#travelDriverRegister').classList.add('hidden'); $('#travelRadarUI').classList.add('hidden');
+}
+$('#backToWelcomePassenger').onclick = resetTravel; $('#backToWelcome').onclick = resetTravel;
+$('#btnPassengerMode').onclick = () => { $('#travelWelcome').classList.add('hidden'); $('#travelPassenger').classList.remove('hidden'); };
+$('#btnDriverMode').onclick = () => { $('#travelWelcome').classList.add('hidden'); if (localStorage.getItem('beastDriverReg')) { $('#travelRadarUI').classList.remove('hidden'); $('#radarScanner').classList.add('scanning'); } else { $('#travelDriverRegister').classList.remove('hidden'); } };
+$('#travelDriverForm').onsubmit = (e) => { e.preventDefault(); if(!confirm('Pay KSh 200 monthly subscription? (Demo)')) return; localStorage.setItem('beastDriverReg', 'true'); $('#travelDriverRegister').classList.add('hidden'); $('#travelRadarUI').classList.remove('hidden'); $('#radarScanner').classList.add('scanning'); };
+$('#travelPassengerForm').onsubmit = (e) => { e.preventDefault(); $('#travelPassengerForm').classList.add('hidden'); $('#passengerWaiting').classList.remove('hidden'); setTimeout(() => { $('#passengerWaiting').innerHTML = '<h3>Driver Found!</h3><p>John Mwangi is on the way.</p>'; }, 3000); };
+
+function resetMarketToggle() {
+  $('#btnShopMode').classList.add('active'); $('#btnBusinessMode').classList.remove('active');
+  $('#shopMode').classList.remove('hidden'); $('#businessMode').classList.add('hidden');
+}
+$('#btnShopMode').onclick = resetMarketToggle;
+$('#btnBusinessMode').onclick = () => {
+  $('#btnBusinessMode').classList.add('active'); $('#btnShopMode').classList.remove('active');
+  $('#businessMode').classList.remove('hidden'); $('#shopMode').classList.add('hidden');
+};
+
+function renderMarket() {
+  if(S.publicProducts.length === 0) {
+    S.publicProducts = [ { name: 'Running Shoes', price: 3500, icon: '👟', seller: 'BEAST Store' }, { name: 'Headphones', price: 1200, icon: '🎧', seller: 'BEAST Store' } ];
+    save();
+  }
+  $('#publicProductList').innerHTML = S.publicProducts.map(p => `
+    <div class="product-card">
+      <div class="prod-img">${p.icon}</div>
+      <b>${p.name}</b>
+      <small>KES ${p.price}</small>
+      <button class="btn primary full" style="padding:8px; font-size:12px; margin-top:8px;" onclick="buyProduct(${p.price}, '${p.name}')">Buy Now</button>
+    </div>
+  `).join('');
+}
+window.buyProduct = (price, name) => { if(price > S.balance) return toast('Insufficient balance'); S.balance -= price; S.tx.unshift({note: 'Bought ' + name, amount: price}); save(); render(); toast('Purchase successful!'); };
+
+window.showMyProducts = () => {
+  $('#businessMode').classList.add('hidden'); $('#myProductsView').classList.remove('hidden'); $('#fabAddProduct').classList.remove('hidden');
+  if(S.myProducts.length === 0) { $('#myProductsList').innerHTML = '<p class="muted" style="text-align:center; margin-top:20px;">No products yet. Tap the + button to add.</p>'; return; }
+  $('#myProductsList').innerHTML = S.myProducts.map(p => `
+    <div class="product-list-item"><div class="icon">${p.icon}</div><div class="info"><b>${p.name}</b><small>KES ${p.price} · ${p.stock} in stock</small></div><button class="btn secondary" style="width:auto; padding:8px 12px; font-size:12px;">Edit</button></div>
+  `).join('');
+}
+window.showBusinessDashboard = () => { $('#myProductsView').classList.add('hidden'); $('#businessMode').classList.remove('hidden'); $('#fabAddProduct').classList.add('hidden'); };
+
+let currentStep = 1; let wizardData = {};
+window.openWizard = () => {
+  currentStep = 1; wizardData = {};
+  $('#wizardStep1').classList.remove('hidden'); $('#wizardStep2').classList.add('hidden'); $('#wizardStep3').classList.add('hidden'); $('#wizardStep4').classList.add('hidden');
+  updateProgress(); $('#wizardModal').classList.remove('hidden');
+}
+window.closeWizard = () => { $('#wizardModal').classList.add('hidden'); }
+window.nextStep = (step) => {
+  if(step === 2) { const form = $('#wizardForm1'); if(!form.reportValidity()) return; const f = new FormData(form); wizardData.name = f.get('name'); wizardData.category = f.get('category'); wizardData.desc = f.get('desc'); }
+  if(step === 4) { const form = $('#wizardForm3'); if(!form.reportValidity()) return; const f = new FormData(form); wizardData.price = Number(f.get('price')); wizardData.stock = Number(f.get('stock')); }
+  currentStep = step; $('#wizardStep1').classList.add('hidden'); $('#wizardStep2').classList.add('hidden'); $('#wizardStep3').classList.add('hidden'); $('#wizardStep4').classList.add('hidden');
+  $(`#wizardStep${step}`).classList.remove('hidden'); updateProgress();
+}
+function updateProgress() { $$('.w-progress-bar').forEach((bar, i) => { bar.classList.toggle('active', i < currentStep); }); }
+window.publishProduct = () => {
+  const isBoosted = $('#boostCheckbox').checked; const boostCost = 500;
+  if(isBoosted && S.balance < boostCost) return toast('Insufficient balance for Boost (KES 500).');
+  if(isBoosted) { S.balance -= boostCost; S.tx.unshift({note: 'Boosted ' + wizardData.name, amount: boostCost}); }
+  const newProduct = { name: wizardData.name, price: wizardData.price, stock: wizardData.stock, icon: '📦', seller: S.profile.name };
+  S.myProducts.push(newProduct); S.publicProducts.unshift(newProduct);
+  save(); closeWizard(); toast(isBoosted ? 'Product published and boosted!' : 'Product published!');
+  showMyProducts(); renderMarket();
+}
+
+$('#aiFloatBtn').onclick = () => {
+  const input = prompt("BEAST AI: How can I help you? (Try: send, withdraw, history)");
+  if(!input) return; const lower = input.toLowerCase();
+  if(lower.includes('send')) toast("Go to Money > Send.");
+  else if(lower.includes('history')) toast("Go to Money > History.");
+  else toast("I can help you find Send, Withdraw, or History.");
+};
+
+$('#moreBtn').onclick = () => $('#beast-more').classList.remove('hidden');
+$('#bm-close').onclick = () => $('#beast-more').classList.add('hidden');
+$$('[data-page]').forEach(b => b.onclick = () => go(b.dataset.page));
+
+function closeMenu() { $('#drawer').classList.remove('open'); $('#scrim').classList.add('hidden'); }
+$('#menuOpen').onclick = () => { $('#drawer').classList.add('open'); $('#scrim').classList.remove('hidden'); };
+$('#menuClose').onclick = closeMenu; $('#scrim').onclick = closeMenu;
+
+if(S.profile) { loginSuccess(); } else { go('register'); }
+</script>
 </body>
 </html>
