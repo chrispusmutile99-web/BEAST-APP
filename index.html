@@ -11,8 +11,171 @@
 
 .biz-panel{margin-top:12px}.biz-service{min-height:145px}.biz-service .price{color:var(--gold);font-weight:900;font-size:17px;margin-top:4px}.biz-service .trial{font-size:11px;color:var(--green);margin-top:3px}.biz-panel .tabs{margin-bottom:12px}.biz-status{display:inline-block;padding:4px 8px;border:1px solid var(--edge);border-radius:99px;font-size:11px;color:var(--gold)}.biz-list-row{display:flex;gap:10px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--edge)}.biz-list-row:last-child{border-bottom:0}.biz-list-row>div{flex:1;min-width:0}.biz-list-row small{display:block}
 
-/* New BEAST Travel app (embedded) */
-#travel{padding:0}#travelFrame{display:block;width:100%;height:calc(100dvh - 160px);min-height:640px;border:0;background:transparent;border-radius:24px}
+/* BEAST TRAVEL STYLES (from Image) */
+.travel-phone{position:relative;width:100%;max-width:430px;margin:0 auto;background:#040a07;border-radius:30px;overflow:hidden;border:1px solid #215a41;}
+.travel-screen{position:absolute;inset:0;overflow-y:auto;padding:0 18px 32px;background:radial-gradient(120% 50% at 50% -8%,rgba(31,229,143,.13),transparent 62%),#040a07;transform:translateX(100%);visibility:hidden;transition:transform .34s cubic-bezier(.2,.8,.2,1),visibility 0s .34s;display:flex;flex-direction:column;}
+.travel-screen.active{transform:none;visibility:visible;transition-delay:0s;position:relative;}
+.travel-screen.behind{transform:translateX(-16%)}
+.travel-screen::-webkit-scrollbar{width:0}
+.travel-screen>h1:focus,.travel-screen>*:focus{outline:none}
+.twm{font-family:system-ui,sans-serif;font-weight:800;letter-spacing:.07em;background:linear-gradient(180deg,#ffd96e,#d9962a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tcrown{width:34px;height:30px;color:#f2c14e}
+.tbrandline{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.tbrandline .twm{font-size:17px;line-height:1;display:block}
+.tbrandline small{display:block;color:#86a898;font-size:11.5px;margin-top:3px}
+.ttop,.tbar{position:sticky;top:0;z-index:6;display:flex;align-items:center;gap:10px;padding:14px 0 12px;background:linear-gradient(#040a07 72%,transparent)}
+.tbar h2{font-family:system-ui,sans-serif;font-weight:700;font-size:15px;letter-spacing:.01em;flex:1;margin:0}
+.ticon-btn{position:relative;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:#0a1a12;border:1px solid #17382a;color:#1fe58f;flex:none}
+.ticon-btn:active{background:#0f2418}
+.tbadge{position:absolute;top:-4px;right:-4px;min-width:19px;height:19px;border-radius:10px;background:#f2c14e;color:#201500;font-size:11px;font-weight:800;display:grid;place-items:center;padding:0 5px;border:2px solid #040a07}
+.tchip{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:999px;background:#0a1a12;border:1px solid #17382a;font-size:13px;font-weight:600;white-space:nowrap}
+.tchip.gold{color:#ffd96e;border-color:#5b4716;background:rgba(242,193,78,.08)}
+.tchip.green{color:#1fe58f;border-color:#215a41;background:rgba(31,229,143,.08)}
+.tchip.red{color:#ff9b9b;border-color:#5a2424;background:rgba(255,107,107,.08)}
+.th1-big{font-family:system-ui,sans-serif;font-weight:700;font-size:21px;line-height:1.25;letter-spacing:-.01em;margin:6px 0 6px}
+.tsub{color:#86a898;font-size:14px}
+.tmuted{color:#86a898}
+.tsm{font-size:12.5px}
+.tbtn{width:100%;min-height:52px;border-radius:14px;font-weight:700;font-size:15.5px;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s,box-shadow .2s;border:0;cursor:pointer}
+.tbtn:active{transform:scale(.985)}
+.tbtn.primary{background:linear-gradient(180deg,#2cf29b,#12c777);color:#03140c;box-shadow:0 10px 28px -8px rgba(31,229,143,.55)}
+.tbtn.ghost{border:1.5px solid #215a41;color:#e9fff4;background:rgba(31,229,143,.04)}
+.tbtn.danger{border:1.5px solid #5a2424;color:#ff9b9b}
+.tbtn.sm{min-height:40px;width:auto;padding:0 16px;font-size:14px;border-radius:12px}
+.tstack{display:grid;gap:12px}
+.tlink{color:#1fe58f;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.tcard{background:#0a1a12;border:1px solid #17382a;border-radius:20px;padding:16px}
+.tcard.glow{border-color:#215a41;background:linear-gradient(160deg,#0f2418,#0a1a12);box-shadow:inset 0 0 0 1px rgba(31,229,143,.05),0 16px 40px -22px rgba(31,229,143,.5)}
+.tfield{display:grid;gap:6px}
+.tlab{font-size:12.5px;color:#86a898;font-weight:500}
+.tinp{display:flex;align-items:center;gap:10px;background:#0a1a12;border:1px solid #17382a;border-radius:14px;padding:0 14px;height:52px;color:#1fe58f}
+.tinp:focus-within{border-color:#1fe58f;box-shadow:0 0 0 3px rgba(31,229,143,.14)}
+.tinp.bad{border-color:#ff6b6b}
+.tinp input,.tinp select{flex:1;min-width:0;height:100%;background:none;border:0;outline:0;color:#e9fff4;font:inherit;font-size:15.5px}
+.tinp input::placeholder{color:#4d6d5e}
+.tinp select{appearance:none;-webkit-appearance:none;cursor:pointer;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2386a898' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 0 center}
+.tinp option{background:#0b1a13;color:#e9fff4}
+.terr{color:#ff6b6b;font-size:12.5px}
+.tform{display:grid;gap:12px}
+.tnote{display:flex;gap:10px;border:1px solid #5b4716;background:rgba(242,184,78,.07);border-radius:14px;padding:12px 14px;color:#f3d79a;font-size:13px}
+.tnote.green{border-color:#215a41;background:rgba(31,229,143,.07);color:#bff5da}
+.tcheck{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:#86a898}
+.tcheck input{width:22px;height:22px;accent-color:#1fe58f;flex:none}
+.tseg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:#0a1a12;border:1px solid #17382a;border-radius:16px;margin:6px 0 16px}
+.tseg button{height:42px;border-radius:12px;font-weight:600;font-size:14px;color:#86a898;border:0;background:none;cursor:pointer}
+.tseg button[aria-selected="true"]{background:linear-gradient(180deg,#2cf29b,#12c777);color:#03140c;font-weight:700}
+.thero{position:relative;overflow:hidden;display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px;padding:18px 8px 14px 18px}
+.thero h2{font-family:system-ui,sans-serif;font-size:19px;line-height:1.2;font-weight:700;margin:0}
+.thero p{color:#86a898;margin:4px 0 12px}
+.thero svg.car{width:178px;margin-right:-30px}
+.tpills{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.tswap{position:absolute;right:0;top:50%;transform:translateY(-50%)}
+.troutebox{position:relative;display:grid;gap:10px}
+.troutebox .tfield{padding-right:0}
+.tswapbtn{position:absolute;right:12px;top:50%;transform:translateY(-4px);width:36px;height:36px;border-radius:50%;background:#0f2418;border:1px solid #215a41;color:#1fe58f;display:grid;place-items:center;z-index:2;border:0;cursor:pointer}
+.tswapbtn .ti{width:18px;height:18px}
+.tquick{display:flex;gap:8px;overflow-x:auto;padding:2px 0 4px;scrollbar-width:none}
+.tquick::-webkit-scrollbar{display:none}
+.tquick button{flex:none;height:34px;padding:0 13px;border-radius:999px;border:1px solid #17382a;background:#0a1a12;font-size:13px;color:#86a898;cursor:pointer}
+.tquick button:active,.tquick button.on{border-color:#1fe58f;color:#1fe58f}
+.test{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:rgba(31,229,143,.07);border:1px dashed #215a41;font-size:14px}
+.test b{color:#1fe58f}
+.tlist{display:grid;gap:10px}
+.trow{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:16px;background:#0a1a12;border:1px solid #17382a}
+.trow .tic{width:42px;height:42px;border-radius:12px;background:rgba(31,229,143,.1);display:grid;place-items:center;color:#1fe58f;flex:none}
+.trow .tgrow{flex:1;min-width:0}
+.trow .tt{font-weight:600}
+.trow .ts{font-size:12.5px;color:#86a898;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trow .tamt{font-weight:700;text-align:right}
+.trow .tamt small{display:block;font-weight:500;color:#86a898;font-size:11.5px}
+.tride-card{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:14px;border-radius:18px;background:#0a1a12;border:1px solid #17382a}
+.tride-card.pick{border-color:#1fe58f;box-shadow:0 0 0 1px #1fe58f inset,0 14px 34px -20px #1fe58f}
+.tride-card .tic{width:56px;height:56px;border-radius:16px;background:rgba(31,229,143,.1);display:grid;place-items:center;color:#1fe58f}
+.tride-card .tic .ti{width:30px;height:30px}
+.tride-card .tprice{text-align:right;font-weight:800;font-family:system-ui,sans-serif;font-size:14px}
+.tride-card .tgo{grid-column:1/-1;margin-top:2px}
+.tfilters{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none}
+.tfilters::-webkit-scrollbar{display:none}
+.tfilters button{flex:none;height:36px;padding:0 14px;border-radius:999px;border:1px solid #17382a;background:#0a1a12;font-size:13px;font-weight:600;color:#86a898;cursor:pointer}
+.tfilters button[aria-pressed="true"]{background:rgba(31,229,143,.14);border-color:#1fe58f;color:#1fe58f}
+.tmap{position:relative;margin:0 -18px;height:250px;background:#06130c;border-block:1px solid #17382a;overflow:hidden}
+.tmap svg{width:100%;height:100%;display:block}
+.tmap .road{stroke:#12301f;stroke-width:5;fill:none;stroke-linecap:round}
+.tmap .road.s{stroke-width:2.5;stroke:#0f2a1b}
+.tmap .block{fill:#081a10}
+.tmap .park{fill:#0a2a19}
+.tpulse{transform-box:fill-box;transform-origin:center;animation:tpulse 1.8s ease-out infinite}
+.tpulse.p2{animation-delay:.9s}
+@keyframes tpulse{0%{transform:scale(.2);opacity:.9}100%{transform:scale(2.6);opacity:0}}
+.tmapbadge{position:absolute;left:14px;bottom:12px;padding:8px 12px;border-radius:12px;background:rgba(4,10,7,.82);backdrop-filter:blur(6px);border:1px solid #215a41;font-weight:700;font-size:14px}
+.tmapbadge small{display:block;font-weight:500;color:#86a898;font-size:11.5px}
+.tdriver{display:flex;gap:12px;align-items:center}
+.tavatar{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:radial-gradient(circle at 30% 25%,#1d5b40,#0b2a1c);border:2px solid #1fe58f;color:#1fe58f;flex:none}
+.tplate{display:inline-block;padding:3px 10px;border-radius:8px;background:#f2c14e;color:#201500;font-weight:800;letter-spacing:.06em;font-size:13px}
+.tacts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tacts button{display:grid;justify-items:center;gap:5px;padding:12px 0;border-radius:14px;background:#0a1a12;border:1px solid #17382a;color:#1fe58f;font-size:12.5px;cursor:pointer}
+.tsumrow{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #17382a;font-size:14px}
+.tsumrow:last-child{border:0}
+.tsumrow span:first-child{color:#86a898}
+.tsumrow b{text-align:right}
+.tsteps{display:flex;gap:6px;margin:8px 0 2px}
+.tsteps i{flex:1;height:4px;border-radius:2px;background:#17382a}
+.tsteps i.on{background:#1fe58f}
+.tring{width:132px;height:132px;border-radius:50%;margin:10px auto 6px;display:grid;place-items:center;border:3px solid #1fe58f;background:radial-gradient(circle,rgba(31,229,143,.2),transparent 70%);box-shadow:0 0 50px rgba(31,229,143,.35),inset 0 0 30px rgba(31,229,143,.2);color:#1fe58f}
+.tring .ti{width:64px;height:64px;stroke-width:2.2;stroke-dasharray:40;stroke-dashoffset:40;animation:tdraw .7s .25s ease forwards}
+@keyframes tdraw{to{stroke-dashoffset:0}}
+.tidbox{border:1.5px solid #215a41;border-radius:16px;padding:16px;text-align:center;font-family:system-ui,sans-serif;font-weight:600;letter-spacing:.08em;font-size:18px;background:#0a1a12}
+.tcenter{text-align:center}
+.tstars{display:flex;justify-content:center;gap:6px}
+.tstars button{color:#3a5648;background:none;border:0;cursor:pointer}
+.tstars button.on{color:#f2c14e}
+.tstars .ti{width:34px;height:34px}
+.twallet-card{padding:20px;border-radius:24px;border:1px solid #215a41;background:radial-gradient(120% 140% at 100% 0%,rgba(242,193,78,.14),transparent 55%),linear-gradient(160deg,#0f2a1c,#08150e)}
+.tbal{font-family:system-ui,sans-serif;font-weight:800;font-size:30px;margin:2px 0 14px}
+.tstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tstats div{padding:12px;border-radius:14px;background:#0a1a12;border:1px solid #17382a}
+.tstats b{display:block;font-size:16px;margin-top:2px}
+.tamounts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tamounts button{height:46px;border-radius:12px;border:1px solid #17382a;background:#0a1a12;font-weight:700;color:#e9fff4;cursor:pointer}
+.tamounts button[aria-pressed="true"]{border-color:#1fe58f;color:#1fe58f;background:rgba(31,229,143,.1)}
+.tswitch{width:62px;height:34px;border-radius:17px;background:#1b2c24;border:1px solid #215a41;position:relative;transition:background .2s;flex:none;cursor:pointer}
+.tswitch::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#7a978a;transition:transform .2s,background .2s}
+.tswitch[aria-checked="true"]{background:#12c777}
+.tswitch[aria-checked="true"]::after{transform:translateX(28px);background:#fff}
+.tdot{width:10px;height:10px;border-radius:50%;background:#496557;display:inline-block}
+.tdot.on{background:#1fe58f;box-shadow:0 0 12px #1fe58f}
+.tgrid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tkpi{padding:14px;border-radius:16px;background:#0a1a12;border:1px solid #17382a}
+.tkpi b{display:block;font-family:system-ui,sans-serif;font-size:20px;margin-top:2px}
+.treq{border:1.5px solid #1fe58f;border-radius:20px;padding:16px;background:linear-gradient(160deg,rgba(31,229,143,.12),#0a1a12);animation:treqin .4s ease}
+@keyframes treqin{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+.ttabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.ttabs button{height:42px;border-radius:12px;border:1px solid #17382a;color:#86a898;font-weight:600;background:none;cursor:pointer}
+.ttabs button[aria-selected="true"]{border-color:#1fe58f;color:#1fe58f;background:rgba(31,229,143,.08)}
+.tempty{text-align:center;color:#86a898;padding:34px 10px}
+.tempty .ti{width:40px;height:40px;color:#215a41;margin-bottom:6px}
+.tscrim{position:absolute;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .25s;z-index:30}
+.tscrim.open{opacity:1;pointer-events:auto}
+.tdrawer{position:absolute;top:0;bottom:0;left:0;width:84%;max-width:330px;z-index:31;background:linear-gradient(180deg,#0b1e14,#050c08);border-right:1px solid #215a41;transform:translateX(-102%);transition:transform .3s cubic-bezier(.2,.8,.2,1);padding:22px 16px 20px;display:flex;flex-direction:column;gap:6px;visibility:hidden}
+.tdrawer.open{transform:none;visibility:visible}
+.tdrawer .tme{padding:14px;border-radius:18px;background:#0a1a12;border:1px solid #17382a;margin-bottom:10px;display:grid;gap:8px}
+.tnavitem{display:flex;align-items:center;gap:14px;min-height:50px;padding:0 12px;border-radius:14px;font-weight:600;text-align:left;width:100%;background:none;border:0;cursor:pointer;color:#e9fff4}
+.tnavitem .ti{color:#1fe58f}
+.tnavitem:active,.tnavitem:hover{background:#0a1a12}
+.tnavitem .tchip{margin-left:auto;height:26px;font-size:11.5px}
+.tsheet{position:absolute;left:0;right:0;bottom:0;z-index:41;max-height:88%;overflow-y:auto;background:linear-gradient(180deg,#0d2216,#07110b);border:1px solid #215a41;border-bottom:0;border-radius:28px 28px 0 0;padding:10px 20px 24px;transform:translateY(105%);transition:transform .32s cubic-bezier(.2,.8,.2,1);visibility:hidden}
+.tsheet.open{transform:none;visibility:visible}
+.tsheet .tgrab{width:44px;height:5px;border-radius:3px;background:#215a41;margin:0 auto 14px}
+.tsheetScrim{z-index:40}
+.ttoast{position:absolute;left:50%;bottom:26px;transform:translate(-50%,30px);opacity:0;z-index:60;max-width:88%;padding:12px 18px;border-radius:14px;background:#0f2a1c;border:1px solid #1fe58f;box-shadow:0 14px 40px rgba(0,0,0,.6);font-weight:600;font-size:14px;text-align:center;transition:.3s;pointer-events:none}
+.ttoast.show{transform:translate(-50%,0);opacity:1}
+.tgap{height:14px}.tgap.s{height:8px}.tgap.l{height:22px}
+.ttagline{font-family:system-ui,sans-serif;font-size:11px;color:#86a898;letter-spacing:.04em;text-align:center;margin-top:18px}
+.ti{width:22px;height:22px;flex:none;display:inline-block;vertical-align:middle}
+#travel{padding:0}
+#travel .travel-phone { border:none; box-shadow:none; background:transparent; max-width:100%; }
+#travel .travel-screen { position:relative; inset:auto; padding:0; background:transparent; transform:none; visibility:visible; display:none; }
+#travel .travel-screen.active { display:flex; }
 </style></head><body>
 <header class="topbar"><button class="hamb" id="openMenu" aria-label="Open menu">☰</button><div class="brand"><div class="mark">B</div><div><strong>BEAST</strong><small>MONEY TRANSFER · KENYA PROTOTYPE</small></div></div><button class="bell" data-page="notifications" aria-label="Notifications">🔔 <b id="noticeCount">1</b></button></header>
 <main class="container">
@@ -76,9 +239,231 @@
 </div>
 </section>
 
-<!-- NEW BEAST TRAVEL APP (replaces the old Travel tab). Loaded as a self-contained app in a sandboxed frame. -->
 <section id="travel" class="page">
-  <iframe id="travelFrame" title="BEAST Travel" sandbox="allow-scripts" loading="lazy"></iframe>
+  <div class="travel-phone">
+    <!-- Icon sprite for Travel -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <defs>
+        <symbol id="t-crown" viewBox="0 0 40 34"><path d="M5 28L2 9l9 8 9-14 9 14 9-8-3 19z" fill="currentColor"/><rect x="5" y="30" width="30" height="3" rx="1.5" fill="currentColor"/></symbol>
+        <symbol id="ti-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></symbol>
+        <symbol id="ti-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></symbol>
+        <symbol id="ti-id" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6 16c.5-1.5 2-2 3-2s2.5.5 3 2M14 10h4M14 14h4"/></symbol>
+        <symbol id="ti-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+        <symbol id="ti-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/></symbol>
+        <symbol id="ti-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+        <symbol id="ti-car" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v-3.5L6 9a2 2 0 0 1 1.9-1.4h8.2A2 2 0 0 1 18 9l2 4.5V17M4 17h16M4 17v2h3v-2M17 17v2h3v-2"/><circle cx="8" cy="14" r=".8"/><circle cx="16" cy="14" r=".8"/></symbol>
+        <symbol id="ti-moto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="17" r="3"/><circle cx="18.5" cy="17" r="3"/><path d="M5.5 17l3.5-6h4l3 6M9 11L8 8H6M13 11l2-4h2.5"/></symbol>
+        <symbol id="ti-tuk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17V9l3-3h9l4 4v7M3 17h16M9 6v5h10"/><circle cx="7" cy="18.5" r="1.8"/><circle cx="16" cy="18.5" r="1.8"/></symbol>
+        <symbol id="ti-bus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="13" rx="2"/><path d="M4 11h16M7 17v2M17 17v2"/><circle cx="8" cy="14" r=".6"/><circle cx="16" cy="14" r=".6"/></symbol>
+        <symbol id="ti-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h12v3M3 7v11a2 2 0 0 0 2 2h15V8H5a2 2 0 0 1-2-1z"/><circle cx="16" cy="14" r="1.2"/></symbol>
+        <symbol id="ti-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"/></symbol>
+        <symbol id="ti-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></symbol>
+        <symbol id="ti-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></symbol>
+        <symbol id="ti-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+        <symbol id="ti-msg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+        <symbol id="ti-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 11l7.6-4M8.2 13l7.6 4"/></symbol>
+        <symbol id="ti-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4L2.8 9.5l6.4-.8z"/></symbol>
+        <symbol id="ti-swap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4v15M4.5 15.5L8 19l3.5-3.5M16 20V5M12.5 8.5L16 5l3.5 3.5"/></symbol>
+        <symbol id="ti-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+        <symbol id="ti-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+        <symbol id="ti-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+        <symbol id="ti-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L5 14h6l-1 8 8-12h-6z"/></symbol>
+        <symbol id="ti-receipt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"/></symbol>
+        <symbol id="ti-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5H5v14h5M15 8l4 4-4 4M19 12H9"/></symbol>
+        <symbol id="ti-steer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M3.5 10.5c5 1 12 1 17 0M12 14.2V21"/></symbol>
+        <symbol id="ti-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9H4zM10 20v-6h4v6"/></symbol>
+        <symbol id="ti-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+      </defs>
+    </svg>
+
+    <!-- Travel Home / Passenger -->
+    <div class="travel-screen active" id="ts-home">
+      <header class="ttop">
+        <button class="ticon-btn" data-tact="menu" aria-label="Open menu"><svg class="ti"><use href="#ti-menu"/></svg></button>
+        <div class="tbrandline">
+          <svg class="tcrown"><use href="#t-crown"/></svg>
+          <div><b class="twm">BEAST</b><small>Safe rides, smarter journeys</small></div>
+        </div>
+        <button class="tchip gold" data-tact="wallet" aria-label="Wallet"><svg class="ti" style="width:18px;height:18px"><use href="#ti-wallet"/></svg><span id="tchipBal">KES 520</span></button>
+        <button class="ticon-btn" data-tact="bell" aria-label="Notifications"><svg class="ti"><use href="#ti-bell"/></svg><span class="tbadge" id="tbellBadge" hidden>0</span></button>
+      </header>
+
+      <div class="tseg" role="tablist" aria-label="Mode">
+        <button role="tab" id="tsegBook" aria-selected="true" data-tact="mode-book">Book a ride</button>
+        <button role="tab" id="tsegDrive" aria-selected="false" data-tact="mode-drive">Drive &amp; earn</button>
+      </div>
+
+      <!-- Passenger panel -->
+      <div id="tpanelBook" class="tstack">
+        <div class="tcard glow thero">
+          <div>
+            <h2>Ride with BEAST</h2>
+            <p>Fast, safe, reliable</p>
+            <span class="tchip green"><svg class="ti" style="width:16px;height:16px"><use href="#ti-check"/></svg>Free for riders</span>
+          </div>
+          <svg class="car" viewBox="0 0 230 100" aria-hidden="true">
+            <defs>
+              <linearGradient id="tcg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d5b40"/><stop offset="1" stop-color="#08180f"/></linearGradient>
+              <radialGradient id="tug" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#1fe58f" stop-opacity=".7"/><stop offset="1" stop-color="#1fe58f" stop-opacity="0"/></radialGradient>
+            </defs>
+            <ellipse cx="115" cy="88" rx="104" ry="11" fill="url(#tug)"/>
+            <path d="M12 66c0-9 6-14 18-16l28-20c8-6 16-8 30-8h38c14 0 24 5 33 13l20 14c20 2 30 8 30 17v6c0 3-2 5-5 5H17c-3 0-5-2-5-5z" fill="url(#tcg)" stroke="#1fe58f" stroke-width="2"/>
+            <path d="M70 34l-18 17h50V30H84c-6 0-11 1-14 4zM112 30v21h54l-19-15c-5-4-10-6-17-6z" fill="#0a2a1b" stroke="#1fe58f" stroke-opacity=".6"/>
+            <circle cx="62" cy="72" r="14" fill="#04100a" stroke="#1fe58f" stroke-width="2.5"/><circle cx="62" cy="72" r="5" fill="#1fe58f"/>
+            <circle cx="170" cy="72" r="14" fill="#04100a" stroke="#1fe58f" stroke-width="2.5"/><circle cx="170" cy="72" r="5" fill="#1fe58f"/>
+            <rect x="204" y="60" width="12" height="5" rx="2" fill="#ffd96e"/>
+          </svg>
+        </div>
+
+        <div class="troutebox">
+          <div class="tfield"><label class="tlab" for="tfFrom">From</label>
+            <div class="tinp"><svg class="ti"><use href="#ti-pin"/></svg><input id="tfFrom" list="tplaces" value="Nairobi CBD" autocomplete="off" placeholder="Pickup location"></div></div>
+          <button class="tswapbtn" data-tact="swap" aria-label="Swap pickup and destination"><svg class="ti"><use href="#ti-swap"/></svg></button>
+          <div class="tfield"><label class="tlab" for="tfTo">To</label>
+            <div class="tinp"><svg class="ti" style="color:#f2c14e"><use href="#ti-pin"/></svg><input id="tfTo" list="tplaces" value="Westlands" autocomplete="off" placeholder="Where to?"></div></div>
+        </div>
+        <datalist id="tplaces"></datalist>
+        <div class="tquick" id="tquick" aria-label="Popular destinations"></div>
+
+        <div class="tgrid2">
+          <div class="tfield"><label class="tlab" for="tfType">Ride type</label>
+            <div class="tinp"><select id="tfType"></select></div></div>
+          <div class="tfield"><label class="tlab" for="tfPay">Payment</label>
+            <div class="tinp"><select id="tfPay">
+              <option value="wallet">BEAST Wallet (demo)</option><option value="mpesa">M-Pesa</option><option value="cash">Cash</option>
+            </select></div></div>
+        </div>
+        <div class="test" id="test" aria-live="polite"></div>
+        <p class="terr" id="tbookErr" role="alert"></p>
+        <button class="tbtn primary" data-tact="find"><svg class="ti"><use href="#ti-bolt"/></svg>Find ride</button>
+        <p class="ttagline">Safe. Simple. Smart.</p>
+      </div>
+
+      <!-- Driver panel -->
+      <div id="tpanelDrive" class="tstack" hidden>
+        <div class="tcard glow">
+          <div style="display:flex;gap:12px;align-items:center">
+            <div class="tic" style="width:50px;height:50px;border-radius:14px;background:rgba(31,229,143,.12);display:grid;place-items:center;color:#1fe58f"><svg class="ti" style="width:28px;height:28px"><use href="#ti-steer"/></svg></div>
+            <div><h2 style="font-family:system-ui,sans-serif;font-size:18px;margin:0">Earn with BEAST</h2><div class="tsub">Drive. Earn. Grow.</div></div>
+          </div>
+          <div class="tgap s"></div>
+          <div class="tnote green"><svg class="ti" style="width:20px;height:20px;flex:none"><use href="#ti-clock"/></svg><div><b>7 days free</b>, then KES 500 a month. Cancel any time.</div></div>
+          <div class="tgap s"></div>
+          <div class="tlist" style="gap:8px">
+            <div class="tsm"><span style="color:#1fe58f">✓</span> Keep every fare. No per-trip cut.</div>
+            <div class="tsm"><span style="color:#1fe58f">✓</span> Go online or offline when you choose.</div>
+            <div class="tsm"><span style="color:#1fe58f">✓</span> Riders never pay to join or ride.</div>
+          </div>
+        </div>
+
+        <div class="tfield"><label class="tlab" for="tdVeh">Vehicle type</label>
+          <div class="tinp"><svg class="ti"><use href="#ti-moto"/></svg><select id="tdVeh">
+            <option value="boda">Motorcycle</option><option value="tuk">Tuk Tuk</option><option value="standard">Car</option><option value="shuttle">Shuttle</option></select></div></div>
+        <div class="tfield"><label class="tlab" for="tdArea">Service area</label>
+          <div class="tinp"><svg class="ti"><use href="#ti-pin"/></svg><select id="tdArea"></select></div></div>
+        <div class="tfield"><label class="tlab" for="tdPlate">License plate</label>
+          <div class="tinp"><svg class="ti"><use href="#ti-id"/></svg><input id="tdPlate" placeholder="KDA 123Z" maxlength="10" autocapitalize="characters" autocomplete="off"></div>
+          <span class="terr" id="tplateErr" role="alert"></span></div>
+        <button class="tbtn primary" id="tdriveCta" data-tact="drive-save">Start 7-day free trial</button>
+        <p class="tsm tmuted tcenter" id="tdriveFoot">No payment needed to start. You will see a reminder before the trial ends.</p>
+      </div>
+    </div>
+
+    <!-- Available Rides -->
+    <div class="travel-screen" id="ts-rides">
+      <header class="tbar"><button class="ticon-btn" data-tact="back" aria-label="Back"><svg class="ti"><use href="#ti-back"/></svg></button><h2 tabindex="-1">Available rides</h2></header>
+      <div class="tcard" style="padding:12px 14px;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:10px"><svg class="ti" style="color:#1fe58f"><use href="#ti-pin"/></svg><b id="trdRoute" style="flex:1"></b></div>
+        <div class="tsm tmuted" id="trdMeta" style="margin-left:32px"></div>
+      </div>
+      <div class="tfilters" id="trdFilters" role="group" aria-label="Filter by ride type"></div>
+      <div class="tlist" id="trdList"></div>
+    </div>
+
+    <!-- Track -->
+    <div class="travel-screen" id="ts-track">
+      <header class="tbar"><button class="ticon-btn" data-tact="track-back" aria-label="Back"><svg class="ti"><use href="#ti-back"/></svg></button><h2 id="ttrkTitle" tabindex="-1">Finding your driver</h2><span class="tchip green" id="ttrkChip">Searching</span></header>
+      <div class="tmap" role="img" aria-label="Live map of your route">
+        <svg viewBox="0 0 360 250" preserveAspectRatio="xMidYMid slice">
+          <rect class="park" x="150" y="150" width="70" height="46" rx="10"/>
+          <rect class="block" x="20" y="20" width="60" height="40" rx="6"/><rect class="block" x="250" y="150" width="70" height="60" rx="6"/><rect class="block" x="90" y="200" width="46" height="36" rx="6"/><rect class="block" x="240" y="20" width="80" height="32" rx="6"/>
+          <path class="road" d="M-10 100H370M-10 200H370M80 -10V260M240 -10V260"/>
+          <path class="road s" d="M-10 150H370M-10 50H370M160 -10V260M320 -10V260M20 -10V260"/>
+          <path id="tapPath" d="M-10 60C20 110 30 170 64 190" fill="none" stroke="#2b6d51" stroke-width="3" stroke-dasharray="3 7" stroke-linecap="round" opacity=".7"/>
+          <path id="trtGlow" d="M64 190C120 190 140 130 190 132S250 82 296 70" fill="none" stroke="#1fe58f" stroke-opacity=".22" stroke-width="12" stroke-linecap="round"/>
+          <path id="trtPath" d="M64 190C120 190 140 130 190 132S250 82 296 70" fill="none" stroke="#2b6d51" stroke-width="4" stroke-linecap="round"/>
+          <path id="trtDone" d="M64 190C120 190 140 130 190 132S250 82 296 70" fill="none" stroke="#1fe58f" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="0 9999"/>
+          <g id="tradar" hidden><circle class="tpulse" cx="64" cy="190" r="22" fill="#1fe58f" fill-opacity=".35"/><circle class="tpulse p2" cx="64" cy="190" r="22" fill="#1fe58f" fill-opacity=".35"/></g>
+          <circle cx="64" cy="190" r="8" fill="#1fe58f" stroke="#04100a" stroke-width="3"/>
+          <circle cx="296" cy="70" r="9" fill="#f2c14e" stroke="#04100a" stroke-width="3"/>
+          <g id="tmCar" hidden><circle r="16" fill="#1fe58f" fill-opacity=".25"/><circle r="9" fill="#e9fff4" stroke="#1fe58f" stroke-width="3.5"/></g>
+        </svg>
+        <div class="tmapbadge" id="tmapBadge" aria-live="polite">Matching you<small>Looking for nearby drivers</small></div>
+      </div>
+      <div class="tgap"></div>
+      <div class="tstack" id="ttrkBody"></div>
+    </div>
+
+    <!-- Arrived -->
+    <div class="travel-screen" id="ts-arrived">
+      <div style="height:26px"></div>
+      <div class="tring" aria-hidden="true"><svg class="ti"><use href="#ti-check"/></svg></div>
+      <h1 class="th1-big tcenter" tabindex="-1" style="color:#ffd96e">You've arrived!</h1>
+      <p class="tsub tcenter">Your ride has ended successfully.</p>
+      <div class="tgap"></div>
+      <div class="tcard" id="tarrCard"></div>
+      <div class="tgap"></div>
+      <div class="tcenter tsm tmuted" id="trateLbl">How was James?</div>
+      <div class="tgap s"></div>
+      <div class="tstars" id="tstars"></div>
+      <div class="tgap l"></div>
+      <div class="tstack">
+        <button class="tbtn ghost" data-tact="receipt"><svg class="ti"><use href="#ti-receipt"/></svg>View receipt</button>
+        <button class="tbtn primary" data-tact="another">Book another ride</button>
+      </div>
+    </div>
+
+    <!-- Wallet -->
+    <div class="travel-screen" id="ts-wallet">
+      <header class="tbar"><button class="ticon-btn" data-tact="back" aria-label="Back"><svg class="ti"><use href="#ti-back"/></svg></button><h2 tabindex="-1">Travel wallet &amp; history</h2></header>
+      <div class="twallet-card">
+        <div class="tmuted tsm">Travel wallet (demo)</div>
+        <div class="tbal" id="twBal">KES 520.00</div>
+        <button class="tbtn primary sm" data-tact="topup" style="width:100%"><svg class="ti" style="width:18px;height:18px"><use href="#ti-plus"/></svg>Top up</button>
+      </div>
+      <div class="tgap"></div>
+      <div class="tstats" id="twStats"></div>
+      <div class="tgap l"></div>
+      <h3 style="font-size:15px;margin-bottom:10px">Recent rides</h3>
+      <div class="tlist" id="twList"></div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="travel-screen" id="ts-notifs">
+      <header class="tbar"><button class="ticon-btn" data-tact="back" aria-label="Back"><svg class="ti"><use href="#ti-back"/></svg></button><h2 tabindex="-1">Notifications</h2></header>
+      <div class="ttabs" role="tablist"><button role="tab" data-tact="ntab-rides" id="tntRides" aria-selected="true">Rides</button><button role="tab" data-tact="ntab-system" id="tntSystem" aria-selected="false">System</button></div>
+      <div class="tlist" id="tnList"></div>
+    </div>
+
+    <!-- Driver Dashboard -->
+    <div class="travel-screen" id="ts-dash">
+      <header class="tbar"><button class="ticon-btn" data-tact="back" aria-label="Back"><svg class="ti"><use href="#ti-back"/></svg></button><h2 tabindex="-1">Driver dashboard</h2><span id="tdashChip"></span></header>
+      <div class="tstack" id="tdashBody"></div>
+    </div>
+
+    <!-- Driver Plans -->
+    <div class="travel-screen" id="ts-plans">
+      <header class="tbar"><button class="ticon-btn" data-tact="back" aria-label="Back"><svg class="ti"><use href="#ti-back"/></svg></button><h2 tabindex="-1">Driver plan</h2></header>
+      <div class="tstack" id="tplansBody"></div>
+    </div>
+
+    <!-- Drawer / Sheet / Toast -->
+    <div class="tscrim" id="tdrawerScrim" data-tact="close-drawer"></div>
+    <aside class="tdrawer" id="tdrawer" aria-label="Menu"></aside>
+    <div class="tscrim tsheetScrim" id="tsheetScrim" data-tact="close-sheet"></div>
+    <div class="tsheet" id="tsheet" role="dialog" aria-modal="true"><div class="tgrab"></div><div id="tsheetBody"></div></div>
+    <div class="ttoast" id="ttoast" role="status" aria-live="polite"></div>
+  </div>
 </section>
 
 <section id="profile" class="page"><h1>BEAST IDENTITY</h1><p class="sub">Your registered account details.</p><div class="card"><div class="center"><div class="mark" style="width:70px;height:70px;border-radius:50%;margin:0 auto 10px;font-size:32px">B</div><h2 id="profileName">KRISH KRISHNA</h2><span class="pill" id="profileBeastId">BEAST-017335</span></div><div class="divider"></div><div class="balance-source"><span>Phone</span><b id="profilePhone">0712345678</b></div><div class="balance-source"><span>International</span><b id="profileInternational">+254712345678</b></div><div class="balance-source"><span>National ID</span><b id="profileId">12345678</b></div><div class="balance-source"><span>Total balance (demo)</span><b id="profileBalance">KES 7,564.00</b></div><div class="balance-source"><span>Password storage</span><b>Local demo only</b></div><div class="notice">This standalone HTML is a prototype, not a secure financial service. Do not enter real credentials. Secure salted password/PIN hashing and identity checks must be implemented on the backend.</div><button class="btn secondary" data-page="settings">Edit settings</button></div></section>
@@ -110,7 +495,7 @@ function save(){try{localStorage.setItem('beastMoneyDemo',JSON.stringify(data))}
 function load(){try{const x=JSON.parse(localStorage.getItem('beastMoneyDemo'));if(x&&x.name)data={...defaultData(),...x}}catch(e){}}
 function showEntry(step){$$('.entry-step').forEach(x=>x.classList.remove('active'));$('#entry-'+step).classList.add('active');$('#entry').style.display='flex'}
 function hideEntry(){$('#entry').style.display='none';renderProfile();showPage('home')}
-function showPage(id){$$('.page').forEach(p=>p.classList.toggle('active',p.id===id));$$('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));$('#menuOverlay').classList.remove('show');window.scrollTo({top:0,behavior:'smooth'});if(id==='history')renderHistory();if(id==='statements')renderStatements();if(id==='settings')renderSettings();if(id==='profile')renderProfile();if(id==='travel')loadTravel();if(id==='balance'){$('#balId').value='';$('#balName').value='';$('#balPin').value='';$('#balanceResult').classList.add('hide')}}
+function showPage(id){$$('.page').forEach(p=>p.classList.toggle('active',p.id===id));$$('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));$('#menuOverlay').classList.remove('show');window.scrollTo({top:0,behavior:'smooth'});if(id==='history')renderHistory();if(id==='statements')renderStatements();if(id==='settings')renderSettings();if(id==='profile')renderProfile();if(id==='balance'){$('#balId').value='';$('#balName').value='';$('#balPin').value='';$('#balanceResult').classList.add('hide')}}
 function notify(msg){const el=$('#dynamicNotifications');if(el){const d=document.createElement('div');d.className='item';d.innerHTML='<span>🔔</span><div class="grow"><b></b><small></small></div>';d.querySelector('b').textContent=msg;d.querySelector('small').textContent=new Date().toLocaleString();el.prepend(d)}$('#noticeCount').textContent='1';}
 function renderProfile(){['profileName','helloName','drawerName'].forEach(id=>$('#'+id).textContent=data.name);$('#profileBeastId').textContent=data.beastId;$('#drawerId').textContent=data.beastId;$('#profilePhone').textContent=data.phone;$('#profileInternational').textContent=international(data.phone);$('#profileId').textContent=data.id;$('#profileBalance').textContent=money(data.balance);$('#homeBalance').textContent=money(data.balance)}
 function international(p){let d=(p||'').replace(/\D/g,'');if(d.startsWith('254'))return '+'+d;if(d.startsWith('0'))return '+254'+d.slice(1);return p||'—'}
@@ -142,6 +527,13 @@ $('#verifyWithdrawAgent').onclick=()=>{withdrawAgentVerified=!!$('#withdrawAgent
 function lipaFields(){const type=$('#lipaType').value,wrap=$('#lipaDestinationFields');const fields={pochi:[['Business phone / BEAST number','Phone number or BEAST ID']],till:[['Till number','Till number']],bill:[['Business number','Business number'],['Account number','Account number (letters and numbers allowed)']],account:[['Account / reference','Letters and numbers allowed']],beast:[['BEAST ID','BEAST- followed by digits']]};wrap.innerHTML='';(fields[type]||fields.account).forEach(([label,ph],i)=>{const d=document.createElement('div');d.className='field';const l=document.createElement('label');l.textContent=label;const inp=document.createElement('input');inp.id='lipaDest'+i;inp.placeholder=ph;d.append(l,inp);wrap.append(d)});lipaVerified=false;$('#lipaVerified').classList.add('hide')};$('#lipaType').onchange=lipaFields;lipaFields();$('#lipaAmount').addEventListener('input',()=>setFee('#lipaAmount','#lipaCost','#lipaFee','#lipaTotal'));$('#verifyLipa').onclick=()=>{const v=$('#lipaDest0')?.value.trim();lipaVerified=!!v&&(/^[A-Za-z0-9+.-]{3,40}$/.test(v));if(lipaVerified){$('#lipaBusinessName').textContent=$('#lipaType').value==='beast'?'BEAST Demo Recipient':'Demo Business / Destination';$('#lipaVerified').classList.remove('hide');toast('Destination accepted for demo only.')}else toast('Enter a valid destination. No live lookup was performed.')};$('#lipaAuthorize').onclick=()=>{const n=Number($('#lipaAmount').value),f=n?Math.min(50,Math.ceil(n/1000)*7):0;if(!lipaVerified)return toast('Verify destination first.');if(n<=0)return toast('Enter a valid amount.');if(!verifyPin($('#lipaPin').value))return toast('Incorrect demo PIN.');if(!deductSource($('#lipaMethod').value,n+f))return toast('Insufficient demo balance.');addTx('Lipa Na',n,'-','Business payment to '+($('#lipaDest0')?.value||'destination'),$('#lipaMethod').value,$('#lipaBusinessName').textContent,f,0);save();toast('Demo payment recorded; no money moved.');showPage('history')};
 // Settings
 $('#saveReceiveMethod').onclick=()=>{const name=$('#receiveMethod').value,dest=$('#receiveDestination').value.trim();if(name!=='BEAST Wallet'&&!dest)return toast('Enter the destination for this receiving method.');let r=data.receiving.find(x=>x.name===name);if(!r){r={name,destination:dest,on:true};data.receiving.push(r)}else{r.destination=name==='BEAST Wallet'?data.beastId:dest;r.on=true}save();renderSettings();toast('Receiving method saved in this browser.')};$('#saveSource').onclick=()=>{const name=$('#sourceType').value,number=$('#sourceNumber').value.trim(),balance=Number($('#sourceBalance').value)||0;let s=data.sources.find(x=>x.name===name);if(s){s.number=number;s.balance=balance}else data.sources.push({name,number,balance});if(name==='BEAST Wallet')data.balance=balance;save();renderSettings();renderProfile();toast('Demo payment source saved.')};$('#changePin').onclick=()=>{if($('#currentPin').value!==data.pin)return toast('Current PIN is incorrect.');if(!/^\d{4,6}$/.test($('#newPin').value)||$('#newPin').value!==$('#confirmPin').value)return toast('New PIN must be 4–6 digits and match confirmation.');data.pin=$('#newPin').value;save();['currentPin','newPin','confirmPin'].forEach(id=>$('#'+id).value='');toast('Demo PIN changed locally. Production must use backend-secured hashing.')};$('#changePassword').onclick=()=>{if($('#currentPassword').value!==data.password)return toast('Current password is incorrect.');if($('#newPassword').value.length<6||$('#newPassword').value!==$('#confirmPassword').value)return toast('New password must be at least 6 characters and match.');data.password=$('#newPassword').value;save();['currentPassword','newPassword','confirmPassword'].forEach(id=>$('#'+id).value='');toast('Demo password changed locally. Production must use backend-secured hashing.')};$('#darkMode').onclick=()=>{document.documentElement.style.setProperty('--bg','#050907');document.documentElement.style.setProperty('--panel','#0b1512');toast('Dark mode enabled.')};$('#lightMode').onclick=()=>{document.documentElement.style.setProperty('--bg','#e9f3ee');document.documentElement.style.setProperty('--panel','#ffffff');document.documentElement.style.setProperty('--panel2','#f4faf6');document.documentElement.style.setProperty('--text','#10231a');document.documentElement.style.setProperty('--muted','#536c60');$$('.card').forEach(c=>c.style.color='#10231a');toast('Light preview enabled. Reload restores the dark theme.')};$('#alertsToggle').onchange=()=>toast('Transaction alerts '+($('#alertsToggle').checked?'enabled':'disabled')+' in this preview.');$('#visibilityToggle').onchange=()=>toast('Screen visibility preview updated.');$('#bioBtn').onclick=()=>toast('Biometric authentication is a future integration placeholder.');$('#resetDemo').onclick=()=>{if(confirm('Reset all local BEAST demo data?')){localStorage.removeItem('beastMoneyDemo');data=defaultData();save();renderProfile();renderSettings();renderHistory();toast('Demo data reset.');showEntry('register')}};
+
+// Travel Enquiry
+function travelLoad(){try{return JSON.parse(localStorage.getItem('beastTravelDemo')||'[]')}catch(e){return []}}
+function travelRender(){const box=$('#travelRequests');if(!box)return;const rows=travelLoad();box.innerHTML='';if(!rows.length){box.innerHTML='<div class="notice">No travel enquiries saved on this device yet.</div>';return}rows.forEach(r=>{const item=document.createElement('div');item.className='item';const grow=document.createElement('div');grow.className='grow';const b=document.createElement('b');b.textContent=r.type+' · '+(r.from||'Not specified')+' → '+(r.to||'Not specified');const small=document.createElement('small');small.textContent='Date: '+(r.date||'Not specified')+' · Travellers/guests: '+r.people+' · Contact: '+r.phone;const status=document.createElement('small');status.textContent='Saved locally · Not booked';grow.append(b,small,status);item.append(grow);box.append(item)})}
+$$('[data-traveltype]').forEach(b=>b.addEventListener('click',()=>{ $('#travelType').value=b.dataset.traveltype; $('#travelType').scrollIntoView({behavior:'smooth',block:'center'}); }));
+$('#travelRequest').addEventListener('click',()=>{const type=$('#travelType').value,from=$('#travelFrom').value.trim(),to=$('#travelTo').value.trim(),date=$('#travelDate').value,people=Number($('#travelPeople').value)||1,phone=$('#travelPhone').value.trim();if(!to||!phone)return toast('Enter a destination and contact phone to save the enquiry.');if(people<1||people>30)return toast('Enter between 1 and 30 travellers or guests.');const rows=travelLoad();rows.unshift({type,from,to,date,returnDate:$('#travelReturn').value,people,budget:$('#travelBudget').value,phone,notes:$('#travelNotes').value.trim(),createdAt:Date.now()});try{localStorage.setItem('beastTravelDemo',JSON.stringify(rows))}catch(e){}$('#travelMessage').innerHTML='<div class="notice ok">Travel enquiry saved on this device. This is not a confirmed booking.</div>';travelRender();toast('Travel enquiry saved locally.')});
+travelRender();
 
 const MARKET_TYPES=[
 {name:'BEAST Marketplace',price:500,desc:'Sell physical products and promote listings.'},
@@ -225,8 +617,402 @@ $('#bizRegisterBtn').addEventListener('click',()=>{
 bizLoad();bizRenderTypes();bizRenderRegistered();
 
 // ==========================================
-// NEW BEAST TRAVEL APP (replaces old Travel tab)
-// The full travel app lives in its own document and is loaded into the
-// sandboxed frame the first time the Travel tab is opened.
+// BEAST TRAVEL FLOW LOGIC (From Image)
 // ==========================================
-const TRAVEL_APP_HTML = "\u003c!DOCTYPE html\u003e\n\u003chtml lang=\"en\"\u003e\n\u003chead\u003e\n\u003cmeta charset=\"utf-8\"\u003e\n\u003cmeta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\"\u003e\n\u003cmeta name=\"theme-color\" content=\"#040a07\"\u003e\n\u003ctitle\u003eBEAST Travel \u2013 Safe. Simple. Smart.\u003c/title\u003e\n\u003clink rel=\"preconnect\" href=\"https://fonts.googleapis.com\"\u003e\n\u003clink rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin\u003e\n\u003clink href=\"https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap\" rel=\"stylesheet\"\u003e\n\u003cstyle\u003e\n:root{\n  --bg:#040a07; --card:#0a1a12; --card2:#0f2418; --line:#17382a; --line2:#215a41;\n  --green:#1fe58f; --green2:#12c777; --gold:#f2c14e; --gold2:#ffd96e;\n  --text:#e9fff4; --mut:#86a898; --danger:#ff6b6b; --amber:#f2b84e;\n  --display:'Unbounded',system-ui,sans-serif; --body:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;\n}\n*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}\n[hidden]{display:none!important}\nhtml,body{height:100%}\nbody{background:radial-gradient(80% 60% at 50% 0%,#0a2217 0%,#030705 70%);color:var(--text);font-family:var(--body);font-size:15px;line-height:1.45;display:grid;place-items:center}\nbutton{font:inherit;color:inherit;background:none;border:0;cursor:pointer}\n:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:10px}\n.i{width:22px;height:22px;flex:none}\n\n/* phone frame */\n.phone{position:relative;width:100%;max-width:430px;height:100dvh;max-height:920px;overflow:hidden;background:var(--bg)}\n@media(min-width:520px){.phone{border-radius:40px;border:1px solid var(--line2);box-shadow:0 0 0 9px #06110b,0 0 0 10px var(--line),0 50px 140px rgba(31,229,143,.14)}}\n\n.screen{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;padding:0 18px 32px;\n  background:radial-gradient(120% 50% at 50% -8%,rgba(31,229,143,.13),transparent 62%),var(--bg);\n  transform:translateX(100%);visibility:hidden;transition:transform .34s cubic-bezier(.2,.8,.2,1),visibility 0s .34s}\n.screen.active{transform:none;visibility:visible;transition-delay:0s}\n.screen.behind{transform:translateX(-16%)}\n.screen::-webkit-scrollbar{width:0}\n.screen\u003eh1:focus,.screen\u003e*:focus{outline:none}\n\n/* brand */\n.wm{font-family:var(--display);font-weight:800;letter-spacing:.07em;background:linear-gradient(180deg,var(--gold2),#d9962a);-webkit-background-clip:text;background-clip:text;color:transparent}\n.crown{width:34px;height:30px;color:var(--gold)}\n.brandline{display:flex;align-items:center;gap:8px;flex:1;min-width:0}\n.brandline .wm{font-size:17px;line-height:1;display:block}\n.brandline small{display:block;color:var(--mut);font-size:11.5px;margin-top:3px}\n\n/* bars */\n.top,.bar{position:sticky;top:0;z-index:6;display:flex;align-items:center;gap:10px;padding:calc(14px + env(safe-area-inset-top)) 0 12px;background:linear-gradient(var(--bg) 72%,transparent)}\n.bar h2{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.01em;flex:1}\n.icon-btn{position:relative;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--card);border:1px solid var(--line);color:var(--green);flex:none}\n.icon-btn:active{background:var(--card2)}\n.badge{position:absolute;top:-4px;right:-4px;min-width:19px;height:19px;border-radius:10px;background:var(--gold);color:#201500;font-size:11px;font-weight:800;display:grid;place-items:center;padding:0 5px;border:2px solid var(--bg)}\n.chip{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:600;white-space:nowrap}\n.chip.gold{color:var(--gold2);border-color:#5b4716;background:rgba(242,193,78,.08)}\n.chip.green{color:var(--green);border-color:var(--line2);background:rgba(31,229,143,.08)}\n.chip.red{color:#ff9b9b;border-color:#5a2424;background:rgba(255,107,107,.08)}\n\n/* type */\nh1.big{font-family:var(--display);font-weight:700;font-size:21px;line-height:1.25;letter-spacing:-.01em;margin:6px 0 6px}\n.sub{color:var(--mut);font-size:14px}\n.muted{color:var(--mut)}\n.sm{font-size:12.5px}\n\n/* buttons */\n.btn{width:100%;min-height:52px;border-radius:14px;font-weight:700;font-size:15.5px;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s,box-shadow .2s}\n.btn:active{transform:scale(.985)}\n.btn.primary{background:linear-gradient(180deg,#2cf29b,#12c777);color:#03140c;box-shadow:0 10px 28px -8px rgba(31,229,143,.55)}\n.btn.ghost{border:1.5px solid var(--line2);color:var(--text);background:rgba(31,229,143,.04)}\n.btn.danger{border:1.5px solid #5a2424;color:#ff9b9b}\n.btn.sm{min-height:40px;width:auto;padding:0 16px;font-size:14px;border-radius:12px}\n.btn[disabled]{opacity:.5;pointer-events:none}\n.stack{display:grid;gap:12px}\n.link{color:var(--green);font-weight:600;text-decoration:underline;text-underline-offset:3px}\n\n/* cards & fields */\n.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px}\n.card.glow{border-color:var(--line2);background:linear-gradient(160deg,var(--card2),var(--card));box-shadow:inset 0 0 0 1px rgba(31,229,143,.05),0 16px 40px -22px rgba(31,229,143,.5)}\n.field{display:grid;gap:6px}\n.lab{font-size:12.5px;color:var(--mut);font-weight:500}\n.inp{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 14px;height:52px;color:var(--green)}\n.inp:focus-within{border-color:var(--green);box-shadow:0 0 0 3px rgba(31,229,143,.14)}\n.inp.bad{border-color:var(--danger)}\n.inp input,.inp select{flex:1;min-width:0;height:100%;background:none;border:0;outline:0;color:var(--text);font:inherit;font-size:15.5px}\n.inp input::placeholder{color:#4d6d5e}\n.inp select{appearance:none;-webkit-appearance:none;cursor:pointer;background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2386a898' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\") no-repeat right 0 center}\n.inp option{background:#0b1a13;color:var(--text)}\n.err{color:var(--danger);font-size:12.5px}\n.form{display:grid;gap:12px}\n.note{display:flex;gap:10px;border:1px solid #5b4716;background:rgba(242,184,78,.07);border-radius:14px;padding:12px 14px;color:#f3d79a;font-size:13px}\n.note.green{border-color:var(--line2);background:rgba(31,229,143,.07);color:#bff5da}\n.check{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--mut)}\n.check input{width:22px;height:22px;accent-color:var(--green);flex:none}\n\n/* segmented */\n.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:var(--card);border:1px solid var(--line);border-radius:16px;margin:6px 0 16px}\n.seg button{height:42px;border-radius:12px;font-weight:600;font-size:14px;color:var(--mut)}\n.seg button[aria-selected=\"true\"]{background:linear-gradient(180deg,#2cf29b,#12c777);color:#03140c;font-weight:700}\n\n/* home hero */\n.hero{position:relative;overflow:hidden;display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px;padding:18px 8px 14px 18px}\n.hero h2{font-family:var(--display);font-size:19px;line-height:1.2;font-weight:700}\n.hero p{color:var(--mut);margin:4px 0 12px}\n.hero svg.car{width:178px;margin-right:-30px}\n.pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}\n.swap{position:absolute;right:0;top:50%;transform:translateY(-50%)}\n.routebox{position:relative;display:grid;gap:10px}\n.routebox .field{padding-right:0}\n.swapbtn{position:absolute;right:12px;top:50%;transform:translateY(-4px);width:36px;height:36px;border-radius:50%;background:var(--card2);border:1px solid var(--line2);color:var(--green);display:grid;place-items:center;z-index:2}\n.swapbtn .i{width:18px;height:18px}\n.quick{display:flex;gap:8px;overflow-x:auto;padding:2px 0 4px;scrollbar-width:none}\n.quick::-webkit-scrollbar{display:none}\n.quick button{flex:none;height:34px;padding:0 13px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;color:var(--mut)}\n.quick button:active,.quick button.on{border-color:var(--green);color:var(--green)}\n.est{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:rgba(31,229,143,.07);border:1px dashed var(--line2);font-size:14px}\n.est b{color:var(--green)}\n\n/* lists */\n.list{display:grid;gap:10px}\n.row{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:16px;background:var(--card);border:1px solid var(--line)}\n.row .ic{width:42px;height:42px;border-radius:12px;background:rgba(31,229,143,.1);display:grid;place-items:center;color:var(--green);flex:none}\n.row .grow{flex:1;min-width:0}\n.row .t{font-weight:600}\n.row .s{font-size:12.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}\n.row .amt{font-weight:700;text-align:right}\n.row .amt small{display:block;font-weight:500;color:var(--mut);font-size:11.5px}\n.ride-card{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:14px;border-radius:18px;background:var(--card);border:1px solid var(--line)}\n.ride-card.pick{border-color:var(--green);box-shadow:0 0 0 1px var(--green) inset,0 14px 34px -20px var(--green)}\n.ride-card .ic{width:56px;height:56px;border-radius:16px;background:rgba(31,229,143,.1);display:grid;place-items:center;color:var(--green)}\n.ride-card .ic .i{width:30px;height:30px}\n.ride-card .price{text-align:right;font-weight:800;font-family:var(--display);font-size:14px}\n.ride-card .go{grid-column:1/-1;margin-top:2px}\n.filters{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none}\n.filters::-webkit-scrollbar{display:none}\n.filters button{flex:none;height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:600;color:var(--mut)}\n.filters button[aria-pressed=\"true\"]{background:rgba(31,229,143,.14);border-color:var(--green);color:var(--green)}\n\n/* map */\n.map{position:relative;margin:0 -18px;height:250px;background:#06130c;border-block:1px solid var(--line);overflow:hidden}\n.map svg{width:100%;height:100%;display:block}\n.map .road{stroke:#12301f;stroke-width:5;fill:none;stroke-linecap:round}\n.map .road.s{stroke-width:2.5;stroke:#0f2a1b}\n.map .block{fill:#081a10}\n.map .park{fill:#0a2a19}\n.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 1.8s ease-out infinite}\n.pulse.p2{animation-delay:.9s}\n@keyframes pulse{0%{transform:scale(.2);opacity:.9}100%{transform:scale(2.6);opacity:0}}\n.mapbadge{position:absolute;left:14px;bottom:12px;padding:8px 12px;border-radius:12px;background:rgba(4,10,7,.82);backdrop-filter:blur(6px);border:1px solid var(--line2);font-weight:700;font-size:14px}\n.mapbadge small{display:block;font-weight:500;color:var(--mut);font-size:11.5px}\n.driver{display:flex;gap:12px;align-items:center}\n.avatar{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:radial-gradient(circle at 30% 25%,#1d5b40,#0b2a1c);border:2px solid var(--green);color:var(--green);flex:none}\n.plate{display:inline-block;padding:3px 10px;border-radius:8px;background:var(--gold);color:#201500;font-weight:800;letter-spacing:.06em;font-size:13px}\n.acts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}\n.acts button{display:grid;justify-items:center;gap:5px;padding:12px 0;border-radius:14px;background:var(--card);border:1px solid var(--line);color:var(--green);font-size:12.5px}\n.sumrow{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}\n.sumrow:last-child{border:0}\n.sumrow span:first-child{color:var(--mut)}\n.sumrow b{text-align:right}\n.steps{display:flex;gap:6px;margin:8px 0 2px}\n.steps i{flex:1;height:4px;border-radius:2px;background:var(--line)}\n.steps i.on{background:var(--green)}\n\n/* success */\n.ring{width:132px;height:132px;border-radius:50%;margin:10px auto 6px;display:grid;place-items:center;border:3px solid var(--green);background:radial-gradient(circle,rgba(31,229,143,.2),transparent 70%);box-shadow:0 0 50px rgba(31,229,143,.35),inset 0 0 30px rgba(31,229,143,.2);color:var(--green)}\n.ring .i{width:64px;height:64px;stroke-width:2.2;stroke-dasharray:40;stroke-dashoffset:40;animation:draw .7s .25s ease forwards}\n@keyframes draw{to{stroke-dashoffset:0}}\n.idbox{border:1.5px solid var(--line2);border-radius:16px;padding:16px;text-align:center;font-family:var(--display);font-weight:600;letter-spacing:.08em;font-size:18px;background:var(--card)}\n.center{text-align:center}\n.stars{display:flex;justify-content:center;gap:6px}\n.stars button{color:#3a5648}\n.stars button.on{color:var(--gold)}\n.stars .i{width:34px;height:34px}\n\n/* wallet */\n.wallet-card{padding:20px;border-radius:24px;border:1px solid var(--line2);background:radial-gradient(120% 140% at 100% 0%,rgba(242,193,78,.14),transparent 55%),linear-gradient(160deg,#0f2a1c,#08150e)}\n.bal{font-family:var(--display);font-weight:800;font-size:30px;margin:2px 0 14px}\n.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}\n.stats div{padding:12px;border-radius:14px;background:var(--card);border:1px solid var(--line)}\n.stats b{display:block;font-size:16px;margin-top:2px}\n.amounts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}\n.amounts button{height:46px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-weight:700}\n.amounts button[aria-pressed=\"true\"]{border-color:var(--green);color:var(--green);background:rgba(31,229,143,.1)}\n\n/* switch */\n.switch{width:62px;height:34px;border-radius:17px;background:#1b2c24;border:1px solid var(--line2);position:relative;transition:background .2s;flex:none}\n.switch::after{content:\"\";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#7a978a;transition:transform .2s,background .2s}\n.switch[aria-checked=\"true\"]{background:var(--green2)}\n.switch[aria-checked=\"true\"]::after{transform:translateX(28px);background:#fff}\n.dot{width:10px;height:10px;border-radius:50%;background:#496557;display:inline-block}\n.dot.on{background:var(--green);box-shadow:0 0 12px var(--green)}\n.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}\n.kpi{padding:14px;border-radius:16px;background:var(--card);border:1px solid var(--line)}\n.kpi b{display:block;font-family:var(--display);font-size:20px;margin-top:2px}\n.req{border:1.5px solid var(--green);border-radius:20px;padding:16px;background:linear-gradient(160deg,rgba(31,229,143,.12),var(--card));animation:reqin .4s ease}\n@keyframes reqin{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}\n\n/* notifications */\n.tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}\n.tabs button{height:42px;border-radius:12px;border:1px solid var(--line);color:var(--mut);font-weight:600}\n.tabs button[aria-selected=\"true\"]{border-color:var(--green);color:var(--green);background:rgba(31,229,143,.08)}\n.empty{text-align:center;color:var(--mut);padding:34px 10px}\n.empty .i{width:40px;height:40px;color:var(--line2);margin-bottom:6px}\n\n/* drawer / sheet / toast */\n.scrim{position:absolute;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .25s;z-index:30}\n.scrim.open{opacity:1;pointer-events:auto}\n#drawer{position:absolute;top:0;bottom:0;left:0;width:84%;max-width:330px;z-index:31;background:linear-gradient(180deg,#0b1e14,#050c08);border-right:1px solid var(--line2);transform:translateX(-102%);transition:transform .3s cubic-bezier(.2,.8,.2,1);padding:calc(22px + env(safe-area-inset-top)) 16px 20px;display:flex;flex-direction:column;gap:6px;visibility:hidden}\n#drawer.open{transf
+const t = {}; 
+const tDom = document.getElementById('travel');
+const tQ = s => tDom.querySelector(s);
+const tQQ = s => [...tDom.querySelectorAll(s)];
+
+let tRide = null, tFilter = 'all', tPickedType = 'standard', tStars = 0, tTopAmt = 200;
+let tTimers = [], tRaf = 0;
+const tTmr = (fn, ms) => tTimers.push(setTimeout(fn, ms));
+const tClearSim = () => { tTimers.forEach(clearTimeout); tTimers = []; cancelAnimationFrame(tRaf); };
+
+const tState = {
+  user: null, regRole: 'passenger', pending: null, pendingLabel: 'Continue',
+  wallet: 520, extraRides: 0, extraSpent: 0,
+  history: [
+    {type:'boda',from:'Westlands',to:'Nairobi CBD',fare:80,when:'Today, 3:12 PM'},
+    {type:'standard',from:'Kilimani',to:'Westlands',fare:150,when:'Yesterday, 6:45 PM'},
+    {type:'comfort',from:'Nairobi CBD',to:'Kilimani',fare:250,when:'24 Oct, 4:20 PM'}],
+  notifs: [{kind:'system',title:'Welcome to BEAST Travel',body:'Riding is free for passengers. Drivers get 7 days free.',ts:Date.now(),read:false}],
+  ntab: 'rides', mode: 'book',
+  driver: {profile:null,trialStart:null,skip:0,subscribed:false,online:false,trips:0,earnings:0,latest:null,request:null,active:null}
+};
+
+const tTRIAL_DAYS = 7, tSUB_PRICE = 500;
+const tPLACES = {'Nairobi CBD':[0,0],'Westlands':[-2.6,1.9],'Kilimani':[-3.8,-1.9],'Upper Hill':[-2.6,-1.6],'Parklands':[-0.2,2.7],'Eastleigh':[3.6,1.6],'South B':[3,-3.8],'Kasarani':[8,8],'JKIA':[6,-9],'Karen':[-9,-9.5]};
+const tTYPES = {
+  standard:{name:'Standard',icon:'car',base:70,km:25,seats:4,eta:4,vehicle:'Toyota Axio',kind:'Car'},
+  comfort:{name:'Comfort',icon:'car',base:100,km:47,seats:4,eta:6,vehicle:'Toyota Premio',kind:'Car'},
+  boda:{name:'Boda Boda',icon:'moto',base:40,km:12.5,seats:1,eta:3,vehicle:'Motorcycle',kind:'Motorcycle'},
+  tuk:{name:'Tuk Tuk',icon:'tuk',base:50,km:16,seats:3,eta:5,vehicle:'Bajaj Tuk Tuk',kind:'Tuk Tuk'},
+  shuttle:{name:'Shuttle',icon:'bus',base:180,km:37.5,seats:8,eta:8,vehicle:'Toyota Hiace',kind:'Shuttle'}
+};
+const tPAY = {wallet:'BEAST Wallet (demo)',mpesa:'M-Pesa',cash:'Cash'};
+const tDRIVERS = [['James Mwangi',4.8,120],['Peter Otieno',4.9,342],['Grace Wanjiru',4.7,88],['Samuel Kiprop',4.8,201],['Faith Achieng',4.9,157]];
+const tRIDERS = ['Amina','Brian','Cynthia','David','Esther','Kevin'];
+const tPick = a => a[Math.floor(Math.random()*a.length)];
+
+function tDist(a,b){
+  if(a===b) return 0;
+  const p=tPLACES[a],q=tPLACES[b];
+  if(p&&q) return Math.max(1,Math.round(Math.hypot(p[0]-q[0],p[1]-q[1])*10)/10);
+  let h=0; for(const c of a+'|'+b) h=(h*31+c.charCodeAt(0))%97;
+  return Math.round((2+(h%70)/10)*10)/10;
+}
+const tFareOf = (k,d) => Math.round((tTYPES[k].base+tTYPES[k].km*d)/10)*10;
+const tEstMin = d => Math.max(2,Math.round(d*2.4));
+const tKes = n => 'KES '+Math.round(n).toLocaleString('en-KE');
+
+// Router
+const tStack = ['home'];
+function tRender(){
+  const cur = tStack[tStack.length-1];
+  tQQ('.travel-screen').forEach(s=>{
+    const sid = s.id.slice(3);
+    s.classList.toggle('active', sid===cur);
+  });
+}
+function tGo(id, o={}){
+  if(o.reset) tStack.length=0;
+  if(o.replace) tStack.pop();
+  tStack.push(id); tRender();
+  if(id==='home') tSyncHome();
+  if(id==='rides') tRenderRides();
+  if(id==='wallet') tRenderWallet();
+  if(id==='notifs') { tState.notifs.forEach(n=>n.read=true); tUpdateBadge(); tRenderNotifs(); }
+  if(id==='dash') tRenderDash();
+  if(id==='plans') tRenderPlans();
+}
+function tBack(){ if(tStack.length>1){tStack.pop();tRender();} }
+function tGoHome(mode){ tStack.length=0; tStack.push('home'); tSetMode(mode||'book'); tRender(); tSyncHome(); }
+
+// Toast & Sheet
+let tToastT;
+function tToast(m){const el=tQ('#ttoast');el.textContent=m;el.classList.add('show');clearTimeout(tToastT);tToastT=setTimeout(()=>el.classList.remove('show'),2600)}
+function tSheet(html){ tQ('#tsheetBody').innerHTML=html; tQ('#tsheet').classList.add('open'); tQ('#tsheetScrim').classList.add('open'); }
+function tCloseSheet(){ tQ('#tsheet').classList.remove('open'); tQ('#tsheetScrim').classList.remove('open'); }
+function tOpenDrawer(){ tRenderDrawer(); tQ('#tdrawer').classList.add('open'); tQ('#tdrawerScrim').classList.add('open'); }
+function tCloseDrawer(){ tQ('#tdrawer').classList.remove('open'); tQ('#tdrawerScrim').classList.remove('open'); }
+
+function tRenderDrawer(){
+  const u=tState.user, d=tState.driver, tl=tTrialLeft();
+  tQ('#tdrawer').innerHTML=`
+    <div class="tbrandline" style="flex:none;margin-bottom:14px"><svg class="tcrown"><use href="#t-crown"/></svg><b class="twm" style="font-size:20px">BEAST</b></div>
+    <div class="tme">${u?`<div style="display:flex;gap:12px;align-items:center"><div class="tavatar" style="width:44px;height:44px">${String(u.name).split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase()}</div><div><b>${u.name}</b><div class="tsm tmuted">${u.id}</div></div></div>`
+      :`<b>Join BEAST</b><div class="tsm tmuted">Free for riders. Drivers get 7 days free.</div><button class="tbtn primary sm" data-tact="menu-join" style="width:100%">Create account</button>`}</div>
+    <button class="tnavitem" data-tact="nav-book"><svg class="ti"><use href="#ti-car"/></svg>Book a ride</button>
+    <button class="tnavitem" data-tact="nav-wallet"><svg class="ti"><use href="#ti-wallet"/></svg>Wallet &amp; history</button>
+    <button class="tnavitem" data-tact="nav-notifs"><svg class="ti"><use href="#ti-bell"/></svg>Notifications</button>
+    <button class="tnavitem" data-tact="nav-drive"><svg class="ti"><use href="#ti-steer"/></svg>Driver mode${d.subscribed?'<span class="tchip green">Subscribed</span>':d.trialStart?`<span class="tchip gold">${tl>0?tl+'d trial':'Trial ended'}</span>`:'<span class="tchip gold">7 days free</span>'}</button>
+    <button class="tnavitem" data-tact="nav-plans"><svg class="ti"><use href="#ti-shield"/></svg>Driver plan</button>
+    <div style="flex:1"></div>
+    ${u?`<button class="tnavitem" data-tact="logout" style="color:#ff9b9b"><svg class="ti"><use href="#ti-logout"/></svg>Log out</button>`:''}`;
+}
+
+function tPush(kind,title,body){ tState.notifs.unshift({kind,title,body,ts:Date.now(),read:false}); tUpdateBadge(); }
+function tUpdateBadge(){ const n=tState.notifs.filter(x=>!x.read).length; const b=tQ('#tbellBadge'); b.hidden=!n; b.textContent=n; }
+
+function tRenderNotifs(){
+  tQ('#tntRides').setAttribute('aria-selected',tState.ntab==='rides');
+  tQ('#tntSystem').setAttribute('aria-selected',tState.ntab==='system');
+  const items=tState.notifs.filter(n=>n.kind===tState.ntab);
+  tQ('#tnList').innerHTML=items.length?items.map(n=>`<div class="trow"><div class="tic"><svg class="ti"><use href="#ti-${n.kind==='rides'?(/complete/i.test(n.title)?'check':/message/i.test(n.title)?'msg':'car'):'shield'}"/></svg></div><div class="tgrow"><div class="tt">${n.title}</div><div class="ts">${n.body}</div></div><span class="tsm tmuted" style="white-space:nowrap">${new Date(n.ts).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span></div>`).join('')
+    :`<div class="tempty"><svg class="ti"><use href="#ti-bell"/></svg><div>No ${tState.ntab} notifications yet.</div></div>`;
+}
+
+function tSetMode(m){
+  tState.mode=m;
+  tQ('#tpanelBook').hidden=m!=='book'; tQ('#tpanelDrive').hidden=m!=='drive';
+  tQ('#tsegBook').setAttribute('aria-selected',m==='book'); tQ('#tsegDrive').setAttribute('aria-selected',m==='drive');
+}
+
+function tInitHome(){
+  tQ('#tplaces').innerHTML=Object.keys(tPLACES).map(p=>`<option value="${p}">`).join('');
+  tQ('#tquick').innerHTML=['Westlands','Kilimani','Upper Hill','Karen','JKIA','Kasarani'].map(p=>`<button data-tact="quick" data-v="${p}">${p}</button>`).join('');
+  tQ('#tfType').innerHTML=Object.entries(tTYPES).map(([k,t])=>`<option value="${k}">${t.name}</option>`).join('');
+  tQ('#tdArea').innerHTML=Object.keys(tPLACES).map(p=>`<option>${p}</option>`).join('');
+  ['tfFrom','tfTo','tfType'].forEach(id=>tQ('#'+id).addEventListener('input',tUpdateEst));
+  tQ('#tdPlate').addEventListener('input',e=>e.target.value=e.target.value.toUpperCase());
+}
+
+function tUpdateEst(){
+  const f=tQ('#tfFrom').value.trim(),t=tQ('#tfTo').value.trim(),k=tQ('#tfType').value;
+  tQ('#tbookErr').textContent='';
+  tQ('#test').innerHTML=(!f||!t||f.toLowerCase()===t.toLowerCase())
+    ?`<svg class="ti" style="color:#86a898"><use href="#ti-info"/></svg><span class="tmuted">Enter a pickup and a different destination to see your fare.</span>`
+    :`<svg class="ti" style="color:#1fe58f"><use href="#ti-clock"/></svg><span>${tDist(f,t)} km · <b>${tKes(tFareOf(k,tDist(f,t)))}</b> · ${tTYPES[k].name}</span>`;
+}
+
+function tSyncDriveForm(){
+  const d=tState.driver;
+  if(d.profile){ tQ('#tdVeh').value=d.profile.veh; tQ('#tdArea').value=d.profile.area; tQ('#tdPlate').value=d.profile.plate; }
+  tQ('#tdriveCta').textContent=d.profile?'Save & open dashboard':'Start 7-day free trial';
+  tQ('#tdriveFoot').textContent=d.subscribed?'You are subscribed. Thanks for driving with BEAST.':d.trialStart?(tTrialLeft()>0?`Free trial: ${tTrialLeft()} day${tTrialLeft()>1?'s':''} left.`:'Your trial has ended. Subscribe to go online.'):'No payment needed to start. You will see a reminder before the trial ends.';
+}
+
+function tRenderRides(){
+  const r=tRide; if(!r) return;
+  tQ('#trdRoute').textContent=`${r.from} → ${r.to}`;
+  tQ('#trdMeta').textContent=`${r.dist} km · pay with ${tPAY[r.pay]}`;
+  tQ('#trdFilters').innerHTML=[['all','All'],...Object.entries(tTYPES).map(([k,t])=>[k,t.name])].map(([k,n])=>`<button data-tact="filter" data-v="${k}" aria-pressed="${tFilter===k}">${n}</button>`).join('');
+  const keys=tFilter==='all'?Object.keys(tTYPES):[tFilter];
+  tQ('#trdList').innerHTML=keys.map(k=>{const t=tTYPES[k];return `
+    <div class="tride-card ${k===tPickedType?'pick':''}">
+      <div class="tic"><svg class="ti"><use href="#ti-${t.icon}"/></svg></div>
+      <div><b>${t.name}</b>${k===tPickedType?' <span class="tchip green" style="height:22px;font-size:11px;padding:0 8px">Your pick</span>':''}<div class="tsm tmuted">${t.eta} min away · ${t.seats} seat${t.seats>1?'s':''}</div></div>
+      <div class="tprice">${tKes(tFareOf(k,r.dist))}</div>
+      <button class="tbtn primary sm tgo" data-tact="select" data-v="${k}" style="width:100%">Select ${t.name}</button>
+    </div>`}).join('');
+}
+
+function tSelectRide(k){
+  const fare=tFareOf(k,tRide.dist);
+  if(tRide.pay==='wallet'&&tState.wallet<fare){ tToast('Your wallet needs a top-up for this ride'); tTopupSheet(fare-tState.wallet); return; }
+  tRide.type=k; tRide.fare=fare; tBeginRide();
+}
+
+function tBeginRide(){
+  tClearSim(); tStars=0; tRide.driver=null; tRide.phase='search';
+  tPush('rides','Ride request',`${tRide.from} → ${tRide.to}`);
+  tGo('track'); tSetTrack('search');
+  tTmr(()=>{ tRide.driver=tMakeDriver(tRide.type); tRide.phase='pickup';
+    tPush('rides','Driver on the way',`${tRide.driver.name} is heading to ${tRide.from}.`);
+    tTmr(()=>tPush('rides','Driver message','“On my way, 3 minutes”'),1800);
+    tSetTrack('pickup');
+    tRun(tQ('#tapPath'),7500,p=>{ tSetEta(`${Math.max(1,Math.ceil(tRide.driver.eta*(1-p)))} min away`,'Heading to your pickup'); },()=>tStartTrip());
+  },2400);
+}
+
+function tStartTrip(){
+  tRide.phase='trip'; tPush('rides','Trip started',`Your trip to ${tRide.to} has begun.`); tSetTrack('trip');
+  tRun(tQ('#trtPath'),9500,p=>{
+    tSetEta(`${Math.max(1,Math.ceil(tEstMin(tRide.dist)*(1-p)))} min left`,`Heading to ${tRide.to}`);
+    const len=tQ('#trtPath').getTotalLength(); tQ('#trtDone').setAttribute('stroke-dasharray',`${len*p} ${len+10}`);
+  },()=>tFinishRide());
+}
+
+function tRun(path,ms,tick,done){
+  const len=path.getTotalLength(), m=tQ('#tmCar'), t0=performance.now(); m.hidden=false;
+  const step=now=>{
+    const p=Math.min(1,(now-t0)/ms), pt=path.getPointAtLength(len*p);
+    m.setAttribute('transform',`translate(${pt.x},${pt.y})`); tick(p);
+    if(p<1) tRaf=requestAnimationFrame(step); else done();
+  };
+  tRaf=requestAnimationFrame(step);
+}
+
+function tMakeDriver(k){
+  const [name,rating,rides]=tPick(tDRIVERS), t=tTYPES[k];
+  const num=100+Math.floor(Math.random()*900), L=String.fromCharCode(65+Math.floor(Math.random()*26));
+  const plate=(k==='boda'?'KMF ':'K'+tPick(['CA','DB','DA','CZ'])+' ')+num+L;
+  return {name,rating,rides,plate,vehicle:t.vehicle,kind:t.kind,first:String(name).split(' ')[0],eta:Math.max(2,t.eta)};
+}
+
+function tSetEta(a,b){ const el=tQ('#tmapBadge'); if(el) el.innerHTML=`${a}<small>${b}</small>`; const e2=tQ('#ttrkEta'); if(e2) e2.textContent=a; }
+
+function tSetTrack(phase){
+  const r=tRide, d=r.driver, body=tQ('#ttrkBody');
+  tQ('#tradar').hidden=phase!=='search'; tQ('#tmCar').hidden=phase==='search';
+  tQ('#trtDone').setAttribute('stroke-dasharray','0 9999');
+  if(phase==='search'){
+    tQ('#ttrkTitle').textContent='Finding your driver'; tQ('#ttrkChip').textContent='Searching';
+    tQ('#tmapBadge').innerHTML='Matching you<small>Looking for nearby drivers</small>';
+    body.innerHTML=`<div class="tcard tcenter"><div class="tsub">Matching you with the nearest ${tTYPES[r.type].name}…</div><div class="tgap s"></div><b style="font-family:system-ui,sans-serif">${tKes(r.fare)}</b><div class="tsm tmuted">${r.from} → ${r.to}</div></div>
+      <button class="tbtn danger" data-tact="cancel-ride">Cancel ride</button>`;
+    return;
+  }
+  tQ('#ttrkTitle').textContent=phase==='pickup'?'On the way':'Trip in progress';
+  tQ('#ttrkChip').textContent=phase==='pickup'?'Driver coming':'On trip';
+  body.innerHTML=`
+    <div class="tcard"><div class="tdriver"><div class="tavatar">${d.first[0]+String(d.name).split(' ')[1][0]}</div>
+      <div style="flex:1"><b>${d.name}</b><div class="tsm tmuted"><span style="color:#f2c14e">★</span> ${d.rating} · ${d.rides} rides · <span id="ttrkEta"></span></div></div></div>
+      <div class="tgap s"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><div><div class="tsm tmuted">${d.vehicle}</div><b>${d.kind}</b></div><span class="tplate">${d.plate}</span></div></div>
+    <div class="tacts">
+      <button data-tact="call"><svg class="ti"><use href="#ti-phone"/></svg>Call</button><button data-tact="msg"><svg class="ti"><use href="#ti-msg"/></svg>Message</button><button data-tact="share"><svg class="ti"><use href="#ti-share"/></svg>Share</button></div>
+    <div class="tcard" style="padding:6px 16px"><div class="tsumrow"><span>Ride</span><b>${tTYPES[r.type].name}</b></div>
+      <div class="tsumrow"><span>Route</span><b>${r.from} → ${r.to}</b></div>
+      <div class="tsumrow"><span>Fare</span><b>${tKes(r.fare)}</b></div>
+      <div class="tsumrow"><span>Payment</span><b>${tPAY[r.pay]}</b></div></div>
+    ${phase==='pickup'?'<button class="tbtn danger" data-tact="cancel-ride">Cancel ride</button>':''}`;
+}
+
+function tFinishRide(){
+  const r=tRide; r.phase='done';
+  if(r.pay==='wallet') tState.wallet-=r.fare;
+  tState.history.unshift({type:r.type,from:r.from,to:r.to,fare:r.fare,when:'Today, '+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})});
+  tState.extraRides++; tState.extraSpent+=r.fare;
+  tPush('rides','Trip completed',`${tKes(r.fare)} · ${r.dist} km`);
+  tQ('#tarrCard').innerHTML=`
+    <div class="tsumrow"><span>From</span><b>${r.from}</b></div>
+    <div class="tsumrow"><span>To</span><b>${r.to}</b></div>
+    <div class="tsumrow"><span>Ride fare</span><b style="color:#ffd96e">${tKes(r.fare)}</b></div>
+    <div class="tsumrow"><span>Payment</span><b>${tPAY[r.pay]}</b></div>`;
+  tQ('#trateLbl').textContent=`How was ${r.driver.first}?`;
+  tQ('#tstars').innerHTML=[1,2,3,4,5].map(n=>`<button data-tact="star" data-v="${n}"><svg class="ti"><use href="#ti-star"/></svg></button>`).join('');
+  tGo('arrived',{replace:true});
+}
+
+function tCancelSheet(){
+  tSheet(`<h3 style="font-family:system-ui,sans-serif;font-size:17px;margin-bottom:6px">Cancel this ride?</h3><p class="tsub">You can book again right away. Riding with BEAST is free.</p><div class="tgap"></div>
+    <div class="tstack"><button class="tbtn danger" data-tact="cancel-yes">Yes, cancel ride</button><button class="tbtn ghost" data-tact="close-sheet">Keep my ride</button></div>`);
+}
+
+function tRenderWallet(){
+  tQ('#twBal').textContent=tKes(tState.wallet)+'.00';
+  tQ('#twStats').innerHTML=`<div><span class="tsm tmuted">Total rides</span><b>${12+tState.extraRides}</b></div><div><span class="tsm tmuted">Total spent</span><b>${tKes(1420+tState.extraSpent)}</b></div><div><span class="tsm tmuted">Last ride</span><b>${tState.history[0]?tState.history[0].when.split(',')[0]:'—'}</b></div>`;
+  tQ('#twList').innerHTML=tState.history.slice(0,8).map(h=>`<div class="trow"><div class="tic"><svg class="ti"><use href="#ti-${tTYPES[h.type].icon}"/></svg></div><div class="tgrow"><div class="tt">${tTYPES[h.type].name}</div><div class="ts">${h.from} → ${h.to}</div></div><div class="tamt">${tKes(h.fare)}<small>${h.when}</small></div></div>`).join('');
+}
+
+function tTopupSheet(need){
+  if(need) tTopAmt=[100,200,500,1000].find(a=>a>=need)||1000;
+  tSheet(`<h3 style="font-family:system-ui,sans-serif;font-size:17px;margin-bottom:4px">Top up wallet</h3>
+    <p class="tsub">${need?`You need ${tKes(need)} more for this ride. `:''}Demo only: no real money moves.</p><div class="tgap"></div>
+    <div class="tamounts">${[100,200,500,1000].map(a=>`<button data-tact="amt" data-v="${a}" aria-pressed="${a===tTopAmt}">${a}</button>`).join('')}</div>
+    <div class="tgap"></div><div class="tnote green"><svg class="ti" style="flex:none"><use href="#ti-phone"/></svg><div>M-Pesa prompt will be sent to <b>0712345678</b></div></div>
+    <div class="tgap"></div><button class="tbtn primary" data-tact="topup-go">Top up ${tKes(tTopAmt)}</button>`);
+}
+
+function tReceiptSheet(){
+  const r=tRide; if(!r) return;
+  tSheet(`<h3 style="font-family:system-ui,sans-serif;font-size:17px;margin-bottom:8px">Receipt</h3>
+    <div class="tsumrow"><span>Date</span><b>Today, ${new Date().toLocaleTimeString()}</b></div><div class="tsumrow"><span>Ride</span><b>${tTYPES[r.type].name}</b></div>
+    <div class="tsumrow"><span>Route</span><b>${r.from} → ${r.to}</b></div><div class="tsumrow"><span>Distance</span><b>${r.dist} km</b></div>
+    <div class="tsumrow"><span>Driver</span><b>${r.driver.name} · ${r.driver.plate}</b></div><div class="tsumrow"><span>Payment</span><b>${tPAY[r.pay]}</b></div>
+    <div class="tsumrow"><span>Total</span><b style="color:#ffd96e">${tKes(r.fare)}</b></div><div class="tgap"></div>
+    <button class="tbtn ghost" data-tact="close-sheet">Close</button>`);
+}
+
+function tTrialLeft(){ const d=tState.driver; if(!d.trialStart) return tTRIAL_DAYS; const used=Math.floor((Date.now()-d.trialStart)/864e5)+d.skip; return Math.max(0,tTRIAL_DAYS-used); }
+const tCanDrive = () => tState.driver.subscribed||tTrialLeft()>0;
+
+function tSaveDriver(){
+  const plate=tQ('#tdPlate').value.trim();
+  if(!/^K[A-Z]{2,3}\s?\d{3}[A-Z]$/.test(plate)){ tQ('#tplateErr').textContent='Use a Kenyan plate format, like KDA 123Z.'; tQ('#tdPlate').focus(); return; }
+  tQ('#tplateErr').textContent='';
+  const d=tState.driver, first=!d.trialStart;
+  d.profile={veh:tQ('#tdVeh').value,area:tQ('#tdArea').value,plate};
+  if(first){ d.trialStart=Date.now(); tPush('system','Free trial started',`You have ${tTRIAL_DAYS} days free. Then ${tKes(tSUB_PRICE)} a month.`); tToast('Your 7-day free trial has started'); }
+  tGo('dash');
+}
+
+function tRenderDash(){
+  const d=tState.driver, tl=tTrialLeft(), p=d.profile;
+  if(!p){ tGoHome('drive'); return; }
+  const status=d.subscribed?['green','Subscribed']:tl>0?['gold',`Trial · ${tl}d left`]:['red','Trial ended'];
+  tQ('#tdashChip').innerHTML=`<span class="tchip ${status[0]}">${status[1]}</span>`;
+  let banner='';
+  if(d.subscribed) banner=`<div class="tnote green"><svg class="ti" style="flex:none"><use href="#ti-check"/></svg><div>Subscribed at ${tKes(tSUB_PRICE)} a month. Keep every fare.</div></div>`;
+  else if(tl>0) banner=`<div class="tnote"><svg class="ti" style="flex:none"><use href="#ti-clock"/></svg><div style="flex:1"><b>Day ${tTRIAL_DAYS-tl+1} of ${tTRIAL_DAYS} free.</b> After that, ${tKes(tSUB_PRICE)} a month keeps you online.</div><button class="tlink" data-tact="nav-plans">Plan</button></div>`;
+  else banner=`<div class="tnote" style="border-color:#5a2424;background:rgba(255,107,107,.08);color:#ffc0c0"><svg class="ti" style="flex:none"><use href="#ti-lock"/></svg><div style="flex:1"><b>Your free trial has ended.</b> Subscribe to go online again.</div></div><button class="tbtn primary" data-tact="nav-plans">Subscribe · ${tKes(tSUB_PRICE)}/month</button>`;
+  let zone='';
+  if(d.active){ const a=d.active; zone=`<div class="treq"><b>Trip in progress</b><div class="tsm tmuted">${a.rider} · ${a.from} → ${a.to}</div><div class="tgap s"></div><div style="display:flex;justify-content:space-between;align-items:center"><b style="font-family:system-ui,sans-serif">${tKes(a.fare)}</b><button class="tbtn primary sm" data-tact="complete-trip">Complete trip</button></div></div>`; }
+  else if(d.request){ const q=d.request; zone=`<div class="treq"><div style="display:flex;justify-content:space-between"><b>New ride request</b><b style="color:#1fe58f">${tKes(q.fare)}</b></div>
+    <div class="tsm tmuted">${q.rider} · ${q.dist} km</div><div class="tgap s"></div>
+    <div class="tsumrow" style="border:0;padding:4px 0"><span>Pickup</span><b>${q.from}</b></div><div class="tsumrow" style="border:0;padding:4px 0"><span>Drop-off</span><b>${q.to}</b></div><div class="tgap s"></div>
+    <div class="tgrid2"><button class="tbtn ghost" data-tact="decline">Decline</button><button class="tbtn primary" data-tact="accept">Accept</button></div></div>`; }
+  else if(d.online) zone=`<div class="tcard tcenter"><div class="tsub">Looking for riders near ${p.area}…</div></div>`;
+  else zone=`<div class="tcard tcenter"><div class="tsub">You are offline. Go online to receive ride requests.</div></div>`;
+  tQ('#tdashBody').innerHTML=`${banner}
+    <div class="tcard" style="display:flex;align-items:center;gap:14px"><span class="tdot ${d.online?'on':''}"></span><div style="flex:1"><b>${d.online?'Online':'Offline'}</b><div class="tsm tmuted">${tTYPES[p.veh].kind} · ${p.plate} · ${p.area}</div></div>
+      <button class="tswitch" role="switch" aria-checked="${d.online}" aria-label="Go online" data-tact="toggle-online"></button></div>
+    <div class="tgrid2"><div class="tkpi"><span class="tsm tmuted">Today's trips</span><b>${d.trips}</b></div><div class="tkpi"><span class="tsm tmuted">Earnings</span><b>${tKes(d.earnings)}</b></div></div>
+    ${zone}
+    <div><h3 style="font-size:15px;margin:6px 0 10px">Latest trip</h3>${d.latest?`<div class="trow"><div class="tic"><svg class="ti"><use href="#ti-pin"/></svg></div><div class="tgrow"><div class="tt">${d.latest.from} → ${d.latest.to}</div><div class="ts">${tKes(d.latest.fare)} · ${d.latest.dist} km · ${tEstMin(d.latest.dist)} min</div></div></div>`:'<div class="tmuted tsm">No trips yet today.</div>'}</div>
+    <button class="tbtn ghost" data-tact="edit-profile">Edit driver profile</button>
+    ${(!d.subscribed&&tl>0)?'<button class="tlink tsm tcenter" data-tact="skip-trial" style="justify-self:center">Demo: end my trial now</button>':''}`;
+}
+
+let tReqT;
+function tScheduleRequest(ms=3000){
+  clearTimeout(tReqT);
+  tReqT=setTimeout(()=>{ const d=tState.driver; if(!d.online||d.request||d.active) return;
+    const keys=Object.keys(tPLACES); const from=d.profile.area; let to=tPick(keys.filter(k=>k!==from));
+    const dd=tDist(from,to); d.request={rider:tPick(tRIDERS),from,to,dist:dd,fare:tFareOf(d.profile.veh,dd)};
+    if(tStack[tStack.length-1]==='dash') tRenderDash(); },ms);
+}
+
+function tSetOnline(on){
+  const d=tState.driver;
+  if(on&&!tCanDrive()){ tToast('Subscribe to go online'); tGo('plans'); return; }
+  d.online=on; if(on) tScheduleRequest(); else { clearTimeout(tReqT); d.request=null; }
+  tRenderDash();
+}
+
+function tRenderPlans(){
+  const d=tState.driver, tl=tTrialLeft(), started=!!d.trialStart;
+  let status;
+  if(d.subscribed){ const r=new Date(Date.now()+30*864e5).toLocaleDateString('en-KE',{day:'numeric',month:'short'}); status=`<div class="tnote green"><svg class="ti" style="flex:none"><use href="#ti-check"/></svg><div><b>You are subscribed.</b> Renews around ${r}.</div></div>`; }
+  else if(!started) status=`<div class="tnote green"><svg class="ti" style="flex:none"><use href="#ti-clock"/></svg><div>Your 7-day free trial starts when you save your driver profile.</div></div>`;
+  else if(tl>0) status=`<div class="tnote"><svg class="ti" style="flex:none"><use href="#ti-clock"/></svg><div><b>${tl} day${tl>1?'s':''} of free trial left.</b> Subscribe any time to keep driving afterwards.</div></div>`;
+  else status=`<div class="tnote" style="border-color:#5a2424;background:rgba(255,107,107,.08);color:#ffc0c0"><svg class="ti" style="flex:none"><use href="#ti-lock"/></svg><div><b>Your free trial has ended.</b> Subscribe to go online.</div></div>`;
+  tQ('#tplansBody').innerHTML=`${status}
+    <div class="tcard glow tcenter"><div class="tsm tmuted">BEAST Driver</div><div class="tbal" style="margin:4px 0">${tKes(tSUB_PRICE)}<span class="tsm tmuted" style="font-family:var(--body);font-weight:500"> / month</span></div>
+      <div class="tchip gold">First 7 days free</div><div class="tgap"></div>
+      <div class="tlist" style="gap:8px;text-align:left"><div>✓ Unlimited ride requests</div><div>✓ Keep every fare, no per-trip cut</div><div>✓ Go online or offline any time</div><div>✓ Cancel any time</div></div></div>
+    ${d.subscribed?'<button class="tbtn ghost" disabled>Subscribed</button>':!started?'<button class="tbtn primary" data-tact="nav-drive">Set up driver profile</button>':`<button class="tbtn primary" data-tact="subscribe">Subscribe with M-Pesa (demo)</button>`}
+    <div class="tnote green"><svg class="ti" style="flex:none"><use href="#ti-user"/></svg><div><b>Passengers always ride free.</b> No fees to register or book.</div></div>`;
+}
+
+// Actions
+const tActions = {
+  menu: tOpenDrawer, 'close-drawer': tCloseDrawer, 'close-sheet': tCloseSheet,
+  bell(){ tGo('notifs'); }, wallet(){ tGo('wallet'); },
+  'mode-book':()=>tSetMode('book'), 'mode-drive':()=>{tSetMode('drive');tSyncDriveForm();},
+  swap(){ const a=tQ('#tfFrom'),b=tQ('#tfTo'); [a.value,b.value]=[b.value,a.value]; tUpdateEst(); },
+  quick(el){ tQ('#tfTo').value=el.dataset.v; tUpdateEst(); },
+  find(){
+    const f=tQ('#tfFrom').value.trim(),t=tQ('#tfTo').value.trim();
+    if(!f||!t){ tQ('#tbookErr').textContent='Enter both a pickup and a destination.'; return; }
+    if(f.toLowerCase()===t.toLowerCase()){ tQ('#tbookErr').textContent='Pickup and destination must be different.'; return; }
+    tPickedType=tQ('#tfType').value; tFilter='all';
+    tRide={from:f,to:t,dist:tDist(f,t),pay:tQ('#tfPay').value,type:tPickedType};
+    tGo('rides');
+  },
+  filter(el){ tFilter=el.dataset.v; tRenderRides(); },
+  select(el){ tSelectRide(el.dataset.v); },
+  'track-back'(){ if(tRide&&tRide.phase==='trip') tToast('Your trip is in progress'); else tCancelSheet(); },
+  'cancel-ride':tCancelSheet,
+  'cancel-yes'(){ tClearSim(); tCloseSheet(); tRide&&(tRide.phase='cancelled'); tToast('Ride cancelled'); tGoHome('book'); },
+  call(){ tToast(`Calling ${tRide.driver.first}… (demo)`); },
+  msg(){ tToast('Message sent to '+tRide.driver.first+' (demo)'); },
+  async share(){ const txt=`I'm riding with BEAST: ${tRide.from} → ${tRide.to}, ${tRide.driver.plate}.`; try{ if(navigator.share){await navigator.share({title:'My BEAST trip',text:txt});} else {await navigator.clipboard.writeText(txt);tToast('Trip details copied');} }catch(e){} },
+  star(el){ tStars=+el.dataset.v; tQQ('#tstars button').forEach((b,i)=>b.classList.toggle('on',i<tStars)); tToast('Thanks for rating'); },
+  receipt:tReceiptSheet,
+  another(){ tGoHome('book'); },
+  back:tBack,
+  login(){ tToast('Log in turns on when the BEAST backend is connected'); },
+  'welcome-go'(){ const n=tState.pending; tState.pending=null; tGoHome(tState.regRole==='driver'?'drive':'book'); if(n) setTimeout(n,60); },
+  'menu-join'(){ tCloseDrawer(); tGoHome('book'); },
+  topup(){ tTopupSheet(); },
+  amt(el){ tTopAmt=+el.dataset.v; tTopupSheet(); },
+  'topup-go'(){ tCloseSheet(); tToast('M-Pesa prompt sent (demo)'); setTimeout(()=>{ tState.wallet+=tTopAmt; tPush('system','Wallet topped up',`${tKes(tTopAmt)} added to your wallet.`); tToast(`${tKes(tTopAmt)} added to wallet`); if(tStack[tStack.length-1]==='wallet') tRenderWallet(); tUpdateBadge(); tQ('#tchipBal').textContent=tKes(tState.wallet); },1400); },
+  'ntab-rides'(){ tState.ntab='rides'; tRenderNotifs(); }, 'ntab-system'(){ tState.ntab='system'; tRenderNotifs(); },
+  'nav-book'(){ tCloseDrawer(); tGoHome('book'); },
+  'nav-wallet'(){ tCloseDrawer(); tGo('wallet'); },
+  'nav-notifs'(){ tCloseDrawer(); tGo('notifs'); },
+  'nav-plans'(){ tCloseDrawer(); tGo('plans'); },
+  'nav-drive'(){ tCloseDrawer(); if(tState.driver.profile) tGo('dash'); else { tStack.length=1; tSetMode('drive'); tRender(); } },
+  logout(){ tCloseDrawer(); clearTimeout(tReqT); tState.user=null; tState.driver.online=false; tState.driver.request=null; tToast('Logged out'); tGoHome('book'); },
+  'drive-save'(){ tSaveDriver(); },
+  'edit-profile'(){ tStack.length=1; tSetMode('drive'); tRender(); },
+  'toggle-online'(){ tSetOnline(!tState.driver.online); },
+  accept(){ const d=tState.driver; d.active=d.request; d.request=null; tRenderDash(); },
+  decline(){ const d=tState.driver; d.request=null; tRenderDash(); tScheduleRequest(4000); },
+  'complete-trip'(){ const d=tState.driver,a=d.active; d.trips++; d.earnings+=a.fare; d.latest=a; d.active=null; tToast(`Trip complete · ${tKes(a.fare)} earned`); tRenderDash(); if(d.online) tScheduleRequest(5000); },
+  'skip-trial'(){ tState.driver.skip=tTRIAL_DAYS; tPush('system','Free trial ended',`Subscribe for ${tKes(tSUB_PRICE)} a month to keep driving.`); if(tState.driver.online) tSetOnline(false); tRenderDash(); tToast('Trial ended (demo)'); },
+  subscribe(){ tSheet(`<h3 style="font-family:system-ui,sans-serif;font-size:17px;margin-bottom:6px">Subscribe to BEAST Driver</h3><p class="tsub">${tKes(tSUB_PRICE)} a month, billed with M-Pesa. Demo only: no real payment.</p><div class="tgap"></div>
+    <div class="tstack"><button class="tbtn primary" data-tact="subscribe-go">Pay ${tKes(tSUB_PRICE)}</button><button class="tbtn ghost" data-tact="close-sheet">Not now</button></div>`); },
+  'subscribe-go'(){ tCloseSheet(); tState.driver.subscribed=true; tPush('system','Subscription active',`BEAST Driver, ${tKes(tSUB_PRICE)} a month.`); tToast('You are subscribed'); tRenderPlans(); }
+};
+
+tDom.addEventListener('click',e=>{ const a=e.target.closest('[data-tact]'); if(a&&tActions[a.dataset.tact]) tActions[a.dataset.tact](a); });
+tDom.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.matches('#tfFrom,#tfTo')) tActions.find(); });
+
+function tSyncHome(){ tQ('#tchipBal').textContent=tKes(tState.wallet); tUpdateBadge(); tUpdateEst(); tSyncDriveForm(); }
+
+tInitHome(); tSyncHome(); tUpdateEst(); tRender();
+</script></body></html>
