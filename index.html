@@ -1,338 +1,946 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#06100d"><title>BEAST Money — Prototype</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#040a07">
+<title>BEAST Travel – Safe. Simple. Smart.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#050907;--panel:#0b1512;--panel2:#101c18;--line:#263630;--green:#00d995;--mint:#baffdf;--gold:#f5c85b;--muted:#9ab0a7;--red:#ff7979;--blue:#8dcaff;--text:#f3fff9;--shadow:0 14px 35px #0005}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top right,#0a3023 0,transparent 36%),var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding-bottom:85px}button,input,select,textarea{font:inherit}button{cursor:pointer}.topbar{position:sticky;top:0;z-index:10;background:#06100df2;backdrop-filter:blur(14px);border-bottom:1px solid #1e4538;padding:10px 14px;display:flex;align-items:center;gap:12px}.hamb{width:43px;height:43px;border:1px solid var(--line);border-radius:13px;background:#0c2119;color:var(--green);font-size:25px}.brand{display:flex;align-items:center;gap:9px;flex:1}.mark{display:grid;place-items:center;width:39px;height:39px;border-radius:13px;background:linear-gradient(135deg,#00db95,#07563b);color:#06130d;font-size:22px;font-weight:1000;box-shadow:0 0 20px #00d99525}.brand strong{display:block;letter-spacing:2px;font-size:20px}.brand small{color:var(--muted);font-size:10px;letter-spacing:1px}.bell{border:1px solid var(--line);background:#101b17;color:var(--gold);border-radius:12px;padding:10px}.container{max-width:1050px;margin:auto;padding:15px}.page{display:none;animation:fade .2s ease}.page.active{display:block}@keyframes fade{from{opacity:.5;transform:translateY(3px)}to{opacity:1;transform:none}}h1{font-size:25px;margin:4px 0 4px}h2{font-size:20px;margin:0 0 7px}h3{font-size:16px;margin:0 0 8px}.sub{color:var(--muted);margin:0 0 16px;font-size:13px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card{background:linear-gradient(145deg,#10201a,#080e0c);border:1px solid var(--line);border-radius:22px;padding:17px;box-shadow:var(--shadow);min-width:0}.tile{min-height:150px;text-align:left;color:var(--text);transition:.15s;display:flex;flex-direction:column;justify-content:flex-start;gap:8px}.tile:active{transform:scale(.98)}.tile .ico{font-size:32px}.tile strong{font-size:18px}.tile small{color:var(--muted);font-size:13px}.t-green{background:linear-gradient(145deg,#08271a,#0b1511)}.t-blue{background:linear-gradient(145deg,#0c1e2c,#0b1214)}.t-red{background:linear-gradient(145deg,#2b1111,#10110f)}.section-label{margin:23px 0 12px;font-size:20px;font-weight:850}.balance-hero{background:linear-gradient(120deg,#073c2a,#0b2119 60%,#251f0c);border:1px solid #237655;border-radius:24px;padding:20px;margin-bottom:15px;position:relative;overflow:hidden}.balance-hero:after{content:'♌';position:absolute;right:8px;bottom:-30px;font-size:120px;color:#d8ffe70b}.eyebrow{color:#a9d8c5;font-size:12px}.big-balance{font-size:30px;font-weight:900;margin:5px 0 14px}.btn{border:0;border-radius:12px;background:linear-gradient(110deg,#00d995,#00a86f);color:#03150d;font-weight:900;padding:12px 15px}.btn.secondary{background:#13231d;border:1px solid #355247;color:#dcfff1}.btn.danger{background:#3a1818;border:1px solid #7c3434;color:#ffdede}.btn.gold{background:linear-gradient(110deg,#f5d16e,#c18b26);color:#211500}.btn:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;gap:8px;flex-wrap:wrap}.field{display:flex;flex-direction:column;gap:6px;margin:11px 0}.field label{font-size:12px;color:#b9d5ca;font-weight:750}.field input,.field select,.field textarea,input.control,select.control,textarea.control{width:100%;background:#050c09;border:1px solid #2b473b;border-radius:12px;padding:12px;color:var(--text);outline:none;min-width:0}.field input:focus,.field select:focus,.field textarea:focus,.control:focus{border-color:var(--green);box-shadow:0 0 0 3px #00d99517}.field small,.hint{color:var(--muted);font-size:12px}.row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stat{background:#08110e;border:1px solid var(--line);border-radius:15px;padding:13px}.stat small{display:block;color:var(--muted);font-size:12px}.stat strong{font-size:18px;display:block;margin-top:5px}.divider{height:1px;background:#23372e;margin:15px 0}.notice{padding:11px 13px;border:1px solid #665128;background:#211b0c;border-radius:12px;color:#f8dfa1;font-size:12px;margin:12px 0}.ok{border-color:#1c6e50;background:#08271b;color:#baffdf}.bad{border-color:#823d3d;background:#2b1111;color:#ffc6c6}.list{display:flex;flex-direction:column;gap:9px}.item{display:flex;align-items:center;gap:10px;padding:12px;background:#08110e;border:1px solid #24392f;border-radius:14px}.item .grow{flex:1;min-width:0}.item small{display:block;color:var(--muted);font-size:12px;overflow-wrap:anywhere}.amount{font-weight:900;white-space:nowrap}.positive{color:var(--green)}.negative{color:#ff9999}.tabs{display:flex;gap:7px;overflow:auto;margin:14px 0;padding-bottom:3px}.tab{flex:1;min-width:max-content;border:1px solid #294438;border-radius:12px;padding:10px 12px;background:#0a1510;color:#b6cec3;font-weight:800}.tab.active{background:#063d2b;border-color:var(--green);color:#d7ffec}.bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:12;display:grid;grid-template-columns:repeat(5,1fr);padding:7px 5px calc(7px + env(safe-area-inset-bottom));background:#06100df5;border-top:1px solid #234739;backdrop-filter:blur(15px)}.bottomnav button{border:0;background:transparent;color:#91ada0;font-size:10px;padding:4px 1px;display:flex;align-items:center;flex-direction:column;gap:3px}.bottomnav button span{font-size:20px}.bottomnav button.active{color:var(--green)}.overlay{display:none;position:fixed;inset:0;z-index:30;background:#0009}.overlay.show{display:block}.drawer{width:min(330px,86vw);height:100%;background:#07110d;border-right:1px solid #1e6048;padding:17px;overflow:auto}.drawer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.drawer-head strong{font-size:20px;letter-spacing:1px;color:var(--green)}.drawer-user{padding:15px;background:linear-gradient(130deg,#0b3a29,#101c16);border-radius:15px;margin-bottom:15px}.menuitem{width:100%;display:flex;gap:13px;align-items:center;text-align:left;padding:12px;border:0;border-radius:11px;background:transparent;color:#dceee5;font-weight:700}.menuitem span{font-size:20px;width:27px}.menuitem:active,.menuitem:hover{background:#103326}.menuitem.logout{color:#ff9b9b}.hide{display:none!important}.pill{display:inline-block;border:1px solid #28654d;background:#0b2c20;color:#baffdf;border-radius:99px;padding:4px 9px;font-size:11px}.balance-source{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #23372e;gap:10px}.balance-source:last-child{border-bottom:0}.stepnum{width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:#0c422e;color:var(--green);font-weight:900}.security-radar{width:118px;height:118px;border-radius:50%;border:1px solid #00d99580;margin:12px auto;display:grid;place-items:center;background:repeating-radial-gradient(circle,#00d9950d 0 16px,transparent 17px 29px);box-shadow:0 0 25px #00d99518;position:relative}.security-radar:after{content:'';position:absolute;width:50%;height:1px;background:var(--green);left:50%;top:50%;transform-origin:left;animation:scan 3s linear infinite}@keyframes scan{to{transform:rotate(360deg)}}.footer-note{text-align:center;color:#658278;font-size:11px;padding:22px 5px}.smallbtn{padding:7px 10px;font-size:12px}.checkline{display:flex;gap:9px;align-items:flex-start;font-size:12px;color:#b5d3c5}.checkline input{margin-top:3px;accent-color:var(--green)}
-#entry{position:fixed;inset:0;z-index:50;background:radial-gradient(ellipse at 80% 0,#0d3b29,transparent 45%),#050907;overflow:auto;display:flex;align-items:center;justify-content:center;padding:16px}#entry .entrybox{width:min(550px,100%);border:1px solid #27664a;border-radius:25px;background:#08130e;padding:22px;box-shadow:0 25px 90px #000b}.entrybrand{text-align:center;margin-bottom:15px}.entrybrand .mark{margin:0 auto 7px;width:58px;height:58px;font-size:31px}.entrybrand h1{letter-spacing:4px;font-size:29px}.entrybrand p{color:var(--muted);font-size:11px;letter-spacing:1.2px;margin:0}.entry-step{display:none}.entry-step.active{display:block}.namecard{border:1px solid #3e624d;background:linear-gradient(135deg,#10271b,#111c15);border-radius:15px;padding:13px;margin:10px 0}.namecard strong{display:block;color:var(--gold);font-size:11px;letter-spacing:1px}.namecard div{font-size:19px;font-weight:850;margin-top:4px}.namecard input{margin-top:8px}.legal{font-size:11px;color:var(--muted);line-height:1.6}.center{text-align:center}
-@media(min-width:760px){.container{padding:24px}.grid{gap:16px}.tile{min-height:175px;padding:22px}.tile .ico{font-size:38px}.bottomnav{display:none}.topbar{padding:12px 24px}.grid.homegrid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:520px){.container{padding:12px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.tile{min-height:132px;padding:13px;border-radius:18px}.tile .ico{font-size:28px}.tile strong{font-size:15px}.tile small{font-size:11px}.card{padding:14px;border-radius:18px}.row{grid-template-columns:1fr}.big-balance{font-size:26px}.stats{gap:7px}.stat{padding:10px}.stat strong{font-size:16px}h1{font-size:22px}}
+:root{
+  --bg:#040a07; --card:#0a1a12; --card2:#0f2418; --line:#17382a; --line2:#215a41;
+  --green:#1fe58f; --green2:#12c777; --gold:#f2c14e; --gold2:#ffd96e;
+  --text:#e9fff4; --mut:#86a898; --danger:#ff6b6b; --amber:#f2b84e;
+  --display:'Unbounded',system-ui,sans-serif; --body:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:radial-gradient(80% 60% at 50% 0%,#0a2217 0%,#030705 70%);color:var(--text);font-family:var(--body);font-size:15px;line-height:1.45;display:grid;place-items:center}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:10px}
+.i{width:22px;height:22px;flex:none}
 
-.market-product{overflow:hidden;padding:0;display:flex;flex-direction:column}.market-product img{width:100%;height:130px;object-fit:cover;background:#0b2118}.market-product .productbody{padding:12px}.market-product .productbody strong{display:block;overflow-wrap:anywhere}.market-price{color:var(--gold);font-weight:900;font-size:18px;margin:7px 0}.market-badge{font-size:10px;color:var(--mint);border:1px solid #28654d;border-radius:99px;padding:3px 7px;display:inline-block;margin:4px 0}.market-product .btn{width:100%;padding:9px}.market-business-row{align-items:flex-start}.market-business-row .grow{overflow-wrap:anywhere}
+/* phone frame */
+.phone{position:relative;width:100%;max-width:430px;height:100dvh;max-height:920px;overflow:hidden;background:var(--bg)}
+@media(min-width:520px){.phone{border-radius:40px;border:1px solid var(--line2);box-shadow:0 0 0 9px #06110b,0 0 0 10px var(--line),0 50px 140px rgba(31,229,143,.14)}}
 
-.biz-panel{margin-top:12px}.biz-service{min-height:145px}.biz-service .price{color:var(--gold);font-weight:900;font-size:17px;margin-top:4px}.biz-service .trial{font-size:11px;color:var(--green);margin-top:3px}.biz-panel .tabs{margin-bottom:12px}.biz-status{display:inline-block;padding:4px 8px;border:1px solid var(--edge);border-radius:99px;font-size:11px;color:var(--gold)}.biz-list-row{display:flex;gap:10px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--edge)}.biz-list-row:last-child{border-bottom:0}.biz-list-row>div{flex:1;min-width:0}.biz-list-row small{display:block}
+.screen{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;padding:0 18px 32px;
+  background:radial-gradient(120% 50% at 50% -8%,rgba(31,229,143,.13),transparent 62%),var(--bg);
+  transform:translateX(100%);visibility:hidden;transition:transform .34s cubic-bezier(.2,.8,.2,1),visibility 0s .34s}
+.screen.active{transform:none;visibility:visible;transition-delay:0s}
+.screen.behind{transform:translateX(-16%)}
+.screen::-webkit-scrollbar{width:0}
+.screen>h1:focus,.screen>*:focus{outline:none}
 
-/* BEAST RIDE FLOW STYLES */
-.ride-topbar { padding: 12px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; background: #06100d; }
-.ride-brand { font-weight: 900; font-size: 15px; display: flex; align-items: center; gap: 5px; color: var(--green); }
-.ride-mark { font-size: 18px; }
-.ride-tabs { display: flex; border-bottom: 1px solid var(--line); background: #08130e; }
-.ride-tab { flex: 1; border: 0; background: transparent; color: var(--muted); padding: 10px; font-size: 12px; font-weight: 800; border-bottom: 2px solid transparent; }
-.ride-tab.active { color: var(--green); border-bottom-color: var(--green); }
-.ride-panel { animation: fade 0.3s ease; }
-.ride-hero { background: linear-gradient(120deg, #073c2a, #0b2119); padding: 15px; position: relative; overflow: hidden; border-bottom: 1px solid #237655; }
-.ride-form { padding: 15px; }
-.ride-input { width: 100%; background: #050c09; border: 1px solid #2b473b; border-radius: 12px; padding: 10px; color: var(--text); font-size: 13px; outline: none; }
-.ride-list { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 8px; }
-.ride-item { display: flex; gap: 10px; align-items: center; padding: 12px; background: #08110e; border: 1px solid #24392f; border-radius: 14px; }
-.ride-item .grow { flex: 1; }
-.ride-item b { font-size: 14px; }
-.ride-item small { display: block; color: var(--muted); font-size: 11px; }
+/* brand */
+.wm{font-family:var(--display);font-weight:800;letter-spacing:.07em;background:linear-gradient(180deg,var(--gold2),#d9962a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.crown{width:34px;height:30px;color:var(--gold)}
+.brandline{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.brandline .wm{font-size:17px;line-height:1;display:block}
+.brandline small{display:block;color:var(--mut);font-size:11.5px;margin-top:3px}
 
-</style></head><body>
-<header class="topbar"><button class="hamb" id="openMenu" aria-label="Open menu">☰</button><div class="brand"><div class="mark">B</div><div><strong>BEAST</strong><small>MONEY TRANSFER · KENYA PROTOTYPE</small></div></div><button class="bell" data-page="notifications" aria-label="Notifications">🔔 <b id="noticeCount">1</b></button></header>
-<main class="container">
-<section id="home" class="page active"><div class="balance-hero"><div class="eyebrow">WELCOME BACK · BEAST WALLET</div><div style="font-size:20px;font-weight:850" id="helloName">KRISH KRISHNA</div><div class="big-balance" id="homeBalance">KES 7,564.00</div><div class="actions"><button class="btn" data-page="send">↗ Send money</button><button class="btn secondary" data-page="receive">＋ Receive</button><button class="btn secondary" data-page="balance">◎ Account balance</button></div></div>
-<div class="grid homegrid"><button class="card tile t-green" data-page="balance"><span class="ico">💰</span><strong>Account Balance</strong><small>Check access</small></button><button class="card tile t-blue" data-page="statements"><span class="ico">📊</span><strong>Statements</strong><small>Mini summary</small></button><button class="card tile" data-page="bulk"><span class="ico">📥</span><strong>Bulk Send</strong><small>Many at once</small></button></div><div class="section-label">Quick actions</div><div class="grid"><button class="card tile t-green" data-page="send"><span class="ico">📤</span><strong>Send</strong><small>Phone / BEAST ID</small></button><button class="card tile" data-page="bulk"><span class="ico">📥</span><strong>Bulk Send</strong><small>Many recipients</small></button><button class="card tile t-blue" data-page="receive"><span class="ico">🤝</span><strong>Receive</strong><small>Buyer authorization</small></button><button class="card tile" data-page="withdraw"><span class="ico">🏧</span><strong>Withdraw</strong><small>Agent cash-out</small></button><button class="card tile t-green" data-page="lipana"><span class="ico">🛒</span><strong>Lipa Na</strong><small>Pay a business</small></button><button class="card tile t-blue" data-page="history"><span class="ico">🧾</span><strong>History</strong><small>Transactions</small></button><button class="card tile t-blue" data-page="statements"><span class="ico">📊</span><strong>Statements</strong><small>Mini summary</small></button><button class="card tile" data-page="profile"><span class="ico">👤</span><strong>Profile</strong><small>BEAST identity</small></button><button class="card tile t-red" data-page="security"><span class="ico">🛡️</span><strong>Security</strong><small>Security events</small></button><button class="card tile t-blue" data-page="settings"><span class="ico">⚙️</span><strong>Settings</strong><small>App controls</small></button><button class="card tile t-green" data-page="market"><span class="ico">🏪</span><strong>Market</strong><small>Register a business or shop products</small></button><button class="card tile t-blue" data-page="travel"><span class="ico">✈️</span><strong>Travel</strong><small>Explore trips, stays and transport</small></button></div><div class="footer-note">BEAST · Fast • Secure • Global · Interactive prototype</div></section>
-<section id="balance" class="page"><h1>ACCOUNT BALANCE</h1><p class="sub">Balance access · Verify your registered identity.</p><div class="card"><div class="field"><label>ID number</label><input id="balId" inputmode="numeric" placeholder="Registered national ID"></div><div class="field"><label>Full name</label><input id="balName" placeholder="Registered full name"></div><div class="field"><label>PIN</label><input id="balPin" type="password" inputmode="numeric" maxlength="6" placeholder="Enter PIN"></div><button class="btn" id="checkBalance">CHECK BALANCE</button><div id="balanceResult" class="hide"><div class="divider"></div><div class="notice ok">Identity check passed for this local demo. Provider balances are simulated, not fetched from live accounts.</div><h3>Linked accounts & balances</h3><div id="balanceSources"></div></div></div></section>
-<section id="statements" class="page"><h1>STATEMENTS</h1><p class="sub">Mini statements · Last 30 days summary and recent activity.</p><div class="stats"><div class="stat"><small>Transactions (30d)</small><strong id="txCount">2</strong></div><div class="stat"><small>Money in</small><strong>KES 100.00</strong></div><div class="stat"><small>Money out</small><strong>KES 500.00</strong></div><div class="stat"><small>Net</small><strong class="negative">KES -400.00</strong></div><div class="stat"><small>BEAST fees paid</small><strong>KES 14.00</strong></div><div class="stat"><small>Provider costs</small><strong>KES 29.00</strong></div></div><div class="section-label">Recent activity</div><div id="statementActivity" class="list"></div></section>
-<section id="bulk" class="page"><h1>BULK SEND</h1><p class="sub">Send to many at once. Paste phone,amount lines. One PIN authorizes the batch.</p><div class="card"><div class="field"><label>Recipients — one per line as phone,amount (max 500)</label><textarea id="bulkText" rows="7" placeholder="0712345678,500&#10;+254712345678,250&#10;BEAST-017335,100"></textarea><small>Accepted: 07… / 01… / +254… / account number / BEAST- followed by digits. Recipient names are preview examples only.</small></div><div class="actions"><button class="btn secondary" id="addBulkLine">＋ Add line</button><button class="btn secondary" id="parseBulk">PARSE LIST</button><button class="btn secondary" id="clearBulk">CLEAR</button></div><div id="bulkPreview" class="list" style="margin-top:12px"></div><div class="field"><label>Source</label><select id="bulkSource" class="control"><option>M-PESA</option><option>BEAST Wallet</option><option>T-Kash</option><option>Airtel Money</option><option>Bank</option><option>Card</option></select></div><div class="stat"><small>Fee estimate</small><strong id="bulkFee">KES 0.00</strong><small id="bulkTotal">0 recipients · KES 0.00 total</small></div><div class="field"><label>PIN</label><input id="bulkPin" type="password" inputmode="numeric" maxlength="6" placeholder="Enter your PIN"></div><button class="btn" id="sendBulk">SEND BATCH & AUTHORIZE</button><div class="notice">The batch stops automatically if the available demo balance runs out. No real money is moved.</div></div></section>
-<section id="send" class="page"><h1>SEND MONEY</h1><p class="sub">Recipient, amount, source and authorization stay together.</p><div class="card"><div class="field"><label>Recipient phone / BEAST ID</label><input id="recipient" placeholder="07… / 01… / +254… / BEAST-" autocomplete="off"></div><button class="btn secondary" id="verifyRecipient">VERIFY RECIPIENT</button><div id="recipientCard" class="namecard hide"><strong>VERIFIED RECIPIENT · DEMO</strong><div id="recipientName">Demo recipient</div><small id="recipientId" class="hint"></small></div><div class="field"><label>Amount (KES)</label><input id="sendAmount" type="number" min="1" step="1" placeholder="100"></div><div class="field"><label>Source</label><select id="sendSource" class="control"><option>M-PESA</option><option>BEAST Wallet</option><option>T-Kash</option><option>Airtel Money</option><option>Bank</option><option>Card</option></select></div><div class="stat"><small>Cost preview</small><div class="balance-source"><span>Amount</span><b id="sendCostAmount">KES 0.00</b></div><div class="balance-source"><span>Fee</span><b id="sendFee">KES 0.00</b></div><div class="balance-source"><span>Total deducted</span><b id="sendTotal">KES 0.00</b></div></div><div class="field"><label>PIN</label><input id="sendPin" type="password" inputmode="numeric" maxlength="6" placeholder="Enter PIN to authorize"></div><button class="btn" id="sendAuthorize">SEND & AUTHORIZE</button></div></section>
-<section id="receive" class="page"><h1>RECEIVE</h1><p class="sub">Choose buyer payment, account transfer, or agent deposit.</p><div class="tabs"><button class="tab active" data-receivetab="buyer">Buyer payment</button><button class="tab" data-receivetab="transfer">Deposit / withdraw</button><button class="tab" data-receivetab="agent">Agent deposit</button></div>
-<div id="receive-buyer" class="receive-panel"><div class="tabs"><button class="tab active" data-buyertab="login">1 · Login</button><button class="tab" data-buyertab="account">2 · Account</button><button class="tab" data-buyertab="pay">3 · Confirm payment</button></div><div id="buyer-login" class="card"><h2>Buyer login</h2><p class="sub">The buyer signs in with their own BEAST details. Their balance is never shown on this screen.</p><div class="field"><label>Name</label><input id="buyerName" placeholder="Buyer's full name"></div><div class="field"><label>Buyer phone</label><input id="buyerPhone" placeholder="07… or +254…"></div><div class="field"><label>Buyer National ID</label><input id="buyerId" placeholder="National ID"></div><div class="row"><div class="field"><label>Password</label><input id="buyerPassword" type="password" placeholder="Buyer password"></div><div class="field"><label>PIN</label><input id="buyerPin" type="password" inputmode="numeric" maxlength="6" placeholder="Buyer PIN"></div></div><button class="btn" id="buyerLogin">LOGIN & CONTINUE</button></div><div id="buyer-account" class="card hide"><h2>Choose payment account</h2><p>Signed in as <b id="buyerSignedName">—</b></p><div id="buyerAccounts" class="list"></div><button class="btn" id="buyerAccountContinue" disabled>CONTINUE</button></div><div id="buyer-pay" class="card hide"><h2>Pay & authorize</h2><div class="namecard"><strong>PAYING TO</strong><div>KRISH KRISHNA</div><small>BEAST-017335 • +254712345678</small></div><div class="field"><label>Where to send</label><select class="control" id="payTo"><option>BEAST Wallet</option><option>Pochi la Biashara</option><option>Till</option><option>PayBill</option><option>Bank Account</option><option>Card</option></select><small>Money will land in the seller's selected receiving method.</small></div><div class="field"><label>From account</label><input id="buyerChosenAccount" readonly class="control" value="Choose an account first"></div><div class="field"><label>Amount (KES)</label><input id="buyerPayAmount" type="number" min="1" placeholder="Enter amount"></div><div class="stat"><small>Cost preview</small><strong id="buyerPayCost">Enter an amount to calculate the buyer cost.</strong></div><div class="field"><label>Buyer PIN</label><input id="buyerPayPin" type="password" inputmode="numeric" maxlength="6" placeholder="Re-enter buyer PIN"></div><button class="btn" id="buyerPayAuthorize">PAY & AUTHORIZE</button></div></div>
-<div id="receive-transfer" class="card receive-panel hide"><h2>Move money between accounts</h2><p class="sub">Choose a simulated source and destination. Provider integrations are not connected.</p><div class="field"><label>From</label><select id="transferFrom" class="control"><option>M-PESA</option><option>Airtel Money</option><option>T-Kash</option><option>Bank</option><option>Card</option><option>BEAST Wallet</option><option>Lipa Na</option></select></div><div class="field"><label>To</label><select id="transferTo" class="control"><option>BEAST Wallet</option><option>M-PESA</option><option>Airtel Money</option><option>T-Kash</option><option>Bank</option><option>Card</option><option>Lipa Na</option></select></div><div class="field"><label>Amount (KES)</label><input id="transferAmount" type="number" min="1" placeholder="100"></div><button class="btn" id="transferGo">CONTINUE TRANSFER</button><div id="transferMessage"></div></div>
-<div id="receive-agent" class="card receive-panel hide"><h2>AGENT DEPOSIT</h2><p class="sub">Deposit through agent · Demo flow only.</p><div class="field"><label>Registered agent number or agent code</label><input id="agentNumber" placeholder="0712345678 or AGENT-001"></div><div class="field"><label>Customer phone number</label><input id="agentCustomerPhone" placeholder="0712345678 or +254712345678"></div><div class="field"><label>Customer National ID</label><input id="agentCustomerId" placeholder="Customer National ID"></div><button class="btn secondary" id="verifyAgentCustomer">VERIFY AGENT & CUSTOMER</button><div class="field"><label>Amount (KES)</label><input id="agentAmount" type="number" min="1" placeholder="500"></div><button class="btn" id="agentAuthorize">AUTHORIZE AGENT DEPOSIT</button><div id="agentMessage"></div></div></section>
-<section id="withdraw" class="page"><h1>WITHDRAW</h1><p class="sub">Agent withdrawal · Verify the agent before authorization.</p><div class="card"><div class="field"><label>Agent ID or code</label><input id="withdrawAgent" placeholder="AGENT-001 or 0712345678"></div><div class="field"><label>Store / agent reference</label><input id="withdrawStore" placeholder="Optional store number"></div><button class="btn secondary" id="verifyWithdrawAgent">VERIFY AGENT</button><div id="withdrawAgentStatus" class="hint"></div><div class="field"><label>Source</label><select id="withdrawSource" class="control"><option>M-PESA</option><option>Bank</option><option>BEAST Wallet</option><option>T-Kash</option><option>Airtel Money</option></select></div><div class="field"><label>Amount (KES)</label><input id="withdrawAmount" type="number" min="1" placeholder="500"></div><div class="stat"><small>Cost preview</small><div class="balance-source"><span>Amount</span><b id="withdrawCost">KES 0.00</b></div><div class="balance-source"><span>Fee</span><b id="withdrawFee">KES 0.00</b></div></div><div class="field"><label>PIN</label><input id="withdrawPin" type="password" inputmode="numeric" maxlength="6" placeholder="Enter PIN"></div><button class="btn" id="withdrawAuthorize">WITHDRAW & AUTHORIZE</button></div></section>
-<section id="lipana" class="page"><h1>LIPA NA</h1><p class="sub">Pay a business · Verify destination before payment.</p><div class="card"><div class="field"><label>Payment method</label><select id="lipaMethod" class="control"><option>M-PESA</option><option>Bank</option><option>Card</option><option>BEAST Wallet</option><option>T-Kash</option><option>Airtel Money</option></select></div><div class="field"><label>Payment type</label><select id="lipaType" class="control"><option value="pochi">Pochi la Biashara</option><option value="till">Buy Goods / Till</option><option value="bill">PayBill</option><option value="account">Account / Other</option><option value="beast">BEAST ID</option></select></div><div id="lipaDestinationFields"><div class="field"><label>Business phone / BEAST number</label><input id="lipaDestination" placeholder="Phone number or BEAST ID"></div></div><div class="field"><label>Amount (KES)</label><input id="lipaAmount" type="number" min="1" placeholder="100"></div><button class="btn secondary" id="verifyLipa">VERIFY DESTINATION</button><div id="lipaVerified" class="namecard hide"><strong>DESTINATION · DEMO</strong><div id="lipaBusinessName">Demo business</div></div><div class="stat"><small>Cost preview</small><div class="balance-source"><span>Amount</span><b id="lipaCost">KES 0.00</b></div><div class="balance-source"><span>Fee</span><b id="lipaFee">KES 0.00</b></div><div class="balance-source"><span>Total</span><b id="lipaTotal">KES 0.00</b></div></div><div class="field"><label>PIN</label><input id="lipaPin" type="password" inputmode="numeric" maxlength="6" placeholder="Enter PIN"></div><button class="btn" id="lipaAuthorize">PAY & AUTHORIZE</button></div></section>
-<section id="history" class="page"><h1>TRANSACTIONS</h1><p class="sub">Demo transaction records. New local demo actions appear here.</p><div id="historyList" class="list"></div></section>
-<section id="market" class="page"><h1>BEAST MARKET</h1><p class="sub">Register a business or browse products from registered demo businesses.</p><div class="tabs"><button class="tab active" data-markettab="business">🏢 Register a Business</button><button class="tab" data-markettab="shop">🛍️ Shop</button></div>
-<div id="market-business" class="market-panel"><div class="card"><h2>Start your 7-day free trial</h2><p class="sub">Choose one of 12 BEAST business services. The monthly price is shown before you register.</p><div class="field"><label>Business category</label><select id="marketType" class="control"></select></div><div class="notice ok" id="marketPlanInfo">7 days free, then monthly subscription if you choose to continue.</div><div class="field"><label>Business / shop name</label><input id="marketBusinessName" placeholder="e.g. Krish Tech Store" maxlength="80"></div><div class="field"><label>Owner's name</label><input id="marketOwnerName" placeholder="Full name" maxlength="80"></div><div class="field"><label>Business phone</label><input id="marketPhone" inputmode="tel" placeholder="07... or +254..."></div><div class="field"><label>Business description</label><textarea id="marketDescription" rows="3" placeholder="What does your business offer?" maxlength="500"></textarea></div><div class="divider"></div><h3>Add your first product to Shop (optional)</h3><div class="field"><label>Product name</label><input id="marketProductName" placeholder="e.g. Wireless headphones" maxlength="100"></div><div class="row"><div class="field"><label>Price (KES)</label><input id="marketProductPrice" type="number" min="1" step="1" placeholder="1500"></div><div class="field"><label>Stock quantity</label><input id="marketProductStock" type="number" min="0" step="1" value="1"></div></div><div class="field"><label>Product image URL (optional)</label><input id="marketProductImage" type="url" placeholder="https://...jpg"></div><label class="checkline"><input id="marketTerms" type="checkbox"> I understand this is a demo trial. No real billing will occur in this HTML prototype.</label><button class="btn" id="marketRegister" style="width:100%;margin-top:14px">REGISTER BUSINESS & START FREE TRIAL</button><div id="marketMessage"></div></div><div class="section-label">My registered businesses</div><div id="marketBusinesses" class="list"></div></div>
-<div id="market-shop" class="market-panel hide"><div class="card"><h2>Shop products</h2><p class="sub">Products published by businesses registered on this device.</p><div class="field"><label>Search products</label><input id="marketSearch" placeholder="Search products or shops"></div><div id="marketProducts" class="grid"></div><div id="marketEmpty" class="notice">No products yet. Register a business and add its first product in the Business tab.</div><div id="marketOrderMessage"></div></div></div></section>
+/* bars */
+.top,.bar{position:sticky;top:0;z-index:6;display:flex;align-items:center;gap:10px;padding:calc(14px + env(safe-area-inset-top)) 0 12px;background:linear-gradient(var(--bg) 72%,transparent)}
+.bar h2{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.01em;flex:1}
+.icon-btn{position:relative;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--card);border:1px solid var(--line);color:var(--green);flex:none}
+.icon-btn:active{background:var(--card2)}
+.badge{position:absolute;top:-4px;right:-4px;min-width:19px;height:19px;border-radius:10px;background:var(--gold);color:#201500;font-size:11px;font-weight:800;display:grid;place-items:center;padding:0 5px;border:2px solid var(--bg)}
+.chip{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:600;white-space:nowrap}
+.chip.gold{color:var(--gold2);border-color:#5b4716;background:rgba(242,193,78,.08)}
+.chip.green{color:var(--green);border-color:var(--line2);background:rgba(31,229,143,.08)}
+.chip.red{color:#ff9b9b;border-color:#5a2424;background:rgba(255,107,107,.08)}
 
-<section id="business" class="page">
-<h1>BEAST BUSINESS</h1>
-<p class="sub">Choose a business service, register, enjoy 7 days free, then subscribe monthly to continue. This is a local prototype; it does not charge money.</p>
-<div class="tabs" role="tablist" aria-label="Business sections">
-<button class="tab active" type="button" data-biz-tab="dashboard">📊 Dashboard</button>
-<button class="tab" type="button" data-biz-tab="register">📝 Register</button>
-<button class="tab" type="button" data-biz-tab="shop">🛍️ Shop</button>
-</div>
-<div id="biz-dashboard" class="biz-panel">
-<div class="card">
-<h2>12 BEAST business services</h2>
-<p class="sub">Select a service to see its monthly price and start your 7-day free trial.</p>
-<div id="bizTypeCards" class="grid"></div>
-</div>
-<div class="section-label">My business subscriptions</div>
-<div id="bizRegisteredList" class="list"></div>
-</div>
-<div id="biz-register" class="biz-panel hide">
-<div class="card">
-<h2 id="bizRegisterHeading">Start your 7-day free trial</h2>
-<p class="sub" id="bizPlanDescription">Choose a business service below.</p>
-<div class="field"><label>Business service</label><select id="bizType" class="control"></select></div>
-<div class="notice ok" id="bizPlanInfo">7 days free, then monthly subscription.</div>
-<div class="field"><label>Business / service name</label><input id="bizName" maxlength="80" placeholder="Enter your business name"></div>
-<div class="field"><label>Owner name</label><input id="bizOwner" maxlength="80" placeholder="Full name"></div>
-<div class="field"><label>Contact phone</label><input id="bizPhone" inputmode="tel" maxlength="30" placeholder="07... or +254..."></div>
-<div class="field"><label>What will you offer?</label><textarea id="bizDescription" rows="3" maxlength="500" placeholder="Describe your service or business"></textarea></div>
-<label class="checkline"><input id="bizTerms" type="checkbox"> I understand this is a demo trial and no real billing occurs here.</label>
-<button class="btn" id="bizRegisterBtn" style="width:100%;margin-top:14px">REGISTER & START 7-DAY FREE TRIAL</button>
-<div id="bizMessage"></div>
-</div>
-</div>
-<div id="biz-shop" class="biz-panel hide">
-<div class="card">
-<h2>Business shop</h2>
-<p class="sub">Products added in BEAST Market appear in this catalogue when available on this device.</p>
-<div class="field"><label>Search products</label><input id="bizShopSearch" placeholder="Search product or business"></div>
-<div id="bizShopProducts" class="grid"></div>
-<div id="bizShopEmpty" class="notice">No products found yet. Register a business and add products in BEAST Market.</div>
-</div>
-</div>
+/* type */
+h1.big{font-family:var(--display);font-weight:700;font-size:21px;line-height:1.25;letter-spacing:-.01em;margin:6px 0 6px}
+.sub{color:var(--mut);font-size:14px}
+.muted{color:var(--mut)}
+.sm{font-size:12.5px}
+
+/* buttons */
+.btn{width:100%;min-height:52px;border-radius:14px;font-weight:700;font-size:15.5px;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s,box-shadow .2s}
+.btn:active{transform:scale(.985)}
+.btn.primary{background:linear-gradient(180deg,#2cf29b,#12c777);color:#03140c;box-shadow:0 10px 28px -8px rgba(31,229,143,.55)}
+.btn.ghost{border:1.5px solid var(--line2);color:var(--text);background:rgba(31,229,143,.04)}
+.btn.danger{border:1.5px solid #5a2424;color:#ff9b9b}
+.btn.sm{min-height:40px;width:auto;padding:0 16px;font-size:14px;border-radius:12px}
+.btn[disabled]{opacity:.5;pointer-events:none}
+.stack{display:grid;gap:12px}
+.link{color:var(--green);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+
+/* cards & fields */
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px}
+.card.glow{border-color:var(--line2);background:linear-gradient(160deg,var(--card2),var(--card));box-shadow:inset 0 0 0 1px rgba(31,229,143,.05),0 16px 40px -22px rgba(31,229,143,.5)}
+.field{display:grid;gap:6px}
+.lab{font-size:12.5px;color:var(--mut);font-weight:500}
+.inp{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 14px;height:52px;color:var(--green)}
+.inp:focus-within{border-color:var(--green);box-shadow:0 0 0 3px rgba(31,229,143,.14)}
+.inp.bad{border-color:var(--danger)}
+.inp input,.inp select{flex:1;min-width:0;height:100%;background:none;border:0;outline:0;color:var(--text);font:inherit;font-size:15.5px}
+.inp input::placeholder{color:#4d6d5e}
+.inp select{appearance:none;-webkit-appearance:none;cursor:pointer;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2386a898' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 0 center}
+.inp option{background:#0b1a13;color:var(--text)}
+.err{color:var(--danger);font-size:12.5px}
+.form{display:grid;gap:12px}
+.note{display:flex;gap:10px;border:1px solid #5b4716;background:rgba(242,184,78,.07);border-radius:14px;padding:12px 14px;color:#f3d79a;font-size:13px}
+.note.green{border-color:var(--line2);background:rgba(31,229,143,.07);color:#bff5da}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--mut)}
+.check input{width:22px;height:22px;accent-color:var(--green);flex:none}
+
+/* segmented */
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:var(--card);border:1px solid var(--line);border-radius:16px;margin:6px 0 16px}
+.seg button{height:42px;border-radius:12px;font-weight:600;font-size:14px;color:var(--mut)}
+.seg button[aria-selected="true"]{background:linear-gradient(180deg,#2cf29b,#12c777);color:#03140c;font-weight:700}
+
+/* home hero */
+.hero{position:relative;overflow:hidden;display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px;padding:18px 8px 14px 18px}
+.hero h2{font-family:var(--display);font-size:19px;line-height:1.2;font-weight:700}
+.hero p{color:var(--mut);margin:4px 0 12px}
+.hero svg.car{width:178px;margin-right:-30px}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.swap{position:absolute;right:0;top:50%;transform:translateY(-50%)}
+.routebox{position:relative;display:grid;gap:10px}
+.routebox .field{padding-right:0}
+.swapbtn{position:absolute;right:12px;top:50%;transform:translateY(-4px);width:36px;height:36px;border-radius:50%;background:var(--card2);border:1px solid var(--line2);color:var(--green);display:grid;place-items:center;z-index:2}
+.swapbtn .i{width:18px;height:18px}
+.quick{display:flex;gap:8px;overflow-x:auto;padding:2px 0 4px;scrollbar-width:none}
+.quick::-webkit-scrollbar{display:none}
+.quick button{flex:none;height:34px;padding:0 13px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;color:var(--mut)}
+.quick button:active,.quick button.on{border-color:var(--green);color:var(--green)}
+.est{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:rgba(31,229,143,.07);border:1px dashed var(--line2);font-size:14px}
+.est b{color:var(--green)}
+
+/* lists */
+.list{display:grid;gap:10px}
+.row{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
+.row .ic{width:42px;height:42px;border-radius:12px;background:rgba(31,229,143,.1);display:grid;place-items:center;color:var(--green);flex:none}
+.row .grow{flex:1;min-width:0}
+.row .t{font-weight:600}
+.row .s{font-size:12.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .amt{font-weight:700;text-align:right}
+.row .amt small{display:block;font-weight:500;color:var(--mut);font-size:11.5px}
+.ride-card{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:14px;border-radius:18px;background:var(--card);border:1px solid var(--line)}
+.ride-card.pick{border-color:var(--green);box-shadow:0 0 0 1px var(--green) inset,0 14px 34px -20px var(--green)}
+.ride-card .ic{width:56px;height:56px;border-radius:16px;background:rgba(31,229,143,.1);display:grid;place-items:center;color:var(--green)}
+.ride-card .ic .i{width:30px;height:30px}
+.ride-card .price{text-align:right;font-weight:800;font-family:var(--display);font-size:14px}
+.ride-card .go{grid-column:1/-1;margin-top:2px}
+.filters{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.filters button{flex:none;height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:600;color:var(--mut)}
+.filters button[aria-pressed="true"]{background:rgba(31,229,143,.14);border-color:var(--green);color:var(--green)}
+
+/* map */
+.map{position:relative;margin:0 -18px;height:250px;background:#06130c;border-block:1px solid var(--line);overflow:hidden}
+.map svg{width:100%;height:100%;display:block}
+.map .road{stroke:#12301f;stroke-width:5;fill:none;stroke-linecap:round}
+.map .road.s{stroke-width:2.5;stroke:#0f2a1b}
+.map .block{fill:#081a10}
+.map .park{fill:#0a2a19}
+.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 1.8s ease-out infinite}
+.pulse.p2{animation-delay:.9s}
+@keyframes pulse{0%{transform:scale(.2);opacity:.9}100%{transform:scale(2.6);opacity:0}}
+.mapbadge{position:absolute;left:14px;bottom:12px;padding:8px 12px;border-radius:12px;background:rgba(4,10,7,.82);backdrop-filter:blur(6px);border:1px solid var(--line2);font-weight:700;font-size:14px}
+.mapbadge small{display:block;font-weight:500;color:var(--mut);font-size:11.5px}
+.driver{display:flex;gap:12px;align-items:center}
+.avatar{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:radial-gradient(circle at 30% 25%,#1d5b40,#0b2a1c);border:2px solid var(--green);color:var(--green);flex:none}
+.plate{display:inline-block;padding:3px 10px;border-radius:8px;background:var(--gold);color:#201500;font-weight:800;letter-spacing:.06em;font-size:13px}
+.acts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.acts button{display:grid;justify-items:center;gap:5px;padding:12px 0;border-radius:14px;background:var(--card);border:1px solid var(--line);color:var(--green);font-size:12.5px}
+.sumrow{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.sumrow:last-child{border:0}
+.sumrow span:first-child{color:var(--mut)}
+.sumrow b{text-align:right}
+.steps{display:flex;gap:6px;margin:8px 0 2px}
+.steps i{flex:1;height:4px;border-radius:2px;background:var(--line)}
+.steps i.on{background:var(--green)}
+
+/* success */
+.ring{width:132px;height:132px;border-radius:50%;margin:10px auto 6px;display:grid;place-items:center;border:3px solid var(--green);background:radial-gradient(circle,rgba(31,229,143,.2),transparent 70%);box-shadow:0 0 50px rgba(31,229,143,.35),inset 0 0 30px rgba(31,229,143,.2);color:var(--green)}
+.ring .i{width:64px;height:64px;stroke-width:2.2;stroke-dasharray:40;stroke-dashoffset:40;animation:draw .7s .25s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.idbox{border:1.5px solid var(--line2);border-radius:16px;padding:16px;text-align:center;font-family:var(--display);font-weight:600;letter-spacing:.08em;font-size:18px;background:var(--card)}
+.center{text-align:center}
+.stars{display:flex;justify-content:center;gap:6px}
+.stars button{color:#3a5648}
+.stars button.on{color:var(--gold)}
+.stars .i{width:34px;height:34px}
+
+/* wallet */
+.wallet-card{padding:20px;border-radius:24px;border:1px solid var(--line2);background:radial-gradient(120% 140% at 100% 0%,rgba(242,193,78,.14),transparent 55%),linear-gradient(160deg,#0f2a1c,#08150e)}
+.bal{font-family:var(--display);font-weight:800;font-size:30px;margin:2px 0 14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stats div{padding:12px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.stats b{display:block;font-size:16px;margin-top:2px}
+.amounts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.amounts button{height:46px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-weight:700}
+.amounts button[aria-pressed="true"]{border-color:var(--green);color:var(--green);background:rgba(31,229,143,.1)}
+
+/* switch */
+.switch{width:62px;height:34px;border-radius:17px;background:#1b2c24;border:1px solid var(--line2);position:relative;transition:background .2s;flex:none}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#7a978a;transition:transform .2s,background .2s}
+.switch[aria-checked="true"]{background:var(--green2)}
+.switch[aria-checked="true"]::after{transform:translateX(28px);background:#fff}
+.dot{width:10px;height:10px;border-radius:50%;background:#496557;display:inline-block}
+.dot.on{background:var(--green);box-shadow:0 0 12px var(--green)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{padding:14px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
+.kpi b{display:block;font-family:var(--display);font-size:20px;margin-top:2px}
+.req{border:1.5px solid var(--green);border-radius:20px;padding:16px;background:linear-gradient(160deg,rgba(31,229,143,.12),var(--card));animation:reqin .4s ease}
+@keyframes reqin{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+
+/* notifications */
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.tabs button{height:42px;border-radius:12px;border:1px solid var(--line);color:var(--mut);font-weight:600}
+.tabs button[aria-selected="true"]{border-color:var(--green);color:var(--green);background:rgba(31,229,143,.08)}
+.empty{text-align:center;color:var(--mut);padding:34px 10px}
+.empty .i{width:40px;height:40px;color:var(--line2);margin-bottom:6px}
+
+/* drawer / sheet / toast */
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .25s;z-index:30}
+.scrim.open{opacity:1;pointer-events:auto}
+#drawer{position:absolute;top:0;bottom:0;left:0;width:84%;max-width:330px;z-index:31;background:linear-gradient(180deg,#0b1e14,#050c08);border-right:1px solid var(--line2);transform:translateX(-102%);transition:transform .3s cubic-bezier(.2,.8,.2,1);padding:calc(22px + env(safe-area-inset-top)) 16px 20px;display:flex;flex-direction:column;gap:6px;visibility:hidden}
+#drawer.open{transform:none;visibility:visible}
+#drawer .me{padding:14px;border-radius:18px;background:var(--card);border:1px solid var(--line);margin-bottom:10px;display:grid;gap:8px}
+.navitem{display:flex;align-items:center;gap:14px;min-height:50px;padding:0 12px;border-radius:14px;font-weight:600;text-align:left;width:100%}
+.navitem .i{color:var(--green)}
+.navitem:active,.navitem:hover{background:var(--card)}
+.navitem .chip{margin-left:auto;height:26px;font-size:11.5px}
+#sheet{position:absolute;left:0;right:0;bottom:0;z-index:41;max-height:88%;overflow-y:auto;background:linear-gradient(180deg,#0d2216,#07110b);border:1px solid var(--line2);border-bottom:0;border-radius:28px 28px 0 0;padding:10px 20px calc(24px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .32s cubic-bezier(.2,.8,.2,1);visibility:hidden}
+#sheet.open{transform:none;visibility:visible}
+#sheet .grab{width:44px;height:5px;border-radius:3px;background:var(--line2);margin:0 auto 14px}
+#sheetScrim{z-index:40}
+#toast{position:absolute;left:50%;bottom:26px;transform:translate(-50%,30px);opacity:0;z-index:60;max-width:88%;padding:12px 18px;border-radius:14px;background:#0f2a1c;border:1px solid var(--green);box-shadow:0 14px 40px rgba(0,0,0,.6);font-weight:600;font-size:14px;text-align:center;transition:.3s;pointer-events:none}
+#toast.show{transform:translate(-50%,0);opacity:1}
+.gap{height:14px}.gap.s{height:8px}.gap.l{height:22px}
+.tagline{font-family:var(--display);font-size:11px;color:var(--mut);letter-spacing:.04em;text-align:center;margin-top:18px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- Icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+<symbol id="crown" viewBox="0 0 40 34"><path d="M5 28L2 9l9 8 9-14 9 14 9-8-3 19z" fill="currentColor"/><rect x="5" y="30" width="30" height="3" rx="1.5" fill="currentColor"/></symbol>
+<g id="ico" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></g>
+<symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></symbol>
+<symbol id="i-id" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6 16c.5-1.5 2-2 3-2s2.5.5 3 2M14 10h4M14 14h4"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+<symbol id="i-car" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v-3.5L6 9a2 2 0 0 1 1.9-1.4h8.2A2 2 0 0 1 18 9l2 4.5V17M4 17h16M4 17v2h3v-2M17 17v2h3v-2"/><circle cx="8" cy="14" r=".8"/><circle cx="16" cy="14" r=".8"/></symbol>
+<symbol id="i-moto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="17" r="3"/><circle cx="18.5" cy="17" r="3"/><path d="M5.5 17l3.5-6h4l3 6M9 11L8 8H6M13 11l2-4h2.5"/></symbol>
+<symbol id="i-tuk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17V9l3-3h9l4 4v7M3 17h16M9 6v5h10"/><circle cx="7" cy="18.5" r="1.8"/><circle cx="16" cy="18.5" r="1.8"/></symbol>
+<symbol id="i-bus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="13" rx="2"/><path d="M4 11h16M7 17v2M17 17v2"/><circle cx="8" cy="14" r=".6"/><circle cx="16" cy="14" r=".6"/></symbol>
+<symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h12v3M3 7v11a2 2 0 0 0 2 2h15V8H5a2 2 0 0 1-2-1z"/><circle cx="16" cy="14" r="1.2"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></symbol>
+<symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+<symbol id="i-msg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 11l7.6-4M8.2 13l7.6 4"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4L2.8 9.5l6.4-.8z"/></symbol>
+<symbol id="i-swap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4v15M4.5 15.5L8 19l3.5-3.5M16 20V5M12.5 8.5L16 5l3.5 3.5"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L5 14h6l-1 8 8-12h-6z"/></symbol>
+<symbol id="i-receipt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"/></symbol>
+<symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5H5v14h5M15 8l4 4-4 4M19 12H9"/></symbol>
+<symbol id="i-steer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M3.5 10.5c5 1 12 1 17 0M12 14.2V21"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9H4zM10 20v-6h4v6"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+</defs>
+</svg>
+
+<main class="phone" id="app">
+
+<!-- ============ HOME (Travel home / Driver mode) ============ -->
+<section class="screen active" id="s-home" aria-label="BEAST Travel home">
+  <header class="top">
+    <button class="icon-btn" data-act="menu" aria-label="Open menu"><svg class="i"><use href="#i-menu"/></svg></button>
+    <div class="brandline">
+      <svg class="crown"><use href="#crown"/></svg>
+      <div><b class="wm">BEAST</b><small>Safe rides, smarter journeys</small></div>
+    </div>
+    <button class="chip gold" data-act="wallet" aria-label="Wallet"><svg class="i" style="width:18px;height:18px"><use href="#i-wallet"/></svg><span id="chipBal">KES 520</span></button>
+    <button class="icon-btn" data-act="bell" aria-label="Notifications"><svg class="i"><use href="#i-bell"/></svg><span class="badge" id="bellBadge" hidden>0</span></button>
+  </header>
+
+  <div class="seg" role="tablist" aria-label="Mode">
+    <button role="tab" id="segBook" aria-selected="true" data-act="mode-book">Book a ride</button>
+    <button role="tab" id="segDrive" aria-selected="false" data-act="mode-drive">Drive &amp; earn</button>
+  </div>
+
+  <!-- Passenger panel -->
+  <div id="panelBook" class="stack">
+    <div class="card glow hero">
+      <div>
+        <h2>Ride with BEAST</h2>
+        <p>Fast, safe, reliable</p>
+        <span class="chip green"><svg class="i" style="width:16px;height:16px"><use href="#i-check"/></svg>Free for riders</span>
+      </div>
+      <svg class="car" viewBox="0 0 230 100" aria-hidden="true">
+        <defs>
+          <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d5b40"/><stop offset="1" stop-color="#08180f"/></linearGradient>
+          <radialGradient id="ug" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#1fe58f" stop-opacity=".7"/><stop offset="1" stop-color="#1fe58f" stop-opacity="0"/></radialGradient>
+        </defs>
+        <ellipse cx="115" cy="88" rx="104" ry="11" fill="url(#ug)"/>
+        <path d="M12 66c0-9 6-14 18-16l28-20c8-6 16-8 30-8h38c14 0 24 5 33 13l20 14c20 2 30 8 30 17v6c0 3-2 5-5 5H17c-3 0-5-2-5-5z" fill="url(#cg)" stroke="#1fe58f" stroke-width="2"/>
+        <path d="M70 34l-18 17h50V30H84c-6 0-11 1-14 4zM112 30v21h54l-19-15c-5-4-10-6-17-6z" fill="#0a2a1b" stroke="#1fe58f" stroke-opacity=".6"/>
+        <circle cx="62" cy="72" r="14" fill="#04100a" stroke="#1fe58f" stroke-width="2.5"/><circle cx="62" cy="72" r="5" fill="#1fe58f"/>
+        <circle cx="170" cy="72" r="14" fill="#04100a" stroke="#1fe58f" stroke-width="2.5"/><circle cx="170" cy="72" r="5" fill="#1fe58f"/>
+        <rect x="204" y="60" width="12" height="5" rx="2" fill="#ffd96e"/>
+      </svg>
+    </div>
+
+    <div class="routebox">
+      <div class="field"><label class="lab" for="fFrom">From</label>
+        <div class="inp"><svg class="i"><use href="#i-pin"/></svg><input id="fFrom" list="places" value="Nairobi CBD" autocomplete="off" placeholder="Pickup location"></div></div>
+      <button class="swapbtn" data-act="swap" aria-label="Swap pickup and destination"><svg class="i"><use href="#i-swap"/></svg></button>
+      <div class="field"><label class="lab" for="fTo">To</label>
+        <div class="inp"><svg class="i" style="color:var(--gold)"><use href="#i-pin"/></svg><input id="fTo" list="places" value="Westlands" autocomplete="off" placeholder="Where to?"></div></div>
+    </div>
+    <datalist id="places"></datalist>
+    <div class="quick" id="quick" aria-label="Popular destinations"></div>
+
+    <div class="grid2">
+      <div class="field"><label class="lab" for="fType">Ride type</label>
+        <div class="inp"><select id="fType"></select></div></div>
+      <div class="field"><label class="lab" for="fPay">Payment</label>
+        <div class="inp"><select id="fPay">
+          <option value="wallet">BEAST Wallet (demo)</option><option value="mpesa">M-Pesa</option><option value="cash">Cash</option>
+        </select></div></div>
+    </div>
+    <div class="est" id="est" aria-live="polite"></div>
+    <p class="err" id="bookErr" role="alert"></p>
+    <button class="btn primary" data-act="find"><svg class="i"><use href="#i-bolt"/></svg>Find ride</button>
+    <p class="tagline">Safe. Simple. Smart.</p>
+  </div>
+
+  <!-- Driver panel -->
+  <div id="panelDrive" class="stack" hidden>
+    <div class="card glow">
+      <div style="display:flex;gap:12px;align-items:center">
+        <div class="ic" style="width:50px;height:50px;border-radius:14px;background:rgba(31,229,143,.12);display:grid;place-items:center;color:var(--green)"><svg class="i" style="width:28px;height:28px"><use href="#i-steer"/></svg></div>
+        <div><h2 style="font-family:var(--display);font-size:18px">Earn with BEAST</h2><div class="sub">Drive. Earn. Grow.</div></div>
+      </div>
+      <div class="gap s"></div>
+      <div class="note green"><svg class="i" style="width:20px;height:20px;flex:none"><use href="#i-clock"/></svg><div><b>7 days free</b>, then KES 500 a month. Cancel any time.</div></div>
+      <div class="gap s"></div>
+      <div class="list" style="gap:8px">
+        <div class="sm"><span style="color:var(--green)">✓</span> Keep every fare. No per-trip cut.</div>
+        <div class="sm"><span style="color:var(--green)">✓</span> Go online or offline when you choose.</div>
+        <div class="sm"><span style="color:var(--green)">✓</span> Riders never pay to join or ride.</div>
+      </div>
+    </div>
+
+    <div class="field"><label class="lab" for="dVeh">Vehicle type</label>
+      <div class="inp"><svg class="i"><use href="#i-moto"/></svg><select id="dVeh">
+        <option value="boda">Motorcycle</option><option value="tuk">Tuk Tuk</option><option value="standard">Car</option><option value="shuttle">Shuttle</option></select></div></div>
+    <div class="field"><label class="lab" for="dArea">Service area</label>
+      <div class="inp"><svg class="i"><use href="#i-pin"/></svg><select id="dArea"></select></div></div>
+    <div class="field"><label class="lab" for="dPlate">License plate</label>
+      <div class="inp"><svg class="i"><use href="#i-id"/></svg><input id="dPlate" placeholder="KDA 123Z" maxlength="10" autocapitalize="characters" autocomplete="off"></div>
+      <span class="err" id="plateErr" role="alert"></span></div>
+    <button class="btn primary" id="driveCta" data-act="drive-save">Start 7-day free trial</button>
+    <p class="sm muted center" id="driveFoot">No payment needed to start. You will see a reminder before the trial ends.</p>
+  </div>
 </section>
 
-<section id="travel" class="page"><h1>BEAST TRAVEL</h1><p class="sub">Explore travel options and save a demo travel request. No live booking or payment is connected.</p>
-    
-    <!-- START BEAST RIDE FLOW -->
-    <div class="card" style="margin-bottom: 15px; padding: 0; overflow: hidden; border: 1px solid #00d995;">
-        <div class="ride-topbar"><div class="ride-brand"><span class="ride-mark">🦁</span> BEAST Travel</div><div style="font-size:10px;color:var(--muted)">Safe rides, smarter journeys.</div></div>
-        <div class="ride-tabs"><button class="ride-tab active" data-ridetab="book">1. Book a Ride</button><button class="ride-tab" data-ridetab="driver">2. Driver Mode</button></div>
-        
-        <div id="ride-book" class="ride-panel">
-            <div class="ride-hero"><div style="font-weight:800;font-size:15px">Ride with BEAST</div><div style="font-size:11px;color:var(--mint)">Fast, Safe, Reliable</div><div style="font-size:36px;text-align:right;margin-top:-15px">🚘</div></div>
-            <div class="ride-form">
-                <div class="field"><label>From</label><input value="Nairobi CBD" readonly class="ride-input"></div>
-                <div class="field"><label>To</label><input value="Westlands, Nairobi" readonly class="ride-input"></div>
-                <div class="row"><div class="field"><label>Ride type</label><select class="ride-input"><option>Standard</option></select></div><div class="field"><label>Payment method</label><select class="ride-input"><option>BEAST Wallet (demo)</option></select></div></div>
-                <button class="btn" style="width:100%;border-radius:20px" onclick="document.getElementById('ride-vehicles').scrollIntoView({behavior:'smooth'})">Find Ride</button>
-            </div>
-        </div>
+<!-- ============ REGISTRATION (1) ============ -->
+<section class="screen" id="s-reg" aria-label="Create account">
+  <header class="bar"><button class="icon-btn" data-act="back" aria-label="Back"><svg class="i"><use href="#i-back"/></svg></button>
+    <div class="brandline"><svg class="crown"><use href="#crown"/></svg><b class="wm">BEAST</b></div></header>
+  <div class="steps" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+  <h1 class="big" tabindex="-1">Create your BEAST account</h1>
+  <p class="sub" id="regSub">Enter your details and review them before creating your ID.</p>
+  <div class="gap s"></div>
+  <div id="regBanner" class="note green"></div>
+  <div class="gap s"></div>
+  <div class="form" id="regForm" novalidate>
+    <div class="field"><label class="lab" for="rName">Full name</label><div class="inp"><svg class="i"><use href="#i-user"/></svg><input id="rName" autocomplete="name" placeholder="John Mwangi"></div><span class="err" id="eName"></span></div>
+    <div class="field"><label class="lab" for="rPhone">Phone number</label><div class="inp"><svg class="i"><use href="#i-phone"/></svg><input id="rPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="0712345678"></div><span class="err" id="ePhone"></span></div>
+    <div class="field"><label class="lab" for="rId">National ID number</label><div class="inp"><svg class="i"><use href="#i-id"/></svg><input id="rId" inputmode="numeric" autocomplete="off" placeholder="12345678" maxlength="8"></div><span class="err" id="eId"></span></div>
+    <div class="field"><label class="lab" for="rPass">Create password</label><div class="inp"><svg class="i"><use href="#i-lock"/></svg><input id="rPass" type="password" autocomplete="new-password" placeholder="At least 8 characters"></div><span class="err" id="ePass"></span></div>
+    <div class="field"><label class="lab" for="rPass2">Confirm password</label><div class="inp"><svg class="i"><use href="#i-lock"/></svg><input id="rPass2" type="password" autocomplete="new-password" placeholder="Repeat password"></div><span class="err" id="ePass2"></span></div>
+    <div class="field"><label class="lab" for="rPin">Create 4-digit PIN</label><div class="inp"><svg class="i"><use href="#i-key"/></svg><input id="rPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••"></div><span class="err" id="ePin"></span></div>
+    <label class="check"><input type="checkbox" id="rTerms"><span>I agree to the terms and understand this is not a real financial service.</span></label>
+    <span class="err" id="eTerms"></span>
+    <button class="btn primary" data-act="reg-review">Review details</button>
+    <p class="center sm">Already have an account? <button class="link" data-act="login">Log in</button></p>
+  </div>
+</section>
 
-        <div id="ride-vehicles" class="ride-panel hide">
-            <div style="padding:12px;font-weight:800;font-size:13px">Available Rides</div>
-            <div style="display:flex;gap:6px;padding:0 12px 10px;overflow:auto">
-                <span class="pill active" style="min-width:max-content">Standard</span><span class="pill" style="min-width:max-content">Comfort</span><span class="pill" style="min-width:max-content">Boda Boda</span><span class="pill" style="min-width:max-content">Tuk Tuk</span>
-            </div>
-            <div class="ride-list">
-                <div class="ride-item"><div style="font-size:24px">🚗</div><div class="grow"><b>Standard</b><small>4 min • 4 seats</small></div><div style="text-align:right"><b>KES 150</b><br><button class="btn smallbtn" style="padding:4px 12px;margin-top:4px">Select</button></div></div>
-                <div class="ride-item"><div style="font-size:24px">🚙</div><div class="grow"><b>Comfort</b><small>6 min • 4 seats</small></div><div style="text-align:right"><b>KES 250</b><br><button class="btn smallbtn" style="padding:4px 12px;margin-top:4px">Select</button></div></div>
-                <div class="ride-item"><div style="font-size:24px">🏍️</div><div class="grow"><b>Boda Boda</b><small>3 min • 2 seats</small></div><div style="text-align:right"><b>KES 80</b><br><button class="btn smallbtn" style="padding:4px 12px;margin-top:4px">Select</button></div></div>
-                <div class="ride-item"><div style="font-size:24px">🛺</div><div class="grow"><b>Tuk Tuk</b><small>5 min • 3 seats</small></div><div style="text-align:right"><b>KES 100</b><br><button class="btn smallbtn" style="padding:4px 12px;margin-top:4px">Select</button></div></div>
-            </div>
-        </div>
+<!-- ============ CONFIRM (2) ============ -->
+<section class="screen" id="s-confirm" aria-label="Confirm details">
+  <header class="bar"><button class="icon-btn" data-act="back" aria-label="Back"><svg class="i"><use href="#i-back"/></svg></button><h2>Confirm your details</h2></header>
+  <div class="steps" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i></div>
+  <p class="sub">Check the information before creating your BEAST ID.</p>
+  <div class="gap"></div>
+  <div class="card list" style="gap:0">
+    <div class="sumrow"><span>Full name</span><b id="cName"></b></div>
+    <div class="sumrow"><span>Phone number</span><b id="cPhone"></b></div>
+    <div class="sumrow"><span>National ID number</span><b id="cId"></b></div>
+    <div class="sumrow"><span>Account type</span><b id="cRole"></b></div>
+  </div>
+  <div class="gap"></div>
+  <div class="note"><svg class="i" style="flex:none"><use href="#i-info"/></svg><div>Your details stay in this browser demo. Do not use real sensitive information on a public or shared device.</div></div>
+  <div class="gap l"></div>
+  <div class="stack">
+    <button class="btn primary" data-act="reg-confirm">Confirm &amp; create BEAST ID</button>
+    <button class="btn ghost" data-act="back">Edit details</button>
+  </div>
+</section>
 
-        <div id="ride-details" class="ride-panel hide">
-            <div style="padding:12px;font-weight:800;font-size:13px;border-bottom:1px solid var(--line)">On the Way</div>
-            <div style="padding:12px">
-                <div style="display:flex;gap:10px;align-items:center;margin-bottom:15px">
-                    <div style="width:40px;height:40px;border-radius:50%;background:#2a3b32;display:grid;place-items:center;font-size:20px">👤</div>
-                    <div class="grow"><b>James Mwangi</b><br><small style="color:var(--gold)">★ 4.9 (120 rides)</small><br><small style="color:var(--muted)">Boda Boda • 3 min away</small></div>
-                </div>
-                <div style="display:flex;gap:10px;justify-content:space-around;margin-bottom:15px;text-align:center">
-                    <div><button class="btn secondary" style="width:45px;height:45px;border-radius:50%;padding:0">📞</button><br><small>Call</small></div>
-                    <div><button class="btn secondary" style="width:45px;height:45px;border-radius:50%;padding:0">💬</button><br><small>Message</small></div>
-                    <div><button class="btn secondary" style="width:45px;height:45px;border-radius:50%;padding:0">📤</button><br><small>Share</small></div>
-                </div>
-                <div class="namecard"><strong>Ride summary</strong><div style="font-size:14px;margin-top:5px">Boda Boda • Standard</div><small>KES 80 • Est. 3 min</small></div>
-                <button class="btn" style="width:100%;border-radius:20px" onclick="document.getElementById('ride-success').classList.remove('hide');this.classList.add('hide')">Confirm Ride</button>
-            </div>
-        </div>
+<!-- ============ ACCOUNT CREATED (3) ============ -->
+<section class="screen" id="s-welcome" aria-label="Account created">
+  <div style="height:calc(30px + env(safe-area-inset-top))"></div>
+  <div class="center"><svg class="crown" style="width:46px;height:40px"><use href="#crown"/></svg><div class="wm" style="font-size:24px">BEAST</div></div>
+  <div class="ring" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></div>
+  <h1 class="big center" tabindex="-1" style="color:var(--gold2)">Welcome to BEAST!</h1>
+  <p class="sub center">Your BEAST ID is ready.</p>
+  <div class="gap"></div>
+  <div class="idbox" id="wId">BEAST-000001</div>
+  <div class="gap"></div>
+  <p class="center sm muted" id="wNote"></p>
+  <div class="gap l"></div>
+  <button class="btn primary" data-act="welcome-go" id="wGo">Go to Travel</button>
+</section>
 
-        <div id="ride-success" class="ride-panel hide" style="text-align:center;padding:20px;background:linear-gradient(180deg,#08271b,#08130e)">
-            <div style="font-size:50px;margin-bottom:10px">✅</div>
-            <h2 style="color:var(--green);margin-bottom:5px">You've Arrived!</h2>
-            <p class="sub" style="margin-bottom:15px">Your ride has ended successfully.</p>
-            <div style="text-align:left;background:#050c09;border:1px solid var(--line);border-radius:15px;padding:12px;margin-bottom:15px">
-                <div class="balance-source"><span>From</span><b>Nairobi CBD</b></div>
-                <div class="balance-source"><span>To</span><b>Westlands, Nairobi</b></div>
-                <div class="balance-source"><span>Ride fare</span><b>KES 80</b></div>
-                <div class="balance-source"><span>Payment</span><b>BEAST Wallet</b></div>
-            </div>
-            <button class="btn secondary" style="width:100%;border-radius:20px;margin-bottom:8px">View Receipt</button>
-            <button class="btn" style="width:100%;border-radius:20px" onclick="document.getElementById('ride-success').classList.add('hide');document.getElementById('ride-book').classList.remove('hide');document.querySelectorAll('#ride-book .btn')[0].classList.remove('hide')">Book Another Ride</button>
-        </div>
+<!-- ============ AVAILABLE RIDES (5) ============ -->
+<section class="screen" id="s-rides" aria-label="Available rides">
+  <header class="bar"><button class="icon-btn" data-act="back" aria-label="Back"><svg class="i"><use href="#i-back"/></svg></button><h2 tabindex="-1">Available rides</h2></header>
+  <div class="card" style="padding:12px 14px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:10px"><svg class="i" style="color:var(--green)"><use href="#i-pin"/></svg><b id="rdRoute" style="flex:1"></b></div>
+    <div class="sm muted" id="rdMeta" style="margin-left:32px"></div>
+  </div>
+  <div class="filters" id="rdFilters" role="group" aria-label="Filter by ride type"></div>
+  <div class="list" id="rdList"></div>
+</section>
 
-        <div style="text-align:center;padding:10px;font-size:10px;color:var(--muted);border-top:1px solid var(--line);margin-top:10px">
-            <div style="display:flex;justify-content:center;gap:15px"><span>💰<br>Money</span><span style="color:var(--green)">🛵<br>Travel</span><span>🛡️<br>Shield</span><span>💳<br>Card</span><span>🤖<br>AI</span></div>
-        </div>
-    </div>
-    <!-- END BEAST RIDE FLOW -->
+<!-- ============ ON THE WAY / IN PROGRESS (6) ============ -->
+<section class="screen" id="s-track" aria-label="Your ride">
+  <header class="bar"><button class="icon-btn" data-act="track-back" aria-label="Back"><svg class="i"><use href="#i-back"/></svg></button><h2 id="trkTitle" tabindex="-1">Finding your driver</h2><span class="chip green" id="trkChip">Searching</span></header>
+  <div class="map" role="img" aria-label="Live map of your route">
+    <svg viewBox="0 0 360 250" preserveAspectRatio="xMidYMid slice">
+      <rect class="park" x="150" y="150" width="70" height="46" rx="10"/>
+      <rect class="block" x="20" y="20" width="60" height="40" rx="6"/><rect class="block" x="250" y="150" width="70" height="60" rx="6"/><rect class="block" x="90" y="200" width="46" height="36" rx="6"/><rect class="block" x="240" y="20" width="80" height="32" rx="6"/>
+      <path class="road" d="M-10 100H370M-10 200H370M80 -10V260M240 -10V260"/>
+      <path class="road s" d="M-10 150H370M-10 50H370M160 -10V260M320 -10V260M20 -10V260"/>
+      <path id="apPath" d="M-10 60C20 110 30 170 64 190" fill="none" stroke="#2b6d51" stroke-width="3" stroke-dasharray="3 7" stroke-linecap="round" opacity=".7"/>
+      <path id="rtGlow" d="M64 190C120 190 140 130 190 132S250 82 296 70" fill="none" stroke="#1fe58f" stroke-opacity=".22" stroke-width="12" stroke-linecap="round"/>
+      <path id="rtPath" d="M64 190C120 190 140 130 190 132S250 82 296 70" fill="none" stroke="#2b6d51" stroke-width="4" stroke-linecap="round"/>
+      <path id="rtDone" d="M64 190C120 190 140 130 190 132S250 82 296 70" fill="none" stroke="#1fe58f" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="0 9999"/>
+      <g id="radar" hidden><circle class="pulse" cx="64" cy="190" r="22" fill="#1fe58f" fill-opacity=".35"/><circle class="pulse p2" cx="64" cy="190" r="22" fill="#1fe58f" fill-opacity=".35"/></g>
+      <circle cx="64" cy="190" r="8" fill="#1fe58f" stroke="#04100a" stroke-width="3"/>
+      <circle cx="296" cy="70" r="9" fill="#f2c14e" stroke="#04100a" stroke-width="3"/>
+      <g id="mCar" hidden><circle r="16" fill="#1fe58f" fill-opacity=".25"/><circle r="9" fill="#e9fff4" stroke="#1fe58f" stroke-width="3.5"/></g>
+    </svg>
+    <div class="mapbadge" id="mapBadge" aria-live="polite">Matching you<small>Looking for nearby drivers</small></div>
+  </div>
+  <div class="gap"></div>
+  <div class="stack" id="trkBody"></div>
+</section>
 
-<div class="grid"><button class="card tile t-blue" type="button" data-traveltype="Flights"><span class="ico">✈️</span><strong>Flights</strong><small>Domestic and international flight enquiries</small></button><button class="card tile t-green" type="button" data-traveltype="Hotels & Stays"><span class="ico">🏨</span><strong>Hotels & Stays</strong><small>Hotels, guest houses and apartments</small></button><button class="card tile" type="button" data-traveltype="Transport"><span class="ico">🚐</span><strong>Transport</strong><small>Car hire, shuttles and transfers</small></button><button class="card tile t-green" type="button" data-traveltype="Tours & Activities"><span class="ico">🗺️</span><strong>Tours & Activities</strong><small>Safaris, attractions and experiences</small></button><button class="card tile t-blue" type="button" data-traveltype="Bus & Train"><span class="ico">🚌</span><strong>Bus & Train</strong><small>Ground travel enquiries</small></button><button class="card tile" type="button" data-traveltype="Travel Packages"><span class="ico">🧳</span><strong>Travel Packages</strong><small>Trip planning and packages</small></button></div><div class="section-label">Plan your trip</div><div class="card"><div class="field"><label>What do you need?</label><select id="travelType" class="control"><option>Flights</option><option>Hotels & Stays</option><option>Transport</option><option>Tours & Activities</option><option>Bus & Train</option><option>Travel Packages</option></select></div><div class="row"><div class="field"><label>From / current city</label><input id="travelFrom" placeholder="e.g. Nairobi"></div><div class="field"><label>Destination</label><input id="travelTo" placeholder="e.g. Mombasa"></div></div><div class="row"><div class="field"><label>Departure / check-in date</label><input id="travelDate" type="date"></div><div class="field"><label>Return / check-out date (optional)</label><input id="travelReturn" type="date"></div></div><div class="row"><div class="field"><label>Travellers / guests</label><input id="travelPeople" type="number" min="1" max="30" value="1"></div><div class="field"><label>Budget (KES, optional)</label><input id="travelBudget" type="number" min="0" placeholder="e.g. 15000"></div></div><div class="field"><label>Contact phone</label><input id="travelPhone" inputmode="tel" placeholder="07... or +254..."></div><div class="field"><label>Extra details</label><textarea id="travelNotes" rows="3" maxlength="500" placeholder="Preferred time, room type, luggage, or other needs"></textarea></div><button class="btn" id="travelRequest" style="width:100%">SAVE TRAVEL ENQUIRY</button><div id="travelMessage"></div><div class="notice">Prototype only: this saves the enquiry on this device. It does not search live prices, confirm availability, make a booking, or charge money.</div></div><div class="section-label">My travel enquiries</div><div id="travelRequests" class="list"></div></section>
-<section id="profile" class="page"><h1>BEAST IDENTITY</h1><p class="sub">Your registered account details.</p><div class="card"><div class="center"><div class="mark" style="width:70px;height:70px;border-radius:50%;margin:0 auto 10px;font-size:32px">B</div><h2 id="profileName">KRISH KRISHNA</h2><span class="pill" id="profileBeastId">BEAST-017335</span></div><div class="divider"></div><div class="balance-source"><span>Phone</span><b id="profilePhone">0712345678</b></div><div class="balance-source"><span>International</span><b id="profileInternational">+254712345678</b></div><div class="balance-source"><span>National ID</span><b id="profileId">12345678</b></div><div class="balance-source"><span>Total balance (demo)</span><b id="profileBalance">KES 7,564.00</b></div><div class="balance-source"><span>Password storage</span><b>Local demo only</b></div><div class="notice">This standalone HTML is a prototype, not a secure financial service. Do not enter real credentials. Secure salted password/PIN hashing and identity checks must be implemented on the backend.</div><button class="btn secondary" data-page="settings">Edit settings</button></div></section>
-<section id="security" class="page"><h1>BEAST SHIELD</h1><p class="sub">Security centre · visual scanner preview.</p><div class="card center"><div class="security-radar"><span style="font-size:36px">🛡️</span></div><h2>Session protected</h2><p class="sub">Local interface scanner animation only. It does not scan devices or verify real threats.</p><span class="pill">DEMO MODE</span></div><div class="section-label">Security events</div><div class="list"><div class="item"><span>🔐</span><div class="grow"><b>Identity screen available</b><small>PIN required for demo authorizations</small></div><span class="pill">INFO</span></div><div class="item"><span>🛡️</span><div class="grow"><b>BEAST Shield</b><small>Real fraud monitoring requires a trusted backend.</small></div><span class="pill">DEMO</span></div></div></section>
-<section id="notifications" class="page"><h1>NOTIFICATIONS</h1><p class="sub">App alerts and activity notices.</p><div class="list"><div class="item"><span>🛡️</span><div class="grow"><b>Welcome to BEAST Money</b><small>You're viewing the interactive prototype. No real payments are connected.</small></div><span class="pill">NEW</span></div><div id="dynamicNotifications"></div></div></section>
-<section id="settings" class="page"><h1>SETTINGS</h1><p class="sub">App settings · Control appearance and security.</p><div class="card"><h3>Appearance</h3><p class="sub">Light or dark mode</p><div class="actions"><button class="btn secondary" id="darkMode">Dark</button><button class="btn secondary" id="lightMode">Light</button></div><div class="divider"></div><h3>Notifications</h3><label class="checkline"><input type="checkbox" id="alertsToggle" checked> Transaction alerts</label><div class="divider"></div><h3>Screen security</h3><label class="checkline"><input type="checkbox" id="visibilityToggle" checked> Visibility events (local preview)</label><div class="divider"></div><h3>Biometric placeholder</h3><p class="sub">Future device authentication</p><button class="btn secondary" id="bioBtn">Set up biometrics</button></div>
-<div class="section-label">RECEIVING</div><div class="card"><h3>Receiving methods</h3><p class="sub">Choose which channels buyers can use to pay you. BEAST Wallet is always enabled.</p><div class="field"><label>Receiving channel</label><select id="receiveMethod" class="control"><option>BEAST Wallet</option><option>Pochi la Biashara</option><option>Till</option><option>PayBill</option><option>Bank Account</option><option>Card</option></select></div><div class="field"><label>Destination / account</label><input id="receiveDestination" placeholder="Phone, business, bank or card reference"></div><button class="btn" id="saveReceiveMethod">SAVE RECEIVING METHOD</button><div class="section-label" style="font-size:16px">Enabled receiving methods</div><div id="receivingMethods"></div></div>
-<div class="section-label">ADD / UPDATE PAYMENT SOURCE</div><div class="card"><p class="sub">Connect a simulated payment source to your BEAST identity.</p><div class="field"><label>Payment source</label><select id="sourceType" class="control"><option>T-Kash</option><option>M-PESA</option><option>Airtel Money</option><option>Bank</option><option>Card</option><option>BEAST Wallet</option></select></div><div class="field"><label>Phone / account number</label><input id="sourceNumber" placeholder="Phone or account (letters and digits ok)"></div><div class="field"><label>Demo balance (KES)</label><input id="sourceBalance" type="number" min="0" value="0"></div><button class="btn" id="saveSource">SAVE PAYMENT SOURCE</button><div id="savedSources" class="list" style="margin-top:12px"></div></div>
-<div class="section-label">CHANGE BEAST PIN</div><div class="card"><div class="field"><label>Current PIN</label><input id="currentPin" type="password" inputmode="numeric" maxlength="6"></div><div class="field"><label>New PIN</label><input id="newPin" type="password" inputmode="numeric" maxlength="6"></div><div class="field"><label>Confirm new PIN</label><input id="confirmPin" type="password" inputmode="numeric" maxlength="6"></div><button class="btn" id="changePin">CHANGE PIN</button><div class="divider"></div><h3>Change BEAST password</h3><div class="field"><label>Current password</label><input id="currentPassword" type="password"></div><div class="field"><label>New password</label><input id="newPassword" type="password"></div><div class="field"><label>Confirm new password</label><input id="confirmPassword" type="password"></div><button class="btn" id="changePassword">CHANGE PASSWORD</button><div class="divider"></div><button class="btn danger" id="resetDemo">RESET DEMO DATA</button></div></section>
+<!-- ============ ARRIVED (8) ============ -->
+<section class="screen" id="s-arrived" aria-label="Arrived">
+  <div style="height:calc(26px + env(safe-area-inset-top))"></div>
+  <div class="ring" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></div>
+  <h1 class="big center" tabindex="-1" style="color:var(--gold2)">You've arrived!</h1>
+  <p class="sub center">Your ride has ended successfully.</p>
+  <div class="gap"></div>
+  <div class="card" id="arrCard"></div>
+  <div class="gap"></div>
+  <div class="center sm muted" id="rateLbl">How was James?</div>
+  <div class="gap s"></div>
+  <div class="stars" id="stars"></div>
+  <div class="gap l"></div>
+  <div class="stack">
+    <button class="btn ghost" data-act="receipt"><svg class="i"><use href="#i-receipt"/></svg>View receipt</button>
+    <button class="btn primary" data-act="another">Book another ride</button>
+  </div>
+</section>
+
+<!-- ============ WALLET & HISTORY (9) ============ -->
+<section class="screen" id="s-wallet" aria-label="Wallet and history">
+  <header class="bar"><button class="icon-btn" data-act="back" aria-label="Back"><svg class="i"><use href="#i-back"/></svg></button><h2 tabindex="-1">Travel wallet &amp; history</h2></header>
+  <div class="wallet-card">
+    <div class="muted sm">Travel wallet (demo)</div>
+    <div class="bal" id="wBal">KES 520.00</div>
+    <button class="btn primary sm" data-act="topup" style="width:100%"><svg class="i" style="width:18px;height:18px"><use href="#i-plus"/></svg>Top up</button>
+  </div>
+  <div class="gap"></div>
+  <div class="stats" id="wStats"></div>
+  <div class="gap l"></div>
+  <h3 style="font-size:15px;margin-bottom:10px">Recent rides</h3>
+  <div class="list" id="wList"></div>
+</section>
+
+<!-- ============ NOTIFICATIONS (12) ============ -->
+<section class="screen" id="s-notifs" aria-label="Notifications">
+  <header class="bar"><button class="icon-btn" data-act="back" aria-label="Back"><svg class="i"><use href="#i-back"/></svg></button><h2 tabindex="-1">Notifications</h2></header>
+  <div class="tabs" role="tablist"><button role="tab" data-act="ntab-rides" id="ntRides" aria-selected="true">Rides</button><button role="tab" data-act="ntab-system" id="ntSystem" aria-selected="false">System</button></div>
+  <div class="list" id="nList"></div>
+</section>
+
+<!-- ============ DRIVER DASHBOARD (11) ============ -->
+<section class="screen" id="s-dash" aria-label="Driver dashboard">
+  <header class="bar"><button class="icon-btn" data-act="back" aria-label="Back"><svg class="i"><use href="#i-back"/></svg></button><h2 tabindex="-1">Driver dashboard</h2><span id="dashChip"></span></header>
+  <div class="stack" id="dashBody"></div>
+</section>
+
+<!-- ============ DRIVER SUBSCRIPTION ============ -->
+<section class="screen" id="s-plans" aria-label="Driver plan">
+  <header class="bar"><button class="icon-btn" data-act="back" aria-label="Back"><svg class="i"><use href="#i-back"/></svg></button><h2 tabindex="-1">Driver plan</h2></header>
+  <div class="stack" id="plansBody"></div>
+</section>
+
+<!-- Drawer / sheet / toast -->
+<div class="scrim" id="drawerScrim" data-act="close-drawer"></div>
+<aside id="drawer" aria-label="Menu"></aside>
+<div class="scrim" id="sheetScrim" data-act="close-sheet"></div>
+<div id="sheet" role="dialog" aria-modal="true"><div class="grab"></div><div id="sheetBody"></div></div>
+<div id="toast" role="status" aria-live="polite"></div>
 </main>
-<nav class="bottomnav"><button class="active" data-page="home"><span>🏠</span>Home</button><button data-page="market"><span>🏪</span>Market</button><button data-page="business"><span>🏢</span>Business</button><button data-page="travel"><span>✈️</span>Travel</button><button data-page="send"><span>📤</span>Send</button><button id="bottomMore"><span>☰</span>Menu</button></nav>
-<div id="menuOverlay" class="overlay"><aside class="drawer"><div class="drawer-head"><strong>BEAST MENU</strong><button class="btn secondary smallbtn" id="closeMenu">×</button></div><div class="drawer-user"><b id="drawerName">KRISH KRISHNA</b><small style="display:block;color:var(--muted);margin-top:4px" id="drawerId">BEAST-017335</small></div><button class="menuitem" data-page="home"><span>🏠</span>Home</button><button class="menuitem" data-page="send"><span>📤</span>Send</button><button class="menuitem" data-page="bulk"><span>📥</span>Bulk Send</button><button class="menuitem" data-page="receive"><span>🤝</span>Receive</button><button class="menuitem" data-page="withdraw"><span>🏧</span>Withdraw</button><button class="menuitem" data-page="lipana"><span>🛒</span>Lipa Na</button><button class="menuitem" data-page="history"><span>🧾</span>History</button><button class="menuitem" data-page="statements"><span>📊</span>Statements</button><button class="menuitem" data-page="market"><span>🏪</span>Market</button><button class="menuitem" data-page="travel"><span>✈️</span>Travel</button><button class="menuitem" data-page="profile"><span>👤</span>Profile</button><button class="menuitem" data-page="security"><span>🛡️</span>Security</button><button class="menuitem" data-page="notifications"><span>🔔</span>Notifications</button><button class="menuitem" data-page="settings"><span>⚙️</span>Settings</button><button class="menuitem logout" id="logout"><span>🚪</span>Logout</button><div class="notice">Menu and screens are interactive. Payments are simulated locally.</div></aside></div>
-<div id="entry"><div class="entrybox"><div class="entrybrand"><div class="mark">B</div><h1>BEAST</h1><p>MONEY TRANSFER · KENYA PAYMENT PROTOTYPE</p></div>
-<div class="entry-step active" id="entry-register"><h2>Create your BEAST identity</h2><p class="sub">Register to explore the interactive wallet prototype.</p><div class="field"><label>Phone number</label><input id="regPhone" inputmode="tel" placeholder="0712345678 or +254712345678"></div><div class="field"><label>National ID number</label><input id="regId" inputmode="numeric" placeholder="National ID number"></div><div class="actions"><button class="btn secondary" id="scanName">◎ SCAN ID NAME</button></div><div class="namecard"><strong>AI ID NAME SCANNER · PREVIEW</strong><div id="scanNameDisplay">Name not scanned</div><input id="regName" placeholder="Full name (editable)"></div><div class="field"><label>Password</label><input id="regPassword" type="password" placeholder="Create password"></div><div class="field"><label>Confirm password</label><input id="regPassword2" type="password" placeholder="Repeat password"></div><div class="field"><label>PIN (4–6 digits)</label><input id="regPin" type="password" inputmode="numeric" maxlength="6" placeholder="Create PIN"></div><label class="checkline"><input type="checkbox" id="termsCheck"> I agree to the <a href="#terms" id="showTerms" style="color:var(--green)">Terms and Conditions</a>. This is a demo, not a real financial account.</label><div id="regError" class="notice bad hide"></div><button class="btn" style="width:100%;margin-top:15px" id="registerNext">REGISTER</button><p class="center legal">Already have an account? <button id="showLogin" style="background:none;border:0;color:var(--green);font-weight:850">Login</button></p></div>
-<div class="entry-step" id="entry-login"><h2>Login to BEAST</h2><p class="sub">Use the demo account you registered on this device.</p><div class="field"><label>Phone number</label><input id="loginPhone" placeholder="Phone number"></div><div class="field"><label>Password</label><input id="loginPassword" type="password" placeholder="Password"></div><div class="field"><label>PIN</label><input id="loginPin" type="password" inputmode="numeric" placeholder="PIN"></div><div id="loginError" class="notice bad hide"></div><button class="btn" style="width:100%" id="loginNext">LOGIN & CONTINUE</button><p class="center legal">New to BEAST? <button id="showRegister" style="background:none;border:0;color:var(--green);font-weight:850">Register</button></p></div>
-<div class="entry-step" id="entry-confirm"><h2>Confirm your details</h2><p class="sub">Review the identity before generating your demo BEAST ID.</p><div class="namecard"><strong>BEAST IDENTITY CARD</strong><div id="confirmName">—</div><small id="confirmPhone"></small><div class="divider"></div><small>National ID: <b id="confirmId"></b></small></div><div class="notice">Please check the details carefully. Name scanning is a visual demo; it does not read or verify a real national ID.</div><button class="btn" style="width:100%" id="confirmCreate">CONFIRM & OPEN BEAST</button><button class="btn secondary" style="width:100%;margin-top:8px" id="editDetails">EDIT DETAILS</button></div>
-<div class="entry-step" id="entry-terms"><h2>Terms and Conditions</h2><p class="legal">BEAST Money in this file is an interactive front-end prototype for testing layout and navigation. No live bank, mobile money, card, identity verification, or payment provider is connected. Names, account balances, fees, transaction references, and transaction outcomes are sample/demo data. Do not enter real passwords, PINs, or identity details. A production service needs a secure backend, lawful identity verification, provider authorization, encryption, fraud monitoring, audit logging, privacy notices, and regulatory review. You can return to registration without accepting these terms.</p><button class="btn secondary" id="termsBack" style="width:100%;margin-top:14px">BACK TO REGISTRATION</button></div>
-</div></div>
-<div id="toast" style="position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:60;display:none;max-width:90vw;background:#123326;border:1px solid #2e8a61;color:#dffff0;padding:12px 16px;border-radius:13px;box-shadow:var(--shadow)"></div>
+
 <script>
 'use strict';
-const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const money=n=>'KES '+(Number(n)||0).toLocaleString('en-KE',{minimumFractionDigits:2,maximumFractionDigits:2});
-const sampleTransactions=[{type:'Withdraw',sign:'-',amount:500,detail:'Agent cash withdrawal',recipient:'Demo agent',source:'M-PESA',ref:'BST-03117270-424',date:'18/10/2026, 08:58:37',fee:7,provider:29},{type:'Buyer Payment',sign:'+',amount:100,detail:'Buyer payment from Alice Njeri via wallet',recipient:'KRISH KRISHNA',source:'M-PESA',ref:'BST-13494472-351',date:'13/10/2026, 20:44:54',fee:7,provider:0}];
-const defaultData=()=>({name:'KRISH KRISHNA',phone:'0712345678',id:'12345678',beastId:'BEAST-017335',balance:7564,pin:'1234',password:'beastdemo',sources:[{name:'M-PESA',number:'0712345678',balance:2500},{name:'BEAST Wallet',number:'BEAST-017335',balance:7564},{name:'Airtel Money',number:'',balance:0},{name:'T-Kash',number:'',balance:0},{name:'Bank',number:'Equity Bank •••• 4321',balance:0},{name:'Card',number:'Visa •••• 4321',balance:0}],receiving:[{name:'BEAST Wallet',destination:'BEAST-017335',on:true},{name:'Pochi la Biashara',destination:'0712345678',on:true},{name:'Till',destination:'—',on:false},{name:'PayBill',destination:'—',on:false},{name:'Bank Account',destination:'—',on:false},{name:'Card',destination:'—',on:false}],transactions:sampleTransactions.slice(),registered:false});
-let data=defaultData(),recipientVerified=false,withdrawAgentVerified=false,lipaVerified=false,buyerAccount='',agentVerified=false,bulkRows=[];
-function toast(msg){const el=$('#toast');el.textContent=msg;el.style.display='block';clearTimeout(window._toast);window._toast=setTimeout(()=>el.style.display='none',2800)}
-function save(){try{localStorage.setItem('beastMoneyDemo',JSON.stringify(data))}catch(e){}}
-function load(){try{const x=JSON.parse(localStorage.getItem('beastMoneyDemo'));if(x&&x.name)data={...defaultData(),...x}}catch(e){}}
-function showEntry(step){$$('.entry-step').forEach(x=>x.classList.remove('active'));$('#entry-'+step).classList.add('active');$('#entry').style.display='flex'}
-function hideEntry(){$('#entry').style.display='none';renderProfile();showPage('home')}
-function showPage(id){$$('.page').forEach(p=>p.classList.toggle('active',p.id===id));$$('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));$('#menuOverlay').classList.remove('show');window.scrollTo({top:0,behavior:'smooth'});if(id==='history')renderHistory();if(id==='statements')renderStatements();if(id==='settings')renderSettings();if(id==='profile')renderProfile();if(id==='balance'){$('#balId').value='';$('#balName').value='';$('#balPin').value='';$('#balanceResult').classList.add('hide')}}
-function notify(msg){const el=$('#dynamicNotifications');if(el){const d=document.createElement('div');d.className='item';d.innerHTML='<span>🔔</span><div class="grow"><b></b><small></small></div>';d.querySelector('b').textContent=msg;d.querySelector('small').textContent=new Date().toLocaleString();el.prepend(d)}$('#noticeCount').textContent='1';}
-function renderProfile(){['profileName','helloName','drawerName'].forEach(id=>$('#'+id).textContent=data.name);$('#profileBeastId').textContent=data.beastId;$('#drawerId').textContent=data.beastId;$('#profilePhone').textContent=data.phone;$('#profileInternational').textContent=international(data.phone);$('#profileId').textContent=data.id;$('#profileBalance').textContent=money(data.balance);$('#homeBalance').textContent=money(data.balance)}
-function international(p){let d=(p||'').replace(/\D/g,'');if(d.startsWith('254'))return '+'+d;if(d.startsWith('0'))return '+254'+d.slice(1);return p||'—'}
-function renderHistory(){const list=$('#historyList');list.innerHTML='';data.transactions.forEach(t=>{const e=document.createElement('div');e.className='item';const sign=t.sign||'-';e.innerHTML='<span style="font-size:22px">'+(sign==='+'?'↙':'↗')+'</span><div class="grow"><b></b><small></small><small></small><small></small><small></small></div><div class="amount"></div>';e.querySelector('.grow b').textContent=t.type;e.querySelectorAll('small')[0].textContent=t.detail;e.querySelectorAll('small')[1].textContent='Recipient: '+(t.recipient||'—')+' · Source: '+(t.source||'BEAST Wallet');e.querySelectorAll('small')[2].textContent='Reference: '+(t.ref||'BST-DEMO');e.querySelectorAll('small')[3].textContent=(t.date||new Date().toLocaleString())+' · BEAST fee: '+money(t.fee||0)+' · Provider: '+money(t.provider||0);const a=e.querySelector('.amount');a.textContent=(sign==='+'?'+':'−')+' '+money(t.amount);a.className='amount '+(sign==='+'?'positive':'negative');list.append(e)})}
-function renderStatements(){renderHistory();$('#txCount').textContent=data.transactions.length;const list=$('#statementActivity');list.innerHTML='';data.transactions.slice(0,8).forEach(t=>{const e=document.createElement('div');e.className='item';e.innerHTML='<span>🧾</span><div class="grow"><b></b><small></small><small></small></div><div class="amount"></div>';e.querySelector('b').textContent=t.type;e.querySelectorAll('small')[0].textContent=t.detail;e.querySelectorAll('small')[1].textContent='Ref: '+(t.ref||'BST-DEMO')+' · '+(t.date||'Just now');e.querySelector('.amount').textContent=(t.sign==='+'?'+':'−')+' '+money(t.amount);e.querySelector('.amount').className='amount '+(t.sign==='+'?'positive':'negative');list.append(e)})}
-function renderSettings(){const rm=$('#receivingMethods');rm.innerHTML='';data.receiving.forEach(r=>{const e=document.createElement('div');e.className='balance-source';e.innerHTML='<div><b></b><small style="display:block;color:var(--muted)"></small></div><span class="pill"></span>';e.querySelector('b').textContent=r.name;e.querySelector('small').textContent=r.destination;e.querySelector('.pill').textContent=r.on?'ON':'OFF';e.querySelector('.pill').style.color=r.on?'var(--green)':'var(--muted)';rm.append(e)});const ss=$('#savedSources');ss.innerHTML='';data.sources.forEach(s=>{const e=document.createElement('div');e.className='item';e.innerHTML='<span>💳</span><div class="grow"><b></b><small></small></div><b></b>';e.querySelectorAll('b')[0].textContent=s.name;e.querySelector('small').textContent=s.number||'Not linked';e.querySelectorAll('b')[1].textContent=money(s.balance);ss.append(e)})}
-function addTx(type,amount,sign,detail,source,recipient,fee=0,provider=0){const ref='BST-'+Math.floor(10000000+Math.random()*89999999)+'-'+Math.floor(100+Math.random()*899);data.transactions.unshift({type,amount:Number(amount),sign,detail,source,recipient,ref,date:new Date().toLocaleString('en-GB'),fee,provider});if(data.transactions.length>100)data.transactions.length=100;save();renderProfile();notify(type+' '+(sign==='+'?'received':'recorded')+' in demo');}
-function setFee(input,amount,fee,total){const n=Math.max(0,Number($(input).value)||0),f=n?Math.min(50,Math.max(0,Math.ceil(n/1000)*7)):0;$(amount).textContent=money(n);$(fee).textContent=money(f);if(total)$(total).textContent=money(n+f);return {n,f,total:n+f}}
-function validPhone(v){return /^(?:0[17]\d{8}|\+254[17]\d{8}|254[17]\d{8}|BEAST-\d{1,12}|[A-Za-z0-9-]{5,30})$/i.test(v.trim())}
-function sourceBalance(name){const s=data.sources.find(x=>x.name.toLowerCase()===name.toLowerCase());return s?Number(s.balance)||0:0}
-function deductSource(name,amount){const s=data.sources.find(x=>x.name.toLowerCase()===name.toLowerCase());if(name==='BEAST Wallet'){if(data.balance<amount)return false;data.balance-=amount;if(s)s.balance=data.balance;return true}if(s){if(s.balance<amount)return false;s.balance-=amount;return true}return false}
-function verifyPin(v){return String(v||'')===String(data.pin)}
-// Navigation and menu
-$$('[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));$('#openMenu').onclick=()=>$('#menuOverlay').classList.add('show');$('#bottomMore').onclick=()=>$('#menuOverlay').classList.add('show');$('#closeMenu').onclick=()=>$('#menuOverlay').classList.remove('show');$('#menuOverlay').addEventListener('click',e=>{if(e.target===$('#menuOverlay'))$('#menuOverlay').classList.remove('show')});$('#logout').onclick=()=>{showEntry('login');$('#menuOverlay').classList.remove('show');toast('Demo session locked. Verify your identity.')};
-// Registration / login
-$('#scanName').onclick=()=>{const raw=$('#regName').value.trim()||'KRISH KRISHNA';$('#regName').value=raw.toUpperCase();$('#scanNameDisplay').textContent=$('#regName').value;toast('Demo scanner preview: edit the displayed name if needed.')};$('#regName').addEventListener('input',()=>$('#scanNameDisplay').textContent=$('#regName').value||'Name not scanned');$('#showLogin').onclick=()=>showEntry('login');$('#showRegister').onclick=()=>showEntry('register');$('#showTerms').onclick=e=>{e.preventDefault();showEntry('terms')};$('#termsBack').onclick=()=>showEntry('register');$('#registerNext').onclick=()=>{const phone=$('#regPhone').value.trim(),id=$('#regId').value.trim(),name=$('#regName').value.trim(),pw=$('#regPassword').value,pw2=$('#regPassword2').value,pin=$('#regPin').value;let err='';if(!validPhone(phone))err='Enter a valid phone number or account identifier.';else if(!/^\d{5,12}$/.test(id))err='Enter a national ID with 5–12 digits.';else if(name.length<3)err='Scan or enter the full name.';else if(pw.length<6)err='Password must contain at least 6 characters.';else if(pw!==pw2)err='Passwords do not match.';else if(!/^\d{4,6}$/.test(pin))err='PIN must contain 4–6 digits.';else if(!$('#termsCheck').checked)err='Please accept the demo terms and conditions.';if(err){$('#regError').textContent=err;$('#regError').classList.remove('hide');return}data.name=name.toUpperCase();data.phone=phone;data.id=id;data.pin=pin;data.password=pw;data.beastId='BEAST-'+String(Math.floor(100000+Math.random()*899999));data.sources[1]={name:'BEAST Wallet',number:data.beastId,balance:data.balance};$('#confirmName').textContent=data.name;$('#confirmPhone').textContent=data.phone+' · '+international(data.phone);$('#confirmId').textContent=data.id;showEntry('confirm')};$('#editDetails').onclick=()=>showEntry('register');$('#confirmCreate').onclick=()=>{data.registered=true;save();hideEntry();toast('BEAST ID created for this local demo: '+data.beastId)};$('#loginNext').onclick=()=>{if($('#loginPhone').value.trim()!==data.phone||$('#loginPassword').value!==data.password||$('#loginPin').value!==data.pin){$('#loginError').textContent='Details did not match the local demo account. Use your registered phone, password and PIN.';$('#loginError').classList.remove('hide');return}$('#loginError').classList.add('hide');hideEntry();toast('Demo login successful.')};
-// Balance
-$('#checkBalance').onclick=()=>{if($('#balId').value.trim()!==data.id||$('#balName').value.trim().toLowerCase()!==data.name.toLowerCase()||!verifyPin($('#balPin').value)){toast('Identity details did not match.');return}const wrap=$('#balanceSources');wrap.innerHTML='';data.sources.forEach(s=>{const e=document.createElement('div');e.className='balance-source';e.innerHTML='<div><b></b><small style="display:block;color:var(--muted)"></small></div><b></b>';e.querySelector('b').textContent=s.name;e.querySelector('small').textContent=s.number||'No linked account';e.querySelectorAll('b')[1].textContent=money(s.name==='BEAST Wallet'?data.balance:s.balance);wrap.append(e)});data.receiving.forEach(r=>{if(['Pochi la Biashara','Till','PayBill'].includes(r.name)){const e=document.createElement('div');e.className='balance-source';e.innerHTML='<div><b></b><small style="display:block;color:var(--muted)"></small></div><span class="pill"></span>';e.querySelector('b').textContent=r.name;e.querySelector('small').textContent=r.destination;e.querySelector('.pill').textContent=r.on?'ENABLED':'OFF';wrap.append(e)}});$('#balanceResult').classList.remove('hide')};
-// Send
-$('#verifyRecipient').onclick=()=>{const v=$('#recipient').value.trim();if(!validPhone(v)){recipientVerified=false;$('#recipientCard').classList.add('hide');toast('Enter a valid phone number, account, or BEAST ID.');return}recipientVerified=true;$('#recipientName').textContent=v.toUpperCase().startsWith('BEAST-')?(v.toUpperCase()==data.beastId?data.name:'BEAST Demo Recipient'):'Demo Recipient';$('#recipientId').textContent=v;$('#recipientCard').classList.remove('hide');toast('Demo recipient verified. No live identity lookup occurred.')};$('#sendAmount').addEventListener('input',()=>setFee('#sendAmount','#sendCostAmount','#sendFee','#sendTotal'));$('#sendAuthorize').onclick=()=>{const c=setFee('#sendAmount','#sendCostAmount','#sendFee','#sendTotal');if(!recipientVerified)return toast('Verify the recipient first.');if(c.n<=0)return toast('Enter a valid amount.');if(!verifyPin($('#sendPin').value))return toast('Incorrect demo PIN.');if(!deductSource($('#sendSource').value,c.total))return toast('Insufficient demo balance in selected source.');addTx('Send',c.n,'-', 'Money sent to '+$('#recipient').value,$('#sendSource').value,$('#recipientName').textContent,c.f,0);save();toast('Demo transfer recorded; no money moved.');$('#sendPin').value='';showPage('history')};
-// Bulk send
-$('#addBulkLine').onclick=()=>{$('#bulkText').value+=($('#bulkText').value.trim()?'\n':'')+'0712345678,100';$('#bulkText').focus()};$('#clearBulk').onclick=()=>{$('#bulkText').value='';bulkRows=[];$('#bulkPreview').innerHTML='';$('#bulkFee').textContent=money(0);$('#bulkTotal').textContent='0 recipients · KES 0.00'};$('#parseBulk').onclick=()=>{const lines=$('#bulkText').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);if(lines.length>500)return toast('Maximum 500 recipients per batch.');bulkRows=[];const errors=[];lines.forEach((line,i)=>{const parts=line.split(',').map(x=>x.trim());if(parts.length!==2||!validPhone(parts[0])||!Number.isFinite(Number(parts[1]))||Number(parts[1])<=0){errors.push('Line '+(i+1)+' needs a valid recipient,amount.');return}bulkRows.push({recipient:parts[0],amount:Number(parts[1]),name:parts[0].toUpperCase().startsWith('BEAST-')?'BEAST Demo Recipient':'Demo Recipient'})});const p=$('#bulkPreview');p.innerHTML='';bulkRows.slice(0,30).forEach((r,i)=>{const e=document.createElement('div');e.className='item';e.innerHTML='<span class="stepnum"></span><div class="grow"><b></b><small></small></div><b></b>';e.querySelector('.stepnum').textContent=i+1;e.querySelectorAll('b')[0].textContent=r.name;e.querySelector('small').textContent=r.recipient;e.querySelectorAll('b')[1].textContent=money(r.amount);p.append(e)});const sum=bulkRows.reduce((a,r)=>a+r.amount,0),fee=bulkRows.reduce((a,r)=>a+Math.min(50,Math.ceil(r.amount/1000)*7),0);$('#bulkFee').textContent=money(fee);$('#bulkTotal').textContent=bulkRows.length+' recipients · '+money(sum+fee)+' total';if(errors.length)toast(errors.slice(0,2).join(' '));else toast(bulkRows.length+' recipient(s) parsed.')};$('#sendBulk').onclick=()=>{if(!bulkRows.length)return toast('Parse the list first.');if(!verifyPin($('#bulkPin').value))return toast('Incorrect demo PIN.');const total=bulkRows.reduce((a,r)=>a+r.amount+Math.min(50,Math.ceil(r.amount/1000)*7),0);if(!deductSource($('#bulkSource').value,total))return toast('Insufficient demo source balance. Batch stopped before sending.');bulkRows.forEach(r=>addTx('Bulk Send',r.amount,'-', 'Bulk recipient '+r.recipient,$('#bulkSource').value,r.name,Math.min(50,Math.ceil(r.amount/1000)*7),0));save();toast('Demo batch recorded for '+bulkRows.length+' recipient(s); no money moved.');$('#bulkPin').value='';showPage('history')};
-// Receive tabs
-$$('[data-receivetab]').forEach(b=>b.onclick=()=>{ $$('[data-receivetab]').forEach(x=>x.classList.toggle('active',x===b));$$('.receive-panel').forEach(x=>x.classList.add('hide'));$('#receive-'+b.dataset.receivetab).classList.remove('hide')});function buyerTab(t){$$('[data-buyertab]').forEach(x=>x.classList.toggle('active',x.dataset.buyertab===t));['login','account','pay'].forEach(x=>$('#buyer-'+x).classList.toggle('hide',x!==t))}$$('[data-buyertab]').forEach(b=>b.onclick=()=>buyerTab(b.dataset.buyertab));$('#buyerLogin').onclick=()=>{if(!$('#buyerName').value.trim()||!validPhone($('#buyerPhone').value.trim())||!$('#buyerId').value.trim()||!$('#buyerPassword').value||!$('#buyerPin').value)return toast('Complete the buyer demo login fields.');$('#buyerSignedName').textContent=$('#buyerName').value.trim();const a=$('#buyerAccounts');a.innerHTML='';['📱|M-PESA|Balance hidden','🐾|BEAST Wallet|BEAST Wallet','🏦|Bank Account|Equity Bank •••• linked bank account','💳|Card|Visa •••• 4321 linked card','📲|Airtel Money|Balance hidden','📲|T-Kash|Hidden'].forEach((line,i)=>{const [icon,name,desc]=line.split('|');const e=document.createElement('button');e.className='item';e.style.color='var(--text)';e.style.textAlign='left';e.innerHTML='<span style="font-size:24px"></span><div class="grow"><b></b><small></small></div><span class="pill">SELECT</span>';e.querySelector('span').textContent=icon;e.querySelector('b').textContent=name;e.querySelector('small').textContent=desc;e.onclick=()=>{buyerAccount=name;$$('#buyerAccounts .item').forEach(x=>x.style.borderColor='var(--line)');e.style.borderColor='var(--green)';$('#buyerAccountContinue').disabled=false};a.append(e)});buyerTab('account')};$('#buyerAccountContinue').onclick=()=>{if(!buyerAccount)return toast('Choose an account.');$('#buyerChosenAccount').value=buyerAccount;buyerTab('pay')};$('#buyerPayAmount').addEventListener('input',()=>{const n=Number($('#buyerPayAmount').value)||0;$('#buyerPayCost').textContent=n?money(n)+' amount + '+money(Math.min(50,Math.ceil(n/1000)*7))+' estimated fee.':'Enter an amount to calculate the buyer cost.'});$('#buyerPayAuthorize').onclick=()=>{const n=Number($('#buyerPayAmount').value);if(!buyerAccount||n<=0)return toast('Choose account and enter amount.');if($('#buyerPayPin').value!==$('#buyerPin').value)return toast('Buyer PIN did not match.');addTx('Buyer Payment',n,'+','Buyer payment from '+$('#buyerSignedName').textContent+' via '+buyerAccount,buyerAccount,data.name,0,0);data.balance+=n;const wallet=data.sources.find(s=>s.name==='BEAST Wallet');if(wallet)wallet.balance=data.balance;save();toast('Demo buyer payment recorded; no money moved.');buyerTab('login');showPage('history')};
-$('#transferGo').onclick=()=>{const from=$('#transferFrom').value,to=$('#transferTo').value,n=Number($('#transferAmount').value);if(from===to)return toast('Choose two different accounts.');if(n<=0)return toast('Enter a valid amount.');if(from==='BEAST Wallet'&&data.balance<n)return toast('Insufficient BEAST demo balance.');if(from==='BEAST Wallet')data.balance-=n;if(to==='BEAST Wallet')data.balance+=n;addTx('Account Transfer',n, to==='BEAST Wallet'?'+':'-',from+' to '+to,from,to,0,0);$('#transferMessage').innerHTML='<div class="notice ok">Demo transfer recorded. No provider transaction occurred.</div>';save()};$('#verifyAgentCustomer').onclick=()=>{agentVerified=!!($('#agentNumber').value.trim()&&validPhone($('#agentCustomerPhone').value.trim())&&$('#agentCustomerId').value.trim());$('#agentMessage').innerHTML='<div class="notice '+(agentVerified?'ok':'bad')+'">'+(agentVerified?'Demo agent and customer fields accepted.':'Complete agent, customer phone and National ID.')+'</div>'};$('#agentAuthorize').onclick=()=>{const n=Number($('#agentAmount').value);if(!agentVerified)return toast('Verify agent and customer first.');if(n<=0)return toast('Enter a valid amount.');data.balance+=n;const w=data.sources.find(s=>s.name==='BEAST Wallet');if(w)w.balance=data.balance;addTx('Agent Deposit',n,'+','Agent cash deposit','Agent',data.name,0,0);save();toast('Demo agent deposit recorded.');showPage('history')};
-// Withdraw
-$('#verifyWithdrawAgent').onclick=()=>{withdrawAgentVerified=!!$('#withdrawAgent').value.trim();$('#withdrawAgentStatus').textContent=withdrawAgentVerified?'Demo accepts this agent ID; real agents require provider verification.':'Enter an agent ID or code.';$('#withdrawAgentStatus').style.color=withdrawAgentVerified?'var(--green)':'var(--red)'};$('#withdrawAmount').addEventListener('input',()=>setFee('#withdrawAmount','#withdrawCost','#withdrawFee'));$('#withdrawAuthorize').onclick=()=>{const n=Number($('#withdrawAmount').value),f=n?Math.min(50,Math.ceil(n/1000)*7):0;if(!withdrawAgentVerified)return toast('Verify the agent first.');if(n<=0)return toast('Enter a valid amount.');if(!verifyPin($('#withdrawPin').value))return toast('Incorrect demo PIN.');if(!deductSource($('#withdrawSource').value,n+f))return toast('Insufficient demo source balance.');addTx('Withdraw',n,'-','Agent cash withdrawal',''+$('#withdrawSource').value,$('#withdrawAgent').value,f,0);save();toast('Demo withdrawal recorded; no cash was dispensed.');showPage('history')};
-// Lipa Na dynamic destination
-function lipaFields(){const type=$('#lipaType').value,wrap=$('#lipaDestinationFields');const fields={pochi:[['Business phone / BEAST number','Phone number or BEAST ID']],till:[['Till number','Till number']],bill:[['Business number','Business number'],['Account number','Account number (letters and numbers allowed)']],account:[['Account / reference','Letters and numbers allowed']],beast:[['BEAST ID','BEAST- followed by digits']]};wrap.innerHTML='';(fields[type]||fields.account).forEach(([label,ph],i)=>{const d=document.createElement('div');d.className='field';const l=document.createElement('label');l.textContent=label;const inp=document.createElement('input');inp.id='lipaDest'+i;inp.placeholder=ph;d.append(l,inp);wrap.append(d)});lipaVerified=false;$('#lipaVerified').classList.add('hide')};$('#lipaType').onchange=lipaFields;lipaFields();$('#lipaAmount').addEventListener('input',()=>setFee('#lipaAmount','#lipaCost','#lipaFee','#lipaTotal'));$('#verifyLipa').onclick=()=>{const v=$('#lipaDest0')?.value.trim();lipaVerified=!!v&&(/^[A-Za-z0-9+.-]{3,40}$/.test(v));if(lipaVerified){$('#lipaBusinessName').textContent=$('#lipaType').value==='beast'?'BEAST Demo Recipient':'Demo Business / Destination';$('#lipaVerified').classList.remove('hide');toast('Destination accepted for demo only.')}else toast('Enter a valid destination. No live lookup was performed.')};$('#lipaAuthorize').onclick=()=>{const n=Number($('#lipaAmount').value),f=n?Math.min(50,Math.ceil(n/1000)*7):0;if(!lipaVerified)return toast('Verify destination first.');if(n<=0)return toast('Enter a valid amount.');if(!verifyPin($('#lipaPin').value))return toast('Incorrect demo PIN.');if(!deductSource($('#lipaMethod').value,n+f))return toast('Insufficient demo balance.');addTx('Lipa Na',n,'-','Business payment to '+($('#lipaDest0')?.value||'destination'),$('#lipaMethod').value,$('#lipaBusinessName').textContent,f,0);save();toast('Demo payment recorded; no money moved.');showPage('history')};
-// Settings
-$('#saveReceiveMethod').onclick=()=>{const name=$('#receiveMethod').value,dest=$('#receiveDestination').value.trim();if(name!=='BEAST Wallet'&&!dest)return toast('Enter the destination for this receiving method.');let r=data.receiving.find(x=>x.name===name);if(!r){r={name,destination:dest,on:true};data.receiving.push(r)}else{r.destination=name==='BEAST Wallet'?data.beastId:dest;r.on=true}save();renderSettings();toast('Receiving method saved in this browser.')};$('#saveSource').onclick=()=>{const name=$('#sourceType').value,number=$('#sourceNumber').value.trim(),balance=Number($('#sourceBalance').value)||0;let s=data.sources.find(x=>x.name===name);if(s){s.number=number;s.balance=balance}else data.sources.push({name,number,balance});if(name==='BEAST Wallet')data.balance=balance;save();renderSettings();renderProfile();toast('Demo payment source saved.')};$('#changePin').onclick=()=>{if($('#currentPin').value!==data.pin)return toast('Current PIN is incorrect.');if(!/^\d{4,6}$/.test($('#newPin').value)||$('#newPin').value!==$('#confirmPin').value)return toast('New PIN must be 4–6 digits and match confirmation.');data.pin=$('#newPin').value;save();['currentPin','newPin','confirmPin'].forEach(id=>$('#'+id).value='');toast('Demo PIN changed locally. Production must use backend-secured hashing.')};$('#changePassword').onclick=()=>{if($('#currentPassword').value!==data.password)return toast('Current password is incorrect.');if($('#newPassword').value.length<6||$('#newPassword').value!==$('#confirmPassword').value)return toast('New password must be at least 6 characters and match.');data.password=$('#newPassword').value;save();['currentPassword','newPassword','confirmPassword'].forEach(id=>$('#'+id).value='');toast('Demo password changed locally. Production must use backend-secured hashing.')};$('#darkMode').onclick=()=>{document.documentElement.style.setProperty('--bg','#050907');document.documentElement.style.setProperty('--panel','#0b1512');toast('Dark mode enabled.')};$('#lightMode').onclick=()=>{document.documentElement.style.setProperty('--bg','#e9f3ee');document.documentElement.style.setProperty('--panel','#ffffff');document.documentElement.style.setProperty('--panel2','#f4faf6');document.documentElement.style.setProperty('--text','#10231a');document.documentElement.style.setProperty('--muted','#536c60');$$('.card').forEach(c=>c.style.color='#10231a');toast('Light preview enabled. Reload restores the dark theme.')};$('#alertsToggle').onchange=()=>toast('Transaction alerts '+($('#alertsToggle').checked?'enabled':'disabled')+' in this preview.');$('#visibilityToggle').onchange=()=>toast('Screen visibility preview updated.');$('#bioBtn').onclick=()=>toast('Biometric authentication is a future integration placeholder.');$('#resetDemo').onclick=()=>{if(confirm('Reset all local BEAST demo data?')){localStorage.removeItem('beastMoneyDemo');data=defaultData();save();renderProfile();renderSettings();renderHistory();toast('Demo data reset.');showEntry('register')}};
-// Travel enquiry demo: stored only in this browser/device.
-function travelLoad(){try{return JSON.parse(localStorage.getItem('beastTravelDemo')||'[]')}catch(e){return []}}
-function travelRender(){const box=$('#travelRequests');if(!box)return;const rows=travelLoad();box.innerHTML='';if(!rows.length){box.innerHTML='<div class="notice">No travel enquiries saved on this device yet.</div>';return}rows.forEach(r=>{const item=document.createElement('div');item.className='item';const grow=document.createElement('div');grow.className='grow';const b=document.createElement('b');b.textContent=r.type+' · '+(r.from||'Not specified')+' → '+(r.to||'Not specified');const small=document.createElement('small');small.textContent='Date: '+(r.date||'Not specified')+' · Travellers/guests: '+r.people+' · Contact: '+r.phone;const status=document.createElement('small');status.textContent='Saved locally · Not booked';grow.append(b,small,status);item.append(grow);box.append(item)})}
-$$('[data-traveltype]').forEach(b=>b.addEventListener('click',()=>{ $('#travelType').value=b.dataset.traveltype; $('#travelType').scrollIntoView({behavior:'smooth',block:'center'}); }));
-$('#travelRequest').addEventListener('click',()=>{const type=$('#travelType').value,from=$('#travelFrom').value.trim(),to=$('#travelTo').value.trim(),date=$('#travelDate').value,people=Number($('#travelPeople').value)||1,phone=$('#travelPhone').value.trim();if(!to||!phone)return toast('Enter a destination and contact phone to save the enquiry.');if(people<1||people>30)return toast('Enter between 1 and 30 travellers or guests.');const rows=travelLoad();rows.unshift({type,from,to,date,returnDate:$('#travelReturn').value,people,budget:$('#travelBudget').value,phone,notes:$('#travelNotes').value.trim(),createdAt:Date.now()});try{localStorage.setItem('beastTravelDemo',JSON.stringify(rows))}catch(e){}$('#travelMessage').innerHTML='<div class="notice ok">Travel enquiry saved on this device. This is not a confirmed booking.</div>';travelRender();toast('Travel enquiry saved locally.')});
-travelRender();
+/* ---------- helpers ---------- */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const kes=n=>'KES '+Math.round(n).toLocaleString('en-KE');
+const ico=(n,st='')=>`<svg class="i" ${st?`style="${st}"`:''}><use href="#i-${n}"/></svg>`;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const nowTime=()=>new Date().toLocaleTimeString('en-KE',{hour:'numeric',minute:'2-digit'});
+const ago=ts=>{const m=Math.floor((Date.now()-ts)/60000);return m<1?'Just now':m<60?m+' min ago':Math.floor(m/60)+' h ago'};
 
-const MARKET_TYPES=[
-{name:'BEAST Marketplace',price:500,desc:'Sell physical products and promote listings.'},
-{name:'BEAST Academy',price:300,desc:'Publish courses and learning content.'},
-{name:'BEAST Business Hub',price:300,desc:'Business profile, customer enquiries and tools.'},
-{name:'BEAST Ads & Promotions',price:1000,desc:'Create paid promotional campaigns.'},
-{name:'BEAST Digital Services',price:500,desc:'Offer freelance and professional services.'},
-{name:'BEAST AI Premium',price:499,desc:'Premium AI tools; working AI services require backend integration.'},
-{name:'BEAST Digital Shop',price:300,desc:'Sell downloadable digital products.'},
-{name:'BEAST Travel & Booking',price:500,desc:'List travel, accommodation and booking services.'},
-{name:'BEAST Food & Delivery',price:500,desc:'List food, groceries and local delivery items.'},
-{name:'BEAST Jobs & Opportunities',price:500,desc:'Post jobs and professional opportunities.'},
-{name:'BEAST Airtime & Payments',price:500,desc:'Payment-service listing; provider agreements required.'},
-{name:'BEAST Premium Membership',price:199,desc:'Premium membership tools and benefits.'}
-];
-let marketData={businesses:[],products:[]};
-function marketLoad(){try{const x=JSON.parse(localStorage.getItem('beastMarketDemo')||'{}');marketData={businesses:Array.isArray(x.businesses)?x.businesses:[],products:Array.isArray(x.products)?x.products:[]}}catch(e){}}
-function marketSave(){try{localStorage.setItem('beastMarketDemo',JSON.stringify(marketData))}catch(e){}}
-function marketEsc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function marketDate(v){return new Date(v).toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'})}
-function marketRenderTypes(){const sel=$('#marketType');sel.innerHTML='';MARKET_TYPES.forEach((t,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=t.name+' — KSh '+t.price+'/month';sel.append(o)});marketUpdatePlan()}
-function marketUpdatePlan(){const t=MARKET_TYPES[Number($('#marketType').value)||0];$('#marketPlanInfo').textContent='7 days free. After the trial: KSh '+t.price+'/month for '+t.name+'. This prototype will not charge you automatically.'}
-function marketRenderBusinesses(){const box=$('#marketBusinesses');box.innerHTML='';if(!marketData.businesses.length){box.innerHTML='<div class="notice">No business registered on this device yet.</div>';return}marketData.businesses.forEach(b=>{const elapsed=Math.max(0,Math.floor((Date.now()-b.startedAt)/86400000));const days=Math.max(0,7-elapsed);const expired=days===0;const row=document.createElement('div');row.className='item market-business-row';const grow=document.createElement('div');grow.className='grow';const title=document.createElement('b');title.textContent=b.name;const desc=document.createElement('small');desc.textContent=b.type+' · Owner: '+b.owner+' · '+b.phone;const status=document.createElement('small');status.textContent=expired?'Trial ended · subscription not charged':'Free trial: '+days+' day(s) remaining';const price=document.createElement('small');price.textContent='KSh '+b.price+'/month · Started '+marketDate(b.startedAt);grow.append(title,desc,status,price);const badge=document.createElement('span');badge.className='pill';badge.textContent=expired?'TRIAL ENDED':'FREE TRIAL';row.append(grow,badge);box.append(row)})}
-function marketRenderProducts(){const box=$('#marketProducts');box.innerHTML='';const q=($('#marketSearch').value||'').trim().toLowerCase();const rows=marketData.products.filter(p=>(p.name+' '+p.business+' '+p.type).toLowerCase().includes(q));$('#marketEmpty').classList.toggle('hide',rows.length>0);rows.forEach(p=>{const card=document.createElement('article');card.className='card market-product';if(p.image&&/^https?:\/\//i.test(p.image)){const img=document.createElement('img');img.src=p.image;img.alt=p.name;img.loading='lazy';img.onerror=()=>img.remove();card.append(img)}const body=document.createElement('div');body.className='productbody';const title=document.createElement('strong');title.textContent=p.name;const badge=document.createElement('span');badge.className='market-badge';badge.textContent=p.type;const price=document.createElement('div');price.className='market-price';price.textContent=money(p.price);const shop=document.createElement('small');shop.style.color='var(--muted)';shop.textContent=p.business+' · Stock: '+p.stock;const buy=document.createElement('button');buy.className='btn secondary';buy.textContent='Demo order';buy.onclick=()=>{if(p.stock<=0){toast('This product is out of stock.');return}const ok=confirm('Demo order for '+p.name+' at '+money(p.price)+'? No real payment will be taken.');if(!ok)return;p.stock--;marketSave();marketRenderProducts();$('#marketOrderMessage').innerHTML='<div class="notice ok">Demo order recorded for '+marketEsc(p.name)+'. No payment or delivery was made.</div>';};body.append(title,badge,price,shop,buy);card.append(body);box.append(card)})}
-function marketTab(t){$$('[data-markettab]').forEach(b=>b.classList.toggle('active',b.dataset.markettab===t));$$('.market-panel').forEach(p=>p.classList.toggle('hide',p.id!=='market-'+t));if(t==='shop')marketRenderProducts()}
-$$('[data-markettab]').forEach(b=>b.addEventListener('click',()=>marketTab(b.dataset.markettab)));
-$('#marketType').addEventListener('change',marketUpdatePlan);$('#marketSearch').addEventListener('input',marketRenderProducts);
-$('#marketRegister').onclick=()=>{const type=MARKET_TYPES[Number($('#marketType').value)||0],name=$('#marketBusinessName').value.trim(),owner=$('#marketOwnerName').value.trim(),phone=$('#marketPhone').value.trim(),description=$('#marketDescription').value.trim(),product=$('#marketProductName').value.trim(),price=Number($('#marketProductPrice').value),stock=Number($('#marketProductStock').value);if(!name||!owner||!phone)return toast('Enter business name, owner name and phone number.');if(!$('#marketTerms').checked)return toast('Please confirm the demo trial terms.');if(product&&(!Number.isFinite(price)||price<=0||!Number.isInteger(stock)||stock<0))return toast('Enter a valid product price and stock quantity.');const id='BM-'+Date.now().toString(36).toUpperCase();const business={id,type:type.name,price:type.price,name,owner,phone,description,startedAt:Date.now()};marketData.businesses.unshift(business);if(product)marketData.products.unshift({id:'MP-'+Date.now().toString(36).toUpperCase(),businessId:id,business:name,type:type.name,name:product,price,stock,image:$('#marketProductImage').value.trim()});marketSave();marketRenderBusinesses();marketRenderProducts();$('#marketMessage').innerHTML='<div class="notice ok">Business registered in this browser. Your 7-day demo trial has started. '+(product?'Your product is now listed in Shop.':'You can add a product by registering another business with product details.')+' No real billing is enabled.</div>';['marketBusinessName','marketOwnerName','marketPhone','marketDescription','marketProductName','marketProductPrice','marketProductImage'].forEach(id=>$('#'+id).value='');$('#marketProductStock').value='1';$('#marketTerms').checked=false;toast('Business registered with a 7-day local demo trial.')};
-marketLoad();marketRenderTypes();marketRenderBusinesses();marketRenderProducts();
+/* ---------- data ---------- */
+const TRIAL_DAYS=7, SUB_PRICE=500;
+const PLACES={'Nairobi CBD':[0,0],'Westlands':[-2.6,1.9],'Kilimani':[-3.8,-1.9],'Upper Hill':[-2.6,-1.6],'Parklands':[-0.2,2.7],'Eastleigh':[3.6,1.6],'South B':[3,-3.8],'Kasarani':[8,8],'JKIA':[6,-9],'Karen':[-9,-9.5]};
+const TYPES={
+  standard:{name:'Standard',icon:'car',base:70,km:25,seats:4,eta:4,vehicle:'Toyota Axio',kind:'Car'},
+  comfort:{name:'Comfort',icon:'car',base:100,km:47,seats:4,eta:6,vehicle:'Toyota Premio',kind:'Car'},
+  boda:{name:'Boda Boda',icon:'moto',base:40,km:12.5,seats:1,eta:3,vehicle:'Motorcycle',kind:'Motorcycle'},
+  tuk:{name:'Tuk Tuk',icon:'tuk',base:50,km:16,seats:3,eta:5,vehicle:'Bajaj Tuk Tuk',kind:'Tuk Tuk'},
+  shuttle:{name:'Shuttle',icon:'bus',base:180,km:37.5,seats:8,eta:8,vehicle:'Toyota Hiace',kind:'Shuttle'}
+};
+const PAY={wallet:'BEAST Wallet (demo)',mpesa:'M-Pesa',cash:'Cash'};
+const DRIVERS=[['James Mwangi',4.8,120],['Peter Otieno',4.9,342],['Grace Wanjiru',4.7,88],['Samuel Kiprop',4.8,201],['Faith Achieng',4.9,157]];
+const RIDERS=['Amina','Brian','Cynthia','David','Esther','Kevin'];
 
-const BIZ_TYPES=[
-{name:'BEAST Marketplace',price:500,desc:'Sell physical products and promote listings.'},
-{name:'BEAST Academy',price:300,desc:'Publish courses and learning content.'},
-{name:'BEAST Business Hub',price:300,desc:'Business profile, customer enquiries and business tools.'},
-{name:'BEAST Ads & Promotions',price:1000,desc:'Plan promotional campaigns and advertising.'},
-{name:'BEAST Digital Services',price:500,desc:'Offer freelance and professional services.'},
-{name:'BEAST AI Premium',price:499,desc:'Premium AI features; live AI requires backend integration.'},
-{name:'BEAST Digital Shop',price:300,desc:'Sell downloads, templates and digital products.'},
-{name:'BEAST Travel & Booking',price:500,desc:'Promote travel, accommodation and booking services.'},
-{name:'BEAST Food & Delivery',price:500,desc:'Promote food, groceries and local delivery.'},
-{name:'BEAST Jobs & Opportunities',price:500,desc:'Publish job posts and professional opportunities.'},
-{name:'BEAST Airtime & Payments',price:500,desc:'Payment-related listings; provider agreements are required.'},
-{name:'BEAST Premium Membership',price:199,desc:'Premium membership tools and benefits.'}
-];
-let bizData={businesses:[]}, bizSelected=0, bizCurrentTab='dashboard';
-function bizLoad(){try{const d=JSON.parse(localStorage.getItem('beastBusinessDashboard')||'{}');bizData={businesses:Array.isArray(d.businesses)?d.businesses:[]}}catch(e){bizData={businesses:[]}}}
-function bizSave(){try{localStorage.setItem('beastBusinessDashboard',JSON.stringify(bizData))}catch(e){toast('Could not save business data on this device.')}}
-function bizEscape(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function bizSetTab(name){bizCurrentTab=name;$$('[data-biz-tab]').forEach(b=>b.classList.toggle('active',b.dataset.bizTab===name));$$('.biz-panel').forEach(p=>p.classList.toggle('hide',p.id!=='biz-'+name));if(name==='dashboard')bizRenderRegistered();if(name==='shop')bizRenderShop()}
-function bizChoose(i){bizSelected=i;$('#bizType').value=String(i);bizUpdatePlan();bizSetTab('register')}
-function bizRenderTypes(){
- const sel=$('#bizType');sel.innerHTML='';
- BIZ_TYPES.forEach((t,i)=>{const opt=document.createElement('option');opt.value=String(i);opt.textContent=t.name+' — KSh '+t.price+'/month';sel.append(opt)});
- $('#bizTypeCards').innerHTML=BIZ_TYPES.map((t,i)=>`<button type="button" class="card biz-service" data-biz-choose="${i}"><span class="icon">${['🏪','🎓','🏢','📢','🧰','🤖','🛍️','✈️','🍲','💼','📲','👑'][i]}</span><b>${bizEscape(t.name)}</b><small>${bizEscape(t.desc)}</small><span class="price">KSh ${t.price}/month</span><span class="trial">7-day free trial</span><span class="link">Register →</span></button>`).join('');
- $$('[data-biz-choose]').forEach(b=>b.addEventListener('click',()=>bizChoose(Number(b.dataset.bizChoose))));
+const state={
+  user:null, regRole:'passenger', pending:null, pendingLabel:'Continue',
+  wallet:520, extraRides:0, extraSpent:0,
+  history:[
+    {type:'boda',from:'Westlands',to:'Nairobi CBD',fare:80,when:'Today, 3:12 PM'},
+    {type:'standard',from:'Kilimani',to:'Westlands',fare:150,when:'Yesterday, 6:45 PM'},
+    {type:'comfort',from:'Nairobi CBD',to:'Kilimani',fare:250,when:'24 Oct, 4:20 PM'}],
+  notifs:[{kind:'system',title:'Welcome to BEAST',body:'Riding is free for passengers. Drivers get 7 days free.',ts:Date.now(),read:false}],
+  ntab:'rides', mode:'book',
+  driver:{profile:null,trialStart:null,skip:0,subscribed:false,online:false,trips:0,earnings:0,latest:null,request:null,active:null}
+};
+let ride=null, filter='all', pickedType='standard', stars=0, topAmt=200;
+
+/* ---------- fares ---------- */
+function dist(a,b){
+  if(a===b) return 0;
+  const p=PLACES[a],q=PLACES[b];
+  if(p&&q) return Math.max(1,Math.round(Math.hypot(p[0]-q[0],p[1]-q[1])*10)/10);
+  let h=0; for(const c of a+'|'+b) h=(h*31+c.charCodeAt(0))%97;
+  return Math.round((2+(h%70)/10)*10)/10;
 }
-function bizUpdatePlan(){const t=BIZ_TYPES[Number($('#bizType').value)||0];bizSelected=Number($('#bizType').value)||0;$('#bizPlanInfo').textContent='7 days free, then KSh '+t.price+'/month. No automatic payment is possible in this prototype.';$('#bizPlanDescription').textContent=t.desc;$('#bizRegisterHeading').textContent='Start your 7-day free trial';}
-function bizRenderRegistered(){
- const box=$('#bizRegisteredList');if(!bizData.businesses.length){box.innerHTML='<div class="notice">No businesses registered here yet. Choose one of the 12 services above to start.</div>';return}
- box.innerHTML=bizData.businesses.map(b=>{const elapsed=Math.max(0,Math.floor((Date.now()-b.startedAt)/86400000));const days=Math.max(0,7-elapsed);const ended=days===0;return `<div class="biz-list-row"><div><b>${bizEscape(b.name)}</b><small>${bizEscape(b.type)} · Owner: ${bizEscape(b.owner)} · ${bizEscape(b.phone)}</small><small>${ended?'7-day trial ended — subscription required to continue':'Free trial: '+days+' day(s) remaining'}</small><small>KSh ${b.price}/month · Started ${new Date(b.startedAt).toLocaleDateString('en-KE')}</small></div><span class="biz-status">${ended?'TRIAL ENDED':'FREE TRIAL'}</span></div>`}).join('');
+const fareOf=(k,d)=>Math.round((TYPES[k].base+TYPES[k].km*d)/10)*10;
+const estMin=d=>Math.max(2,Math.round(d*2.4));
+
+/* ---------- router ---------- */
+const stack=['home'];
+function render(id,dir){
+  const cur=stack[stack.length-1];
+  $$('.screen').forEach(s=>{
+    const sid=s.id.slice(2);
+    s.classList.toggle('active',sid===cur);
+    s.classList.toggle('behind',sid!==cur&&stack.includes(sid));
+    if(sid!==cur) s.setAttribute('aria-hidden','true'); else s.removeAttribute('aria-hidden');
+  });
+  const el=$('#s-'+cur); el.scrollTop=0;
+  (enter[cur]||(()=>{}))();
+  const h=el.querySelector('[tabindex="-1"]'); if(h) setTimeout(()=>h.focus({preventScroll:true}),340);
 }
-function bizRenderShop(){
- const box=$('#bizShopProducts'),q=($('#bizShopSearch').value||'').trim().toLowerCase();
- const products=(typeof marketData!=='undefined'&&Array.isArray(marketData.products))?marketData.products.filter(p=>(p.name+' '+p.business+' '+p.type).toLowerCase().includes(q)):[];
- box.innerHTML=products.map(p=>`<article class="card"><b>${bizEscape(p.name)}</b><small>${bizEscape(p.business)} · ${bizEscape(p.type)}</small><strong style="color:var(--gold)">KSh ${Number(p.price||0).toLocaleString('en-KE')}</strong><small>Stock: ${Number(p.stock||0)}</small></article>`).join('');
- $('#bizShopEmpty').classList.toggle('hide',products.length>0);
+function go(id,o={}){ if(o.reset) stack.length=0; if(o.replace) stack.pop(); stack.push(id); render(id); }
+function back(){ if(stack.length>1){stack.pop();render();} }
+function goHome(mode){ stack.length=0; stack.push('home'); setMode(mode||'book'); render(); }
+
+/* ---------- toast / sheet / drawer ---------- */
+let toastT; function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2600)}
+function sheet(html){ $('#sheetBody').innerHTML=html; $('#sheet').classList.add('open'); $('#sheetScrim').classList.add('open'); const b=$('#sheet button,#sheet input'); if(b) setTimeout(()=>b.focus({preventScroll:true}),320); }
+function closeSheet(){ $('#sheet').classList.remove('open'); $('#sheetScrim').classList.remove('open'); }
+function openDrawer(){ renderDrawer(); $('#drawer').classList.add('open'); $('#drawerScrim').classList.add('open'); }
+function closeDrawer(){ $('#drawer').classList.remove('open'); $('#drawerScrim').classList.remove('open'); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){closeSheet();closeDrawer();} });
+
+function renderDrawer(){
+  const u=state.user, d=state.driver, tl=trialLeft();
+  $('#drawer').innerHTML=`
+    <div class="brandline" style="flex:none;margin-bottom:14px"><svg class="crown"><use href="#crown"/></svg><b class="wm" style="font-size:20px">BEAST</b></div>
+    <div class="me">${u?`<div style="display:flex;gap:12px;align-items:center"><div class="avatar" style="width:44px;height:44px">${esc(u.name.split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase())}</div><div><b>${esc(u.name)}</b><div class="sm muted">${esc(u.id)}</div></div></div>`
+      :`<b>Join BEAST</b><div class="sm muted">Free for riders. Drivers get 7 days free.</div><button class="btn primary sm" data-act="menu-join" style="width:100%">Create account</button>`}</div>
+    <button class="navitem" data-act="nav-book">${ico('car')}Book a ride</button>
+    <button class="navitem" data-act="nav-wallet">${ico('wallet')}Wallet &amp; history</button>
+    <button class="navitem" data-act="nav-notifs">${ico('bell')}Notifications</button>
+    <button class="navitem" data-act="nav-drive">${ico('steer')}Driver mode${d.subscribed?'<span class="chip green">Subscribed</span>':d.trialStart?`<span class="chip gold">${tl>0?tl+'d trial':'Trial ended'}</span>`:'<span class="chip gold">7 days free</span>'}</button>
+    <button class="navitem" data-act="nav-plans">${ico('shield')}Driver plan</button>
+    <div style="flex:1"></div>
+    ${u?`<button class="navitem" data-act="logout">${ico('logout')}Log out</button>`:''}`;
 }
-$$('[data-biz-tab]').forEach(b=>b.addEventListener('click',()=>bizSetTab(b.dataset.bizTab)));
-$('#bizType').addEventListener('change',bizUpdatePlan);
-$('#bizShopSearch').addEventListener('input',bizRenderShop);
-$('#bizRegisterBtn').addEventListener('click',()=>{
- const type=BIZ_TYPES[Number($('#bizType').value)||0],name=$('#bizName').value.trim(),owner=$('#bizOwner').value.trim(),phone=$('#bizPhone').value.trim(),description=$('#bizDescription').value.trim();
- if(!name||!owner||!phone)return toast('Enter business name, owner name and contact phone.');
- if(!$('#bizTerms').checked)return toast('Please confirm the demo trial terms.');
- const now=Date.now(),item={id:'BIZ-'+now.toString(36).toUpperCase(),type:type.name,price:type.price,name,owner,phone,description,startedAt:now};
- bizData.businesses.unshift(item);bizSave();bizRenderRegistered();
- $('#bizMessage').innerHTML='<div class="notice ok">Registration saved. Your 7-day free demo trial has started. After day 7, the listed monthly subscription would be due, but this prototype cannot collect payments or automatically restrict access.</div>';
- ['bizName','bizOwner','bizPhone','bizDescription'].forEach(id=>$('#'+id).value='');$('#bizTerms').checked=false;
- toast('Business registered with a 7-day demo trial.');bizSetTab('dashboard');
-});
-bizLoad();bizRenderTypes();bizRenderRegistered();
 
-// BEAST RIDE FLOW LOGIC
-document.querySelectorAll('.ride-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-        document.querySelectorAll('.ride-tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        document.querySelectorAll('.ride-panel').forEach(p => p.classList.add('hide'));
-        document.getElementById('ride-' + tab.dataset.ridetab).classList.remove('hide');
-    });
-});
+/* ---------- notifications ---------- */
+function push(kind,title,body){ state.notifs.unshift({kind,title,body,ts:Date.now(),read:false}); updateBadge(); }
+function updateBadge(){ const n=state.notifs.filter(x=>!x.read).length; const b=$('#bellBadge'); b.hidden=!n; b.textContent=n; }
+const enter={
+  home(){ $('#chipBal').textContent=kes(state.wallet); updateBadge(); updateEst(); syncDriveForm(); },
+  rides(){ renderRides(); },
+  wallet(){ renderWallet(); },
+  notifs(){ state.notifs.forEach(n=>n.read=true); updateBadge(); renderNotifs(); },
+  dash(){ renderDash(); },
+  plans(){ renderPlans(); },
+  arrived(){},
+  track(){}
+};
+function renderNotifs(){
+  $('#ntRides').setAttribute('aria-selected',state.ntab==='rides');
+  $('#ntSystem').setAttribute('aria-selected',state.ntab==='system');
+  const items=state.notifs.filter(n=>n.kind===state.ntab);
+  $('#nList').innerHTML=items.length?items.map(n=>`<div class="row"><div class="ic">${ico(n.kind==='rides'?(/complete/i.test(n.title)?'check':/message/i.test(n.title)?'msg':'car'):'shield')}</div><div class="grow"><div class="t">${esc(n.title)}</div><div class="s">${esc(n.body)}</div></div><span class="sm muted" style="white-space:nowrap">${ago(n.ts)}</span></div>`).join('')
+    :`<div class="empty">${ico('bell')}<div>No ${state.ntab} notifications yet.</div><div class="sm">${state.ntab==='rides'?'Book a ride and updates will show up here.':'Account and plan updates appear here.'}</div></div>`;
+}
 
-// Add click listeners to the vehicle "Select" buttons
-document.querySelectorAll('.ride-list .btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        // Hide other panels and show driver details
-        document.getElementById('ride-book').classList.add('hide');
-        document.getElementById('ride-vehicles').classList.add('hide');
-        document.getElementById('ride-success').classList.add('hide');
-        document.getElementById('ride-details').classList.remove('hide');
-        
-        // Reset confirm button visibility
-        const confirmBtn = document.querySelector('#ride-details .btn');
-        if(confirmBtn) confirmBtn.classList.remove('hide');
-    });
-});
+/* ---------- home ---------- */
+function setMode(m){
+  state.mode=m;
+  $('#panelBook').hidden=m!=='book'; $('#panelDrive').hidden=m!=='drive';
+  $('#segBook').setAttribute('aria-selected',m==='book'); $('#segDrive').setAttribute('aria-selected',m==='drive');
+}
+function initHome(){
+  $('#places').innerHTML=Object.keys(PLACES).map(p=>`<option value="${p}">`).join('');
+  $('#quick').innerHTML=['Westlands','Kilimani','Upper Hill','Karen','JKIA','Kasarani'].map(p=>`<button data-act="quick" data-v="${p}">${p}</button>`).join('');
+  $('#fType').innerHTML=Object.entries(TYPES).map(([k,t])=>`<option value="${k}">${t.name}</option>`).join('');
+  $('#dArea').innerHTML=Object.keys(PLACES).map(p=>`<option>${p}</option>`).join('');
+  ['fFrom','fTo','fType'].forEach(id=>$('#'+id).addEventListener('input',updateEst));
+  $('#dPlate').addEventListener('input',e=>e.target.value=e.target.value.toUpperCase());
+}
+function updateEst(){
+  const f=$('#fFrom').value.trim(),t=$('#fTo').value.trim(),k=$('#fType').value;
+  $('#bookErr').textContent='';
+  $('#est').innerHTML=(!f||!t||f.toLowerCase()===t.toLowerCase())
+    ?`${ico('info','color:var(--mut)')}<span class="muted">Enter a pickup and a different destination to see your fare.</span>`
+    :`${ico('clock','color:var(--green)')}<span>${dist(f,t)} km · <b>${kes(fareOf(k,dist(f,t)))}</b> · ${TYPES[k].name}</span>`;
+}
+function syncDriveForm(){
+  const d=state.driver;
+  if(d.profile){ $('#dVeh').value=d.profile.veh; $('#dArea').value=d.profile.area; $('#dPlate').value=d.profile.plate; }
+  $('#driveCta').textContent=d.profile?'Save & open dashboard':'Start 7-day free trial';
+  $('#driveFoot').textContent=d.subscribed?'You are subscribed. Thanks for driving with BEAST.':d.trialStart?(trialLeft()>0?`Free trial: ${trialLeft()} day${trialLeft()>1?'s':''} left.`:'Your trial has ended. Subscribe to go online.'):'No payment needed to start. You will see a reminder before the trial ends.';
+}
 
-load();save();renderProfile();renderHistory();renderStatements();renderSettings();if(data.registered){$('#entry').style.display='none'}else showEntry('register');
-</script></body></html>
+/* ---------- account gate ---------- */
+function requireAccount(role,next,label){
+  if(state.user) return next();
+  state.regRole=role; state.pending=next; state.pendingLabel=label||'Continue';
+  const driver=role==='driver';
+  $('#regSub').textContent=driver?'Add your details to start your free driver trial.':'Add your details to book your first ride.';
+  $('#regBanner').innerHTML=`${ico('shield','flex:none')}<div>${driver?'<b>Drivers: 7 days free</b>, then KES 500 a month. No card needed to start.':'<b>Passengers: free</b>. Creating an account and riding costs nothing.'}</div>`;
+  go('reg');
+}
+const V={
+  name:v=>v.trim().length>=3&&/\s/.test(v.trim())?'':'Enter your first and last name.',
+  phone:v=>/^0[17]\d{8}$/.test(v.replace(/[\s-]/g,'').replace(/^\+254/,'0'))?'':'Enter a valid Kenyan number, like 0712345678.',
+  id:v=>/^\d{7,8}$/.test(v)?'':'National ID should be 7 or 8 digits.',
+  pass:v=>v.length>=8?'':'Use at least 8 characters.',
+  pin:v=>/^\d{4}$/.test(v)?'':'PIN must be exactly 4 digits.'
+};
+function setErr(id,msg){ const e=$('#e'+id), inp=e.previousElementSibling; e.textContent=msg||''; if(inp&&inp.classList.contains('inp')) inp.classList.toggle('bad',!!msg); return !!msg; }
+function reviewReg(){
+  const f={name:$('#rName').value,phone:$('#rPhone').value,id:$('#rId').value,pass:$('#rPass').value,pass2:$('#rPass2').value,pin:$('#rPin').value};
+  const bad=[
+    setErr('Name',V.name(f.name))&&'rName', setErr('Phone',V.phone(f.phone))&&'rPhone', setErr('Id',V.id(f.id))&&'rId',
+    setErr('Pass',V.pass(f.pass))&&'rPass', setErr('Pass2',f.pass===f.pass2?'':'Passwords do not match.')&&'rPass2', setErr('Pin',V.pin(f.pin))&&'rPin'
+  ].filter(Boolean);
+  const t=!$('#rTerms').checked; $('#eTerms').textContent=t?'Please accept the terms to continue.':'';
+  if(bad.length||t){ (bad[0]?$('#'+bad[0]):$('#rTerms')).focus(); return; }
+  state.draft={name:f.name.trim().replace(/\s+/g,' '),phone:f.phone.replace(/[\s-]/g,'').replace(/^\+254/,'0'),nid:f.id};
+  $('#cName').textContent=state.draft.name; $('#cPhone').textContent=state.draft.phone; $('#cId').textContent=state.draft.nid;
+  $('#cRole').textContent=state.regRole==='driver'?'Driver (7-day free trial)':'Passenger (free)';
+  ['rPass','rPass2','rPin'].forEach(i=>$('#'+i).value='');   // never keep secrets around
+  go('confirm');
+}
+function createAccount(){
+  const d=state.draft; if(!d) return;
+  state.user={name:d.name,phone:d.phone,id:'BEAST-'+String(1).padStart(6,'0')};
+  push('system','Welcome to BEAST',`Your BEAST ID is ${state.user.id}.`);
+  $('#wId').textContent=state.user.id;
+  $('#wNote').textContent=state.regRole==='driver'?'Your 7-day free trial starts when you save your driver profile.':'Riding is free. You can now book rides, drive, and explore more services in the BEAST app.';
+  $('#wGo').textContent=state.pendingLabel==='Continue'?'Go to Travel':state.pendingLabel;
+  stack.length=0; stack.push('home'); stack.push('welcome'); render();
+}
+
+/* ---------- rides list ---------- */
+function renderRides(){
+  const r=ride; if(!r) return;
+  $('#rdRoute').textContent=`${r.from} → ${r.to}`;
+  $('#rdMeta').textContent=`${r.dist} km · pay with ${PAY[r.pay]}`;
+  $('#rdFilters').innerHTML=[['all','All'],...Object.entries(TYPES).map(([k,t])=>[k,t.name])].map(([k,n])=>`<button data-act="filter" data-v="${k}" aria-pressed="${filter===k}">${n}</button>`).join('');
+  const keys=filter==='all'?Object.keys(TYPES):[filter];
+  $('#rdList').innerHTML=keys.map(k=>{const t=TYPES[k];return `
+    <div class="ride-card ${k===pickedType?'pick':''}">
+      <div class="ic">${ico(t.icon)}</div>
+      <div><b>${t.name}</b>${k===pickedType?' <span class="chip green" style="height:22px;font-size:11px;padding:0 8px">Your pick</span>':''}<div class="sm muted">${t.eta} min away · ${t.seats} seat${t.seats>1?'s':''}</div></div>
+      <div class="price">${kes(fareOf(k,r.dist))}</div>
+      <button class="btn primary sm go" data-act="select" data-v="${k}" style="width:100%">Select ${t.name}</button>
+    </div>`}).join('');
+}
+function selectRide(k){
+  const fare=fareOf(k,ride.dist);
+  if(ride.pay==='wallet'&&state.wallet<fare){ toast('Your wallet needs a top-up for this ride'); topupSheet(fare-state.wallet); return; }
+  ride.type=k; ride.fare=fare; beginRide();
+}
+
+/* ---------- ride simulation ---------- */
+let timers=[], raf=0;
+const tmr=(fn,ms)=>timers.push(setTimeout(fn,ms));
+function clearSim(){ timers.forEach(clearTimeout); timers=[]; cancelAnimationFrame(raf); }
+function makeDriver(k){
+  const [name,rating,rides]=pick(DRIVERS), t=TYPES[k];
+  const num=100+Math.floor(Math.random()*900), L=String.fromCharCode(65+Math.floor(Math.random()*26));
+  const plate=(k==='boda'?'KMF ':'K'+pick(['CA','DB','DA','CZ'])+' ')+num+L;
+  return {name,rating,rides,plate,vehicle:t.vehicle,kind:t.kind,first:name.split(' ')[0],eta:Math.max(2,t.eta)};
+}
+function beginRide(){
+  clearSim(); stars=0; ride.driver=null; ride.phase='search';
+  push('rides','Ride request',`${ride.from} → ${ride.to}`);
+  go('track'); setTrack('search');
+  tmr(()=>{ ride.driver=makeDriver(ride.type); ride.phase='pickup';
+    push('rides','Driver on the way',`${ride.driver.name} is heading to ${ride.from}.`);
+    tmr(()=>push('rides','Driver message','“On my way, 3 minutes”'),1800);
+    setTrack('pickup');
+    run($('#apPath'),7500,p=>{ setEta(`${Math.max(1,Math.ceil(ride.driver.eta*(1-p)))} min away`,'Heading to your pickup'); },()=>startTrip());
+  },2400);
+}
+function startTrip(){
+  ride.phase='trip'; push('rides','Trip started',`Your trip to ${ride.to} has begun.`); setTrack('trip');
+  run($('#rtPath'),9500,p=>{
+    setEta(`${Math.max(1,Math.ceil(estMin(ride.dist)*(1-p)))} min left`,`Heading to ${ride.to}`);
+    const len=$('#rtPath').getTotalLength(); $('#rtDone').setAttribute('stroke-dasharray',`${len*p} ${len+10}`);
+  },()=>finishRide());
+}
+function run(path,ms,tick,done){
+  const len=path.getTotalLength(), m=$('#mCar'), t0=performance.now(); m.hidden=false;
+  const step=now=>{
+    const p=Math.min(1,(now-t0)/ms), pt=path.getPointAtLength(len*p);
+    m.setAttribute('transform',`translate(${pt.x},${pt.y})`); tick(p);
+    if(p<1) raf=requestAnimationFrame(step); else done();
+  };
+  raf=requestAnimationFrame(step);
+}
+function setEta(a,b){ const el=$('#mapBadge'); if(el) el.innerHTML=`${esc(a)}<small>${esc(b)}</small>`; const e2=$('#trkEta'); if(e2) e2.textContent=a; }
+function setTrack(phase){
+  const r=ride, d=r.driver, body=$('#trkBody');
+  $('#radar').hidden=phase!=='search'; $('#mCar').hidden=phase==='search';
+  $('#rtDone').setAttribute('stroke-dasharray','0 9999');
+  if(phase==='search'){
+    $('#trkTitle').textContent='Finding your driver'; $('#trkChip').textContent='Searching';
+    $('#mapBadge').innerHTML='Matching you<small>Looking for nearby drivers</small>';
+    body.innerHTML=`<div class="card center"><div class="sub">Matching you with the nearest ${esc(TYPES[r.type].name)}…</div><div class="gap s"></div><b style="font-family:var(--display)">${kes(r.fare)}</b><div class="sm muted">${esc(r.from)} → ${esc(r.to)}</div></div>
+      <button class="btn danger" data-act="cancel-ride">Cancel ride</button>`;
+    return;
+  }
+  $('#trkTitle').textContent=phase==='pickup'?'On the way':'Trip in progress';
+  $('#trkChip').textContent=phase==='pickup'?'Driver coming':'On trip';
+  body.innerHTML=`
+    <div class="card"><div class="driver"><div class="avatar">${esc(d.first[0]+d.name.split(' ')[1][0])}</div>
+      <div style="flex:1"><b>${esc(d.name)}</b><div class="sm muted"><span style="color:var(--gold)">★</span> ${d.rating} · ${d.rides} rides · <span id="trkEta"></span></div></div></div>
+      <div class="gap s"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><div><div class="sm muted">${esc(d.vehicle)}</div><b>${esc(d.kind)}</b></div><span class="plate">${esc(d.plate)}</span></div></div>
+    <div class="acts">
+      <button data-act="call">${ico('phone')}Call</button><button data-act="msg">${ico('msg')}Message</button><button data-act="share">${ico('share')}Share</button></div>
+    <div class="card" style="padding:6px 16px"><div class="sumrow"><span>Ride</span><b>${esc(TYPES[r.type].name)}</b></div>
+      <div class="sumrow"><span>Route</span><b>${esc(r.from)} → ${esc(r.to)}</b></div>
+      <div class="sumrow"><span>Fare</span><b>${kes(r.fare)}</b></div>
+      <div class="sumrow"><span>Payment</span><b>${esc(PAY[r.pay])}</b></div></div>
+    ${phase==='pickup'?'<button class="btn danger" data-act="cancel-ride">Cancel ride</button>':''}`;
+}
+function finishRide(){
+  const r=ride; r.phase='done';
+  if(r.pay==='wallet') state.wallet-=r.fare;
+  state.history.unshift({type:r.type,from:r.from,to:r.to,fare:r.fare,when:'Today, '+nowTime()});
+  state.extraRides++; state.extraSpent+=r.fare;
+  push('rides','Trip completed',`${kes(r.fare)} · ${r.dist} km`);
+  $('#arrCard').innerHTML=`
+    <div class="sumrow"><span>From</span><b>${esc(r.from)}</b></div>
+    <div class="sumrow"><span>To</span><b>${esc(r.to)}</b></div>
+    <div class="sumrow"><span>Ride fare</span><b style="color:var(--gold2)">${kes(r.fare)}</b></div>
+    <div class="sumrow"><span>Payment</span><b>${esc(PAY[r.pay])}</b></div>`;
+  $('#rateLbl').textContent=`How was ${r.driver.first}?`;
+  $('#stars').innerHTML=[1,2,3,4,5].map(n=>`<button data-act="star" data-v="${n}" aria-label="${n} star${n>1?'s':''}">${ico('star')}</button>`).join('');
+  go('arrived',{replace:true});
+}
+function cancelSheet(){
+  sheet(`<h3 style="font-family:var(--display);font-size:17px;margin-bottom:6px">Cancel this ride?</h3><p class="sub">You can book again right away. Riding with BEAST is free.</p><div class="gap"></div>
+    <div class="stack"><button class="btn danger" data-act="cancel-yes">Yes, cancel ride</button><button class="btn ghost" data-act="close-sheet">Keep my ride</button></div>`);
+}
+
+/* ---------- wallet ---------- */
+function renderWallet(){
+  $('#wBal').textContent=kes(state.wallet)+'.00';
+  $('#wStats').innerHTML=`<div><span class="sm muted">Total rides</span><b>${12+state.extraRides}</b></div><div><span class="sm muted">Total spent</span><b>${kes(1420+state.extraSpent)}</b></div><div><span class="sm muted">Last ride</span><b>${state.history[0]?state.history[0].when.split(',')[0]:'—'}</b></div>`;
+  $('#wList').innerHTML=state.history.slice(0,8).map(h=>`<div class="row"><div class="ic">${ico(TYPES[h.type].icon)}</div><div class="grow"><div class="t">${TYPES[h.type].name}</div><div class="s">${esc(h.from)} → ${esc(h.to)}</div></div><div class="amt">${kes(h.fare)}<small>${esc(h.when)}</small></div></div>`).join('');
+}
+function topupSheet(need){
+  if(!state.user){ requireAccount('passenger',()=>{go('wallet',{reset:false});topupSheet(need)},'Top up wallet'); return; }
+  if(need) topAmt=[100,200,500,1000].find(a=>a>=need)||1000;
+  sheet(`<h3 style="font-family:var(--display);font-size:17px;margin-bottom:4px">Top up wallet</h3>
+    <p class="sub">${need?`You need ${kes(need)} more for this ride. `:''}Demo only: no real money moves.</p><div class="gap"></div>
+    <div class="amounts">${[100,200,500,1000].map(a=>`<button data-act="amt" data-v="${a}" aria-pressed="${a===topAmt}">${a}</button>`).join('')}</div>
+    <div class="gap"></div><div class="note green">${ico('phone','flex:none')}<div>M-Pesa prompt will be sent to <b>${esc(state.user.phone)}</b></div></div>
+    <div class="gap"></div><button class="btn primary" data-act="topup-go">Top up ${kes(topAmt)}</button>`);
+}
+function receiptSheet(){
+  const r=ride; if(!r) return;
+  sheet(`<h3 style="font-family:var(--display);font-size:17px;margin-bottom:8px">Receipt</h3>
+    <div class="sumrow"><span>Date</span><b>Today, ${nowTime()}</b></div><div class="sumrow"><span>Ride</span><b>${esc(TYPES[r.type].name)}</b></div>
+    <div class="sumrow"><span>Route</span><b>${esc(r.from)} → ${esc(r.to)}</b></div><div class="sumrow"><span>Distance</span><b>${r.dist} km</b></div>
+    <div class="sumrow"><span>Driver</span><b>${esc(r.driver.name)} · ${esc(r.driver.plate)}</b></div><div class="sumrow"><span>Payment</span><b>${esc(PAY[r.pay])}</b></div>
+    <div class="sumrow"><span>Total</span><b style="color:var(--gold2)">${kes(r.fare)}</b></div><div class="gap"></div>
+    <button class="btn ghost" data-act="close-sheet">Close</button>`);
+}
+
+/* ---------- driver: trial & dashboard ---------- */
+function trialLeft(){ const d=state.driver; if(!d.trialStart) return TRIAL_DAYS; const used=Math.floor((Date.now()-d.trialStart)/864e5)+d.skip; return Math.max(0,TRIAL_DAYS-used); }
+const canDrive=()=>state.driver.subscribed||trialLeft()>0;
+function saveDriver(){
+  const plate=$('#dPlate').value.trim();
+  if(!/^K[A-Z]{2,3}\s?\d{3}[A-Z]$/.test(plate)){ $('#plateErr').textContent='Use a Kenyan plate format, like KDA 123Z.'; $('#dPlate').focus(); return; }
+  $('#plateErr').textContent='';
+  const d=state.driver, first=!d.trialStart;
+  d.profile={veh:$('#dVeh').value,area:$('#dArea').value,plate};
+  if(first){ d.trialStart=Date.now(); push('system','Free trial started',`You have ${TRIAL_DAYS} days free. Then ${kes(SUB_PRICE)} a month.`); toast('Your 7-day free trial has started'); }
+  go('dash');
+}
+function renderDash(){
+  const d=state.driver, tl=trialLeft(), p=d.profile;
+  if(!p){ goHome('drive'); return; }
+  const status=d.subscribed?['green','Subscribed']:tl>0?['gold',`Trial · ${tl}d left`]:['red','Trial ended'];
+  $('#dashChip').innerHTML=`<span class="chip ${status[0]}">${status[1]}</span>`;
+  let banner='';
+  if(d.subscribed) banner=`<div class="note green">${ico('check','flex:none')}<div>Subscribed at ${kes(SUB_PRICE)} a month. Keep every fare.</div></div>`;
+  else if(tl>0) banner=`<div class="note">${ico('clock','flex:none')}<div style="flex:1"><b>Day ${TRIAL_DAYS-tl+1} of ${TRIAL_DAYS} free.</b> After that, ${kes(SUB_PRICE)} a month keeps you online.</div><button class="link" data-act="nav-plans">Plan</button></div>`;
+  else banner=`<div class="note" style="border-color:#5a2424;background:rgba(255,107,107,.08);color:#ffc0c0">${ico('lock','flex:none')}<div style="flex:1"><b>Your free trial has ended.</b> Subscribe to go online again.</div></div><button class="btn primary" data-act="nav-plans">Subscribe · ${kes(SUB_PRICE)}/month</button>`;
+  let zone='';
+  if(d.active){ const a=d.active; zone=`<div class="req"><b>Trip in progress</b><div class="sm muted">${esc(a.rider)} · ${esc(a.from)} → ${esc(a.to)}</div><div class="gap s"></div><div style="display:flex;justify-content:space-between;align-items:center"><b style="font-family:var(--display)">${kes(a.fare)}</b><button class="btn primary sm" data-act="complete-trip">Complete trip</button></div></div>`; }
+  else if(d.request){ const q=d.request; zone=`<div class="req"><div style="display:flex;justify-content:space-between"><b>New ride request</b><b style="color:var(--green)">${kes(q.fare)}</b></div>
+    <div class="sm muted">${esc(q.rider)} · ${q.dist} km</div><div class="gap s"></div>
+    <div class="sumrow" style="border:0;padding:4px 0"><span>Pickup</span><b>${esc(q.from)}</b></div><div class="sumrow" style="border:0;padding:4px 0"><span>Drop-off</span><b>${esc(q.to)}</b></div><div class="gap s"></div>
+    <div class="grid2"><button class="btn ghost" data-act="decline">Decline</button><button class="btn primary" data-act="accept">Accept</button></div></div>`; }
+  else if(d.online) zone=`<div class="card center"><div class="sub">Looking for riders near ${esc(p.area)}…</div></div>`;
+  else zone=`<div class="card center"><div class="sub">You are offline. Go online to receive ride requests.</div></div>`;
+  $('#dashBody').innerHTML=`${banner}
+    <div class="card" style="display:flex;align-items:center;gap:14px"><span class="dot ${d.online?'on':''}"></span><div style="flex:1"><b>${d.online?'Online':'Offline'}</b><div class="sm muted">${esc(TYPES[p.veh].kind)} · ${esc(p.plate)} · ${esc(p.area)}</div></div>
+      <button class="switch" role="switch" aria-checked="${d.online}" aria-label="Go online" data-act="toggle-online"></button></div>
+    <div class="grid2"><div class="kpi"><span class="sm muted">Today's trips</span><b>${d.trips}</b></div><div class="kpi"><span class="sm muted">Earnings</span><b>${kes(d.earnings)}</b></div></div>
+    ${zone}
+    <div><h3 style="font-size:15px;margin:6px 0 10px">Latest trip</h3>${d.latest?`<div class="row"><div class="ic">${ico('pin')}</div><div class="grow"><div class="t">${esc(d.latest.from)} → ${esc(d.latest.to)}</div><div class="s">${kes(d.latest.fare)} · ${d.latest.dist} km · ${estMin(d.latest.dist)} min</div></div></div>`:'<div class="muted sm">No trips yet today.</div>'}</div>
+    <button class="btn ghost" data-act="edit-profile">Edit driver profile</button>
+    ${(!d.subscribed&&tl>0)?'<button class="link sm center" data-act="skip-trial" style="justify-self:center">Demo: end my trial now</button>':''}`;
+}
+let reqT;
+function scheduleRequest(ms=3000){
+  clearTimeout(reqT);
+  reqT=setTimeout(()=>{ const d=state.driver; if(!d.online||d.request||d.active) return;
+    const keys=Object.keys(PLACES); const from=d.profile.area; let to=pick(keys.filter(k=>k!==from));
+    const dd=dist(from,to); d.request={rider:pick(RIDERS),from,to,dist:dd,fare:fareOf(d.profile.veh,dd)};
+    if(stack[stack.length-1]==='dash') renderDash(); },ms);
+}
+function setOnline(on){
+  const d=state.driver;
+  if(on&&!canDrive()){ toast('Subscribe to go online'); go('plans'); return; }
+  d.online=on; if(on) scheduleRequest(); else { clearTimeout(reqT); d.request=null; }
+  renderDash();
+}
+function renderPlans(){
+  const d=state.driver, tl=trialLeft(), started=!!d.trialStart;
+  let status;
+  if(d.subscribed){ const r=new Date(Date.now()+30*864e5).toLocaleDateString('en-KE',{day:'numeric',month:'short'}); status=`<div class="note green">${ico('check','flex:none')}<div><b>You are subscribed.</b> Renews around ${r}.</div></div>`; }
+  else if(!started) status=`<div class="note green">${ico('clock','flex:none')}<div>Your 7-day free trial starts when you save your driver profile.</div></div>`;
+  else if(tl>0) status=`<div class="note">${ico('clock','flex:none')}<div><b>${tl} day${tl>1?'s':''} of free trial left.</b> Subscribe any time to keep driving afterwards.</div></div>`;
+  else status=`<div class="note" style="border-color:#5a2424;background:rgba(255,107,107,.08);color:#ffc0c0">${ico('lock','flex:none')}<div><b>Your free trial has ended.</b> Subscribe to go online.</div></div>`;
+  $('#plansBody').innerHTML=`${status}
+    <div class="card glow center"><div class="sm muted">BEAST Driver</div><div class="bal" style="margin:4px 0">${kes(SUB_PRICE)}<span class="sm muted" style="font-family:var(--body);font-weight:500"> / month</span></div>
+      <div class="chip gold">First 7 days free</div><div class="gap"></div>
+      <div class="list" style="gap:8px;text-align:left"><div>✓ Unlimited ride requests</div><div>✓ Keep every fare, no per-trip cut</div><div>✓ Go online or offline any time</div><div>✓ Cancel any time</div></div></div>
+    ${d.subscribed?'<button class="btn ghost" disabled>Subscribed</button>':!started?'<button class="btn primary" data-act="nav-drive">Set up driver profile</button>':`<button class="btn primary" data-act="subscribe">Subscribe with M-Pesa (demo)</button>`}
+    <div class="note green">${ico('user','flex:none')}<div><b>Passengers always ride free.</b> No fees to register or book.</div></div>`;
+}
+
+/* ---------- actions ---------- */
+const actions={
+  menu:openDrawer, 'close-drawer':closeDrawer, 'close-sheet':closeSheet,
+  bell(){ go('notifs'); }, wallet(){ go('wallet'); },
+  'mode-book':()=>setMode('book'), 'mode-drive':()=>{setMode('drive');syncDriveForm();},
+  swap(){ const a=$('#fFrom'),b=$('#fTo'); [a.value,b.value]=[b.value,a.value]; updateEst(); },
+  quick(el){ $('#fTo').value=el.dataset.v; updateEst(); },
+  find(){
+    const f=$('#fFrom').value.trim(),t=$('#fTo').value.trim();
+    if(!f||!t){ $('#bookErr').textContent='Enter both a pickup and a destination.'; return; }
+    if(f.toLowerCase()===t.toLowerCase()){ $('#bookErr').textContent='Pickup and destination must be different.'; return; }
+    pickedType=$('#fType').value; filter='all';
+    ride={from:f,to:t,dist:dist(f,t),pay:$('#fPay').value,type:pickedType};
+    requireAccount('passenger',()=>go('rides'),'See available rides');
+  },
+  filter(el){ filter=el.dataset.v; renderRides(); },
+  select(el){ selectRide(el.dataset.v); },
+  'track-back'(){ if(ride&&ride.phase==='trip') toast('Your trip is in progress'); else cancelSheet(); },
+  'cancel-ride':cancelSheet,
+  'cancel-yes'(){ clearSim(); closeSheet(); ride&&(ride.phase='cancelled'); toast('Ride cancelled'); goHome('book'); },
+  call(){ toast(`Calling ${ride.driver.first}… (demo)`); },
+  msg(){ toast('Message sent to '+ride.driver.first+' (demo)'); },
+  async share(){ const txt=`I'm riding with BEAST: ${ride.from} → ${ride.to}, ${ride.driver.plate}.`; try{ if(navigator.share){await navigator.share({title:'My BEAST trip',text:txt});} else {await navigator.clipboard.writeText(txt);toast('Trip details copied');} }catch(e){} },
+  star(el){ stars=+el.dataset.v; $$('#stars button').forEach((b,i)=>b.classList.toggle('on',i<stars)); toast('Thanks for rating'); },
+  receipt:receiptSheet,
+  another(){ goHome('book'); },
+  back,
+  login(){ toast('Log in turns on when the BEAST backend is connected'); },
+  'reg-review':reviewReg, 'reg-confirm':createAccount,
+  'welcome-go'(){ const n=state.pending; state.pending=null; goHome(state.regRole==='driver'?'drive':'book'); if(n) setTimeout(n,60); },
+  'menu-join'(){ closeDrawer(); requireAccount('passenger',()=>goHome('book'),'Go to Travel'); },
+  topup(){ topupSheet(); },
+  amt(el){ topAmt=+el.dataset.v; topupSheet(); },
+  'topup-go'(){ closeSheet(); toast('M-Pesa prompt sent (demo)'); setTimeout(()=>{ state.wallet+=topAmt; push('system','Wallet topped up',`${kes(topAmt)} added to your wallet.`); toast(`${kes(topAmt)} added to wallet`); if(stack[stack.length-1]==='wallet') renderWallet(); updateBadge(); $('#chipBal').textContent=kes(state.wallet); },1400); },
+  'ntab-rides'(){ state.ntab='rides'; renderNotifs(); }, 'ntab-system'(){ state.ntab='system'; renderNotifs(); },
+  'nav-book'(){ closeDrawer(); goHome('book'); },
+  'nav-wallet'(){ closeDrawer(); go('wallet'); },
+  'nav-notifs'(){ closeDrawer(); go('notifs'); },
+  'nav-plans'(){ closeDrawer(); go('plans'); },
+  'nav-drive'(){ closeDrawer(); if(state.driver.profile) go('dash'); else { stack.length=1; setMode('drive'); render(); } },
+  logout(){ closeDrawer(); clearTimeout(reqT); state.user=null; state.driver.online=false; state.driver.request=null; toast('Logged out'); goHome('book'); },
+  'drive-save'(){ requireAccount('driver',saveDriver,'Set up driver profile'); },
+  'edit-profile'(){ stack.length=1; setMode('drive'); render(); },
+  'toggle-online'(){ setOnline(!state.driver.online); },
+  accept(){ const d=state.driver; d.active=d.request; d.request=null; renderDash(); },
+  decline(){ const d=state.driver; d.request=null; renderDash(); scheduleRequest(4000); },
+  'complete-trip'(){ const d=state.driver,a=d.active; d.trips++; d.earnings+=a.fare; d.latest=a; d.active=null; toast(`Trip complete · ${kes(a.fare)} earned`); renderDash(); if(d.online) scheduleRequest(5000); },
+  'skip-trial'(){ state.driver.skip=TRIAL_DAYS; push('system','Free trial ended',`Subscribe for ${kes(SUB_PRICE)} a month to keep driving.`); if(state.driver.online) setOnline(false); renderDash(); toast('Trial ended (demo)'); },
+  subscribe(){ sheet(`<h3 style="font-family:var(--display);font-size:17px;margin-bottom:6px">Subscribe to BEAST Driver</h3><p class="sub">${kes(SUB_PRICE)} a month, billed with M-Pesa. Demo only: no real payment.</p><div class="gap"></div>
+    <div class="stack"><button class="btn primary" data-act="subscribe-go">Pay ${kes(SUB_PRICE)}</button><button class="btn ghost" data-act="close-sheet">Not now</button></div>`); },
+  'subscribe-go'(){ closeSheet(); state.driver.subscribed=true; push('system','Subscription active',`BEAST Driver, ${kes(SUB_PRICE)} a month.`); toast('You are subscribed'); renderPlans(); }
+};
+document.addEventListener('click',e=>{ const a=e.target.closest('[data-act]'); if(a&&actions[a.dataset.act]) actions[a.dataset.act](a); });
+$('#app').addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.matches('#fFrom,#fTo')) actions.find(); });
+
+initHome(); updateEst(); updateBadge(); render();
+</script>
+</body>
+</html>
