@@ -1,540 +1,338 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#03100A">
-<title>BEAST: One app, 18 powerful ways</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#06100d"><title>BEAST Money — Prototype</title>
 <style>
-:root{
-  --void:#03100A; --panel:#0A1D15; --raise:#102A1F; --edge:#1B4A36;
-  --green:#1DE58B; --green-d:#0FA862; --gold:#F6B930; --red:#FF5A5A; --blue:#7DB4FF;
-  --text:#E8F5EE; --mute:#8FB5A2;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{color-scheme:dark}
-body{background:#020906;color:var(--text);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;justify-content:center;-webkit-font-smoothing:antialiased}
-button,input{font:inherit;color:inherit}
-button{cursor:pointer;background:none;border:0}
-[hidden]{display:none!important}
-.mute{color:var(--mute)}
-.app{width:100%;max-width:440px;height:100dvh;position:relative;display:flex;flex-direction:column;overflow:hidden;background:var(--void)}
-.top{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px}
-.top-left { display: flex; align-items: center; gap: 12px; }
-.menu-btn { font-size: 24px; color: var(--text); cursor: pointer; }
-.brand{display:flex;align-items:center;gap:8px;color:var(--gold)}
-.wordmark{font:italic 900 24px/1 "Segoe UI",sans-serif;letter-spacing:.01em;color:var(--text)}
-.avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(140deg,var(--green),#0B7A47);color:#02130B;font-weight:800;display:grid;place-items:center}
-main{flex:1;overflow-y:auto;scroll-behavior:smooth;padding:4px 16px 28px}
-main::-webkit-scrollbar{width:0}
+:root{--bg:#050907;--panel:#0b1512;--panel2:#101c18;--line:#263630;--green:#00d995;--mint:#baffdf;--gold:#f5c85b;--muted:#9ab0a7;--red:#ff7979;--blue:#8dcaff;--text:#f3fff9;--shadow:0 14px 35px #0005}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top right,#0a3023 0,transparent 36%),var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding-bottom:85px}button,input,select,textarea{font:inherit}button{cursor:pointer}.topbar{position:sticky;top:0;z-index:10;background:#06100df2;backdrop-filter:blur(14px);border-bottom:1px solid #1e4538;padding:10px 14px;display:flex;align-items:center;gap:12px}.hamb{width:43px;height:43px;border:1px solid var(--line);border-radius:13px;background:#0c2119;color:var(--green);font-size:25px}.brand{display:flex;align-items:center;gap:9px;flex:1}.mark{display:grid;place-items:center;width:39px;height:39px;border-radius:13px;background:linear-gradient(135deg,#00db95,#07563b);color:#06130d;font-size:22px;font-weight:1000;box-shadow:0 0 20px #00d99525}.brand strong{display:block;letter-spacing:2px;font-size:20px}.brand small{color:var(--muted);font-size:10px;letter-spacing:1px}.bell{border:1px solid var(--line);background:#101b17;color:var(--gold);border-radius:12px;padding:10px}.container{max-width:1050px;margin:auto;padding:15px}.page{display:none;animation:fade .2s ease}.page.active{display:block}@keyframes fade{from{opacity:.5;transform:translateY(3px)}to{opacity:1;transform:none}}h1{font-size:25px;margin:4px 0 4px}h2{font-size:20px;margin:0 0 7px}h3{font-size:16px;margin:0 0 8px}.sub{color:var(--muted);margin:0 0 16px;font-size:13px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card{background:linear-gradient(145deg,#10201a,#080e0c);border:1px solid var(--line);border-radius:22px;padding:17px;box-shadow:var(--shadow);min-width:0}.tile{min-height:150px;text-align:left;color:var(--text);transition:.15s;display:flex;flex-direction:column;justify-content:flex-start;gap:8px}.tile:active{transform:scale(.98)}.tile .ico{font-size:32px}.tile strong{font-size:18px}.tile small{color:var(--muted);font-size:13px}.t-green{background:linear-gradient(145deg,#08271a,#0b1511)}.t-blue{background:linear-gradient(145deg,#0c1e2c,#0b1214)}.t-red{background:linear-gradient(145deg,#2b1111,#10110f)}.section-label{margin:23px 0 12px;font-size:20px;font-weight:850}.balance-hero{background:linear-gradient(120deg,#073c2a,#0b2119 60%,#251f0c);border:1px solid #237655;border-radius:24px;padding:20px;margin-bottom:15px;position:relative;overflow:hidden}.balance-hero:after{content:'♌';position:absolute;right:8px;bottom:-30px;font-size:120px;color:#d8ffe70b}.eyebrow{color:#a9d8c5;font-size:12px}.big-balance{font-size:30px;font-weight:900;margin:5px 0 14px}.btn{border:0;border-radius:12px;background:linear-gradient(110deg,#00d995,#00a86f);color:#03150d;font-weight:900;padding:12px 15px}.btn.secondary{background:#13231d;border:1px solid #355247;color:#dcfff1}.btn.danger{background:#3a1818;border:1px solid #7c3434;color:#ffdede}.btn.gold{background:linear-gradient(110deg,#f5d16e,#c18b26);color:#211500}.btn:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;gap:8px;flex-wrap:wrap}.field{display:flex;flex-direction:column;gap:6px;margin:11px 0}.field label{font-size:12px;color:#b9d5ca;font-weight:750}.field input,.field select,.field textarea,input.control,select.control,textarea.control{width:100%;background:#050c09;border:1px solid #2b473b;border-radius:12px;padding:12px;color:var(--text);outline:none;min-width:0}.field input:focus,.field select:focus,.field textarea:focus,.control:focus{border-color:var(--green);box-shadow:0 0 0 3px #00d99517}.field small,.hint{color:var(--muted);font-size:12px}.row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stat{background:#08110e;border:1px solid var(--line);border-radius:15px;padding:13px}.stat small{display:block;color:var(--muted);font-size:12px}.stat strong{font-size:18px;display:block;margin-top:5px}.divider{height:1px;background:#23372e;margin:15px 0}.notice{padding:11px 13px;border:1px solid #665128;background:#211b0c;border-radius:12px;color:#f8dfa1;font-size:12px;margin:12px 0}.ok{border-color:#1c6e50;background:#08271b;color:#baffdf}.bad{border-color:#823d3d;background:#2b1111;color:#ffc6c6}.list{display:flex;flex-direction:column;gap:9px}.item{display:flex;align-items:center;gap:10px;padding:12px;background:#08110e;border:1px solid #24392f;border-radius:14px}.item .grow{flex:1;min-width:0}.item small{display:block;color:var(--muted);font-size:12px;overflow-wrap:anywhere}.amount{font-weight:900;white-space:nowrap}.positive{color:var(--green)}.negative{color:#ff9999}.tabs{display:flex;gap:7px;overflow:auto;margin:14px 0;padding-bottom:3px}.tab{flex:1;min-width:max-content;border:1px solid #294438;border-radius:12px;padding:10px 12px;background:#0a1510;color:#b6cec3;font-weight:800}.tab.active{background:#063d2b;border-color:var(--green);color:#d7ffec}.bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:12;display:grid;grid-template-columns:repeat(5,1fr);padding:7px 5px calc(7px + env(safe-area-inset-bottom));background:#06100df5;border-top:1px solid #234739;backdrop-filter:blur(15px)}.bottomnav button{border:0;background:transparent;color:#91ada0;font-size:10px;padding:4px 1px;display:flex;align-items:center;flex-direction:column;gap:3px}.bottomnav button span{font-size:20px}.bottomnav button.active{color:var(--green)}.overlay{display:none;position:fixed;inset:0;z-index:30;background:#0009}.overlay.show{display:block}.drawer{width:min(330px,86vw);height:100%;background:#07110d;border-right:1px solid #1e6048;padding:17px;overflow:auto}.drawer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.drawer-head strong{font-size:20px;letter-spacing:1px;color:var(--green)}.drawer-user{padding:15px;background:linear-gradient(130deg,#0b3a29,#101c16);border-radius:15px;margin-bottom:15px}.menuitem{width:100%;display:flex;gap:13px;align-items:center;text-align:left;padding:12px;border:0;border-radius:11px;background:transparent;color:#dceee5;font-weight:700}.menuitem span{font-size:20px;width:27px}.menuitem:active,.menuitem:hover{background:#103326}.menuitem.logout{color:#ff9b9b}.hide{display:none!important}.pill{display:inline-block;border:1px solid #28654d;background:#0b2c20;color:#baffdf;border-radius:99px;padding:4px 9px;font-size:11px}.balance-source{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #23372e;gap:10px}.balance-source:last-child{border-bottom:0}.stepnum{width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:#0c422e;color:var(--green);font-weight:900}.security-radar{width:118px;height:118px;border-radius:50%;border:1px solid #00d99580;margin:12px auto;display:grid;place-items:center;background:repeating-radial-gradient(circle,#00d9950d 0 16px,transparent 17px 29px);box-shadow:0 0 25px #00d99518;position:relative}.security-radar:after{content:'';position:absolute;width:50%;height:1px;background:var(--green);left:50%;top:50%;transform-origin:left;animation:scan 3s linear infinite}@keyframes scan{to{transform:rotate(360deg)}}.footer-note{text-align:center;color:#658278;font-size:11px;padding:22px 5px}.smallbtn{padding:7px 10px;font-size:12px}.checkline{display:flex;gap:9px;align-items:flex-start;font-size:12px;color:#b5d3c5}.checkline input{margin-top:3px;accent-color:var(--green)}
+#entry{position:fixed;inset:0;z-index:50;background:radial-gradient(ellipse at 80% 0,#0d3b29,transparent 45%),#050907;overflow:auto;display:flex;align-items:center;justify-content:center;padding:16px}#entry .entrybox{width:min(550px,100%);border:1px solid #27664a;border-radius:25px;background:#08130e;padding:22px;box-shadow:0 25px 90px #000b}.entrybrand{text-align:center;margin-bottom:15px}.entrybrand .mark{margin:0 auto 7px;width:58px;height:58px;font-size:31px}.entrybrand h1{letter-spacing:4px;font-size:29px}.entrybrand p{color:var(--muted);font-size:11px;letter-spacing:1.2px;margin:0}.entry-step{display:none}.entry-step.active{display:block}.namecard{border:1px solid #3e624d;background:linear-gradient(135deg,#10271b,#111c15);border-radius:15px;padding:13px;margin:10px 0}.namecard strong{display:block;color:var(--gold);font-size:11px;letter-spacing:1px}.namecard div{font-size:19px;font-weight:850;margin-top:4px}.namecard input{margin-top:8px}.legal{font-size:11px;color:var(--muted);line-height:1.6}.center{text-align:center}
+@media(min-width:760px){.container{padding:24px}.grid{gap:16px}.tile{min-height:175px;padding:22px}.tile .ico{font-size:38px}.bottomnav{display:none}.topbar{padding:12px 24px}.grid.homegrid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:520px){.container{padding:12px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.tile{min-height:132px;padding:13px;border-radius:18px}.tile .ico{font-size:28px}.tile strong{font-size:15px}.tile small{font-size:11px}.card{padding:14px;border-radius:18px}.row{grid-template-columns:1fr}.big-balance{font-size:26px}.stats{gap:7px}.stat{padding:10px}.stat strong{font-size:16px}h1{font-size:22px}}
 
-/* UI Elements */
-h1{font-size:22px;font-weight:800;margin-bottom:16px}
-h2{font-size:16px;font-weight:700;margin:24px 0 12px}
-.panel{background:var(--panel);border:1px solid var(--edge);border-radius:16px;padding:16px;margin-bottom:16px}
-.btn{display:flex;align-items:center;justify-content:center;width:100%;padding:14px;border-radius:12px;font-weight:700;border:1px solid var(--edge);background:var(--raise);cursor:pointer;margin-top:8px}
-.btn.primary{background:var(--green);color:#000;border:none}
-.btn.ghost{background:transparent;color:var(--green);border:1px dashed var(--green)}
-.form-group{display:grid;gap:12px;margin-bottom:16px}
-.field{display:flex;flex-direction:column;gap:6px}
-.field label{font-size:12px;color:var(--mute);font-weight:600}
-.field input, .field select{background:var(--void);border:1px solid var(--edge);border-radius:10px;padding:12px;color:var(--text);outline:none}
-.field input:focus{border-color:var(--green)}
-.card{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:14px;margin-bottom:10px}
-.row{display:flex;justify-content:space-between;align-items:center}
-.money{font-family:monospace;font-size:16px}
-.pos{color:var(--green)}
-.neg{color:var(--red)}
+.market-product{overflow:hidden;padding:0;display:flex;flex-direction:column}.market-product img{width:100%;height:130px;object-fit:cover;background:#0b2118}.market-product .productbody{padding:12px}.market-product .productbody strong{display:block;overflow-wrap:anywhere}.market-price{color:var(--gold);font-weight:900;font-size:18px;margin:7px 0}.market-badge{font-size:10px;color:var(--mint);border:1px solid #28654d;border-radius:99px;padding:3px 7px;display:inline-block;margin:4px 0}.market-product .btn{width:100%;padding:9px}.market-business-row{align-items:flex-start}.market-business-row .grow{overflow-wrap:anywhere}
 
-/* Drawer */
-.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:3000;opacity:0;pointer-events:none;transition:.3s}
-.drawer-overlay.open{opacity:1;pointer-events:auto}
-.drawer{position:fixed;top:0;left:-300px;width:280px;height:100dvh;background:var(--void);z-index:3001;transition:.3s;padding:24px 20px;display:flex;flex-direction:column;overflow-y:auto;border-right:1px solid var(--edge)}
-.drawer.open{transform:translateX(300px)}
-.drawer-header{display:flex;justify-content:space-between;margin-bottom:24px}
-.drawer-header h3{font-size:14px;color:var(--mute);letter-spacing:1px}
-.drawer-menu{display:flex;flex-direction:column;gap:4px}
-.drawer-menu button{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;color:var(--text);font-size:14px;font-weight:600;text-align:left}
-.drawer-menu button:active{background:var(--panel)}
-.drawer-menu .logout{color:var(--red);margin-top:20px}
+.biz-panel{margin-top:12px}.biz-service{min-height:145px}.biz-service .price{color:var(--gold);font-weight:900;font-size:17px;margin-top:4px}.biz-service .trial{font-size:11px;color:var(--green);margin-top:3px}.biz-panel .tabs{margin-bottom:12px}.biz-status{display:inline-block;padding:4px 8px;border:1px solid var(--edge);border-radius:99px;font-size:11px;color:var(--gold)}.biz-list-row{display:flex;gap:10px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--edge)}.biz-list-row:last-child{border-bottom:0}.biz-list-row>div{flex:1;min-width:0}.biz-list-row small{display:block}
 
-/* Tabs & Grid */
-.seg{display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:12px;background:var(--panel);border:1px solid var(--edge);margin-bottom:16px}
-.seg button{padding:10px;border-radius:8px;font-weight:700;color:var(--mute);font-size:13px}
-.seg button[aria-selected=true]{background:var(--green);color:#000}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-.money-card{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:14px 10px;display:flex;flex-direction:column;gap:4px;cursor:pointer}
-.money-card .icon{font-size:22px;margin-bottom:4px}
-.money-card b{font-size:12px;font-weight:700}
-.money-card small{font-size:10px;color:var(--mute)}
+/* BEAST RIDE FLOW STYLES */
+.ride-topbar { padding: 12px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; background: #06100d; }
+.ride-brand { font-weight: 900; font-size: 15px; display: flex; align-items: center; gap: 5px; color: var(--green); }
+.ride-mark { font-size: 18px; }
+.ride-tabs { display: flex; border-bottom: 1px solid var(--line); background: #08130e; }
+.ride-tab { flex: 1; border: 0; background: transparent; color: var(--muted); padding: 10px; font-size: 12px; font-weight: 800; border-bottom: 2px solid transparent; }
+.ride-tab.active { color: var(--green); border-bottom-color: var(--green); }
+.ride-panel { animation: fade 0.3s ease; }
+.ride-hero { background: linear-gradient(120deg, #073c2a, #0b2119); padding: 15px; position: relative; overflow: hidden; border-bottom: 1px solid #237655; }
+.ride-form { padding: 15px; }
+.ride-input { width: 100%; background: #050c09; border: 1px solid #2b473b; border-radius: 12px; padding: 10px; color: var(--text); font-size: 13px; outline: none; }
+.ride-list { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 8px; }
+.ride-item { display: flex; gap: 10px; align-items: center; padding: 12px; background: #08110e; border: 1px solid #24392f; border-radius: 14px; }
+.ride-item .grow { flex: 1; }
+.ride-item b { font-size: 14px; }
+.ride-item small { display: block; color: var(--muted); font-size: 11px; }
 
-/* Toast */
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green);color:#000;padding:12px 20px;border-radius:30px;font-weight:700;opacity:0;transition:.3s;z-index:9999;pointer-events:none;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
-.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+</style></head><body>
+<header class="topbar"><button class="hamb" id="openMenu" aria-label="Open menu">☰</button><div class="brand"><div class="mark">B</div><div><strong>BEAST</strong><small>MONEY TRANSFER · KENYA PROTOTYPE</small></div></div><button class="bell" data-page="notifications" aria-label="Notifications">🔔 <b id="noticeCount">1</b></button></header>
+<main class="container">
+<section id="home" class="page active"><div class="balance-hero"><div class="eyebrow">WELCOME BACK · BEAST WALLET</div><div style="font-size:20px;font-weight:850" id="helloName">KRISH KRISHNA</div><div class="big-balance" id="homeBalance">KES 7,564.00</div><div class="actions"><button class="btn" data-page="send">↗ Send money</button><button class="btn secondary" data-page="receive">＋ Receive</button><button class="btn secondary" data-page="balance">◎ Account balance</button></div></div>
+<div class="grid homegrid"><button class="card tile t-green" data-page="balance"><span class="ico">💰</span><strong>Account Balance</strong><small>Check access</small></button><button class="card tile t-blue" data-page="statements"><span class="ico">📊</span><strong>Statements</strong><small>Mini summary</small></button><button class="card tile" data-page="bulk"><span class="ico">📥</span><strong>Bulk Send</strong><small>Many at once</small></button></div><div class="section-label">Quick actions</div><div class="grid"><button class="card tile t-green" data-page="send"><span class="ico">📤</span><strong>Send</strong><small>Phone / BEAST ID</small></button><button class="card tile" data-page="bulk"><span class="ico">📥</span><strong>Bulk Send</strong><small>Many recipients</small></button><button class="card tile t-blue" data-page="receive"><span class="ico">🤝</span><strong>Receive</strong><small>Buyer authorization</small></button><button class="card tile" data-page="withdraw"><span class="ico">🏧</span><strong>Withdraw</strong><small>Agent cash-out</small></button><button class="card tile t-green" data-page="lipana"><span class="ico">🛒</span><strong>Lipa Na</strong><small>Pay a business</small></button><button class="card tile t-blue" data-page="history"><span class="ico">🧾</span><strong>History</strong><small>Transactions</small></button><button class="card tile t-blue" data-page="statements"><span class="ico">📊</span><strong>Statements</strong><small>Mini summary</small></button><button class="card tile" data-page="profile"><span class="ico">👤</span><strong>Profile</strong><small>BEAST identity</small></button><button class="card tile t-red" data-page="security"><span class="ico">🛡️</span><strong>Security</strong><small>Security events</small></button><button class="card tile t-blue" data-page="settings"><span class="ico">⚙️</span><strong>Settings</strong><small>App controls</small></button><button class="card tile t-green" data-page="market"><span class="ico">🏪</span><strong>Market</strong><small>Register a business or shop products</small></button><button class="card tile t-blue" data-page="travel"><span class="ico">✈️</span><strong>Travel</strong><small>Explore trips, stays and transport</small></button></div><div class="footer-note">BEAST · Fast • Secure • Global · Interactive prototype</div></section>
+<section id="balance" class="page"><h1>ACCOUNT BALANCE</h1><p class="sub">Balance access · Verify your registered identity.</p><div class="card"><div class="field"><label>ID number</label><input id="balId" inputmode="numeric" placeholder="Registered national ID"></div><div class="field"><label>Full name</label><input id="balName" placeholder="Registered full name"></div><div class="field"><label>PIN</label><input id="balPin" type="password" inputmode="numeric" maxlength="6" placeholder="Enter PIN"></div><button class="btn" id="checkBalance">CHECK BALANCE</button><div id="balanceResult" class="hide"><div class="divider"></div><div class="notice ok">Identity check passed for this local demo. Provider balances are simulated, not fetched from live accounts.</div><h3>Linked accounts & balances</h3><div id="balanceSources"></div></div></div></section>
+<section id="statements" class="page"><h1>STATEMENTS</h1><p class="sub">Mini statements · Last 30 days summary and recent activity.</p><div class="stats"><div class="stat"><small>Transactions (30d)</small><strong id="txCount">2</strong></div><div class="stat"><small>Money in</small><strong>KES 100.00</strong></div><div class="stat"><small>Money out</small><strong>KES 500.00</strong></div><div class="stat"><small>Net</small><strong class="negative">KES -400.00</strong></div><div class="stat"><small>BEAST fees paid</small><strong>KES 14.00</strong></div><div class="stat"><small>Provider costs</small><strong>KES 29.00</strong></div></div><div class="section-label">Recent activity</div><div id="statementActivity" class="list"></div></section>
+<section id="bulk" class="page"><h1>BULK SEND</h1><p class="sub">Send to many at once. Paste phone,amount lines. One PIN authorizes the batch.</p><div class="card"><div class="field"><label>Recipients — one per line as phone,amount (max 500)</label><textarea id="bulkText" rows="7" placeholder="0712345678,500&#10;+254712345678,250&#10;BEAST-017335,100"></textarea><small>Accepted: 07… / 01… / +254… / account number / BEAST- followed by digits. Recipient names are preview examples only.</small></div><div class="actions"><button class="btn secondary" id="addBulkLine">＋ Add line</button><button class="btn secondary" id="parseBulk">PARSE LIST</button><button class="btn secondary" id="clearBulk">CLEAR</button></div><div id="bulkPreview" class="list" style="margin-top:12px"></div><div class="field"><label>Source</label><select id="bulkSource" class="control"><option>M-PESA</option><option>BEAST Wallet</option><option>T-Kash</option><option>Airtel Money</option><option>Bank</option><option>Card</option></select></div><div class="stat"><small>Fee estimate</small><strong id="bulkFee">KES 0.00</strong><small id="bulkTotal">0 recipients · KES 0.00 total</small></div><div class="field"><label>PIN</label><input id="bulkPin" type="password" inputmode="numeric" maxlength="6" placeholder="Enter your PIN"></div><button class="btn" id="sendBulk">SEND BATCH & AUTHORIZE</button><div class="notice">The batch stops automatically if the available demo balance runs out. No real money is moved.</div></div></section>
+<section id="send" class="page"><h1>SEND MONEY</h1><p class="sub">Recipient, amount, source and authorization stay together.</p><div class="card"><div class="field"><label>Recipient phone / BEAST ID</label><input id="recipient" placeholder="07… / 01… / +254… / BEAST-" autocomplete="off"></div><button class="btn secondary" id="verifyRecipient">VERIFY RECIPIENT</button><div id="recipientCard" class="namecard hide"><strong>VERIFIED RECIPIENT · DEMO</strong><div id="recipientName">Demo recipient</div><small id="recipientId" class="hint"></small></div><div class="field"><label>Amount (KES)</label><input id="sendAmount" type="number" min="1" step="1" placeholder="100"></div><div class="field"><label>Source</label><select id="sendSource" class="control"><option>M-PESA</option><option>BEAST Wallet</option><option>T-Kash</option><option>Airtel Money</option><option>Bank</option><option>Card</option></select></div><div class="stat"><small>Cost preview</small><div class="balance-source"><span>Amount</span><b id="sendCostAmount">KES 0.00</b></div><div class="balance-source"><span>Fee</span><b id="sendFee">KES 0.00</b></div><div class="balance-source"><span>Total deducted</span><b id="sendTotal">KES 0.00</b></div></div><div class="field"><label>PIN</label><input id="sendPin" type="password" inputmode="numeric" maxlength="6" placeholder="Enter PIN to authorize"></div><button class="btn" id="sendAuthorize">SEND & AUTHORIZE</button></div></section>
+<section id="receive" class="page"><h1>RECEIVE</h1><p class="sub">Choose buyer payment, account transfer, or agent deposit.</p><div class="tabs"><button class="tab active" data-receivetab="buyer">Buyer payment</button><button class="tab" data-receivetab="transfer">Deposit / withdraw</button><button class="tab" data-receivetab="agent">Agent deposit</button></div>
+<div id="receive-buyer" class="receive-panel"><div class="tabs"><button class="tab active" data-buyertab="login">1 · Login</button><button class="tab" data-buyertab="account">2 · Account</button><button class="tab" data-buyertab="pay">3 · Confirm payment</button></div><div id="buyer-login" class="card"><h2>Buyer login</h2><p class="sub">The buyer signs in with their own BEAST details. Their balance is never shown on this screen.</p><div class="field"><label>Name</label><input id="buyerName" placeholder="Buyer's full name"></div><div class="field"><label>Buyer phone</label><input id="buyerPhone" placeholder="07… or +254…"></div><div class="field"><label>Buyer National ID</label><input id="buyerId" placeholder="National ID"></div><div class="row"><div class="field"><label>Password</label><input id="buyerPassword" type="password" placeholder="Buyer password"></div><div class="field"><label>PIN</label><input id="buyerPin" type="password" inputmode="numeric" maxlength="6" placeholder="Buyer PIN"></div></div><button class="btn" id="buyerLogin">LOGIN & CONTINUE</button></div><div id="buyer-account" class="card hide"><h2>Choose payment account</h2><p>Signed in as <b id="buyerSignedName">—</b></p><div id="buyerAccounts" class="list"></div><button class="btn" id="buyerAccountContinue" disabled>CONTINUE</button></div><div id="buyer-pay" class="card hide"><h2>Pay & authorize</h2><div class="namecard"><strong>PAYING TO</strong><div>KRISH KRISHNA</div><small>BEAST-017335 • +254712345678</small></div><div class="field"><label>Where to send</label><select class="control" id="payTo"><option>BEAST Wallet</option><option>Pochi la Biashara</option><option>Till</option><option>PayBill</option><option>Bank Account</option><option>Card</option></select><small>Money will land in the seller's selected receiving method.</small></div><div class="field"><label>From account</label><input id="buyerChosenAccount" readonly class="control" value="Choose an account first"></div><div class="field"><label>Amount (KES)</label><input id="buyerPayAmount" type="number" min="1" placeholder="Enter amount"></div><div class="stat"><small>Cost preview</small><strong id="buyerPayCost">Enter an amount to calculate the buyer cost.</strong></div><div class="field"><label>Buyer PIN</label><input id="buyerPayPin" type="password" inputmode="numeric" maxlength="6" placeholder="Re-enter buyer PIN"></div><button class="btn" id="buyerPayAuthorize">PAY & AUTHORIZE</button></div></div>
+<div id="receive-transfer" class="card receive-panel hide"><h2>Move money between accounts</h2><p class="sub">Choose a simulated source and destination. Provider integrations are not connected.</p><div class="field"><label>From</label><select id="transferFrom" class="control"><option>M-PESA</option><option>Airtel Money</option><option>T-Kash</option><option>Bank</option><option>Card</option><option>BEAST Wallet</option><option>Lipa Na</option></select></div><div class="field"><label>To</label><select id="transferTo" class="control"><option>BEAST Wallet</option><option>M-PESA</option><option>Airtel Money</option><option>T-Kash</option><option>Bank</option><option>Card</option><option>Lipa Na</option></select></div><div class="field"><label>Amount (KES)</label><input id="transferAmount" type="number" min="1" placeholder="100"></div><button class="btn" id="transferGo">CONTINUE TRANSFER</button><div id="transferMessage"></div></div>
+<div id="receive-agent" class="card receive-panel hide"><h2>AGENT DEPOSIT</h2><p class="sub">Deposit through agent · Demo flow only.</p><div class="field"><label>Registered agent number or agent code</label><input id="agentNumber" placeholder="0712345678 or AGENT-001"></div><div class="field"><label>Customer phone number</label><input id="agentCustomerPhone" placeholder="0712345678 or +254712345678"></div><div class="field"><label>Customer National ID</label><input id="agentCustomerId" placeholder="Customer National ID"></div><button class="btn secondary" id="verifyAgentCustomer">VERIFY AGENT & CUSTOMER</button><div class="field"><label>Amount (KES)</label><input id="agentAmount" type="number" min="1" placeholder="500"></div><button class="btn" id="agentAuthorize">AUTHORIZE AGENT DEPOSIT</button><div id="agentMessage"></div></div></section>
+<section id="withdraw" class="page"><h1>WITHDRAW</h1><p class="sub">Agent withdrawal · Verify the agent before authorization.</p><div class="card"><div class="field"><label>Agent ID or code</label><input id="withdrawAgent" placeholder="AGENT-001 or 0712345678"></div><div class="field"><label>Store / agent reference</label><input id="withdrawStore" placeholder="Optional store number"></div><button class="btn secondary" id="verifyWithdrawAgent">VERIFY AGENT</button><div id="withdrawAgentStatus" class="hint"></div><div class="field"><label>Source</label><select id="withdrawSource" class="control"><option>M-PESA</option><option>Bank</option><option>BEAST Wallet</option><option>T-Kash</option><option>Airtel Money</option></select></div><div class="field"><label>Amount (KES)</label><input id="withdrawAmount" type="number" min="1" placeholder="500"></div><div class="stat"><small>Cost preview</small><div class="balance-source"><span>Amount</span><b id="withdrawCost">KES 0.00</b></div><div class="balance-source"><span>Fee</span><b id="withdrawFee">KES 0.00</b></div></div><div class="field"><label>PIN</label><input id="withdrawPin" type="password" inputmode="numeric" maxlength="6" placeholder="Enter PIN"></div><button class="btn" id="withdrawAuthorize">WITHDRAW & AUTHORIZE</button></div></section>
+<section id="lipana" class="page"><h1>LIPA NA</h1><p class="sub">Pay a business · Verify destination before payment.</p><div class="card"><div class="field"><label>Payment method</label><select id="lipaMethod" class="control"><option>M-PESA</option><option>Bank</option><option>Card</option><option>BEAST Wallet</option><option>T-Kash</option><option>Airtel Money</option></select></div><div class="field"><label>Payment type</label><select id="lipaType" class="control"><option value="pochi">Pochi la Biashara</option><option value="till">Buy Goods / Till</option><option value="bill">PayBill</option><option value="account">Account / Other</option><option value="beast">BEAST ID</option></select></div><div id="lipaDestinationFields"><div class="field"><label>Business phone / BEAST number</label><input id="lipaDestination" placeholder="Phone number or BEAST ID"></div></div><div class="field"><label>Amount (KES)</label><input id="lipaAmount" type="number" min="1" placeholder="100"></div><button class="btn secondary" id="verifyLipa">VERIFY DESTINATION</button><div id="lipaVerified" class="namecard hide"><strong>DESTINATION · DEMO</strong><div id="lipaBusinessName">Demo business</div></div><div class="stat"><small>Cost preview</small><div class="balance-source"><span>Amount</span><b id="lipaCost">KES 0.00</b></div><div class="balance-source"><span>Fee</span><b id="lipaFee">KES 0.00</b></div><div class="balance-source"><span>Total</span><b id="lipaTotal">KES 0.00</b></div></div><div class="field"><label>PIN</label><input id="lipaPin" type="password" inputmode="numeric" maxlength="6" placeholder="Enter PIN"></div><button class="btn" id="lipaAuthorize">PAY & AUTHORIZE</button></div></section>
+<section id="history" class="page"><h1>TRANSACTIONS</h1><p class="sub">Demo transaction records. New local demo actions appear here.</p><div id="historyList" class="list"></div></section>
+<section id="market" class="page"><h1>BEAST MARKET</h1><p class="sub">Register a business or browse products from registered demo businesses.</p><div class="tabs"><button class="tab active" data-markettab="business">🏢 Register a Business</button><button class="tab" data-markettab="shop">🛍️ Shop</button></div>
+<div id="market-business" class="market-panel"><div class="card"><h2>Start your 7-day free trial</h2><p class="sub">Choose one of 12 BEAST business services. The monthly price is shown before you register.</p><div class="field"><label>Business category</label><select id="marketType" class="control"></select></div><div class="notice ok" id="marketPlanInfo">7 days free, then monthly subscription if you choose to continue.</div><div class="field"><label>Business / shop name</label><input id="marketBusinessName" placeholder="e.g. Krish Tech Store" maxlength="80"></div><div class="field"><label>Owner's name</label><input id="marketOwnerName" placeholder="Full name" maxlength="80"></div><div class="field"><label>Business phone</label><input id="marketPhone" inputmode="tel" placeholder="07... or +254..."></div><div class="field"><label>Business description</label><textarea id="marketDescription" rows="3" placeholder="What does your business offer?" maxlength="500"></textarea></div><div class="divider"></div><h3>Add your first product to Shop (optional)</h3><div class="field"><label>Product name</label><input id="marketProductName" placeholder="e.g. Wireless headphones" maxlength="100"></div><div class="row"><div class="field"><label>Price (KES)</label><input id="marketProductPrice" type="number" min="1" step="1" placeholder="1500"></div><div class="field"><label>Stock quantity</label><input id="marketProductStock" type="number" min="0" step="1" value="1"></div></div><div class="field"><label>Product image URL (optional)</label><input id="marketProductImage" type="url" placeholder="https://...jpg"></div><label class="checkline"><input id="marketTerms" type="checkbox"> I understand this is a demo trial. No real billing will occur in this HTML prototype.</label><button class="btn" id="marketRegister" style="width:100%;margin-top:14px">REGISTER BUSINESS & START FREE TRIAL</button><div id="marketMessage"></div></div><div class="section-label">My registered businesses</div><div id="marketBusinesses" class="list"></div></div>
+<div id="market-shop" class="market-panel hide"><div class="card"><h2>Shop products</h2><p class="sub">Products published by businesses registered on this device.</p><div class="field"><label>Search products</label><input id="marketSearch" placeholder="Search products or shops"></div><div id="marketProducts" class="grid"></div><div id="marketEmpty" class="notice">No products yet. Register a business and add its first product in the Business tab.</div><div id="marketOrderMessage"></div></div></div></section>
 
-/* Sub-tabs inside Receive */
-.sub-tabs{display:flex;gap:8px;border-bottom:1px solid var(--edge);margin-bottom:16px}
-.sub-tab{padding:10px 14px;font-size:13px;font-weight:600;color:var(--mute);border-bottom:2px solid transparent;cursor:pointer}
-.sub-tab.active{color:var(--green);border-bottom-color:var(--green)}
-.account-option{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--edge);border-radius:12px;margin-bottom:10px;cursor:pointer}
-.account-option.active{border-color:var(--green);background:rgba(29,229,139,0.05)}
-</style>
-</head>
-<body>
-<div class="app" id="app">
-
-  <!-- MENU DRAWER -->
-  <div class="drawer-overlay" id="drawerOverlay" onclick="toggleMenu()"></div>
-  <div class="drawer" id="drawerMenu">
-    <div class="drawer-header"><h3>BEAST MENU</h3><button onclick="toggleMenu()">✕</button></div>
-    <div style="margin-bottom:24px"><b>KRISH KRISHNA</b></div>
-    <div class="drawer-menu">
-      <button onclick="showPage('home');toggleMenu()"><span>🏠</span> Home</button>
-      <button onclick="showPage('send');toggleMenu()"><span>📤</span> Send</button>
-      <button onclick="showPage('bulk');toggleMenu()"><span>📥</span> Bulk Send</button>
-      <button onclick="showPage('receive');toggleMenu()"><span>🤝</span> Receive</button>
-      <button onclick="showPage('withdraw');toggleMenu()"><span>🏧</span> Withdraw</button>
-      <button onclick="showPage('lipa');toggleMenu()"><span>🛒</span> Lipa Na</button>
-      <button onclick="showPage('history');toggleMenu()"><span>🧾</span> History</button>
-      <button onclick="showPage('statements');toggleMenu()"><span>📊</span> Statements</button>
-      <button onclick="showPage('profile');toggleMenu()"><span>👤</span> Profile</button>
-      <button onclick="showPage('security');toggleMenu()"><span>🛡️</span> Security</button>
-      <button onclick="showPage('settings');toggleMenu()"><span>⚙️</span> Settings</button>
-      <button class="logout" onclick="location.reload()"><span>🚪</span> Logout</button>
-    </div>
-  </div>
-
-  <header class="top">
-    <div class="top-left">
-      <button class="menu-btn" onclick="toggleMenu()">☰</button>
-      <div class="brand">
-        <svg width="30" height="26" viewBox="0 0 30 26" fill="currentColor"><path d="M2 21 0 6l7 6 8-11 8 11 7-6-2 15z"/><rect x="2" y="23" width="26" height="3" rx="1.5"/></svg>
-        <span class="wordmark">BEAST</span>
-      </div>
-    </div>
-    <div class="avatar">K</div>
-  </header>
-
-  <main id="main">
-    
-    <!-- ================= LOGIN ================= -->
-    <div id="page-login">
-      <div style="text-align:center; padding:40px 0;">
-        <div style="font-size:60px; color:var(--gold); margin-bottom:12px;">♛</div>
-        <h1>BEAST</h1>
-        <p class="mute" style="margin-bottom:24px;">One app. 18 powerful ways.</p>
-      </div>
-      <form id="loginForm" class="form-group">
-        <div class="field"><label>Phone Number</label><input id="loginPhone" placeholder="07..." required></div>
-        <div class="field"><label>PIN</label><input id="loginPin" type="password" placeholder="****" required></div>
-        <button type="submit" class="btn primary">LOG IN</button>
-      </form>
-      <button class="btn ghost" onclick="showRegister()">Create Account</button>
-    </div>
-
-    <!-- ================= REGISTER ================= -->
-    <div id="page-register" hidden>
-      <h1>Create Account</h1>
-      <form id="registerForm" class="form-group">
-        <div class="field"><label>Phone Number</label><input id="regPhone" placeholder="07..." required></div>
-        <div class="field"><label>ID Number</label><input id="regId" placeholder="12345678" required></div>
-        <button type="button" class="btn ghost" onclick="runAIScanner()">✨ Scan ID with AI</button>
-        <div id="nameCard" class="card" hidden style="border-color:var(--gold); display:flex; justify-content:space-between; align-items:center;">
-          <div><small class="mute">Full Name</small><br><b id="scannedName"></b></div>
-          <button type="button" class="btn ghost" style="padding:4px 8px;margin:0;" onclick="editName()">Edit</button>
-        </div>
-        <div class="field" id="manualNameField"><label>Full Name</label><input id="regName" placeholder="John Doe" required></div>
-        <div class="field"><label>Password</label><input id="regPass1" type="password" required></div>
-        <div class="field"><label>Confirm Password</label><input id="regPass2" type="password" required></div>
-        <div class="field"><label>PIN</label><input id="regPin" type="password" required></div>
-        <label style="display:flex;gap:8px;font-size:12px;margin-top:8px;"><input type="checkbox" required> I agree to Terms</label>
-        <button type="submit" class="btn primary">REGISTER</button>
-      </form>
-      <button class="btn ghost" style="margin-top:16px;" onclick="showPage('login')">Back to Login</button>
-    </div>
-
-    <!-- ================= CONFIRM DETAILS ================= -->
-    <div id="page-confirm" hidden>
-      <h1>Confirm Details</h1>
-      <div class="card">
-        <small class="mute">Name</small><br><b id="confName"></b><br><br>
-        <small class="mute">Phone</small><br><b id="confPhone"></b><br><br>
-        <small class="mute">ID Number</small><br><b id="confId"></b>
-      </div>
-      <button class="btn primary" onclick="generateId()">Confirm & Generate BEAST ID</button>
-      <button class="btn ghost" style="margin-top:10px;" onclick="showPage('register')">Edit Details</button>
-    </div>
-
-    <!-- ================= MAIN DASHBOARD (MONEY) ================= -->
-    <div id="page-home" hidden>
-      <p class="mute">Hello, <span id="userGreeting">Krish</span></p>
-      <h1>Send, pay, shop and grow.</h1>
-      
-      <div class="panel" style="background:linear-gradient(145deg,#0F4D35,#0A2C20); border-color:#1F6B49; margin-bottom:24px;">
-        <div class="row"><small class="mute">Wallet balance</small><span style="font-size:12px;color:var(--gold);">● DEMO</span></div>
-        <div style="font-size:32px;font-weight:800;margin:8px 0;">KES <span id="walletBal">12,450.00</span></div>
-        <small class="mute">BEAST ID: <span id="userBeastId">BEAST-123456</span></small>
-      </div>
-
-      <div class="grid-3">
-        <div class="money-card" onclick="showPage('send')"><div class="icon">📤</div><b>Send Money</b><small>Phone or ID</small></div>
-        <div class="money-card" onclick="showPage('receive')"><div class="icon">🤝</div><b>Receive</b><small>Buyer auth</small></div>
-        <div class="money-card" onclick="showPage('withdraw')"><div class="icon">🏧</div><b>Withdraw</b><small>Agent</small></div>
-        <div class="money-card" onclick="showPage('lipa')"><div class="icon">🛒</div><b>Lipa Na</b><small>Pay business</small></div>
-        <div class="money-card" onclick="showPage('history')"><div class="icon">🧾</div><b>History</b><small>Transactions</small></div>
-        <div class="money-card" onclick="showPage('statements')"><div class="icon">📊</div><b>Statements</b><small>30 days</small></div>
-      </div>
-    </div>
-
-    <!-- ================= SEND MONEY ================= -->
-    <div id="page-send" hidden>
-      <h1>Send Money</h1>
-      <div class="panel form-group">
-        <div class="field"><label>Recipient phone / BEAST ID</label><input id="sendRecip" placeholder="07... or BEAST-"></div>
-        <button class="btn ghost" onclick="toast('Recipient verified')">VERIFY RECIPIENT</button>
-        <div class="field"><label>Amount (KES)</label><input id="sendAmt" type="number" placeholder="0.00"></div>
-        <div class="field"><label>Source</label><select><option>M-PESA</option><option>BEAST Wallet</option></select></div>
-        <div style="background:var(--void);padding:10px;border-radius:8px;font-size:12px;">
-          Cost preview<br>
-          Amount: KES 0.00<br>
-          Fee: KES 0.00<br>
-          <b>Total deducted: KES 0.00</b>
-        </div>
-        <div class="field"><label>PIN</label><input type="password" placeholder="****"></div>
-        <button class="btn primary" onclick="processTx('Sent money', -500); showPage('home')">SEND & AUTHORIZE</button>
-      </div>
-    </div>
-
-    <!-- ================= BULK SEND ================= -->
-    <div id="page-bulk" hidden>
-      <h1>Bulk Send</h1>
-      <div class="panel form-group">
-        <p class="mute" style="font-size:12px;">Paste list: phone,amount (one per line). Max 500.</p>
-        <textarea id="bulkList" style="width:100%;height:100px;background:var(--void);border:1px solid var(--edge);color:var(--text);border-radius:8px;padding:10px;font-family:monospace;" placeholder="0712345678,500&#10;BEAST-123456,1000"></textarea>
-        <div class="field"><label>Source</label><select><option>M-PESA</option><option>BEAST Wallet</option></select></div>
-        <div class="field"><label>PIN</label><input type="password" placeholder="****"></div>
-        <button class="btn primary" onclick="processTx('Bulk Send', -1500); showPage('home')">SEND BATCH & AUTHORIZE</button>
-      </div>
-    </div>
-
-    <!-- ================= RECEIVE ================= -->
-    <div id="page-receive" hidden>
-      <h1>Receive</h1>
-      <div class="sub-tabs">
-        <div class="sub-tab active" onclick="setRecvTab(1)">Buyer Payment</div>
-        <div class="sub-tab" onclick="setRecvTab(2)">Deposit/Withdraw</div>
-        <div class="sub-tab" onclick="setRecvTab(3)">Agent Deposit</div>
-      </div>
-
-      <!-- RECEIVE TAB 1: BUYER LOGIN -->
-      <div id="recvTab1" class="form-group">
-        <div class="panel form-group">
-          <h3>Buyer Login</h3>
-          <p class="mute" style="font-size:11px;">Balance never shown here.</p>
-          <div class="field"><label>Buyer Name</label><input placeholder="Alice Njeri"></div>
-          <div class="field"><label>Buyer Phone</label><input placeholder="07..."></div>
-          <div class="field"><label>Buyer ID</label><input placeholder="12345678"></div>
-          <div class="field"><label>Password & PIN</label><input type="password" placeholder="****"></div>
-          <button class="btn primary" onclick="setRecvTab(1.5)">LOGIN & CONTINUE</button>
-        </div>
-      </div>
-
-      <!-- RECEIVE TAB 1.5: CHOOSE ACCOUNT -->
-      <div id="recvTab1_5" class="form-group" hidden>
-        <h3>Choose Payment Account</h3>
-        <p class="mute" style="font-size:11px;margin-bottom:10px;">Signed in as Alice Njeri</p>
-        <div class="account-option active"><span style="font-size:24px;">🐾</span><div><b>BEAST Wallet</b><br><small class="mute">BEAST-123456</small></div></div>
-        <div class="account-option"><span style="font-size:24px;">📱</span><div><b>M-PESA</b><br><small class="mute">Balance hidden</small></div></div>
-        <div class="account-option"><span style="font-size:24px;">🏦</span><div><b>Equity Bank</b><br><small class="mute">•••• 4321</small></div></div>
-        <button class="btn primary" style="margin-top:10px;" onclick="setRecvTab(1.8)">CONTINUE</button>
-      </div>
-
-      <!-- RECEIVE TAB 1.8: PAYMENT CONFIRM -->
-      <div id="recvTab1_8" class="form-group" hidden>
-        <h3>Confirm Payment</h3>
-        <div style="background:var(--void);padding:10px;border-radius:8px;margin-bottom:10px;">
-          Paying to: <b>KRISH KRISHNA</b><br>
-          Where: <b>BEAST Wallet</b>
-        </div>
-        <div class="field"><label>Amount (KES)</label><input type="number" placeholder="0.00"></div>
-        <div class="field"><label>PIN</label><input type="password" placeholder="****"></div>
-        <button class="btn primary" onclick="processTx('Buyer Payment', 500); showPage('home')">PAY & AUTHORIZE</button>
-      </div>
-
-      <!-- RECEIVE TAB 2: DEPOSIT/WITHDRAW -->
-      <div id="recvTab2" class="form-group" hidden>
-        <h3>Deposit / Withdraw</h3>
-        <div class="field"><label>Route</label>
-          <select><option>M-PESA to BEAST</option><option>BEAST to M-PESA</option><option>Bank to BEAST</option></select>
-        </div>
-        <div class="field"><label>Amount</label><input type="number" placeholder="0.00"></div>
-        <button class="btn primary" onclick="toast('Transfer initiated')">TRANSFER</button>
-      </div>
-
-      <!-- RECEIVE TAB 3: AGENT DEPOSIT -->
-      <div id="recvTab3" class="form-group" hidden>
-        <h3>Agent Deposit</h3>
-        <div class="field"><label>Agent Code</label><input placeholder="AGENT-001"></div>
-        <div class="field"><label>Customer Phone</label><input placeholder="07..."></div>
-        <div class="field"><label>Customer ID</label><input placeholder="12345678"></div>
-        <button class="btn ghost" onclick="toast('Agent Verified')">VERIFY AGENT</button>
-        <div class="field"><label>Amount</label><input type="number" placeholder="0.00"></div>
-        <button class="btn primary" onclick="processTx('Agent Deposit', 1000); showPage('home')">AUTHORIZE DEPOSIT</button>
-      </div>
-    </div>
-
-    <!-- ================= WITHDRAW ================= -->
-    <div id="page-withdraw" hidden>
-      <h1>Withdraw</h1>
-      <div class="panel form-group">
-        <div class="field"><label>Agent ID</label><input placeholder="AGENT-001"></div>
-        <div class="field"><label>Source</label><select><option>M-PESA</option><option>BEAST Wallet</option></select></div>
-        <div class="field"><label>Amount</label><input type="number" placeholder="0.00"></div>
-        <div class="field"><label>PIN</label><input type="password" placeholder="****"></div>
-        <button class="btn primary" onclick="processTx('Withdraw', -500); showPage('home')">WITHDRAW & AUTHORIZE</button>
-      </div>
-    </div>
-
-    <!-- ================= LIPA NA ================= -->
-    <div id="page-lipa" hidden>
-      <h1>Lipa Na</h1>
-      <div class="panel form-group">
-        <div class="field"><label>Payment Method</label><select><option>M-PESA</option><option>Card</option></select></div>
-        <div class="field"><label>Payment Type</label><select><option>Pochi la Biashara</option><option>Buy Goods</option><option>Pay Bill</option></select></div>
-        <div class="field"><label>Account Number</label><input placeholder="07... or 123456"></div>
-        <div class="field"><label>Amount</label><input type="number" placeholder="0.00"></div>
-        <button class="btn primary" onclick="processTx('Lipa Na', -200); showPage('home')">PAY & AUTHORIZE</button>
-      </div>
-    </div>
-
-    <!-- ================= HISTORY ================= -->
-    <div id="page-history" hidden>
-      <h1>History</h1>
-      <div id="historyList"></div>
-    </div>
-
-    <!-- ================= STATEMENTS ================= -->
-    <div id="page-statements" hidden>
-      <h1>Statements</h1>
-      <div class="panel">
-        <h3>Last 30 Days</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
-          <div><small class="mute">Money In</small><br><b class="pos">KES 100.00</b></div>
-          <div><small class="mute">Money Out</small><br><b class="neg">KES 500.00</b></div>
-          <div><small class="mute">Net</small><br><b class="neg">KES -400.00</b></div>
-          <div><small class="mute">Fees Paid</small><br><b>KES 14.00</b></div>
-        </div>
-      </div>
-      <h3>Recent Activity</h3>
-      <div id="statementList"></div>
-    </div>
-
-    <!-- ================= PROFILE ================= -->
-    <div id="page-profile" hidden>
-      <h1>BEAST Identity</h1>
-      <div class="panel">
-        <h2 style="margin-top:0;">KRISH KRISHNA</h2>
-        <p class="mute">BEAST ID: <b>BEAST-017335</b></p>
-        <p class="mute">Phone: 0712345678</p>
-        <p class="mute">ID: 12345678</p>
-        <p style="margin-top:12px;">Total balance: <b>KES 7,564.00</b></p>
-        <p class="mute" style="font-size:10px;margin-top:8px;">PIN: salted SHA-256<br>Password: salted SHA-256</p>
-      </div>
-    </div>
-
-    <!-- ================= SECURITY / SETTINGS ================= -->
-    <div id="page-security" hidden>
-      <h1>Security</h1>
-      <div class="panel"><p>Session locked. Verify your identity.</p></div>
-    </div>
-
-    <div id="page-settings" hidden>
-      <h1>Settings</h1>
-      <div class="panel">
-        <h3>Appearance</h3>
-        <div class="seg" style="margin-top:10px;">
-          <button class="active" style="background:var(--green);color:#000;">Dark</button>
-          <button>Light</button>
-        </div>
-      </div>
-      <div class="panel">
-        <h3>Receiving Methods</h3>
-        <div class="card">BEAST Wallet - ON</div>
-        <div class="card">Pochi la Biashara - ON</div>
-        <div class="card">Till - OFF</div>
-        <div class="card">PayBill - OFF</div>
-      </div>
-      <div class="panel form-group">
-        <h3>Change PIN</h3>
-        <div class="field"><input type="password" placeholder="Current PIN"></div>
-        <div class="field"><input type="password" placeholder="New PIN"></div>
-        <button class="btn primary" onclick="toast('PIN Updated')">CHANGE PIN</button>
-      </div>
-    </div>
-
-    <!-- ================= AI ================= -->
-    <div id="page-ai" hidden>
-      <h1>BEAST AI</h1>
-      <div class="panel" style="height:300px;display:flex;flex-direction:column;">
-        <div style="flex:1;overflow-y:auto;" id="chatBox">
-          <div style="background:var(--raise);padding:8px 12px;border-radius:12px;margin-bottom:8px;width:fit-content;">Hello. How can I help?</div>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:10px;">
-          <input style="flex:1;background:var(--void);border:1px solid var(--edge);border-radius:20px;padding:10px;" id="aiInput" placeholder="Ask...">
-          <button class="btn primary" style="width:auto;padding:10px 16px;" onclick="sendAI()">Send</button>
-        </div>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- BOTTOM NAV -->
-  <nav class="tabs" id="bottomNav" style="display:flex;justify-content:space-around;padding:10px 0;border-top:1px solid var(--edge);background:var(--void);" hidden>
-    <button onclick="showPage('home')" style="color:var(--green);display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;">💰<span>Money</span></button>
-    <button onclick="showPage('ai')" style="color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;">🤖<span>AI</span></button>
-  </nav>
-
-  <div class="toast" id="toast">Message</div>
+<section id="business" class="page">
+<h1>BEAST BUSINESS</h1>
+<p class="sub">Choose a business service, register, enjoy 7 days free, then subscribe monthly to continue. This is a local prototype; it does not charge money.</p>
+<div class="tabs" role="tablist" aria-label="Business sections">
+<button class="tab active" type="button" data-biz-tab="dashboard">📊 Dashboard</button>
+<button class="tab" type="button" data-biz-tab="register">📝 Register</button>
+<button class="tab" type="button" data-biz-tab="shop">🛍️ Shop</button>
 </div>
+<div id="biz-dashboard" class="biz-panel">
+<div class="card">
+<h2>12 BEAST business services</h2>
+<p class="sub">Select a service to see its monthly price and start your 7-day free trial.</p>
+<div id="bizTypeCards" class="grid"></div>
+</div>
+<div class="section-label">My business subscriptions</div>
+<div id="bizRegisteredList" class="list"></div>
+</div>
+<div id="biz-register" class="biz-panel hide">
+<div class="card">
+<h2 id="bizRegisterHeading">Start your 7-day free trial</h2>
+<p class="sub" id="bizPlanDescription">Choose a business service below.</p>
+<div class="field"><label>Business service</label><select id="bizType" class="control"></select></div>
+<div class="notice ok" id="bizPlanInfo">7 days free, then monthly subscription.</div>
+<div class="field"><label>Business / service name</label><input id="bizName" maxlength="80" placeholder="Enter your business name"></div>
+<div class="field"><label>Owner name</label><input id="bizOwner" maxlength="80" placeholder="Full name"></div>
+<div class="field"><label>Contact phone</label><input id="bizPhone" inputmode="tel" maxlength="30" placeholder="07... or +254..."></div>
+<div class="field"><label>What will you offer?</label><textarea id="bizDescription" rows="3" maxlength="500" placeholder="Describe your service or business"></textarea></div>
+<label class="checkline"><input id="bizTerms" type="checkbox"> I understand this is a demo trial and no real billing occurs here.</label>
+<button class="btn" id="bizRegisterBtn" style="width:100%;margin-top:14px">REGISTER & START 7-DAY FREE TRIAL</button>
+<div id="bizMessage"></div>
+</div>
+</div>
+<div id="biz-shop" class="biz-panel hide">
+<div class="card">
+<h2>Business shop</h2>
+<p class="sub">Products added in BEAST Market appear in this catalogue when available on this device.</p>
+<div class="field"><label>Search products</label><input id="bizShopSearch" placeholder="Search product or business"></div>
+<div id="bizShopProducts" class="grid"></div>
+<div id="bizShopEmpty" class="notice">No products found yet. Register a business and add products in BEAST Market.</div>
+</div>
+</div>
+</section>
 
+<section id="travel" class="page"><h1>BEAST TRAVEL</h1><p class="sub">Explore travel options and save a demo travel request. No live booking or payment is connected.</p>
+    
+    <!-- START BEAST RIDE FLOW -->
+    <div class="card" style="margin-bottom: 15px; padding: 0; overflow: hidden; border: 1px solid #00d995;">
+        <div class="ride-topbar"><div class="ride-brand"><span class="ride-mark">🦁</span> BEAST Travel</div><div style="font-size:10px;color:var(--muted)">Safe rides, smarter journeys.</div></div>
+        <div class="ride-tabs"><button class="ride-tab active" data-ridetab="book">1. Book a Ride</button><button class="ride-tab" data-ridetab="driver">2. Driver Mode</button></div>
+        
+        <div id="ride-book" class="ride-panel">
+            <div class="ride-hero"><div style="font-weight:800;font-size:15px">Ride with BEAST</div><div style="font-size:11px;color:var(--mint)">Fast, Safe, Reliable</div><div style="font-size:36px;text-align:right;margin-top:-15px">🚘</div></div>
+            <div class="ride-form">
+                <div class="field"><label>From</label><input value="Nairobi CBD" readonly class="ride-input"></div>
+                <div class="field"><label>To</label><input value="Westlands, Nairobi" readonly class="ride-input"></div>
+                <div class="row"><div class="field"><label>Ride type</label><select class="ride-input"><option>Standard</option></select></div><div class="field"><label>Payment method</label><select class="ride-input"><option>BEAST Wallet (demo)</option></select></div></div>
+                <button class="btn" style="width:100%;border-radius:20px" onclick="document.getElementById('ride-vehicles').scrollIntoView({behavior:'smooth'})">Find Ride</button>
+            </div>
+        </div>
+
+        <div id="ride-vehicles" class="ride-panel hide">
+            <div style="padding:12px;font-weight:800;font-size:13px">Available Rides</div>
+            <div style="display:flex;gap:6px;padding:0 12px 10px;overflow:auto">
+                <span class="pill active" style="min-width:max-content">Standard</span><span class="pill" style="min-width:max-content">Comfort</span><span class="pill" style="min-width:max-content">Boda Boda</span><span class="pill" style="min-width:max-content">Tuk Tuk</span>
+            </div>
+            <div class="ride-list">
+                <div class="ride-item"><div style="font-size:24px">🚗</div><div class="grow"><b>Standard</b><small>4 min • 4 seats</small></div><div style="text-align:right"><b>KES 150</b><br><button class="btn smallbtn" style="padding:4px 12px;margin-top:4px">Select</button></div></div>
+                <div class="ride-item"><div style="font-size:24px">🚙</div><div class="grow"><b>Comfort</b><small>6 min • 4 seats</small></div><div style="text-align:right"><b>KES 250</b><br><button class="btn smallbtn" style="padding:4px 12px;margin-top:4px">Select</button></div></div>
+                <div class="ride-item"><div style="font-size:24px">🏍️</div><div class="grow"><b>Boda Boda</b><small>3 min • 2 seats</small></div><div style="text-align:right"><b>KES 80</b><br><button class="btn smallbtn" style="padding:4px 12px;margin-top:4px">Select</button></div></div>
+                <div class="ride-item"><div style="font-size:24px">🛺</div><div class="grow"><b>Tuk Tuk</b><small>5 min • 3 seats</small></div><div style="text-align:right"><b>KES 100</b><br><button class="btn smallbtn" style="padding:4px 12px;margin-top:4px">Select</button></div></div>
+            </div>
+        </div>
+
+        <div id="ride-details" class="ride-panel hide">
+            <div style="padding:12px;font-weight:800;font-size:13px;border-bottom:1px solid var(--line)">On the Way</div>
+            <div style="padding:12px">
+                <div style="display:flex;gap:10px;align-items:center;margin-bottom:15px">
+                    <div style="width:40px;height:40px;border-radius:50%;background:#2a3b32;display:grid;place-items:center;font-size:20px">👤</div>
+                    <div class="grow"><b>James Mwangi</b><br><small style="color:var(--gold)">★ 4.9 (120 rides)</small><br><small style="color:var(--muted)">Boda Boda • 3 min away</small></div>
+                </div>
+                <div style="display:flex;gap:10px;justify-content:space-around;margin-bottom:15px;text-align:center">
+                    <div><button class="btn secondary" style="width:45px;height:45px;border-radius:50%;padding:0">📞</button><br><small>Call</small></div>
+                    <div><button class="btn secondary" style="width:45px;height:45px;border-radius:50%;padding:0">💬</button><br><small>Message</small></div>
+                    <div><button class="btn secondary" style="width:45px;height:45px;border-radius:50%;padding:0">📤</button><br><small>Share</small></div>
+                </div>
+                <div class="namecard"><strong>Ride summary</strong><div style="font-size:14px;margin-top:5px">Boda Boda • Standard</div><small>KES 80 • Est. 3 min</small></div>
+                <button class="btn" style="width:100%;border-radius:20px" onclick="document.getElementById('ride-success').classList.remove('hide');this.classList.add('hide')">Confirm Ride</button>
+            </div>
+        </div>
+
+        <div id="ride-success" class="ride-panel hide" style="text-align:center;padding:20px;background:linear-gradient(180deg,#08271b,#08130e)">
+            <div style="font-size:50px;margin-bottom:10px">✅</div>
+            <h2 style="color:var(--green);margin-bottom:5px">You've Arrived!</h2>
+            <p class="sub" style="margin-bottom:15px">Your ride has ended successfully.</p>
+            <div style="text-align:left;background:#050c09;border:1px solid var(--line);border-radius:15px;padding:12px;margin-bottom:15px">
+                <div class="balance-source"><span>From</span><b>Nairobi CBD</b></div>
+                <div class="balance-source"><span>To</span><b>Westlands, Nairobi</b></div>
+                <div class="balance-source"><span>Ride fare</span><b>KES 80</b></div>
+                <div class="balance-source"><span>Payment</span><b>BEAST Wallet</b></div>
+            </div>
+            <button class="btn secondary" style="width:100%;border-radius:20px;margin-bottom:8px">View Receipt</button>
+            <button class="btn" style="width:100%;border-radius:20px" onclick="document.getElementById('ride-success').classList.add('hide');document.getElementById('ride-book').classList.remove('hide');document.querySelectorAll('#ride-book .btn')[0].classList.remove('hide')">Book Another Ride</button>
+        </div>
+
+        <div style="text-align:center;padding:10px;font-size:10px;color:var(--muted);border-top:1px solid var(--line);margin-top:10px">
+            <div style="display:flex;justify-content:center;gap:15px"><span>💰<br>Money</span><span style="color:var(--green)">🛵<br>Travel</span><span>🛡️<br>Shield</span><span>💳<br>Card</span><span>🤖<br>AI</span></div>
+        </div>
+    </div>
+    <!-- END BEAST RIDE FLOW -->
+
+<div class="grid"><button class="card tile t-blue" type="button" data-traveltype="Flights"><span class="ico">✈️</span><strong>Flights</strong><small>Domestic and international flight enquiries</small></button><button class="card tile t-green" type="button" data-traveltype="Hotels & Stays"><span class="ico">🏨</span><strong>Hotels & Stays</strong><small>Hotels, guest houses and apartments</small></button><button class="card tile" type="button" data-traveltype="Transport"><span class="ico">🚐</span><strong>Transport</strong><small>Car hire, shuttles and transfers</small></button><button class="card tile t-green" type="button" data-traveltype="Tours & Activities"><span class="ico">🗺️</span><strong>Tours & Activities</strong><small>Safaris, attractions and experiences</small></button><button class="card tile t-blue" type="button" data-traveltype="Bus & Train"><span class="ico">🚌</span><strong>Bus & Train</strong><small>Ground travel enquiries</small></button><button class="card tile" type="button" data-traveltype="Travel Packages"><span class="ico">🧳</span><strong>Travel Packages</strong><small>Trip planning and packages</small></button></div><div class="section-label">Plan your trip</div><div class="card"><div class="field"><label>What do you need?</label><select id="travelType" class="control"><option>Flights</option><option>Hotels & Stays</option><option>Transport</option><option>Tours & Activities</option><option>Bus & Train</option><option>Travel Packages</option></select></div><div class="row"><div class="field"><label>From / current city</label><input id="travelFrom" placeholder="e.g. Nairobi"></div><div class="field"><label>Destination</label><input id="travelTo" placeholder="e.g. Mombasa"></div></div><div class="row"><div class="field"><label>Departure / check-in date</label><input id="travelDate" type="date"></div><div class="field"><label>Return / check-out date (optional)</label><input id="travelReturn" type="date"></div></div><div class="row"><div class="field"><label>Travellers / guests</label><input id="travelPeople" type="number" min="1" max="30" value="1"></div><div class="field"><label>Budget (KES, optional)</label><input id="travelBudget" type="number" min="0" placeholder="e.g. 15000"></div></div><div class="field"><label>Contact phone</label><input id="travelPhone" inputmode="tel" placeholder="07... or +254..."></div><div class="field"><label>Extra details</label><textarea id="travelNotes" rows="3" maxlength="500" placeholder="Preferred time, room type, luggage, or other needs"></textarea></div><button class="btn" id="travelRequest" style="width:100%">SAVE TRAVEL ENQUIRY</button><div id="travelMessage"></div><div class="notice">Prototype only: this saves the enquiry on this device. It does not search live prices, confirm availability, make a booking, or charge money.</div></div><div class="section-label">My travel enquiries</div><div id="travelRequests" class="list"></div></section>
+<section id="profile" class="page"><h1>BEAST IDENTITY</h1><p class="sub">Your registered account details.</p><div class="card"><div class="center"><div class="mark" style="width:70px;height:70px;border-radius:50%;margin:0 auto 10px;font-size:32px">B</div><h2 id="profileName">KRISH KRISHNA</h2><span class="pill" id="profileBeastId">BEAST-017335</span></div><div class="divider"></div><div class="balance-source"><span>Phone</span><b id="profilePhone">0712345678</b></div><div class="balance-source"><span>International</span><b id="profileInternational">+254712345678</b></div><div class="balance-source"><span>National ID</span><b id="profileId">12345678</b></div><div class="balance-source"><span>Total balance (demo)</span><b id="profileBalance">KES 7,564.00</b></div><div class="balance-source"><span>Password storage</span><b>Local demo only</b></div><div class="notice">This standalone HTML is a prototype, not a secure financial service. Do not enter real credentials. Secure salted password/PIN hashing and identity checks must be implemented on the backend.</div><button class="btn secondary" data-page="settings">Edit settings</button></div></section>
+<section id="security" class="page"><h1>BEAST SHIELD</h1><p class="sub">Security centre · visual scanner preview.</p><div class="card center"><div class="security-radar"><span style="font-size:36px">🛡️</span></div><h2>Session protected</h2><p class="sub">Local interface scanner animation only. It does not scan devices or verify real threats.</p><span class="pill">DEMO MODE</span></div><div class="section-label">Security events</div><div class="list"><div class="item"><span>🔐</span><div class="grow"><b>Identity screen available</b><small>PIN required for demo authorizations</small></div><span class="pill">INFO</span></div><div class="item"><span>🛡️</span><div class="grow"><b>BEAST Shield</b><small>Real fraud monitoring requires a trusted backend.</small></div><span class="pill">DEMO</span></div></div></section>
+<section id="notifications" class="page"><h1>NOTIFICATIONS</h1><p class="sub">App alerts and activity notices.</p><div class="list"><div class="item"><span>🛡️</span><div class="grow"><b>Welcome to BEAST Money</b><small>You're viewing the interactive prototype. No real payments are connected.</small></div><span class="pill">NEW</span></div><div id="dynamicNotifications"></div></div></section>
+<section id="settings" class="page"><h1>SETTINGS</h1><p class="sub">App settings · Control appearance and security.</p><div class="card"><h3>Appearance</h3><p class="sub">Light or dark mode</p><div class="actions"><button class="btn secondary" id="darkMode">Dark</button><button class="btn secondary" id="lightMode">Light</button></div><div class="divider"></div><h3>Notifications</h3><label class="checkline"><input type="checkbox" id="alertsToggle" checked> Transaction alerts</label><div class="divider"></div><h3>Screen security</h3><label class="checkline"><input type="checkbox" id="visibilityToggle" checked> Visibility events (local preview)</label><div class="divider"></div><h3>Biometric placeholder</h3><p class="sub">Future device authentication</p><button class="btn secondary" id="bioBtn">Set up biometrics</button></div>
+<div class="section-label">RECEIVING</div><div class="card"><h3>Receiving methods</h3><p class="sub">Choose which channels buyers can use to pay you. BEAST Wallet is always enabled.</p><div class="field"><label>Receiving channel</label><select id="receiveMethod" class="control"><option>BEAST Wallet</option><option>Pochi la Biashara</option><option>Till</option><option>PayBill</option><option>Bank Account</option><option>Card</option></select></div><div class="field"><label>Destination / account</label><input id="receiveDestination" placeholder="Phone, business, bank or card reference"></div><button class="btn" id="saveReceiveMethod">SAVE RECEIVING METHOD</button><div class="section-label" style="font-size:16px">Enabled receiving methods</div><div id="receivingMethods"></div></div>
+<div class="section-label">ADD / UPDATE PAYMENT SOURCE</div><div class="card"><p class="sub">Connect a simulated payment source to your BEAST identity.</p><div class="field"><label>Payment source</label><select id="sourceType" class="control"><option>T-Kash</option><option>M-PESA</option><option>Airtel Money</option><option>Bank</option><option>Card</option><option>BEAST Wallet</option></select></div><div class="field"><label>Phone / account number</label><input id="sourceNumber" placeholder="Phone or account (letters and digits ok)"></div><div class="field"><label>Demo balance (KES)</label><input id="sourceBalance" type="number" min="0" value="0"></div><button class="btn" id="saveSource">SAVE PAYMENT SOURCE</button><div id="savedSources" class="list" style="margin-top:12px"></div></div>
+<div class="section-label">CHANGE BEAST PIN</div><div class="card"><div class="field"><label>Current PIN</label><input id="currentPin" type="password" inputmode="numeric" maxlength="6"></div><div class="field"><label>New PIN</label><input id="newPin" type="password" inputmode="numeric" maxlength="6"></div><div class="field"><label>Confirm new PIN</label><input id="confirmPin" type="password" inputmode="numeric" maxlength="6"></div><button class="btn" id="changePin">CHANGE PIN</button><div class="divider"></div><h3>Change BEAST password</h3><div class="field"><label>Current password</label><input id="currentPassword" type="password"></div><div class="field"><label>New password</label><input id="newPassword" type="password"></div><div class="field"><label>Confirm new password</label><input id="confirmPassword" type="password"></div><button class="btn" id="changePassword">CHANGE PASSWORD</button><div class="divider"></div><button class="btn danger" id="resetDemo">RESET DEMO DATA</button></div></section>
+</main>
+<nav class="bottomnav"><button class="active" data-page="home"><span>🏠</span>Home</button><button data-page="market"><span>🏪</span>Market</button><button data-page="business"><span>🏢</span>Business</button><button data-page="travel"><span>✈️</span>Travel</button><button data-page="send"><span>📤</span>Send</button><button id="bottomMore"><span>☰</span>Menu</button></nav>
+<div id="menuOverlay" class="overlay"><aside class="drawer"><div class="drawer-head"><strong>BEAST MENU</strong><button class="btn secondary smallbtn" id="closeMenu">×</button></div><div class="drawer-user"><b id="drawerName">KRISH KRISHNA</b><small style="display:block;color:var(--muted);margin-top:4px" id="drawerId">BEAST-017335</small></div><button class="menuitem" data-page="home"><span>🏠</span>Home</button><button class="menuitem" data-page="send"><span>📤</span>Send</button><button class="menuitem" data-page="bulk"><span>📥</span>Bulk Send</button><button class="menuitem" data-page="receive"><span>🤝</span>Receive</button><button class="menuitem" data-page="withdraw"><span>🏧</span>Withdraw</button><button class="menuitem" data-page="lipana"><span>🛒</span>Lipa Na</button><button class="menuitem" data-page="history"><span>🧾</span>History</button><button class="menuitem" data-page="statements"><span>📊</span>Statements</button><button class="menuitem" data-page="market"><span>🏪</span>Market</button><button class="menuitem" data-page="travel"><span>✈️</span>Travel</button><button class="menuitem" data-page="profile"><span>👤</span>Profile</button><button class="menuitem" data-page="security"><span>🛡️</span>Security</button><button class="menuitem" data-page="notifications"><span>🔔</span>Notifications</button><button class="menuitem" data-page="settings"><span>⚙️</span>Settings</button><button class="menuitem logout" id="logout"><span>🚪</span>Logout</button><div class="notice">Menu and screens are interactive. Payments are simulated locally.</div></aside></div>
+<div id="entry"><div class="entrybox"><div class="entrybrand"><div class="mark">B</div><h1>BEAST</h1><p>MONEY TRANSFER · KENYA PAYMENT PROTOTYPE</p></div>
+<div class="entry-step active" id="entry-register"><h2>Create your BEAST identity</h2><p class="sub">Register to explore the interactive wallet prototype.</p><div class="field"><label>Phone number</label><input id="regPhone" inputmode="tel" placeholder="0712345678 or +254712345678"></div><div class="field"><label>National ID number</label><input id="regId" inputmode="numeric" placeholder="National ID number"></div><div class="actions"><button class="btn secondary" id="scanName">◎ SCAN ID NAME</button></div><div class="namecard"><strong>AI ID NAME SCANNER · PREVIEW</strong><div id="scanNameDisplay">Name not scanned</div><input id="regName" placeholder="Full name (editable)"></div><div class="field"><label>Password</label><input id="regPassword" type="password" placeholder="Create password"></div><div class="field"><label>Confirm password</label><input id="regPassword2" type="password" placeholder="Repeat password"></div><div class="field"><label>PIN (4–6 digits)</label><input id="regPin" type="password" inputmode="numeric" maxlength="6" placeholder="Create PIN"></div><label class="checkline"><input type="checkbox" id="termsCheck"> I agree to the <a href="#terms" id="showTerms" style="color:var(--green)">Terms and Conditions</a>. This is a demo, not a real financial account.</label><div id="regError" class="notice bad hide"></div><button class="btn" style="width:100%;margin-top:15px" id="registerNext">REGISTER</button><p class="center legal">Already have an account? <button id="showLogin" style="background:none;border:0;color:var(--green);font-weight:850">Login</button></p></div>
+<div class="entry-step" id="entry-login"><h2>Login to BEAST</h2><p class="sub">Use the demo account you registered on this device.</p><div class="field"><label>Phone number</label><input id="loginPhone" placeholder="Phone number"></div><div class="field"><label>Password</label><input id="loginPassword" type="password" placeholder="Password"></div><div class="field"><label>PIN</label><input id="loginPin" type="password" inputmode="numeric" placeholder="PIN"></div><div id="loginError" class="notice bad hide"></div><button class="btn" style="width:100%" id="loginNext">LOGIN & CONTINUE</button><p class="center legal">New to BEAST? <button id="showRegister" style="background:none;border:0;color:var(--green);font-weight:850">Register</button></p></div>
+<div class="entry-step" id="entry-confirm"><h2>Confirm your details</h2><p class="sub">Review the identity before generating your demo BEAST ID.</p><div class="namecard"><strong>BEAST IDENTITY CARD</strong><div id="confirmName">—</div><small id="confirmPhone"></small><div class="divider"></div><small>National ID: <b id="confirmId"></b></small></div><div class="notice">Please check the details carefully. Name scanning is a visual demo; it does not read or verify a real national ID.</div><button class="btn" style="width:100%" id="confirmCreate">CONFIRM & OPEN BEAST</button><button class="btn secondary" style="width:100%;margin-top:8px" id="editDetails">EDIT DETAILS</button></div>
+<div class="entry-step" id="entry-terms"><h2>Terms and Conditions</h2><p class="legal">BEAST Money in this file is an interactive front-end prototype for testing layout and navigation. No live bank, mobile money, card, identity verification, or payment provider is connected. Names, account balances, fees, transaction references, and transaction outcomes are sample/demo data. Do not enter real passwords, PINs, or identity details. A production service needs a secure backend, lawful identity verification, provider authorization, encryption, fraud monitoring, audit logging, privacy notices, and regulatory review. You can return to registration without accepting these terms.</p><button class="btn secondary" id="termsBack" style="width:100%;margin-top:14px">BACK TO REGISTRATION</button></div>
+</div></div>
+<div id="toast" style="position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:60;display:none;max-width:90vw;background:#123326;border:1px solid #2e8a61;color:#dffff0;padding:12px 16px;border-radius:13px;box-shadow:var(--shadow)"></div>
 <script>
-// STATE
-const S = {
-  isLogged: false,
-  name: 'KRISH KRISHNA',
-  beastId: 'BEAST-017335',
-  balance: 12450,
-  tx: [
-    { n: 'Payment received', w: '2 min ago', a: 500 },
-    { n: 'Sent to Sarah', w: 'Today', a: -2000 }
-  ]
-};
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const money=n=>'KES '+(Number(n)||0).toLocaleString('en-KE',{minimumFractionDigits:2,maximumFractionDigits:2});
+const sampleTransactions=[{type:'Withdraw',sign:'-',amount:500,detail:'Agent cash withdrawal',recipient:'Demo agent',source:'M-PESA',ref:'BST-03117270-424',date:'18/10/2026, 08:58:37',fee:7,provider:29},{type:'Buyer Payment',sign:'+',amount:100,detail:'Buyer payment from Alice Njeri via wallet',recipient:'KRISH KRISHNA',source:'M-PESA',ref:'BST-13494472-351',date:'13/10/2026, 20:44:54',fee:7,provider:0}];
+const defaultData=()=>({name:'KRISH KRISHNA',phone:'0712345678',id:'12345678',beastId:'BEAST-017335',balance:7564,pin:'1234',password:'beastdemo',sources:[{name:'M-PESA',number:'0712345678',balance:2500},{name:'BEAST Wallet',number:'BEAST-017335',balance:7564},{name:'Airtel Money',number:'',balance:0},{name:'T-Kash',number:'',balance:0},{name:'Bank',number:'Equity Bank •••• 4321',balance:0},{name:'Card',number:'Visa •••• 4321',balance:0}],receiving:[{name:'BEAST Wallet',destination:'BEAST-017335',on:true},{name:'Pochi la Biashara',destination:'0712345678',on:true},{name:'Till',destination:'—',on:false},{name:'PayBill',destination:'—',on:false},{name:'Bank Account',destination:'—',on:false},{name:'Card',destination:'—',on:false}],transactions:sampleTransactions.slice(),registered:false});
+let data=defaultData(),recipientVerified=false,withdrawAgentVerified=false,lipaVerified=false,buyerAccount='',agentVerified=false,bulkRows=[];
+function toast(msg){const el=$('#toast');el.textContent=msg;el.style.display='block';clearTimeout(window._toast);window._toast=setTimeout(()=>el.style.display='none',2800)}
+function save(){try{localStorage.setItem('beastMoneyDemo',JSON.stringify(data))}catch(e){}}
+function load(){try{const x=JSON.parse(localStorage.getItem('beastMoneyDemo'));if(x&&x.name)data={...defaultData(),...x}}catch(e){}}
+function showEntry(step){$$('.entry-step').forEach(x=>x.classList.remove('active'));$('#entry-'+step).classList.add('active');$('#entry').style.display='flex'}
+function hideEntry(){$('#entry').style.display='none';renderProfile();showPage('home')}
+function showPage(id){$$('.page').forEach(p=>p.classList.toggle('active',p.id===id));$$('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));$('#menuOverlay').classList.remove('show');window.scrollTo({top:0,behavior:'smooth'});if(id==='history')renderHistory();if(id==='statements')renderStatements();if(id==='settings')renderSettings();if(id==='profile')renderProfile();if(id==='balance'){$('#balId').value='';$('#balName').value='';$('#balPin').value='';$('#balanceResult').classList.add('hide')}}
+function notify(msg){const el=$('#dynamicNotifications');if(el){const d=document.createElement('div');d.className='item';d.innerHTML='<span>🔔</span><div class="grow"><b></b><small></small></div>';d.querySelector('b').textContent=msg;d.querySelector('small').textContent=new Date().toLocaleString();el.prepend(d)}$('#noticeCount').textContent='1';}
+function renderProfile(){['profileName','helloName','drawerName'].forEach(id=>$('#'+id).textContent=data.name);$('#profileBeastId').textContent=data.beastId;$('#drawerId').textContent=data.beastId;$('#profilePhone').textContent=data.phone;$('#profileInternational').textContent=international(data.phone);$('#profileId').textContent=data.id;$('#profileBalance').textContent=money(data.balance);$('#homeBalance').textContent=money(data.balance)}
+function international(p){let d=(p||'').replace(/\D/g,'');if(d.startsWith('254'))return '+'+d;if(d.startsWith('0'))return '+254'+d.slice(1);return p||'—'}
+function renderHistory(){const list=$('#historyList');list.innerHTML='';data.transactions.forEach(t=>{const e=document.createElement('div');e.className='item';const sign=t.sign||'-';e.innerHTML='<span style="font-size:22px">'+(sign==='+'?'↙':'↗')+'</span><div class="grow"><b></b><small></small><small></small><small></small><small></small></div><div class="amount"></div>';e.querySelector('.grow b').textContent=t.type;e.querySelectorAll('small')[0].textContent=t.detail;e.querySelectorAll('small')[1].textContent='Recipient: '+(t.recipient||'—')+' · Source: '+(t.source||'BEAST Wallet');e.querySelectorAll('small')[2].textContent='Reference: '+(t.ref||'BST-DEMO');e.querySelectorAll('small')[3].textContent=(t.date||new Date().toLocaleString())+' · BEAST fee: '+money(t.fee||0)+' · Provider: '+money(t.provider||0);const a=e.querySelector('.amount');a.textContent=(sign==='+'?'+':'−')+' '+money(t.amount);a.className='amount '+(sign==='+'?'positive':'negative');list.append(e)})}
+function renderStatements(){renderHistory();$('#txCount').textContent=data.transactions.length;const list=$('#statementActivity');list.innerHTML='';data.transactions.slice(0,8).forEach(t=>{const e=document.createElement('div');e.className='item';e.innerHTML='<span>🧾</span><div class="grow"><b></b><small></small><small></small></div><div class="amount"></div>';e.querySelector('b').textContent=t.type;e.querySelectorAll('small')[0].textContent=t.detail;e.querySelectorAll('small')[1].textContent='Ref: '+(t.ref||'BST-DEMO')+' · '+(t.date||'Just now');e.querySelector('.amount').textContent=(t.sign==='+'?'+':'−')+' '+money(t.amount);e.querySelector('.amount').className='amount '+(t.sign==='+'?'positive':'negative');list.append(e)})}
+function renderSettings(){const rm=$('#receivingMethods');rm.innerHTML='';data.receiving.forEach(r=>{const e=document.createElement('div');e.className='balance-source';e.innerHTML='<div><b></b><small style="display:block;color:var(--muted)"></small></div><span class="pill"></span>';e.querySelector('b').textContent=r.name;e.querySelector('small').textContent=r.destination;e.querySelector('.pill').textContent=r.on?'ON':'OFF';e.querySelector('.pill').style.color=r.on?'var(--green)':'var(--muted)';rm.append(e)});const ss=$('#savedSources');ss.innerHTML='';data.sources.forEach(s=>{const e=document.createElement('div');e.className='item';e.innerHTML='<span>💳</span><div class="grow"><b></b><small></small></div><b></b>';e.querySelectorAll('b')[0].textContent=s.name;e.querySelector('small').textContent=s.number||'Not linked';e.querySelectorAll('b')[1].textContent=money(s.balance);ss.append(e)})}
+function addTx(type,amount,sign,detail,source,recipient,fee=0,provider=0){const ref='BST-'+Math.floor(10000000+Math.random()*89999999)+'-'+Math.floor(100+Math.random()*899);data.transactions.unshift({type,amount:Number(amount),sign,detail,source,recipient,ref,date:new Date().toLocaleString('en-GB'),fee,provider});if(data.transactions.length>100)data.transactions.length=100;save();renderProfile();notify(type+' '+(sign==='+'?'received':'recorded')+' in demo');}
+function setFee(input,amount,fee,total){const n=Math.max(0,Number($(input).value)||0),f=n?Math.min(50,Math.max(0,Math.ceil(n/1000)*7)):0;$(amount).textContent=money(n);$(fee).textContent=money(f);if(total)$(total).textContent=money(n+f);return {n,f,total:n+f}}
+function validPhone(v){return /^(?:0[17]\d{8}|\+254[17]\d{8}|254[17]\d{8}|BEAST-\d{1,12}|[A-Za-z0-9-]{5,30})$/i.test(v.trim())}
+function sourceBalance(name){const s=data.sources.find(x=>x.name.toLowerCase()===name.toLowerCase());return s?Number(s.balance)||0:0}
+function deductSource(name,amount){const s=data.sources.find(x=>x.name.toLowerCase()===name.toLowerCase());if(name==='BEAST Wallet'){if(data.balance<amount)return false;data.balance-=amount;if(s)s.balance=data.balance;return true}if(s){if(s.balance<amount)return false;s.balance-=amount;return true}return false}
+function verifyPin(v){return String(v||'')===String(data.pin)}
+// Navigation and menu
+$$('[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));$('#openMenu').onclick=()=>$('#menuOverlay').classList.add('show');$('#bottomMore').onclick=()=>$('#menuOverlay').classList.add('show');$('#closeMenu').onclick=()=>$('#menuOverlay').classList.remove('show');$('#menuOverlay').addEventListener('click',e=>{if(e.target===$('#menuOverlay'))$('#menuOverlay').classList.remove('show')});$('#logout').onclick=()=>{showEntry('login');$('#menuOverlay').classList.remove('show');toast('Demo session locked. Verify your identity.')};
+// Registration / login
+$('#scanName').onclick=()=>{const raw=$('#regName').value.trim()||'KRISH KRISHNA';$('#regName').value=raw.toUpperCase();$('#scanNameDisplay').textContent=$('#regName').value;toast('Demo scanner preview: edit the displayed name if needed.')};$('#regName').addEventListener('input',()=>$('#scanNameDisplay').textContent=$('#regName').value||'Name not scanned');$('#showLogin').onclick=()=>showEntry('login');$('#showRegister').onclick=()=>showEntry('register');$('#showTerms').onclick=e=>{e.preventDefault();showEntry('terms')};$('#termsBack').onclick=()=>showEntry('register');$('#registerNext').onclick=()=>{const phone=$('#regPhone').value.trim(),id=$('#regId').value.trim(),name=$('#regName').value.trim(),pw=$('#regPassword').value,pw2=$('#regPassword2').value,pin=$('#regPin').value;let err='';if(!validPhone(phone))err='Enter a valid phone number or account identifier.';else if(!/^\d{5,12}$/.test(id))err='Enter a national ID with 5–12 digits.';else if(name.length<3)err='Scan or enter the full name.';else if(pw.length<6)err='Password must contain at least 6 characters.';else if(pw!==pw2)err='Passwords do not match.';else if(!/^\d{4,6}$/.test(pin))err='PIN must contain 4–6 digits.';else if(!$('#termsCheck').checked)err='Please accept the demo terms and conditions.';if(err){$('#regError').textContent=err;$('#regError').classList.remove('hide');return}data.name=name.toUpperCase();data.phone=phone;data.id=id;data.pin=pin;data.password=pw;data.beastId='BEAST-'+String(Math.floor(100000+Math.random()*899999));data.sources[1]={name:'BEAST Wallet',number:data.beastId,balance:data.balance};$('#confirmName').textContent=data.name;$('#confirmPhone').textContent=data.phone+' · '+international(data.phone);$('#confirmId').textContent=data.id;showEntry('confirm')};$('#editDetails').onclick=()=>showEntry('register');$('#confirmCreate').onclick=()=>{data.registered=true;save();hideEntry();toast('BEAST ID created for this local demo: '+data.beastId)};$('#loginNext').onclick=()=>{if($('#loginPhone').value.trim()!==data.phone||$('#loginPassword').value!==data.password||$('#loginPin').value!==data.pin){$('#loginError').textContent='Details did not match the local demo account. Use your registered phone, password and PIN.';$('#loginError').classList.remove('hide');return}$('#loginError').classList.add('hide');hideEntry();toast('Demo login successful.')};
+// Balance
+$('#checkBalance').onclick=()=>{if($('#balId').value.trim()!==data.id||$('#balName').value.trim().toLowerCase()!==data.name.toLowerCase()||!verifyPin($('#balPin').value)){toast('Identity details did not match.');return}const wrap=$('#balanceSources');wrap.innerHTML='';data.sources.forEach(s=>{const e=document.createElement('div');e.className='balance-source';e.innerHTML='<div><b></b><small style="display:block;color:var(--muted)"></small></div><b></b>';e.querySelector('b').textContent=s.name;e.querySelector('small').textContent=s.number||'No linked account';e.querySelectorAll('b')[1].textContent=money(s.name==='BEAST Wallet'?data.balance:s.balance);wrap.append(e)});data.receiving.forEach(r=>{if(['Pochi la Biashara','Till','PayBill'].includes(r.name)){const e=document.createElement('div');e.className='balance-source';e.innerHTML='<div><b></b><small style="display:block;color:var(--muted)"></small></div><span class="pill"></span>';e.querySelector('b').textContent=r.name;e.querySelector('small').textContent=r.destination;e.querySelector('.pill').textContent=r.on?'ENABLED':'OFF';wrap.append(e)}});$('#balanceResult').classList.remove('hide')};
+// Send
+$('#verifyRecipient').onclick=()=>{const v=$('#recipient').value.trim();if(!validPhone(v)){recipientVerified=false;$('#recipientCard').classList.add('hide');toast('Enter a valid phone number, account, or BEAST ID.');return}recipientVerified=true;$('#recipientName').textContent=v.toUpperCase().startsWith('BEAST-')?(v.toUpperCase()==data.beastId?data.name:'BEAST Demo Recipient'):'Demo Recipient';$('#recipientId').textContent=v;$('#recipientCard').classList.remove('hide');toast('Demo recipient verified. No live identity lookup occurred.')};$('#sendAmount').addEventListener('input',()=>setFee('#sendAmount','#sendCostAmount','#sendFee','#sendTotal'));$('#sendAuthorize').onclick=()=>{const c=setFee('#sendAmount','#sendCostAmount','#sendFee','#sendTotal');if(!recipientVerified)return toast('Verify the recipient first.');if(c.n<=0)return toast('Enter a valid amount.');if(!verifyPin($('#sendPin').value))return toast('Incorrect demo PIN.');if(!deductSource($('#sendSource').value,c.total))return toast('Insufficient demo balance in selected source.');addTx('Send',c.n,'-', 'Money sent to '+$('#recipient').value,$('#sendSource').value,$('#recipientName').textContent,c.f,0);save();toast('Demo transfer recorded; no money moved.');$('#sendPin').value='';showPage('history')};
+// Bulk send
+$('#addBulkLine').onclick=()=>{$('#bulkText').value+=($('#bulkText').value.trim()?'\n':'')+'0712345678,100';$('#bulkText').focus()};$('#clearBulk').onclick=()=>{$('#bulkText').value='';bulkRows=[];$('#bulkPreview').innerHTML='';$('#bulkFee').textContent=money(0);$('#bulkTotal').textContent='0 recipients · KES 0.00'};$('#parseBulk').onclick=()=>{const lines=$('#bulkText').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);if(lines.length>500)return toast('Maximum 500 recipients per batch.');bulkRows=[];const errors=[];lines.forEach((line,i)=>{const parts=line.split(',').map(x=>x.trim());if(parts.length!==2||!validPhone(parts[0])||!Number.isFinite(Number(parts[1]))||Number(parts[1])<=0){errors.push('Line '+(i+1)+' needs a valid recipient,amount.');return}bulkRows.push({recipient:parts[0],amount:Number(parts[1]),name:parts[0].toUpperCase().startsWith('BEAST-')?'BEAST Demo Recipient':'Demo Recipient'})});const p=$('#bulkPreview');p.innerHTML='';bulkRows.slice(0,30).forEach((r,i)=>{const e=document.createElement('div');e.className='item';e.innerHTML='<span class="stepnum"></span><div class="grow"><b></b><small></small></div><b></b>';e.querySelector('.stepnum').textContent=i+1;e.querySelectorAll('b')[0].textContent=r.name;e.querySelector('small').textContent=r.recipient;e.querySelectorAll('b')[1].textContent=money(r.amount);p.append(e)});const sum=bulkRows.reduce((a,r)=>a+r.amount,0),fee=bulkRows.reduce((a,r)=>a+Math.min(50,Math.ceil(r.amount/1000)*7),0);$('#bulkFee').textContent=money(fee);$('#bulkTotal').textContent=bulkRows.length+' recipients · '+money(sum+fee)+' total';if(errors.length)toast(errors.slice(0,2).join(' '));else toast(bulkRows.length+' recipient(s) parsed.')};$('#sendBulk').onclick=()=>{if(!bulkRows.length)return toast('Parse the list first.');if(!verifyPin($('#bulkPin').value))return toast('Incorrect demo PIN.');const total=bulkRows.reduce((a,r)=>a+r.amount+Math.min(50,Math.ceil(r.amount/1000)*7),0);if(!deductSource($('#bulkSource').value,total))return toast('Insufficient demo source balance. Batch stopped before sending.');bulkRows.forEach(r=>addTx('Bulk Send',r.amount,'-', 'Bulk recipient '+r.recipient,$('#bulkSource').value,r.name,Math.min(50,Math.ceil(r.amount/1000)*7),0));save();toast('Demo batch recorded for '+bulkRows.length+' recipient(s); no money moved.');$('#bulkPin').value='';showPage('history')};
+// Receive tabs
+$$('[data-receivetab]').forEach(b=>b.onclick=()=>{ $$('[data-receivetab]').forEach(x=>x.classList.toggle('active',x===b));$$('.receive-panel').forEach(x=>x.classList.add('hide'));$('#receive-'+b.dataset.receivetab).classList.remove('hide')});function buyerTab(t){$$('[data-buyertab]').forEach(x=>x.classList.toggle('active',x.dataset.buyertab===t));['login','account','pay'].forEach(x=>$('#buyer-'+x).classList.toggle('hide',x!==t))}$$('[data-buyertab]').forEach(b=>b.onclick=()=>buyerTab(b.dataset.buyertab));$('#buyerLogin').onclick=()=>{if(!$('#buyerName').value.trim()||!validPhone($('#buyerPhone').value.trim())||!$('#buyerId').value.trim()||!$('#buyerPassword').value||!$('#buyerPin').value)return toast('Complete the buyer demo login fields.');$('#buyerSignedName').textContent=$('#buyerName').value.trim();const a=$('#buyerAccounts');a.innerHTML='';['📱|M-PESA|Balance hidden','🐾|BEAST Wallet|BEAST Wallet','🏦|Bank Account|Equity Bank •••• linked bank account','💳|Card|Visa •••• 4321 linked card','📲|Airtel Money|Balance hidden','📲|T-Kash|Hidden'].forEach((line,i)=>{const [icon,name,desc]=line.split('|');const e=document.createElement('button');e.className='item';e.style.color='var(--text)';e.style.textAlign='left';e.innerHTML='<span style="font-size:24px"></span><div class="grow"><b></b><small></small></div><span class="pill">SELECT</span>';e.querySelector('span').textContent=icon;e.querySelector('b').textContent=name;e.querySelector('small').textContent=desc;e.onclick=()=>{buyerAccount=name;$$('#buyerAccounts .item').forEach(x=>x.style.borderColor='var(--line)');e.style.borderColor='var(--green)';$('#buyerAccountContinue').disabled=false};a.append(e)});buyerTab('account')};$('#buyerAccountContinue').onclick=()=>{if(!buyerAccount)return toast('Choose an account.');$('#buyerChosenAccount').value=buyerAccount;buyerTab('pay')};$('#buyerPayAmount').addEventListener('input',()=>{const n=Number($('#buyerPayAmount').value)||0;$('#buyerPayCost').textContent=n?money(n)+' amount + '+money(Math.min(50,Math.ceil(n/1000)*7))+' estimated fee.':'Enter an amount to calculate the buyer cost.'});$('#buyerPayAuthorize').onclick=()=>{const n=Number($('#buyerPayAmount').value);if(!buyerAccount||n<=0)return toast('Choose account and enter amount.');if($('#buyerPayPin').value!==$('#buyerPin').value)return toast('Buyer PIN did not match.');addTx('Buyer Payment',n,'+','Buyer payment from '+$('#buyerSignedName').textContent+' via '+buyerAccount,buyerAccount,data.name,0,0);data.balance+=n;const wallet=data.sources.find(s=>s.name==='BEAST Wallet');if(wallet)wallet.balance=data.balance;save();toast('Demo buyer payment recorded; no money moved.');buyerTab('login');showPage('history')};
+$('#transferGo').onclick=()=>{const from=$('#transferFrom').value,to=$('#transferTo').value,n=Number($('#transferAmount').value);if(from===to)return toast('Choose two different accounts.');if(n<=0)return toast('Enter a valid amount.');if(from==='BEAST Wallet'&&data.balance<n)return toast('Insufficient BEAST demo balance.');if(from==='BEAST Wallet')data.balance-=n;if(to==='BEAST Wallet')data.balance+=n;addTx('Account Transfer',n, to==='BEAST Wallet'?'+':'-',from+' to '+to,from,to,0,0);$('#transferMessage').innerHTML='<div class="notice ok">Demo transfer recorded. No provider transaction occurred.</div>';save()};$('#verifyAgentCustomer').onclick=()=>{agentVerified=!!($('#agentNumber').value.trim()&&validPhone($('#agentCustomerPhone').value.trim())&&$('#agentCustomerId').value.trim());$('#agentMessage').innerHTML='<div class="notice '+(agentVerified?'ok':'bad')+'">'+(agentVerified?'Demo agent and customer fields accepted.':'Complete agent, customer phone and National ID.')+'</div>'};$('#agentAuthorize').onclick=()=>{const n=Number($('#agentAmount').value);if(!agentVerified)return toast('Verify agent and customer first.');if(n<=0)return toast('Enter a valid amount.');data.balance+=n;const w=data.sources.find(s=>s.name==='BEAST Wallet');if(w)w.balance=data.balance;addTx('Agent Deposit',n,'+','Agent cash deposit','Agent',data.name,0,0);save();toast('Demo agent deposit recorded.');showPage('history')};
+// Withdraw
+$('#verifyWithdrawAgent').onclick=()=>{withdrawAgentVerified=!!$('#withdrawAgent').value.trim();$('#withdrawAgentStatus').textContent=withdrawAgentVerified?'Demo accepts this agent ID; real agents require provider verification.':'Enter an agent ID or code.';$('#withdrawAgentStatus').style.color=withdrawAgentVerified?'var(--green)':'var(--red)'};$('#withdrawAmount').addEventListener('input',()=>setFee('#withdrawAmount','#withdrawCost','#withdrawFee'));$('#withdrawAuthorize').onclick=()=>{const n=Number($('#withdrawAmount').value),f=n?Math.min(50,Math.ceil(n/1000)*7):0;if(!withdrawAgentVerified)return toast('Verify the agent first.');if(n<=0)return toast('Enter a valid amount.');if(!verifyPin($('#withdrawPin').value))return toast('Incorrect demo PIN.');if(!deductSource($('#withdrawSource').value,n+f))return toast('Insufficient demo source balance.');addTx('Withdraw',n,'-','Agent cash withdrawal',''+$('#withdrawSource').value,$('#withdrawAgent').value,f,0);save();toast('Demo withdrawal recorded; no cash was dispensed.');showPage('history')};
+// Lipa Na dynamic destination
+function lipaFields(){const type=$('#lipaType').value,wrap=$('#lipaDestinationFields');const fields={pochi:[['Business phone / BEAST number','Phone number or BEAST ID']],till:[['Till number','Till number']],bill:[['Business number','Business number'],['Account number','Account number (letters and numbers allowed)']],account:[['Account / reference','Letters and numbers allowed']],beast:[['BEAST ID','BEAST- followed by digits']]};wrap.innerHTML='';(fields[type]||fields.account).forEach(([label,ph],i)=>{const d=document.createElement('div');d.className='field';const l=document.createElement('label');l.textContent=label;const inp=document.createElement('input');inp.id='lipaDest'+i;inp.placeholder=ph;d.append(l,inp);wrap.append(d)});lipaVerified=false;$('#lipaVerified').classList.add('hide')};$('#lipaType').onchange=lipaFields;lipaFields();$('#lipaAmount').addEventListener('input',()=>setFee('#lipaAmount','#lipaCost','#lipaFee','#lipaTotal'));$('#verifyLipa').onclick=()=>{const v=$('#lipaDest0')?.value.trim();lipaVerified=!!v&&(/^[A-Za-z0-9+.-]{3,40}$/.test(v));if(lipaVerified){$('#lipaBusinessName').textContent=$('#lipaType').value==='beast'?'BEAST Demo Recipient':'Demo Business / Destination';$('#lipaVerified').classList.remove('hide');toast('Destination accepted for demo only.')}else toast('Enter a valid destination. No live lookup was performed.')};$('#lipaAuthorize').onclick=()=>{const n=Number($('#lipaAmount').value),f=n?Math.min(50,Math.ceil(n/1000)*7):0;if(!lipaVerified)return toast('Verify destination first.');if(n<=0)return toast('Enter a valid amount.');if(!verifyPin($('#lipaPin').value))return toast('Incorrect demo PIN.');if(!deductSource($('#lipaMethod').value,n+f))return toast('Insufficient demo balance.');addTx('Lipa Na',n,'-','Business payment to '+($('#lipaDest0')?.value||'destination'),$('#lipaMethod').value,$('#lipaBusinessName').textContent,f,0);save();toast('Demo payment recorded; no money moved.');showPage('history')};
+// Settings
+$('#saveReceiveMethod').onclick=()=>{const name=$('#receiveMethod').value,dest=$('#receiveDestination').value.trim();if(name!=='BEAST Wallet'&&!dest)return toast('Enter the destination for this receiving method.');let r=data.receiving.find(x=>x.name===name);if(!r){r={name,destination:dest,on:true};data.receiving.push(r)}else{r.destination=name==='BEAST Wallet'?data.beastId:dest;r.on=true}save();renderSettings();toast('Receiving method saved in this browser.')};$('#saveSource').onclick=()=>{const name=$('#sourceType').value,number=$('#sourceNumber').value.trim(),balance=Number($('#sourceBalance').value)||0;let s=data.sources.find(x=>x.name===name);if(s){s.number=number;s.balance=balance}else data.sources.push({name,number,balance});if(name==='BEAST Wallet')data.balance=balance;save();renderSettings();renderProfile();toast('Demo payment source saved.')};$('#changePin').onclick=()=>{if($('#currentPin').value!==data.pin)return toast('Current PIN is incorrect.');if(!/^\d{4,6}$/.test($('#newPin').value)||$('#newPin').value!==$('#confirmPin').value)return toast('New PIN must be 4–6 digits and match confirmation.');data.pin=$('#newPin').value;save();['currentPin','newPin','confirmPin'].forEach(id=>$('#'+id).value='');toast('Demo PIN changed locally. Production must use backend-secured hashing.')};$('#changePassword').onclick=()=>{if($('#currentPassword').value!==data.password)return toast('Current password is incorrect.');if($('#newPassword').value.length<6||$('#newPassword').value!==$('#confirmPassword').value)return toast('New password must be at least 6 characters and match.');data.password=$('#newPassword').value;save();['currentPassword','newPassword','confirmPassword'].forEach(id=>$('#'+id).value='');toast('Demo password changed locally. Production must use backend-secured hashing.')};$('#darkMode').onclick=()=>{document.documentElement.style.setProperty('--bg','#050907');document.documentElement.style.setProperty('--panel','#0b1512');toast('Dark mode enabled.')};$('#lightMode').onclick=()=>{document.documentElement.style.setProperty('--bg','#e9f3ee');document.documentElement.style.setProperty('--panel','#ffffff');document.documentElement.style.setProperty('--panel2','#f4faf6');document.documentElement.style.setProperty('--text','#10231a');document.documentElement.style.setProperty('--muted','#536c60');$$('.card').forEach(c=>c.style.color='#10231a');toast('Light preview enabled. Reload restores the dark theme.')};$('#alertsToggle').onchange=()=>toast('Transaction alerts '+($('#alertsToggle').checked?'enabled':'disabled')+' in this preview.');$('#visibilityToggle').onchange=()=>toast('Screen visibility preview updated.');$('#bioBtn').onclick=()=>toast('Biometric authentication is a future integration placeholder.');$('#resetDemo').onclick=()=>{if(confirm('Reset all local BEAST demo data?')){localStorage.removeItem('beastMoneyDemo');data=defaultData();save();renderProfile();renderSettings();renderHistory();toast('Demo data reset.');showEntry('register')}};
+// Travel enquiry demo: stored only in this browser/device.
+function travelLoad(){try{return JSON.parse(localStorage.getItem('beastTravelDemo')||'[]')}catch(e){return []}}
+function travelRender(){const box=$('#travelRequests');if(!box)return;const rows=travelLoad();box.innerHTML='';if(!rows.length){box.innerHTML='<div class="notice">No travel enquiries saved on this device yet.</div>';return}rows.forEach(r=>{const item=document.createElement('div');item.className='item';const grow=document.createElement('div');grow.className='grow';const b=document.createElement('b');b.textContent=r.type+' · '+(r.from||'Not specified')+' → '+(r.to||'Not specified');const small=document.createElement('small');small.textContent='Date: '+(r.date||'Not specified')+' · Travellers/guests: '+r.people+' · Contact: '+r.phone;const status=document.createElement('small');status.textContent='Saved locally · Not booked';grow.append(b,small,status);item.append(grow);box.append(item)})}
+$$('[data-traveltype]').forEach(b=>b.addEventListener('click',()=>{ $('#travelType').value=b.dataset.traveltype; $('#travelType').scrollIntoView({behavior:'smooth',block:'center'}); }));
+$('#travelRequest').addEventListener('click',()=>{const type=$('#travelType').value,from=$('#travelFrom').value.trim(),to=$('#travelTo').value.trim(),date=$('#travelDate').value,people=Number($('#travelPeople').value)||1,phone=$('#travelPhone').value.trim();if(!to||!phone)return toast('Enter a destination and contact phone to save the enquiry.');if(people<1||people>30)return toast('Enter between 1 and 30 travellers or guests.');const rows=travelLoad();rows.unshift({type,from,to,date,returnDate:$('#travelReturn').value,people,budget:$('#travelBudget').value,phone,notes:$('#travelNotes').value.trim(),createdAt:Date.now()});try{localStorage.setItem('beastTravelDemo',JSON.stringify(rows))}catch(e){}$('#travelMessage').innerHTML='<div class="notice ok">Travel enquiry saved on this device. This is not a confirmed booking.</div>';travelRender();toast('Travel enquiry saved locally.')});
+travelRender();
 
-// NAVIGATION
-function toggleMenu() {
-  document.getElementById('drawerMenu').classList.toggle('open');
-  document.getElementById('drawerOverlay').classList.toggle('open');
+const MARKET_TYPES=[
+{name:'BEAST Marketplace',price:500,desc:'Sell physical products and promote listings.'},
+{name:'BEAST Academy',price:300,desc:'Publish courses and learning content.'},
+{name:'BEAST Business Hub',price:300,desc:'Business profile, customer enquiries and tools.'},
+{name:'BEAST Ads & Promotions',price:1000,desc:'Create paid promotional campaigns.'},
+{name:'BEAST Digital Services',price:500,desc:'Offer freelance and professional services.'},
+{name:'BEAST AI Premium',price:499,desc:'Premium AI tools; working AI services require backend integration.'},
+{name:'BEAST Digital Shop',price:300,desc:'Sell downloadable digital products.'},
+{name:'BEAST Travel & Booking',price:500,desc:'List travel, accommodation and booking services.'},
+{name:'BEAST Food & Delivery',price:500,desc:'List food, groceries and local delivery items.'},
+{name:'BEAST Jobs & Opportunities',price:500,desc:'Post jobs and professional opportunities.'},
+{name:'BEAST Airtime & Payments',price:500,desc:'Payment-service listing; provider agreements required.'},
+{name:'BEAST Premium Membership',price:199,desc:'Premium membership tools and benefits.'}
+];
+let marketData={businesses:[],products:[]};
+function marketLoad(){try{const x=JSON.parse(localStorage.getItem('beastMarketDemo')||'{}');marketData={businesses:Array.isArray(x.businesses)?x.businesses:[],products:Array.isArray(x.products)?x.products:[]}}catch(e){}}
+function marketSave(){try{localStorage.setItem('beastMarketDemo',JSON.stringify(marketData))}catch(e){}}
+function marketEsc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function marketDate(v){return new Date(v).toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'})}
+function marketRenderTypes(){const sel=$('#marketType');sel.innerHTML='';MARKET_TYPES.forEach((t,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=t.name+' — KSh '+t.price+'/month';sel.append(o)});marketUpdatePlan()}
+function marketUpdatePlan(){const t=MARKET_TYPES[Number($('#marketType').value)||0];$('#marketPlanInfo').textContent='7 days free. After the trial: KSh '+t.price+'/month for '+t.name+'. This prototype will not charge you automatically.'}
+function marketRenderBusinesses(){const box=$('#marketBusinesses');box.innerHTML='';if(!marketData.businesses.length){box.innerHTML='<div class="notice">No business registered on this device yet.</div>';return}marketData.businesses.forEach(b=>{const elapsed=Math.max(0,Math.floor((Date.now()-b.startedAt)/86400000));const days=Math.max(0,7-elapsed);const expired=days===0;const row=document.createElement('div');row.className='item market-business-row';const grow=document.createElement('div');grow.className='grow';const title=document.createElement('b');title.textContent=b.name;const desc=document.createElement('small');desc.textContent=b.type+' · Owner: '+b.owner+' · '+b.phone;const status=document.createElement('small');status.textContent=expired?'Trial ended · subscription not charged':'Free trial: '+days+' day(s) remaining';const price=document.createElement('small');price.textContent='KSh '+b.price+'/month · Started '+marketDate(b.startedAt);grow.append(title,desc,status,price);const badge=document.createElement('span');badge.className='pill';badge.textContent=expired?'TRIAL ENDED':'FREE TRIAL';row.append(grow,badge);box.append(row)})}
+function marketRenderProducts(){const box=$('#marketProducts');box.innerHTML='';const q=($('#marketSearch').value||'').trim().toLowerCase();const rows=marketData.products.filter(p=>(p.name+' '+p.business+' '+p.type).toLowerCase().includes(q));$('#marketEmpty').classList.toggle('hide',rows.length>0);rows.forEach(p=>{const card=document.createElement('article');card.className='card market-product';if(p.image&&/^https?:\/\//i.test(p.image)){const img=document.createElement('img');img.src=p.image;img.alt=p.name;img.loading='lazy';img.onerror=()=>img.remove();card.append(img)}const body=document.createElement('div');body.className='productbody';const title=document.createElement('strong');title.textContent=p.name;const badge=document.createElement('span');badge.className='market-badge';badge.textContent=p.type;const price=document.createElement('div');price.className='market-price';price.textContent=money(p.price);const shop=document.createElement('small');shop.style.color='var(--muted)';shop.textContent=p.business+' · Stock: '+p.stock;const buy=document.createElement('button');buy.className='btn secondary';buy.textContent='Demo order';buy.onclick=()=>{if(p.stock<=0){toast('This product is out of stock.');return}const ok=confirm('Demo order for '+p.name+' at '+money(p.price)+'? No real payment will be taken.');if(!ok)return;p.stock--;marketSave();marketRenderProducts();$('#marketOrderMessage').innerHTML='<div class="notice ok">Demo order recorded for '+marketEsc(p.name)+'. No payment or delivery was made.</div>';};body.append(title,badge,price,shop,buy);card.append(body);box.append(card)})}
+function marketTab(t){$$('[data-markettab]').forEach(b=>b.classList.toggle('active',b.dataset.markettab===t));$$('.market-panel').forEach(p=>p.classList.toggle('hide',p.id!=='market-'+t));if(t==='shop')marketRenderProducts()}
+$$('[data-markettab]').forEach(b=>b.addEventListener('click',()=>marketTab(b.dataset.markettab)));
+$('#marketType').addEventListener('change',marketUpdatePlan);$('#marketSearch').addEventListener('input',marketRenderProducts);
+$('#marketRegister').onclick=()=>{const type=MARKET_TYPES[Number($('#marketType').value)||0],name=$('#marketBusinessName').value.trim(),owner=$('#marketOwnerName').value.trim(),phone=$('#marketPhone').value.trim(),description=$('#marketDescription').value.trim(),product=$('#marketProductName').value.trim(),price=Number($('#marketProductPrice').value),stock=Number($('#marketProductStock').value);if(!name||!owner||!phone)return toast('Enter business name, owner name and phone number.');if(!$('#marketTerms').checked)return toast('Please confirm the demo trial terms.');if(product&&(!Number.isFinite(price)||price<=0||!Number.isInteger(stock)||stock<0))return toast('Enter a valid product price and stock quantity.');const id='BM-'+Date.now().toString(36).toUpperCase();const business={id,type:type.name,price:type.price,name,owner,phone,description,startedAt:Date.now()};marketData.businesses.unshift(business);if(product)marketData.products.unshift({id:'MP-'+Date.now().toString(36).toUpperCase(),businessId:id,business:name,type:type.name,name:product,price,stock,image:$('#marketProductImage').value.trim()});marketSave();marketRenderBusinesses();marketRenderProducts();$('#marketMessage').innerHTML='<div class="notice ok">Business registered in this browser. Your 7-day demo trial has started. '+(product?'Your product is now listed in Shop.':'You can add a product by registering another business with product details.')+' No real billing is enabled.</div>';['marketBusinessName','marketOwnerName','marketPhone','marketDescription','marketProductName','marketProductPrice','marketProductImage'].forEach(id=>$('#'+id).value='');$('#marketProductStock').value='1';$('#marketTerms').checked=false;toast('Business registered with a 7-day local demo trial.')};
+marketLoad();marketRenderTypes();marketRenderBusinesses();marketRenderProducts();
+
+const BIZ_TYPES=[
+{name:'BEAST Marketplace',price:500,desc:'Sell physical products and promote listings.'},
+{name:'BEAST Academy',price:300,desc:'Publish courses and learning content.'},
+{name:'BEAST Business Hub',price:300,desc:'Business profile, customer enquiries and business tools.'},
+{name:'BEAST Ads & Promotions',price:1000,desc:'Plan promotional campaigns and advertising.'},
+{name:'BEAST Digital Services',price:500,desc:'Offer freelance and professional services.'},
+{name:'BEAST AI Premium',price:499,desc:'Premium AI features; live AI requires backend integration.'},
+{name:'BEAST Digital Shop',price:300,desc:'Sell downloads, templates and digital products.'},
+{name:'BEAST Travel & Booking',price:500,desc:'Promote travel, accommodation and booking services.'},
+{name:'BEAST Food & Delivery',price:500,desc:'Promote food, groceries and local delivery.'},
+{name:'BEAST Jobs & Opportunities',price:500,desc:'Publish job posts and professional opportunities.'},
+{name:'BEAST Airtime & Payments',price:500,desc:'Payment-related listings; provider agreements are required.'},
+{name:'BEAST Premium Membership',price:199,desc:'Premium membership tools and benefits.'}
+];
+let bizData={businesses:[]}, bizSelected=0, bizCurrentTab='dashboard';
+function bizLoad(){try{const d=JSON.parse(localStorage.getItem('beastBusinessDashboard')||'{}');bizData={businesses:Array.isArray(d.businesses)?d.businesses:[]}}catch(e){bizData={businesses:[]}}}
+function bizSave(){try{localStorage.setItem('beastBusinessDashboard',JSON.stringify(bizData))}catch(e){toast('Could not save business data on this device.')}}
+function bizEscape(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function bizSetTab(name){bizCurrentTab=name;$$('[data-biz-tab]').forEach(b=>b.classList.toggle('active',b.dataset.bizTab===name));$$('.biz-panel').forEach(p=>p.classList.toggle('hide',p.id!=='biz-'+name));if(name==='dashboard')bizRenderRegistered();if(name==='shop')bizRenderShop()}
+function bizChoose(i){bizSelected=i;$('#bizType').value=String(i);bizUpdatePlan();bizSetTab('register')}
+function bizRenderTypes(){
+ const sel=$('#bizType');sel.innerHTML='';
+ BIZ_TYPES.forEach((t,i)=>{const opt=document.createElement('option');opt.value=String(i);opt.textContent=t.name+' — KSh '+t.price+'/month';sel.append(opt)});
+ $('#bizTypeCards').innerHTML=BIZ_TYPES.map((t,i)=>`<button type="button" class="card biz-service" data-biz-choose="${i}"><span class="icon">${['🏪','🎓','🏢','📢','🧰','🤖','🛍️','✈️','🍲','💼','📲','👑'][i]}</span><b>${bizEscape(t.name)}</b><small>${bizEscape(t.desc)}</small><span class="price">KSh ${t.price}/month</span><span class="trial">7-day free trial</span><span class="link">Register →</span></button>`).join('');
+ $$('[data-biz-choose]').forEach(b=>b.addEventListener('click',()=>bizChoose(Number(b.dataset.bizChoose))));
 }
-
-function showPage(id) {
-  document.querySelectorAll('main > div').forEach(el => el.hidden = true);
-  const page = document.getElementById('page-' + id);
-  if(page) page.hidden = false;
-  if(id === 'history') renderHistory();
-  if(id === 'statements') renderStatements();
-  window.scrollTo(0,0);
+function bizUpdatePlan(){const t=BIZ_TYPES[Number($('#bizType').value)||0];bizSelected=Number($('#bizType').value)||0;$('#bizPlanInfo').textContent='7 days free, then KSh '+t.price+'/month. No automatic payment is possible in this prototype.';$('#bizPlanDescription').textContent=t.desc;$('#bizRegisterHeading').textContent='Start your 7-day free trial';}
+function bizRenderRegistered(){
+ const box=$('#bizRegisteredList');if(!bizData.businesses.length){box.innerHTML='<div class="notice">No businesses registered here yet. Choose one of the 12 services above to start.</div>';return}
+ box.innerHTML=bizData.businesses.map(b=>{const elapsed=Math.max(0,Math.floor((Date.now()-b.startedAt)/86400000));const days=Math.max(0,7-elapsed);const ended=days===0;return `<div class="biz-list-row"><div><b>${bizEscape(b.name)}</b><small>${bizEscape(b.type)} · Owner: ${bizEscape(b.owner)} · ${bizEscape(b.phone)}</small><small>${ended?'7-day trial ended — subscription required to continue':'Free trial: '+days+' day(s) remaining'}</small><small>KSh ${b.price}/month · Started ${new Date(b.startedAt).toLocaleDateString('en-KE')}</small></div><span class="biz-status">${ended?'TRIAL ENDED':'FREE TRIAL'}</span></div>`}).join('');
 }
-
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('on');
-  setTimeout(() => t.classList.remove('on'), 2500);
+function bizRenderShop(){
+ const box=$('#bizShopProducts'),q=($('#bizShopSearch').value||'').trim().toLowerCase();
+ const products=(typeof marketData!=='undefined'&&Array.isArray(marketData.products))?marketData.products.filter(p=>(p.name+' '+p.business+' '+p.type).toLowerCase().includes(q)):[];
+ box.innerHTML=products.map(p=>`<article class="card"><b>${bizEscape(p.name)}</b><small>${bizEscape(p.business)} · ${bizEscape(p.type)}</small><strong style="color:var(--gold)">KSh ${Number(p.price||0).toLocaleString('en-KE')}</strong><small>Stock: ${Number(p.stock||0)}</small></article>`).join('');
+ $('#bizShopEmpty').classList.toggle('hide',products.length>0);
 }
+$$('[data-biz-tab]').forEach(b=>b.addEventListener('click',()=>bizSetTab(b.dataset.bizTab)));
+$('#bizType').addEventListener('change',bizUpdatePlan);
+$('#bizShopSearch').addEventListener('input',bizRenderShop);
+$('#bizRegisterBtn').addEventListener('click',()=>{
+ const type=BIZ_TYPES[Number($('#bizType').value)||0],name=$('#bizName').value.trim(),owner=$('#bizOwner').value.trim(),phone=$('#bizPhone').value.trim(),description=$('#bizDescription').value.trim();
+ if(!name||!owner||!phone)return toast('Enter business name, owner name and contact phone.');
+ if(!$('#bizTerms').checked)return toast('Please confirm the demo trial terms.');
+ const now=Date.now(),item={id:'BIZ-'+now.toString(36).toUpperCase(),type:type.name,price:type.price,name,owner,phone,description,startedAt:now};
+ bizData.businesses.unshift(item);bizSave();bizRenderRegistered();
+ $('#bizMessage').innerHTML='<div class="notice ok">Registration saved. Your 7-day free demo trial has started. After day 7, the listed monthly subscription would be due, but this prototype cannot collect payments or automatically restrict access.</div>';
+ ['bizName','bizOwner','bizPhone','bizDescription'].forEach(id=>$('#'+id).value='');$('#bizTerms').checked=false;
+ toast('Business registered with a 7-day demo trial.');bizSetTab('dashboard');
+});
+bizLoad();bizRenderTypes();bizRenderRegistered();
 
-// AUTH
-document.getElementById('loginForm').onsubmit = (e) => {
-  e.preventDefault();
-  loginSuccess();
-};
+// BEAST RIDE FLOW LOGIC
+document.querySelectorAll('.ride-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.ride-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        document.querySelectorAll('.ride-panel').forEach(p => p.classList.add('hide'));
+        document.getElementById('ride-' + tab.dataset.ridetab).classList.remove('hide');
+    });
+});
 
-document.getElementById('registerForm').onsubmit = (e) => {
-  e.preventDefault();
-  showPage('confirm');
-  document.getElementById('confName').textContent = document.getElementById('regName').value || 'John Doe';
-  document.getElementById('confPhone').textContent = document.getElementById('regPhone').value;
-  document.getElementById('confId').textContent = document.getElementById('regId').value;
-};
+// Add click listeners to the vehicle "Select" buttons
+document.querySelectorAll('.ride-list .btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Hide other panels and show driver details
+        document.getElementById('ride-book').classList.add('hide');
+        document.getElementById('ride-vehicles').classList.add('hide');
+        document.getElementById('ride-success').classList.add('hide');
+        document.getElementById('ride-details').classList.remove('hide');
+        
+        // Reset confirm button visibility
+        const confirmBtn = document.querySelector('#ride-details .btn');
+        if(confirmBtn) confirmBtn.classList.remove('hide');
+    });
+});
 
-function loginSuccess() {
-  S.isLogged = true;
-  showPage('home');
-  document.getElementById('bottomNav').hidden = false;
-  document.getElementById('userGreeting').textContent = S.name.split(' ')[0];
-  document.getElementById('userBeastId').textContent = S.beastId;
-  document.getElementById('walletBal').textContent = S.balance.toLocaleString();
-  renderHistory();
-}
-
-// REGISTRATION AI
-function runAIScanner() {
-  toast('AI Scanning ID...');
-  setTimeout(() => {
-    document.getElementById('nameCard').hidden = false;
-    document.getElementById('manualNameField').hidden = true;
-    document.getElementById('scannedName').textContent = 'John Mwangi';
-  }, 1000);
-}
-function editName() {
-  document.getElementById('nameCard').hidden = true;
-  document.getElementById('manualNameField').hidden = false;
-}
-function generateId() {
-  loginSuccess();
-}
-
-// RECEIVE TABS
-function setRecvTab(tabNum) {
-  document.querySelectorAll('.sub-tab').forEach((el, i) => el.classList.toggle('active', i === tabNum - 1 || (tabNum === 1.5 && i === 0) || (tabNum === 1.8 && i === 0)));
-  document.querySelectorAll('.form-group[id^="recvTab"]').forEach(el => el.hidden = true);
-  if(tabNum === 1) document.getElementById('recvTab1').hidden = false;
-  if(tabNum === 1.5) document.getElementById('recvTab1_5').hidden = false;
-  if(tabNum === 1.8) document.getElementById('recvTab1_8').hidden = false;
-  if(tabNum === 2) document.getElementById('recvTab2').hidden = false;
-  if(tabNum === 3) document.getElementById('recvTab3').hidden = false;
-}
-
-// TRANSACTIONS
-function processTx(note, amount) {
-  S.balance += amount;
-  S.tx.unshift({ n: note, w: 'Just now', a: amount });
-  document.getElementById('walletBal').textContent = S.balance.toLocaleString();
-  toast('Transaction successful');
-}
-
-function renderHistory() {
-  const list = document.getElementById('historyList');
-  list.innerHTML = S.tx.map(t => `
-    <div class="card" style="border-left:3px solid ${t.a > 0 ? 'var(--green)' : 'var(--red)'};">
-      <div class="row">
-        <b>${t.n}</b>
-        <b class="${t.a > 0 ? 'pos' : 'neg'}">${t.a > 0 ? '+' : ''}KES ${Math.abs(t.a).toFixed(2)}</b>
-      </div>
-      <small class="mute">${t.w} · Ref: BST-123456</small>
-    </div>
-  `).join('');
-}
-
-function renderStatements() {
-  const list = document.getElementById('statementList');
-  list.innerHTML = S.tx.slice(0, 3).map(t => `
-    <div class="card">
-      <b>${t.n}</b> <span style="float:right;" class="${t.a > 0 ? 'pos' : 'neg'}">${t.a > 0 ? '+' : ''}KES ${Math.abs(t.a).toFixed(2)}</span><br>
-      <small class="mute">${t.w}</small>
-    </div>
-  `).join('');
-}
-
-// AI
-function sendAI() {
-  const input = document.getElementById('aiInput');
-  const chat = document.getElementById('chatBox');
-  if(!input.value) return;
-  chat.innerHTML += `<div style="background:var(--green);color:#000;padding:8px 12px;border-radius:12px;margin-bottom:8px;width:fit-content;margin-left:auto;">${input.value}</div>`;
-  const q = input.value.toLowerCase();
-  input.value = '';
-  
-  setTimeout(() => {
-    let reply = "I'm not sure. Try asking about balance, send money, or history.";
-    if(q.includes('balance')) reply = `Your balance is KES ${S.balance.toLocaleString()}.`;
-    if(q.includes('send')) reply = "To send money, go to Send on the main dashboard.";
-    chat.innerHTML += `<div style="background:var(--raise);padding:8px 12px;border-radius:12px;margin-bottom:8px;width:fit-content;">${reply}</div>`;
-    chat.scrollTop = chat.scrollHeight;
-  }, 800);
-}
-
-// INIT
-showPage('login');
-</script>
-</body>
-</html>
+load();save();renderProfile();renderHistory();renderStatements();renderSettings();if(data.registered){$('#entry').style.display='none'}else showEntry('register');
+</script></body></html>
