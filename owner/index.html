@@ -1,0 +1,1237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src https://beast-server-8u92.onrender.com wss://beast-server-8u92.onrender.com; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; manifest-src 'self'; worker-src 'self'">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>BEAST Global Owner Panel v4</title>
+<style>:root{--bg:#050907;--panel:#0b1512;--panel2:#101c18;--line:#263630;--line2:#1e6048;--green:#00d995;--mint:#baffdf;--gold:#f5c85b;--muted:#9ab0a7;--red:#ff7979;--blue:#8dcaff;--violet:#c9a7ff;--text:#f3fff9;--shadow:0 14px 35px #0005}
+*{box-sizing:border-box}
+html{color-scheme:dark}
+body{margin:0;background:radial-gradient(ellipse at top right,#0a3023 0,transparent 36%),var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:8px}
+h1{font-size:24px;margin:2px 0 4px}h2{font-size:18px;margin:0 0 8px}h3{font-size:15px;margin:0 0 8px}
+.sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+.muted{color:var(--muted)}.sm{font-size:12px}.mono{font-family:ui-monospace,Consolas,monospace}
+.mark{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#00db95,#07563b);color:#06130d;font-size:21px;font-weight:900}
+.wm{letter-spacing:3px;font-weight:900;background:linear-gradient(180deg,#ffe08a,#d9962a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.gate{min-height:100vh;display:grid;place-items:center;padding:16px}
+.gbox{width:min(480px,100%);border:1px solid var(--line2);border-radius:24px;background:#08130e;padding:22px;box-shadow:0 25px 90px #000b}
+.gbrand{text-align:center;margin-bottom:14px}.gbrand .mark{margin:0 auto 8px;width:56px;height:56px;font-size:30px}
+.gbrand small{display:block;color:var(--muted);font-size:11px;letter-spacing:1.4px}
+.key-screen{border:1px solid var(--gold);border-radius:20px;padding:24px;background:linear-gradient(180deg,#0b1512,#050907)}
+.key-brand{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.key-icon{width:52px;height:52px;border-radius:50%;border:2px solid var(--gold);display:grid;place-items:center;font-size:26px;color:var(--gold)}
+.key-brand h2{margin:0;font-size:26px;color:var(--gold);letter-spacing:1px}
+.key-brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:1.5px;margin-top:2px}
+.key-screen h1{font-size:26px;margin:0 0 10px;color:#fff}
+.key-screen p{color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 20px}
+.key-field{background:#030a07;border:2px solid #fff;border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.key-field label{font-size:13px;color:var(--muted)}
+.key-field input{background:none;border:0;color:#fff;font-size:16px;outline:none;width:100%}
+.key-field input::placeholder{color:#4d6d5e}
+.key-actions{display:flex;gap:10px;margin-bottom:18px}
+.key-actions .btn{flex:1;border-radius:12px;height:48px;font-size:15px}
+.key-actions .btn.verify{background:linear-gradient(180deg,#ffd96e,#c18b26);color:#211500;box-shadow:0 0 15px #f5c85b44}
+.key-actions .btn.show{background:#0b1512;border:1px solid #2b473b;color:#fff}
+.key-foot{font-size:11.5px;color:var(--muted);line-height:1.5}
+.app{display:flex;min-height:100vh}
+.side{position:fixed;inset:0 auto 0 0;width:min(290px,86vw);background:#07110d;border-right:1px solid var(--line2);padding:16px;overflow:auto;z-index:40;transform:translateX(-102%);transition:transform .25s}
+.side.open{transform:none}
+.scrim{position:fixed;inset:0;background:#0009;z-index:35}
+.sbrand{display:flex;align-items:center;gap:10px;margin-bottom:14px}.sbrand b{display:block;font-size:18px}.sbrand small{color:var(--muted);font-size:10px;letter-spacing:1px}
+.navb{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border:0;border-radius:12px;background:none;text-align:left;font-weight:700;color:#cfe5db}
+.navb span{width:26px;font-size:19px}
+.navb:hover{background:#0f2a20}.navb.on{background:#073d2b;color:var(--mint);box-shadow:inset 3px 0 0 var(--green)}
+.grp{margin:16px 6px 4px;font-size:11px;color:var(--gold);font-weight:800;letter-spacing:.6px}
+.mainwrap{flex:1;min-width:0}
+.top{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;padding:10px 14px;background:#06100df2;backdrop-filter:blur(14px);border-bottom:1px solid #1e4538}
+.hamb{width:42px;height:42px;border:1px solid var(--line);border-radius:12px;background:#0c2119;color:var(--green);font-size:22px}
+.top h2{flex:1;margin:0;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:60px}
+.top select{max-width:120px;min-height:38px;padding:6px 8px}
+.timer{font-variant-numeric:tabular-nums;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:5px 9px;white-space:nowrap}
+.timer.warn{color:var(--gold);border-color:#665128}
+.banner{background:#211b0c;border-bottom:1px solid #665128;color:#f8dfa1;font-size:12px;padding:7px 14px;text-align:center}
+.banner.em{background:#3a1212;border-color:#9b3a3a;color:#ffd0d0;font-weight:700}
+main{max-width:1180px;margin:auto;padding:16px}
+main:focus{outline:none}
+@media(min-width:960px){.side{transform:none}.scrim{display:none}.mainwrap{margin-left:290px}.hamb{display:none}}
+.card{background:linear-gradient(145deg,#10201a,#080e0c);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow);min-width:0}
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:820px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.g2,.g3,.g4{grid-template-columns:1fr}.g4.keep,.g3.keep{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi small{display:block;color:var(--muted);font-size:12px}.kpi b{display:block;font-size:24px;margin:4px 0 2px}.kpi i{font-style:normal;font-size:12px}
+.up{color:var(--green)}.down{color:var(--red)}
+.mt{margin-top:14px}.mt2{margin-top:22px}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}.grow{flex:1;min-width:0}
+.btn{border:0;border-radius:12px;background:linear-gradient(110deg,#00d995,#00a86f);color:#03150d;font-weight:900;padding:11px 15px;min-height:42px}
+.btn.sec{background:#13231d;border:1px solid #355247;color:#dcfff1}
+.btn.red{background:#3a1818;border:1px solid #7c3434;color:#ffdede}
+.btn.gold{background:linear-gradient(110deg,#f5d16e,#c18b26);color:#211500}
+.btn.sm{padding:6px 10px;min-height:34px;font-size:12px;border-radius:10px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.field{display:flex;flex-direction:column;gap:5px;margin:10px 0}
+.field label{font-size:12px;color:#b9d5ca;font-weight:700}
+.field input,.field select,.field textarea,.ctl{width:100%;background:#050c09;border:1px solid #2b473b;border-radius:11px;padding:11px;outline:none;min-width:0}
+.field input:focus,.field select:focus,.field textarea:focus,.ctl:focus{border-color:var(--green);box-shadow:0 0 0 3px #00d99517}
+.hint{color:var(--muted);font-size:12px}
+.err{color:#ffb0b0;font-size:12.5px;min-height:18px}
+.notice{padding:11px 13px;border:1px solid #665128;background:#211b0c;border-radius:12px;color:#f8dfa1;font-size:12.5px;margin:10px 0}
+.notice.ok{border-color:#1c6e50;background:#08271b;color:#baffdf}.notice.bad{border-color:#823d3d;background:#2b1111;color:#ffc6c6}
+.pill{display:inline-block;border:1px solid #28654d;background:#0b2c20;color:#baffdf;border-radius:99px;padding:2px 9px;font-size:11px;font-weight:700;white-space:nowrap}
+.pill.gold{border-color:#665128;background:#211b0c;color:var(--gold)}.pill.red{border-color:#823d3d;background:#2b1111;color:#ffb0b0}
+.pill.blue{border-color:#2f5876;background:#0d2230;color:var(--blue)}.pill.violet{border-color:#58447a;background:#1a1228;color:var(--violet)}.pill.gray{border-color:#3a4a43;background:#131b17;color:#a9bdb4}
+.tabs{display:flex;gap:7px;overflow:auto;margin:12px 0}
+.tab{flex:none;border:1px solid #294438;border-radius:12px;padding:9px 12px;background:#0a1510;color:#b6cec3;font-weight:800}
+.tab.on{background:#063d2b;border-color:var(--green);color:#d7ffec}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:16px}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:13px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #1a2b24;white-space:nowrap}
+th{color:#a8c4b8;font-size:11.5px;background:#0a1512;position:sticky;top:0}
+tr:last-child td{border-bottom:0}
+tr.click{cursor:pointer}tr.click:hover td{background:#0d211a}
+.list{display:flex;flex-direction:column;gap:9px}
+.item{display:flex;align-items:center;gap:10px;padding:11px 12px;background:#08110e;border:1px solid #24392f;border-radius:14px}
+.item small{display:block;color:var(--muted);font-size:12px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+.dot.ok{background:var(--green);box-shadow:0 0 10px var(--green)}.dot.warn{background:var(--gold)}.dot.bad{background:var(--red)}.dot.off{background:#52625b}
+.switch{position:relative;width:48px;height:28px;flex:none;appearance:none;-webkit-appearance:none;border-radius:99px;background:#1b2c24;border:1px solid var(--line2);cursor:pointer;margin:0}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#7a978a;transition:transform .15s}
+.switch:checked{background:#0c7a54}.switch:checked::after{transform:translateX(20px);background:#fff}
+.switch:disabled{opacity:.5;cursor:not-allowed}
+meter{width:70px;height:10px;vertical-align:middle}
+.chart{width:100%;height:auto;display:block}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
+.sec-label{margin:22px 0 10px;font-size:18px;font-weight:850}
+.chk{display:flex;gap:9px;align-items:flex-start;font-size:13px;margin:6px 0}
+.chk input{accent-color:var(--green);margin-top:3px}
+.kv{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid #1a2b24;font-size:14px}.kv:last-child{border:0}.kv span:first-child{color:var(--muted)}.kv b{text-align:right;overflow-wrap:anywhere}
+.full{width:100%}
+.modal{position:fixed;inset:0;z-index:60;background:#000b;display:grid;place-items:center;padding:14px;overflow:auto}
+.mbox{width:min(560px,100%);max-height:92vh;overflow:auto;background:#08130e;border:1px solid var(--line2);border-radius:22px;padding:20px;box-shadow:0 25px 90px #000}
+.cover{position:fixed;inset:0;z-index:80;background:#050907;display:grid;place-items:center;text-align:center;padding:20px}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:90;max-width:92vw;background:#123326;border:1px solid #2e8a61;color:#dffff0;padding:12px 16px;border-radius:13px;box-shadow:var(--shadow)}
+.secret{font-family:ui-monospace,Consolas,monospace;font-size:17px;letter-spacing:2px;padding:12px;border:1px dashed var(--green);border-radius:12px;text-align:center;overflow-wrap:anywhere;background:#07140e;user-select:all}
+.code{letter-spacing:6px;text-align:center;font-size:22px}
+.row>.ctl{width:auto;flex:1 1 170px}
+.row>.ctl.grow{flex:2 1 240px}
+.bar{height:8px;border-radius:99px;background:#16261f;overflow:hidden;min-width:90px}.bar>i{display:block;height:100%;background:linear-gradient(90deg,#00d995,#f5c85b)}
+.big{font-size:44px;font-weight:900;margin:0}
+.map{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+@media(max-width:700px){.map{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.mapc{border:1px solid #24392f;border-radius:14px;background:#06100c;padding:8px}
+.mapc svg{width:100%;height:auto;display:block}
+.dcard h3{display:flex;gap:8px;align-items:center}
+.dcard ul{margin:8px 0 0;padding-left:18px;color:#cfe5db;font-size:12.5px}
+.live{max-height:260px;overflow:auto}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<link rel="manifest" href="manifest.webmanifest" crossorigin="use-credentials">
+<meta name="theme-color" content="#050907">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="BEAST Owner">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+</head>
+<body>
+<div id="gate" class="gate"></div>
+
+<div id="app" class="app" hidden>
+  <aside id="side" class="side" aria-label="Owner Panel menu"></aside>
+  <div id="scrim" class="scrim" data-act="closeNav" hidden></div>
+  <div class="mainwrap">
+    <header class="top">
+      <button class="hamb" data-act="openNav" aria-label="Open menu">☰</button>
+      <h2 id="ptitle">Global Dashboard</h2>
+      <select id="roleSel" class="ctl" aria-label="Preview role (demo only)"></select>
+      <span id="timer" class="timer" aria-live="off">05:00</span>
+      <button class="btn sec sm" data-act="lock" aria-label="Lock panel now" title="Lock now">🔒</button>
+    </header>
+    <div class="banner">SAMPLE DATA · No real accounts or money · Backend not connected · Role preview is a demo — a real server must enforce permissions</div>
+    <div id="emBanner" class="banner em" hidden></div>
+    <main id="main" tabindex="-1" aria-live="off"></main>
+  </div>
+</div>
+
+<div id="modal" class="modal" hidden><div id="mbox" class="mbox" role="dialog" aria-modal="true"></div></div>
+<div id="cover" class="cover" hidden><div><div class="mark" id="coverMark">B</div><h2>Screen hidden</h2><p class="muted">Hidden while the tab was in the background.</p><button class="btn" data-act="uncover">Show screen</button></div></div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<noscript>This panel needs JavaScript.</noscript>
+<script>'use strict';
+/* BEAST Global Owner Panel v4 - front-end DEMO. All data is generated sample data.
+   A real system MUST enforce auth, permissions, ledger and audit on a backend. */
+
+const IDLE_MS=5*60*1000, ELEV_MS=2*60*1000, AUTH_KEY='beastOwnerDemoAuthV3';
+const OWNER_KEY_HASH='7394758623571d30695d7f74364aa79c4f75c330c5d43210eb5f6b54470595a2';
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const E=s=>String(s??'').replace(/[&<>"'`]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;'}[c]));
+const enc=new TextEncoder();
+const b64=a=>btoa(String.fromCharCode(...new Uint8Array(a)));
+const unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const pad=(n,l)=>String(n).padStart(l,'0');
+const toast=m=>{const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,3000)};
+const debounce=(fn,ms=200)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}};
+
+/* ---------- money: integer minor units ---------- */
+const MINOR={KE:100,TZ:100,UG:100,NG:100,ZM:100};
+const toMinor=(major,cc)=>Math.round(Number(major)*MINOR[cc]);
+const toMajor=(minor,cc)=>Math.round(Number(minor))/MINOR[cc];
+const fmtMinor=(minor,cc)=>{const c=CO[cc],d=c.dec;return c.cur+' '+(toMajor(minor,cc)).toLocaleString('en-KE',{minimumFractionDigits:d,maximumFractionDigits:d})};
+const kesEq=(minor,cc)=>toMajor(minor,cc)/CO[cc].rate;
+const fmtKes=v=>'KES '+Math.round(v).toLocaleString('en-KE');
+
+/* ---------- crypto ---------- */
+async function pbkdf2(pass,salt,iter){const k=await crypto.subtle.importKey('raw',enc.encode(pass),'PBKDF2',false,['deriveBits']);return new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt,iterations:iter},k,256))}
+const ctEq=(a,b)=>{if(a.length!==b.length)return false;let d=0;for(let i=0;i<a.length;i++)d|=a[i]^b[i];return d===0};
+async function sha(s){return[...new Uint8Array(await crypto.subtle.digest('SHA-256',enc.encode(s)))].map(x=>x.toString(16).padStart(2,'0')).join('')}
+const B32='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+function b32enc(bytes){let bits='',out='';for(const b of bytes)bits+=b.toString(2).padStart(8,'0');for(let i=0;i<bits.length;i+=5)out+=B32[parseInt(bits.slice(i,i+5).padEnd(5,'0'),2)];return out}
+function b32dec(s){let bits='';for(const c of s)bits+=B32.indexOf(c).toString(2).padStart(5,'0');const o=[];for(let i=0;i+8<=bits.length;i+=8)o.push(parseInt(bits.slice(i,i+8),2));return new Uint8Array(o)}
+async function hotp(secret,counter){const key=await crypto.subtle.importKey('raw',b32dec(secret),{name:'HMAC',hash:'SHA-1'},false,['sign']);const buf=new ArrayBuffer(8),dv=new DataView(buf);dv.setUint32(0,Math.floor(counter/2**32));dv.setUint32(4,counter>>>0);const h=new Uint8Array(await crypto.subtle.sign('HMAC',key,buf));const o=h[19]&15;const n=((h[o]&127)<<24)|(h[o+1]<<16)|(h[o+2]<<8)|h[o+3];return String(n%1000000).padStart(6,'0')}
+async function verifyTotp(secret,code,lastStep){const step=Math.floor(Date.now()/30000);for(const d of[0,-1,1]){const s=step+d;if(s<=lastStep)continue;if(await hotp(secret,s)===code)return s}return 0}
+
+/* ---------- auth store ---------- */
+let AMEM=null;
+const getAuth=()=>{try{const v=JSON.parse(localStorage.getItem(AUTH_KEY));if(v)return v}catch(e){}return AMEM};
+const saveAuth=a=>{AMEM=a;try{localStorage.setItem(AUTH_KEY,JSON.stringify(a))}catch(e){}};
+const keyHash=()=>(getAuth()||{}).keyHash||OWNER_KEY_HASH;
+const tot=()=>(getAuth()&&getAuth().bio)?4:3;
+const okPass=p=>p.length>=12&&new Set(p).size>=6&&(/[a-z]/.test(p)+/[A-Z]/.test(p)+/\d/.test(p)+/[^A-Za-z0-9]/.test(p)>=3||p.length>=18);
+
+/* ---------- session ---------- */
+const S={authed:false,role:'owner',actor:'owner',page:'dashboard',elev:0,last:Date.now(),pass1:false,pending:null,stepFails:0,modalToken:0,currentModalId:null,keyUnlocked:false};
+const PERMS={
+  owner:'*',
+  admin:['users.view','users.restrict','users.pii','tx.view','tx.reconcile','tx.export','country.view','country.edit','biz.view','biz.moderate','ai.view','ai.manage','support.manage','security.view','security.act','audit.view','float.view','float.move','agents.view','agents.manage','payout.view','payout.create','aml.view','aml.act','recon.view','recon.upload',
+    'cmd.view','wallet.view','wallet.act','kyc.act','shield.view','shield.act','pay.view','pay.manage','merch.view','merch.manage','cards.view','cards.act','intl.view','intl.act','rev.view','loans.view','notif.view','emp.view','dev.view','comp.view','emerg.view','depts.view','progress.view','wd.view','wd.approve','rvs.view','rvs.act'],
+  support:['users.view','tx.view','support.manage','country.view','agents.view','notif.view','cards.view','wallet.view'],
+  finance:['tx.view','tx.reconcile','tx.export','biz.view','country.view','audit.view','float.view','float.move','payout.view','payout.create','recon.view','recon.upload',
+    'cmd.view','wallet.view','rev.view','intl.view','pay.view','merch.view','loans.view','notif.view','progress.view','wd.view','rvs.view'],
+  security:['users.view','users.restrict','tx.view','security.view','security.act','audit.view','country.view','ai.view','aml.view','aml.act',
+    'cmd.view','shield.view','shield.act','wallet.view','wallet.act','cards.view','cards.act','notif.view','emerg.view','comp.view','pay.view','dev.view','merch.view','intl.view','rvs.view']
+};
+const ROLE_LABEL={owner:'Owner',admin:'Administrator',support:'Support agent',finance:'Finance',security:'Security analyst'};
+const can=p=>{const r=PERMS[S.role];return r==='*'||r.includes(p)};
+
+/* ---------- audit log ---------- */
+let AUD=[];let aq=Promise.resolve();
+const audit=(action,target,detail)=>aq=aq.then(async()=>{
+  const e={i:AUD.length,ts:new Date().toISOString(),actor:S.actor,role:S.role,action,target:target||'-',detail:String(detail||'').slice(0,300),prev:AUD.length?AUD[AUD.length-1].hash:'0'.repeat(64)};
+  e.hash=await sha([e.prev,e.i,e.ts,e.actor,e.role,e.action,e.target,e.detail].join('|'));AUD.push(e)});
+async function verifyChain(arr=AUD){let prev='0'.repeat(64);for(const e of arr){if(e.prev!==prev)return e.i;const h=await sha([e.prev,e.i,e.ts,e.actor,e.role,e.action,e.target,e.detail].join('|'));if(h!==e.hash)return e.i;prev=e.hash}return -1}
+
+/* ---------- sample data ---------- */
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const R=rng(20261030),rp=a=>a[Math.floor(R()*a.length)],ri=(a,b)=>a+Math.floor(R()*(b-a+1));
+const CO={
+  KE:{n:'Kenya',f:'🇰🇪',cur:'KES',dial:'254',rate:1,dec:2,stage:'Stage 1 · First launch',en:true,methods:['M-PESA','Airtel Money','Bank','Card'],ph:'7'},
+  TZ:{n:'Tanzania',f:'🇹🇿',cur:'TZS',dial:'255',rate:20,dec:0,stage:'Stage 2 · Rollout',en:true,methods:['M-Pesa (Vodacom)','Airtel Money','Mixx by Yas','Bank'],ph:'7'},
+  UG:{n:'Uganda',f:'🇺🇬',cur:'UGX',dial:'256',rate:28,dec:0,stage:'Stage 2 · Rollout',en:true,methods:['MTN MoMo','Airtel Money','Bank'],ph:'7'},
+  NG:{n:'Nigeria',f:'🇳🇬',cur:'NGN',dial:'234',rate:12,dec:2,stage:'Later stage · Planned',en:false,methods:['Bank Transfer','Card'],ph:'8'},
+  ZM:{n:'Zambia',f:'🇿🇲',cur:'ZMW',dial:'260',rate:0.2,dec:2,stage:'Later stage · Planned',en:false,methods:['Airtel Money','MTN MoMo','Zamtel Kwacha','Bank'],ph:'9'}
+};
+const SERVICES=[['wallet','Wallet'],['send','Send'],['deposit','Deposit'],['withdraw','Withdraw'],['lipa','Lipa Na'],['card','BEAST Card'],['travel','Travel'],['market','Market'],['business','Business'],['ai','BEAST AI']];
+for(const [k,c] of Object.entries(CO)){
+  c.feeStepMinor=toMinor(1000*c.rate,k);c.feeRateMinor=toMinor(7*c.rate,k);c.feeCapMinor=toMinor(50*c.rate,k);
+  c.limitTxMinor=toMinor(150000*c.rate,k);c.limitCeilMinor=toMinor(1000000*c.rate,k);
+  c.floatMinor=toMinor(ri(20_000_000,80_000_000)*c.rate,k);
+  c.pendingFees=null;
+  c.svc=Object.fromEntries(SERVICES.map(([id])=>[id,c.en?(k==='KE'||!['card','ai'].includes(id)):false]));c.notice='';
+}
+
+const FIRST=['Amina','Brian','Cynthia','David','Esther','Kevin','Grace','Peter','Faith','Samuel','Neema','Juma','Aisha','Moses','Zawadi','Tendai','Chidi','Ngozi','Mwansa','Chanda','Joseph','Lucy','Hassan','Mercy'];
+const LAST=['Mwangi','Otieno','Wanjiru','Kiprop','Achieng','Mushi','Kato','Nakato','Okafor','Adeyemi','Phiri','Banda','Juma','Kamau','Mbeki','Tembo'];
+const USERS=Array.from({length:48},(_,i)=>{const cc=rp(['KE','KE','KE','TZ','UG','NG','ZM']);const c=CO[cc];const st=rp(['active','active','active','active','active','active','active','pending','pending','restricted','closed']);
+  return{id:'BEAST-'+pad(i+1,6),name:rp(FIRST)+' '+rp(LAST),cc,phone:'+'+c.dial+c.ph+pad(ri(0,99999999),8),st,kyc:rp(['Unverified','Basic','Basic','Verified','Verified']),risk:ri(2,92),last:ri(1,60*24*20),reg:ri(0,89),dev:ri(1,4),ses:ri(0,3),tx:ri(0,140),idLast:pad(ri(0,999),3),note:''}});
+
+const TXTYPES=['Send','Receive','Deposit','Withdraw','Lipa Na','Bulk Send','Card','Travel'];
+const TXST=['Completed','Completed','Completed','Completed','Completed','Completed','Completed','Pending','Processing','Failed','Failed','Reversed','Cancelled'];
+const TX=Array.from({length:140},(_,i)=>{const u=rp(USERS);const c=CO[u.cc];
+  const amtMinor=toMinor(ri(50,40000)*c.rate,u.cc);
+  const feeMinor=Math.min(c.feeCapMinor, Math.ceil(amtMinor/c.feeStepMinor)*c.feeRateMinor);
+  const st=rp(TXST);
+  const rec=st==='Completed'?rp(['Matched','Matched','Matched','Matched','Unmatched']):st==='Pending'||st==='Processing'?'Pending':'N/A';
+  const fl=[];if(amtMinor>c.limitTxMinor*0.6)fl.push('High amount');if(R()<.08)fl.push('Velocity');if(R()<.06)fl.push('New device');
+  return{ref:'BST-'+pad(ri(10000000,99999999),8)+'-'+ri(100,999),u:u.id,cc:u.cc,type:rp(TXTYPES),st,amtMinor,feeMinor,src:rp(c.methods),prv:'PRV-'+Math.floor(R()*1e12).toString(36).toUpperCase(),age:ri(1,2800),rec,fl}}).sort((a,b)=>a.age-b.age);
+
+const BIZSV=[['BEAST Marketplace',500],['BEAST Academy',300],['BEAST Business Hub',300],['BEAST Ads & Promotions',1000],['BEAST Digital Services',500],['BEAST AI Premium',499],['BEAST Digital Shop',300],['BEAST Travel & Booking',500],['BEAST Food & Delivery',500],['BEAST Jobs & Opportunities',500],['BEAST Airtime & Payments',500],['BEAST Premium Membership',199]];
+const BIZ=Array.from({length:22},(_,i)=>{const s=rp(BIZSV);const u=rp(USERS);return{id:'BIZ-'+pad(i+1,4),name:rp(['Karibu','Mama','Savanna','Kilimo','Pwani','Ubuntu','Zuri','Baraka','Tumaini'])+' '+rp(['Traders','Foods','Tech','Stores','Services','Logistics']),sv:s[0],priceMinor:toMinor(s[1],u.cc),owner:u.id,cc:u.cc,days:ri(0,60),prods:ri(0,40),st:rp(['Trial','Trial','Active','Active','Active','Trial ended','Suspended'])}});
+
+const AGENTS=Array.from({length:14},(_,i)=>{const u=rp(USERS);const c=CO[u.cc];return{id:'AG-'+pad(i+1,4),name:u.name,cc:u.cc,phone:u.phone,floatMinor:toMinor(ri(2000,60000)*c.rate,u.cc),st:rp(['Active','Active','Active','Active','Suspended','Inactive']),txToday:ri(0,80),failRate:ri(0,15)}});
+
+const TICKETS=Array.from({length:14},(_,i)=>({id:'TKT-'+pad(1040+i,5),sub:rp(['Payment pending too long','Cannot log in','Card activation help','Wrong recipient','Refund request','Change phone number','Fee question','Market order issue']),u:rp(USERS).id,pr:rp(['Low','Normal','Normal','High','Urgent']),st:rp(['Open','Open','Open','In progress','Resolved']),as:rp(['—','—','support-1','support-2']),age:ri(5,4000)}));
+
+const ALERTS=[['High','Repeated failed logins on 3 accounts','Auth','open'],['High','Possible duplicate payment pattern','Payments','open'],['Medium','New device on high-value account','Accounts','open'],['Medium','Provider callback signature mismatch (sample)','Providers','ack'],['Low','Password change from new country','Accounts','open'],['Low','Admin login from new browser','Admin','resolved'],['Medium','Spike in reversed transactions (TZ)','Payments','open'],['Low','Rate limit hit on /recover (sample)','Auth','resolved']].map((a,i)=>({id:'ALT-'+pad(300+i,4),sev:a[0],title:a[1],area:a[2],st:a[3],age:ri(3,900)}));
+
+const AML=[{id:'STR-2026-001',u:'BEAST-000004',cc:'KE',amtMinor:toMinor(480000,'KE'),reason:'Structuring — 3 deposits just under reporting threshold',st:'Draft',owner:'compliance-1',age:2*24*60},
+{id:'STR-2026-002',u:'BEAST-000012',cc:'TZ',amtMinor:toMinor(12000000,'TZ'),reason:'Rapid round-tripping between wallet and bank',st:'Filed',owner:'compliance-2',age:6*24*60},
+{id:'STR-2026-003',u:'BEAST-000031',cc:'UG',amtMinor:toMinor(3800000,'UG'),reason:'Multiple mule accounts, same device fingerprint',st:'Open',owner:'unassigned',age:12*60}];
+
+const PAYOUTS=[{id:'PO-2026-0921',amountMinor:toMinor(480000,'KE'),cc:'KE',recipients:24,st:'Approved',by:'finance-1',age:60},
+{id:'PO-2026-0922',amountMinor:toMinor(125000,'KE'),cc:'KE',recipients:6,st:'Pending',by:'unassigned',age:12},
+{id:'PO-2026-0923',amountMinor:toMinor(8700000,'TZ'),cc:'TZ',recipients:52,st:'Executed',by:'finance-2',age:360}];
+
+const SYS=[['API gateway','Not connected'],['Database','Not connected'],['Payment queue','Not connected'],['Provider webhooks','Not connected'],['Notification service','Not connected'],['AI service','Not connected']];
+const PROV=Object.entries(CO).flatMap(([k,c])=>c.methods.map(m=>({cc:k,name:m,st:c.en?rp(['Operational','Operational','Operational','Degraded']):'Not enabled',lat:ri(120,900)})));
+const AI={limitMin:20,limitDay:500,tools:{calculator:true,documents:true,code:false,research:true},models:[['Self-hosted open-weight model','Not connected'],['Local on-device model','Not connected'],['Model adapter layer','Planned']],usage:Array.from({length:14},()=>ri(40,420))};
+
+const RECON=[{id:'RCN-2026-1030',cc:'KE',provider:'M-PESA',rows:1240,matched:1238,unmatched:2,st:'Pending review',by:'finance-1',age:180},
+{id:'RCN-2026-1029',cc:'KE',provider:'M-PESA',rows:1180,matched:1180,unmatched:0,st:'Closed',by:'finance-1',age:24*60},
+{id:'RCN-2026-1031',cc:'TZ',provider:'Vodacom',rows:640,matched:635,unmatched:5,st:'Pending review',by:'finance-2',age:200}];
+
+/* ---------- v4 extra sample data (drawn after v3 data so v3 values are unchanged) ---------- */
+USERS.forEach(u=>{u.walMinor=toMinor(ri(0,90000)*CO[u.cc].rate,u.cc);u.frozen=false});
+AGENTS.forEach(a=>{a.x=R();a.y=R()});
+const MERCH=Array.from({length:12},(_,i)=>{const u=rp(USERS);const c=CO[u.cc];return{id:'MCH-'+pad(i+1,4),name:rp(['Duka','Mama Pima','Baraka','Kilimo','Fresh','City'])+' '+rp(['Mart','Cafe','Pharmacy','Hardware','Salon','Fuel']),cc:u.cc,kind:rp(['PayBill','Till','Pochi-style wallet','QR merchant']),volMinor:toMinor(ri(20000,900000)*c.rate,u.cc),commPct:rp([0.5,0.8,1,1.2]),risk:ri(3,85),st:rp(['Verified','Verified','Verified','Pending','Suspended'])}});
+const CARDS=Array.from({length:16},(_,i)=>{const u=rp(USERS);const c=CO[u.cc];return{id:'CRD-'+pad(i+1,4),u:u.id,cc:u.cc,kind:rp(['Virtual','Virtual','Physical','Travel']),last4:pad(ri(0,9999),4),st:rp(['Active','Active','Active','Frozen','Pending delivery','Blocked']),limMinor:toMinor(ri(20,200)*1000*c.rate,u.cc),spent:ri(0,95)}});
+const SCAM=[['+254 7•• ••• 412','Fake "wrong number refund" calls','KE',14],['+256 7•• ••• 903','Fake payment confirmation SMS','UG',9],['+255 7•• ••• 177','Impersonating support agent','TZ',6],['+234 8•• ••• 520','Phishing link in chat','NG',11]].map((s,i)=>({id:'SCM-'+pad(i+1,3),num:s[0],type:s[1],cc:s[2],reports:s[3],st:'Watchlist'}));
+const EVID=[];
+const SANC=[{id:'SAN-1001',name:'Recipient A. Example',cc:'KE',corridor:'KE → UG',hit:'No match',st:'Clear'},{id:'SAN-1002',name:'Recipient B. Sample',cc:'TZ',corridor:'TZ → KE',hit:'Partial name match (list sample)',st:'Review'},{id:'SAN-1003',name:'Recipient C. Demo',cc:'UG',corridor:'UG → KE',hit:'Partial name match (list sample)',st:'Review'}];
+const CORR=[['KE','UG'],['KE','TZ'],['UG','KE'],['TZ','KE'],['KE','NG'],['KE','ZM']].map(p=>({id:p[0]+'-'+p[1],from:p[0],to:p[1],rate:+(CO[p[1]].rate/CO[p[0]].rate*(1+R()*0.01)).toFixed(4),chg:+((R()-.5)*2).toFixed(2),feePct:rp([1.5,2,2.5,3]),lim:toMinor(ri(100,300)*1000,p[0]),on:CO[p[0]].en&&CO[p[1]].en}));
+const ROUTES=Object.keys(CO).filter(k=>CO[k].en).flatMap(k=>CO[k].methods.slice(0,3).map((m,i)=>({cc:k,primary:m,fallback:CO[k].methods[(i+1)%CO[k].methods.length],costBps:ri(40,180),succ:+(96+R()*3.9).toFixed(1),fb:i<2})));
+const EMP=Array.from({length:10},(_,i)=>({id:'EMP-'+pad(i+1,3),name:rp(FIRST)+' '+rp(LAST),dept:rp(['Support','Finance','Security','Compliance','Operations','Engineering']),role:rp(['support','finance','security','admin','support']),cc:rp(['KE','KE','TZ','UG']),st:rp(['Active','Active','Active','Suspended']),last:ri(2,5000),kyc:rp(['Verified','Verified','Pending'])}));
+const APIKEYS=Array.from({length:6},(_,i)=>({id:'KEY-'+pad(i+1,3),name:rp(['Merchant checkout','Payroll partner','Agent app','Sandbox tests','Reporting export','Marketplace']),env:i%3===2?'Sandbox':'Live',tail:pad(ri(0,9999),4),st:rp(['Active','Active','Active','Revoked']),calls:ri(100,90000),last:ri(1,3000)}));
+const HOOKS=[['https://partner.example/hooks/payments','payment.completed',99.2],['https://shop.example/beast/orders','order.created',97.4],['https://pay.example/callback','payout.executed',100]].map((h,i)=>({id:'WH-'+(i+1),url:h[0],ev:h[1],ok:h[2]}));
+const COMPL_ITEMS=['Payment-service authorization from the central bank / payments regulator','Data-protection registration with the national authority','KYC / AML programme written and approved','Suspicious-transaction reporting channel agreed','Sanctions screening process','Customer complaints process','Record-retention policy set per local law','Consumer fee and terms disclosure'];
+const COMPL={};Object.keys(CO).forEach(k=>COMPL[k]=COMPL_ITEMS.map(()=> 'Not started'));
+const EM={pay:false,wd:false,prov:false,adm:false,keys:false,dev:false,lock:false,dr:false,notify:false};
+const NREAD=new Set();
+const LIVE=[];
+
+/* ---------- ui helpers ---------- */
+const pill=(t,c='')=>`<span class="pill ${c}">${E(t)}</span>`;
+const stPill=s=>pill(s,{Completed:'',Active:'',Operational:'',Matched:'',Verified:'',Resolved:'',Clear:'',Done:'',Pending:'gold',Processing:'blue','In progress':'blue',Trial:'blue',Degraded:'gold',Basic:'gold',Open:'gold',Medium:'gold',Review:'gold',Watchlist:'gold','Pending delivery':'gold',Normal:'gray',Low:'gray',Failed:'red',Restricted:'red',restricted:'red',Suspended:'red',Unmatched:'red',High:'red',Urgent:'red',Blocked:'red',Revoked:'red',Frozen:'blue',Reversed:'violet',Cancelled:'gray',closed:'gray',pending:'gold',active:'','Trial ended':'gray','Not connected':'gray','Not enabled':'gray','Not started':'gray',Unverified:'gray',ack:'blue',open:'gold',resolved:'',Planned:'blue',Draft:'gold',Filed:'',Executed:'',Approved:'',Inactive:'gray','Pending review':'gold'}[s]||'gray');
+const tbl=(heads,rows)=>`<div class="tbl"><table role="table"><thead><tr>${heads.map(h=>`<th scope="col">${E(h)}</th>`).join('')}</tr></thead><tbody>${rows.join('')||`<tr><td colspan="${heads.length}" class="muted">Nothing to show.</td></tr>`}</tbody></table></div>`;
+const kpi=(l,v,s,cls='')=>`<div class="card kpi"><small>${E(l)}</small><b>${E(v)}</b><i class="${cls}">${E(s)}</i></div>`;
+const agoM=m=>m<60?m+' min ago':m<1440?Math.floor(m/60)+' h ago':Math.floor(m/1440)+' d ago';
+function lineChart(vals,color){const w=300,h=90,mx=Math.max(...vals,1),st=w/(vals.length-1);const pts=vals.map((v,i)=>[i*st,h-6-(v/mx)*(h-14)]);const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join('');return`<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="Trend"><path d="${d}L${w} ${h}L0 ${h}Z" fill="${color}" fill-opacity=".12"/><path d="${d}" fill="none" stroke="${color}" stroke-width="2.2" stroke-linejoin="round"/></svg>`}
+function barChart(vals,color){const w=300,h=90,mx=Math.max(...vals,1),bw=w/vals.length;return`<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="Bars">${vals.map((v,i)=>{const bh=Math.max(2,(v/mx)*(h-8));return`<rect x="${(i*bw+1.5).toFixed(1)}" y="${(h-bh).toFixed(1)}" width="${(bw-3).toFixed(1)}" height="${bh.toFixed(1)}" rx="2" fill="${color}"/>`}).join('')}</svg>`}
+function stackBar(parts){const tot=parts.reduce((a,p)=>a+p[1],0)||1;let x=0;return`<svg class="chart" viewBox="0 0 100 8" preserveAspectRatio="none" role="img" aria-label="Split">${parts.map(p=>{const w=p[1]/tot*100;const r=`<rect x="${x.toFixed(2)}" y="0" width="${w.toFixed(2)}" height="8" fill="${p[2]}"/>`;x+=w;return r}).join('')}</svg>`}
+const sw=c=>`<svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10" rx="2" fill="${c}"/></svg> `;
+const STCOL={Completed:'#00d995',Pending:'#f5c85b',Processing:'#8dcaff',Failed:'#ff7979',Reversed:'#c9a7ff',Cancelled:'#6f827a'};
+const pbar=v=>`<div class="bar" role="img" aria-label="${v}%"><i style="width:${v}%"></i></div>`;
+
+/* ---------- modal helpers ---------- */
+function openModal(html,id=null){const tok=++S.modalToken;S.currentModalId=id;const m=$('#modal');$('#mbox').innerHTML=html;m.hidden=false;const f=$('#mbox input:not([type=checkbox]),#mbox textarea,#mbox button');if(f)setTimeout(()=>f.focus(),30);return tok}
+function closeModal(){$('#modal').hidden=true;$('#mbox').innerHTML='';S.currentModalId=null;S.modalToken++}
+function modalShell({title,sub,body,actions='',id=null}){return openModal(`<h2>${E(title)}</h2>${sub?`<p class="sub">${E(sub)}</p>`:''}${body}<div class="row mt">${actions}</div>`,id)}
+function stepUp(why,cb){
+  if(Date.now()<S.elev){cb();return}
+  S.pending=cb;
+  modalShell({title:'Confirm it is you',sub:`${why}. Enter the 6-digit code from your authenticator app.`,
+    body:`<div class="field"><label for="suCode">Authenticator code</label><input id="suCode" class="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*"></div><div class="err" id="suErr" role="alert"></div>`,
+    actions:`<button class="btn grow" data-act="suGo">Confirm</button><button class="btn sec" data-act="closeModal">Cancel</button>`});
+}
+async function doStepUp(){
+  const code=$('#suCode').value.trim(),A=getAuth();
+  if(!/^\d{6}$/.test(code)){$('#suErr').textContent='Enter the 6-digit code.';return}
+  const st=await verifyTotp(A.totp,code,A.lastStep||0);
+  if(!st){S.stepFails++;await audit('step_up_failed','session','wrong or reused code');
+    if(S.stepFails>=3){closeModal();lock('Too many wrong codes. Signed out for safety.');return}
+    $('#suErr').textContent='That code is wrong or was already used. Attempt '+S.stepFails+' of 3.';return}
+  A.lastStep=st;saveAuth(A);S.stepFails=0;S.elev=Date.now()+ELEV_MS;await audit('step_up_ok','session','elevated for 2 minutes');
+  const cb=S.pending;S.pending=null;closeModal();if(cb)cb();
+}
+function askReason(title,desc,btn,cb,cls='red'){S.reasonCb=cb;
+  modalShell({title,sub:desc,
+    body:`<div class="field"><label for="rs">Reason (required, written to the audit log)</label><textarea id="rs" rows="3" maxlength="200"></textarea></div><div class="err" id="merr" role="alert"></div>`,
+    actions:`<button class="btn ${cls}" data-act="reasonGo">${E(btn)}</button><button class="btn sec" data-act="closeModal">Cancel</button>`})}
+/* one helper for "reason + fresh code + audit" actions */
+function guarded(perm,title,desc,btn,why,fn,cls='red'){if(!can(perm))return denied(perm);askReason(title,desc,btn,r=>stepUp(why,async()=>{await fn(r);closeModal();repaint()}),cls)}
+
+/* ---------- gate ---------- */
+const gateEl=$('#gate');
+const gate=inner=>{gateEl.hidden=false;$('#app').hidden=true;gateEl.innerHTML=`<div class="gbox"><div class="gbrand"><div class="mark">B</div><h1 class="wm">BEAST</h1><small>GLOBAL OWNER PANEL · DEMO ACCESS</small></div>${inner}</div>`;const i=$('input',gateEl);if(i)i.focus()};
+function gateStart(msg){const A=getAuth();if(!A||!A.enrolled)setup1();else login1(msg)}
+function setup1(){gate(`<h2>Create owner access</h2><p class="sub">First time on this device. Choose a long passphrase. It is stored only as a salted hash.</p>
+  <div class="notice">Demo only: this browser file keeps the credentials in this browser. A real owner panel signs in through a server.</div>
+  <div class="field"><label for="p1">Passphrase (12+ characters, mixed)</label><input id="p1" type="password" autocomplete="new-password"></div>
+  <div class="field"><label for="p2">Repeat passphrase</label><input id="p2" type="password" autocomplete="new-password"></div>
+  <div class="err" id="gerr" role="alert"></div><button class="btn full" data-act="setup1go">Continue</button>`)}
+async function setup1Go(){
+  const a=$('#p1').value,b=$('#p2').value,e=$('#gerr');
+  if(!okPass(a)){e.textContent='Use at least 12 characters with 3 kinds (lower, upper, digits, symbols) or 18+ characters.';return}
+  if(a!==b){e.textContent='Passphrases do not match.';return}
+  e.textContent='Securing…';const salt=crypto.getRandomValues(new Uint8Array(16)),iter=600000;
+  const h=await pbkdf2(a,salt,iter);S.tmp={salt:b64(salt),hash:b64(h),iter,totp:b32enc(crypto.getRandomValues(new Uint8Array(20))),enrolled:false,fails:0,lockUntil:0,lastStep:0};
+  $('#p1').value=$('#p2').value='';setup2();
+}
+function setup2(){const t=S.tmp;gate(`<h2>Add two-step sign-in</h2><p class="sub">In an authenticator app add a key manually with this secret, then enter the 6-digit code.</p>
+  <div class="secret" id="sec">${E(t.totp)}</div><p class="hint">Account name: BEAST Owner · Type: time-based · 6 digits · 30 seconds</p>
+  <div class="field"><label for="tc">Code from the app</label><input id="tc" class="code" inputmode="numeric" maxlength="6" autocomplete="one-time-code"></div>
+  <div class="err" id="gerr" role="alert"></div><button class="btn full" data-act="setup2go">Verify and continue</button>`)}
+async function setup2Go(){
+  const code=$('#tc').value.trim(),t=S.tmp;if(!/^\d{6}$/.test(code)){$('#gerr').textContent='Enter the 6-digit code.';return}
+  const st=await verifyTotp(t.totp,code,0);if(!st){$('#gerr').textContent='Code did not match. Check the secret and your phone clock.';return}
+  t.enrolled=true;t.lastStep=st;saveAuth(t);S.tmp=null;keyScreen();
+}
+function login1(msg){const A=getAuth(),wait=Math.ceil((A.lockUntil-Date.now())/1000);gate(`<h2>Owner sign-in</h2><p class="sub">Step 1 of ${tot()}: passphrase.</p>${msg?`<div class="notice">${E(msg)}</div>`:''}
+  ${wait>0?`<div class="notice bad">Too many wrong attempts. Try again in ${wait} seconds.</div>`:''}
+  <div class="field"><label for="lp">Passphrase</label><input id="lp" type="password" autocomplete="current-password"></div>
+  <div class="err" id="gerr" role="alert"></div><button class="btn full" data-act="login1go">Continue</button>`)}
+async function bumpFail(A){A.fails=(A.fails||0)+1;if(A.fails>=5)A.lockUntil=Date.now()+Math.min(900000,30000*2**(A.fails-5));saveAuth(A);await audit('login_failed','owner','attempt '+A.fails)}
+async function login1Go(){
+  const A=getAuth(),e=$('#gerr');if(Date.now()<A.lockUntil){login1();return}
+  const pw=$('#lp').value;e.textContent='Checking…';const h=await pbkdf2(pw,unb64(A.salt),A.iter);$('#lp').value='';
+  if(!ctEq(h,unb64(A.hash))){await bumpFail(A);const w=Math.ceil((A.lockUntil-Date.now())/1000);login1(w>0?'':'Wrong passphrase or code.');return}
+  S.pass1=true;login2();
+}
+function login2(){gate(`<h2>Owner sign-in</h2><p class="sub">Step 2 of ${tot()}: authenticator code.</p>
+  <div class="field"><label for="tc">6-digit code</label><input id="tc" class="code" inputmode="numeric" maxlength="6" autocomplete="one-time-code"></div>
+  <div class="err" id="gerr" role="alert"></div><button class="btn full" data-act="login2go">Continue</button>`)}
+async function login2Go(){
+  const A=getAuth(),code=$('#tc').value.trim();if(!S.pass1){login1();return}
+  if(Date.now()<A.lockUntil){S.pass1=false;login1();return}
+  if(!/^\d{6}$/.test(code)){$('#gerr').textContent='Enter the 6-digit code.';return}
+  const st=await verifyTotp(A.totp,code,A.lastStep||0);
+  if(!st){S.pass1=false;await bumpFail(A);login1('Wrong passphrase or code.');return}
+  A.fails=0;A.lockUntil=0;A.lastStep=st;saveAuth(A);S.pass1=false;S.pass2=true;keyScreen();
+}
+
+/* ---------- Owner key screen (step 3) ---------- */
+function keyScreen(){
+  gateEl.hidden=false;$('#app').hidden=true;
+  gateEl.innerHTML=`<div class="gbox" style="padding:0;border:0;background:none;box-shadow:none"><div class="key-screen" id="keyCard">
+      <div class="key-brand"><div class="key-icon">♛</div><div><h2>BEAST</h2><small>GLOBAL OWNER PANEL · OWNER CONTROL</small></div></div>
+      <h1>Owner Authentication</h1>
+      <p>Step 3 of ${tot()}. Enter the owner key to open the BEAST Global Command Centre.<br>In this demo the key is checked inside this page; a real system checks it on the BEAST server.</p>
+      <div class="key-field"><label for="serverKey">Owner key</label><input type="password" id="serverKey" placeholder="Enter your owner key" autocomplete="off"></div>
+      <div class="key-actions"><button class="btn verify" data-act="verifyKey">Verify &amp; Unlock</button><button class="btn show" data-act="toggleKey">Show</button></div>
+      <div id="keyErr" class="err" style="text-align:center;margin-bottom:10px" role="alert"></div>
+      <div class="key-foot">The key is not saved in browser storage and is not written in this file in plain text. Never share it. Figures in this prototype are illustrative until connected to verified records.</div>
+    </div></div>`;
+  const i=$('#serverKey');if(i)i.focus();
+}
+async function verifyKey(){
+  if(!S.pass2){gateStart();return}
+  const input=$('#serverKey').value.trim(),err=$('#keyErr');
+  if(!input){err.textContent='Enter your owner key.';return}
+  if(await sha(input)!==keyHash()){S.keyFails=(S.keyFails||0)+1;await audit('owner_key_failed','session','attempt '+S.keyFails);
+    if(S.keyFails>=5){S.pass2=false;S.keyFails=0;lock('Too many wrong owner keys. Signed out.');return}
+    err.textContent='Invalid owner key.';$('#serverKey').value='';$('#serverKey').focus();return}
+  S.keyFails=0;S.pass2=false;err.textContent='';
+  if(getAuth().bio){S.pass3=true;bioStep();return}
+  startSession('passphrase + authenticator + owner key');
+}
+function bioStep(){gate(`<h2>Fingerprint or face</h2><p class="sub">Step 4 of 4. Use your phone or computer unlock to finish signing in.</p><div class="err" id="gerr" role="alert"></div><button class="btn full" data-act="bioGo">Unlock with fingerprint or face</button>`)}
+async function bioGo(){if(!S.pass3){gateStart();return}const A=getAuth(),e=$('#gerr');
+  try{const c=await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),allowCredentials:[{type:'public-key',id:unb64(A.bio)}],userVerification:'required',timeout:60000}});if(!c)throw new Error('none');S.bioFails=0;S.pass3=false;startSession('passphrase + authenticator + owner key + fingerprint/face')}
+  catch(x){S.bioFails=(S.bioFails||0)+1;await audit('biometric_failed','session','attempt '+S.bioFails);if(S.bioFails>=3){S.bioFails=0;S.pass3=false;lock('Fingerprint or face failed 3 times. Signed out.');return}e.textContent='Check failed or cancelled. Attempt '+S.bioFails+' of 3.'}}
+function toggleKey(){const inp=$('#serverKey'),btn=$('button[data-act="toggleKey"]');if(inp.type==='password'){inp.type='text';btn.textContent='Hide'}else{inp.type='password';btn.textContent='Show'}}
+async function startSession(how){
+  S.authed=true;S.role='owner';S.actor='owner';S.last=Date.now();S.elev=Date.now()+ELEV_MS;S.stepFails=0;
+  await audit('login','session',how);
+  gateEl.hidden=true;gateEl.innerHTML='';$('#app').hidden=false;renderRoleSel();go('dashboard');
+}
+function lock(msg){closeModal();S.authed=false;S.pass1=false;S.pass2=false;S.pass3=false;S.pending=null;$('#main').innerHTML='';$('#side').innerHTML='';closeNav();$('#cover').hidden=true;gateStart(msg||'Locked.')}
+
+/* ---------- shell ---------- */
+const PAGES=[];const GROUP={};let F={users:{q:'',cc:'',st:''},tx:{q:'',st:'',cc:''},sup:{st:''},agents:{cc:''},aml:{st:''},payouts:{st:''},notif:{cat:''},wallets:{q:'',st:''}};
+function renderNav(){
+  let g='',h='';
+  PAGES.filter(p=>!p.perm||can(p.perm)).forEach(p=>{const gg=GROUP[p.id]||'';if(gg!==g){g=gg;h+=`<div class="grp">${E(g)}</div>`}
+    h+=`<button class="navb ${S.page===p.id?'on':''}" data-act="nav" data-p="${p.id}" ${S.page===p.id?'aria-current="page"':''}><span>${p.ico}</span>${E(p.label)}</button>`});
+  $('#side').innerHTML=`<div class="sbrand"><div class="mark">♛</div><div><b class="wm">BEAST</b><small>GLOBAL OWNER PANEL v4</small></div></div>`+h+
+    `<div class="notice mt2">Signed in as <b>${E(ROLE_LABEL[S.role])}</b>. Sample data only.</div>`;
+}
+function renderRoleSel(){$('#roleSel').innerHTML=Object.keys(PERMS).map(r=>`<option value="${r}" ${r===S.role?'selected':''}>${E(ROLE_LABEL[r])}</option>`).join('')}
+function emBanner(){const on=Object.entries(EM).filter(([k,v])=>v).length;const b=$('#emBanner');b.hidden=!on;b.textContent=on?'EMERGENCY CONTROLS ACTIVE ('+on+') — open Emergency Command to review':''}
+function go(id){
+  let p=PAGES.find(x=>x.id===id);
+  if(!p||(p.perm&&!can(p.perm))){audit('permission_denied',id,'page blocked');p=PAGES[0]}
+  S.page=p.id;$('#ptitle').textContent=p.label;$('#main').innerHTML=p.render();renderNav();emBanner();closeNav();window.scrollTo(0,0);$('#main').focus({preventScroll:true});
+}
+const refresh=()=>go(S.page);
+function openNav(){$('#side').classList.add('open');$('#scrim').hidden=false}
+function closeNav(){$('#side').classList.remove('open');$('#scrim').hidden=true}
+function denied(p){audit('permission_denied',p,'action blocked');toast('Your role is not allowed to do that.')}
+const needReason=(id,min=8)=>{const v=($('#'+id)?.value||'').trim();return v.length>=min?v:null};
+const csvCell=v=>{let s=String(v??'');if(/^[=+\-@\t\r]/.test(s))s="'"+s;return'"'+s.replace(/"/g,'""')+'"'};
+function download(name,mime,text){const u=URL.createObjectURL(new Blob([text],{type:mime})),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000)}
+const filt=(pg,fields)=>`<div class="row mt">${fields.map(f=>f.t==='q'?`<input class="ctl grow" data-f="${pg}.${f.k}" placeholder="${E(f.ph)}" aria-label="${E(f.ph)}" maxlength="60" value="${E(F[pg][f.k])}">`:`<select class="ctl" data-f="${pg}.${f.k}" aria-label="${E(f.ph)}"><option value="">${E(f.ph)}</option>${f.o.map(o=>`<option value="${E(o[0])}" ${F[pg][f.k]===o[0]?'selected':''}>${E(o[1])}</option>`).join('')}</select>`).join('')}</div>`;
+const ccOpts=Object.entries(CO).map(([k,c])=>[k,c.f+' '+c.n]);
+const refreshList=debounce((pg)=>{const p=PAGES.find(x=>x.id===pg);if(p&&p.list&&S.page===pg)p.list()},200);
+const repaint=()=>{if(!S.authed)return;const p=PAGES.find(x=>x.id===S.page);if(p){const y=window.scrollY;$('#main').innerHTML=p.render();window.scrollTo(0,y);emBanner()}};
+const maskPh=p=>p.slice(0,4)+' ••• ••• '+p.slice(-3);
+const REVEAL={};
+/* ---------- ORIGINAL PAGES (v3, with fixes) ---------- */
+
+/* Dashboard = Global Command Centre */
+const today=()=>TX.filter(t=>t.age<1440);
+function cmdCentre(){
+  if(!can('cmd.view'))return'';
+  const cc=Object.keys(CO),done=TX.filter(t=>t.st==='Completed');
+  const pend=TX.filter(t=>t.st==='Pending'||t.st==='Processing').length,failed=TX.filter(t=>t.st==='Failed').length;
+  const feesKes=done.reduce((a,t)=>a+kesEq(t.feeMinor,t.cc),0);
+  const tps=(TX.length/(48*3600)).toFixed(4);
+  const fraud=ALERTS.filter(a=>a.st==='open').length+TX.filter(t=>t.fl.length).length;
+  const served=cc.filter(k=>CO[k].en).length;
+  const sum=(k,f)=>today().filter(t=>t.cc===k&&t.st==='Completed'&&f(t)).reduce((a,t)=>a+t.amtMinor,0);
+  const wal=k=>USERS.filter(u=>u.cc===k).reduce((a,u)=>a+u.walMinor,0);
+  const rows=cc.map(k=>{const c=CO[k],tx=TX.filter(t=>t.cc===k),fr=tx.length?Math.round(tx.filter(t=>t.st==='Failed').length/tx.length*100):0;
+    return`<tr><td>${c.f} ${E(c.n)}</td><td>${c.cur}</td><td>${tx.length}</td><td>${E(fmtMinor(tx.filter(t=>t.st==='Completed').reduce((a,t)=>a+t.feeMinor,0),k))}</td><td>${fr}%</td><td>${E(fmtMinor(wal(k),k))}</td><td>${E(fmtMinor(sum(k,t=>['Send','Bulk Send','Lipa Na'].includes(t.type)),k))}</td><td>${E(fmtMinor(sum(k,t=>t.type==='Deposit'),k))}</td><td>${E(fmtMinor(sum(k,t=>t.type==='Withdraw'),k))}</td><td>${pill(c.en?'Live (sample)':'Planned',c.en?'':'gray')}</td></tr>`}).join('');
+  return `<div class="sec-label" style="margin-top:0">Global Command Centre</div>
+  <div class="grid g4 keep">
+   ${kpi('Total customers',USERS.length,'registered accounts')}
+   ${kpi('Active users',USERS.filter(u=>u.st==='active').length,'status active','up')}
+   ${kpi('Suspended accounts',USERS.filter(u=>u.st==='restricted').length,'restricted',USERS.some(u=>u.st==='restricted')?'down':'')}
+   ${kpi('Revenue (48 h)',fmtKes(feesKes),'fees, KES equivalent','up')}
+   ${kpi('Agents',AGENTS.length,AGENTS.filter(a=>a.st==='Active').length+' active')}
+   ${kpi('Merchants',MERCH.length,MERCH.filter(m=>m.st==='Verified').length+' verified')}
+   ${kpi('Businesses',BIZ.length,'on BEAST Business')}
+   ${kpi('Countries served',served+' of '+cc.length,'others planned')}
+   ${kpi('Transactions / second',tps,'average over 48 h (sample)')}
+   ${kpi('Failed transactions',failed,Math.round(failed/TX.length*100)+'% of volume',failed/TX.length>.08?'down':'up')}
+   ${kpi('Pending transactions',pend,'waiting on providers')}
+   ${kpi('Fraud alerts',fraud,'open alerts + flagged transactions',fraud>8?'down':'')}
+  </div>
+  <div class="grid g2 mt"><div class="card"><h3>Live transaction monitor <span class="pill gray">simulated</span></h3><div id="livefeed" class="list live">${liveHtml()}</div></div>
+  <div class="card"><h3>Revenue forecast (next 14 days)</h3>${lineChart(forecast(),'#f5c85b')}<div class="legend"><span>Today</span><span>+14 days</span></div><p class="hint">Straight-line projection from sample fees. A real forecast needs live ledger history.</p></div></div>
+  <div class="sec-label">Country by country</div>
+  ${tbl(['Country','Currency','Transactions (48 h)','Fees collected','Failed','Wallet balances','Sent today','Deposits today','Withdrawals today','Data'],[rows])}
+  <p class="hint mt">Amounts are in each local currency and are never added together except where marked KES equivalent. Total money held, transferred, received, deposited and withdrawn are shown per country above.</p>`;
+}
+const liveHtml=()=>LIVE.slice(0,12).map(t=>`<div class="item"><span class="dot ${t.st==='Completed'?'ok':t.st==='Failed'?'bad':'warn'}"></span><div class="grow"><b>${E(t.type)}</b> ${CO[t.cc].f}<small>${E(t.ref)} · ${E(fmtMinor(t.amtMinor,t.cc))}</small></div>${stPill(t.st)}</div>`).join('')||'<p class="muted">Waiting for activity…</p>';
+function forecast(){const d=[];const base=TX.filter(t=>t.st==='Completed').reduce((a,t)=>a+kesEq(t.feeMinor,t.cc),0)/2;for(let i=0;i<14;i++)d.push(base*(1+i*0.02));return d}
+function liveTick(){if(!S.authed)return;const u=rp(USERS),c=CO[u.cc],amt=toMinor(ri(50,40000)*c.rate,u.cc);
+  LIVE.unshift({ref:'BST-'+pad(ri(10000000,99999999),8)+'-'+ri(100,999),cc:u.cc,type:rp(TXTYPES),st:rp(['Completed','Completed','Completed','Pending','Failed']),amtMinor:amt});if(LIVE.length>30)LIVE.pop();
+  const el=$('#livefeed');if(el&&S.page==='dashboard')el.innerHTML=liveHtml()}
+PAGES.push({id:'dashboard',ico:'👑',label:'Global Dashboard',render(){
+  const reg=Array(30).fill(0);USERS.forEach(u=>{if(u.reg<30)reg[29-u.reg]++});
+  const cnt={};TX.forEach(t=>cnt[t.st]=(cnt[t.st]||0)+1);const done=TX.filter(t=>t.st==='Completed');
+  const act=USERS.filter(u=>u.st==='active'&&u.last<60*24*30).length;
+  const hours=Array(24).fill(0);TX.forEach(t=>{if(t.age<1440)hours[23-Math.floor(t.age/60)]++});
+  const vol=Object.keys(CO).map(k=>{const s=done.filter(t=>t.cc===k).reduce((a,t)=>a+t.amtMinor,0);return`<div class="kv"><span>${CO[k].f} ${E(CO[k].n)}</span><b>${E(fmtMinor(s,k))}</b></div>`}).join('');
+  const openAl=ALERTS.filter(a=>a.st==='open').length,openTk=TICKETS.filter(t=>t.st!=='Resolved').length;
+  const float=Object.keys(CO).map(k=>`<div class="kv"><span>${CO[k].f} ${E(CO[k].n)}</span><b>${E(fmtMinor(CO[k].floatMinor,k))}</b></div>`).join('');
+  return `<h1>BEAST Global Command Centre</h1><p class="sub">One screen for money, security, customers, transactions, businesses, agents, countries, technology and AI.</p>
+  ${cmdCentre()}
+  <div class="sec-label">Overview</div>
+  <div class="grid g4 keep"><div class="card kpi"><small>Registered accounts</small><b>${USERS.length}</b><i class="up">+${USERS.filter(u=>u.reg<7).length} this week</i></div>
+  <div class="card kpi"><small>Active (30 days)</small><b>${act}</b><i class="muted">${Math.round(act/USERS.length*100)}% of accounts</i></div>
+  ${can('tx.view')?kpi('Transactions (48 h)',TX.length,Math.round((cnt.Failed||0)/TX.length*100)+'% failed',(cnt.Failed||0)/TX.length>.08?'down':'up'):kpi('Transactions','Hidden','Not allowed for your role')}
+  ${can('security.view')?kpi('Open security alerts',openAl,openAl>3?'Needs attention':'Under control',openAl>3?'down':'up'):kpi('Open tickets',openTk,'Support queue')}</div>
+  <div class="grid g2 mt"><div class="card"><h3>New accounts, last 30 days</h3>${lineChart(reg,'#00d995')}<div class="legend"><span>30 days ago</span><span>Today</span></div></div>
+  ${can('tx.view')?`<div class="card"><h3>Transactions by hour (last 24 h)</h3>${barChart(hours,'#f5c85b')}<div class="legend"><span>24 h ago</span><span>Now</span></div></div>`:`<div class="card"><h3>Support queue</h3><div class="kpi"><b>${openTk}</b><small>open tickets</small></div></div>`}</div>
+  ${can('tx.view')?`<div class="grid g2 mt"><div class="card"><h3>Transaction status</h3>${stackBar(Object.keys(STCOL).map(k=>[k,cnt[k]||0,STCOL[k]]))}<div class="legend">${Object.keys(STCOL).map(k=>`<span>${sw(STCOL[k])}${k} ${cnt[k]||0}</span>`).join('')}</div></div>
+  <div class="card"><h3>Completed volume (per country currency)</h3>${vol}</div></div>`:''}
+  ${can('float.view')?`<div class="grid g2 mt"><div class="card"><h3>Float (treasury)</h3>${float}</div>
+  <div class="card"><h3>Payment providers <span class="pill gray">sample</span></h3><div class="list">${PROV.slice(0,8).map(p=>`<div class="item"><span class="dot ${p.st==='Operational'?'ok':p.st==='Degraded'?'warn':'off'}"></span><div class="grow">${CO[p.cc].f} ${E(p.name)}<small>${E(p.st)}${p.st==='Operational'||p.st==='Degraded'?' · '+p.lat+' ms':''}</small></div></div>`).join('')}</div></div></div>`:''}
+  <div class="grid g2 mt"><div class="card"><h3>System health</h3><div class="list">${SYS.map(s=>`<div class="item"><span class="dot off"></span><div class="grow">${E(s[0])}<small>${E(s[1])} (backend needed)</small></div></div>`).join('')}</div></div>
+  <div class="card"><h3>Recent admin activity</h3><div class="list">${AUD.slice(-5).reverse().map(a=>`<div class="item"><div class="grow"><b>${E(a.action)}</b> <span class="muted">${E(a.target)}</span><small>${E(a.actor)} · ${E(a.role)} · ${E(a.ts.slice(11,19))}</small></div></div>`).join('')||'<p class="muted">No activity yet.</p>'}</div></div></div>`;
+}});
+
+/* Users */
+const userRows=()=>{const f=F.users,q=f.q.toLowerCase();return USERS.filter(u=>(!f.cc||u.cc===f.cc)&&(!f.st||u.st===f.st)&&(!q||(u.id+' '+u.name).toLowerCase().includes(q))).map(u=>`<tr class="click" tabindex="0" role="button" aria-label="Open ${E(u.id)}" data-act="user" data-id="${E(u.id)}"><td>${E(u.id)}</td><td>${E(u.name.split(' ')[0]+' '+u.name.split(' ')[1][0]+'.')}</td><td>${CO[u.cc].f} ${u.cc}</td><td class="mono">${E(maskPh(u.phone))}</td><td>${stPill(u.st)}</td><td>${stPill(u.kyc)}</td><td><meter min="0" max="100" low="40" high="70" optimum="0" value="${u.risk}"></meter> ${u.risk}</td><td>${agoM(u.last)}</td></tr>`)};
+const userTbl=()=>tbl(['BEAST ID','Name','Country','Phone (masked)','Status','Verification','Risk','Last seen'],userRows());
+PAGES.push({id:'users',ico:'👥',label:'Customers',perm:'users.view',list(){$('#ulist').innerHTML=userTbl()},render(){
+  return `<h1>Customers</h1><p class="sub">Names shortened, contacts masked. Revealing needs a reason and fresh code, and is logged. Only the data your role needs is shown.</p>
+  ${filt('users',[{t:'q',k:'q',ph:'Search BEAST ID or name'},{t:'s',k:'cc',ph:'All countries',o:ccOpts},{t:'s',k:'st',ph:'All statuses',o:[['active','Active'],['pending','Pending'],['restricted','Restricted'],['closed','Closed']]}])}
+  <div id="ulist" class="mt">${userTbl()}</div>`}});
+function userModal(id){const u=USERS.find(x=>x.id===id);if(!u)return;const rv=(REVEAL[id]||0)>Date.now();
+  modalShell({title:u.name,id,sub:`${u.id} · ${CO[u.cc].f} ${CO[u.cc].n}`,
+    body:`<div class="kv"><span>Phone</span><b class="mono">${E(rv?u.phone:maskPh(u.phone))}</b></div>
+    <div class="kv"><span>National ID</span><b class="mono">•••••• ${E(u.idLast)} (hidden)</b></div>
+    <div class="kv"><span>Passwords and PINs</span><b>Never visible to anyone</b></div>
+    <div class="kv"><span>Verification</span><b>${E(u.kyc)}</b></div><div class="kv"><span>Risk score</span><b>${u.risk} / 100</b></div>
+    <div class="kv"><span>Registered</span><b>${u.reg} days ago</b></div><div class="kv"><span>Last seen</span><b>${agoM(u.last)}</b></div>
+    <div class="kv"><span>Devices · active sessions</span><b>${u.dev} · ${u.ses}</b></div><div class="kv"><span>Transactions</span><b>${u.tx}</b></div>`,
+    actions:`${can('users.restrict')?`<button class="btn red sm" data-act="restrictAsk" data-id="${E(id)}">${u.st==='restricted'?'Restore account':'Restrict account'}</button>`:''}${can('users.pii')&&!rv?`<button class="btn gold sm" data-act="revealAsk" data-id="${E(id)}">Reveal phone</button>`:''}<button class="btn sec sm" data-act="closeModal">Close</button>`});
+  audit('user_viewed',id,'detail opened')}
+function restrictAsk(id){if(!can('users.restrict'))return denied('users.restrict');const u=USERS.find(x=>x.id===id),to=u.st==='restricted'?'Restore':'Restrict';
+  askReason(to+' '+id,to==='Restrict'?'The user will not be able to send, withdraw or log in until restored.':'The user will regain access.',to,reason=>stepUp('Changing an account status',async()=>{u.st=to==='Restrict'?'restricted':'active';await audit(to==='Restrict'?'user_restricted':'user_restored',id,reason);closeModal();toast(id+' '+(to==='Restrict'?'restricted':'restored'));repaint()}))}
+function revealAsk(id){if(!can('users.pii'))return denied('users.pii');askReason('Reveal contact details for '+id,'Shown for 30 seconds, then hidden again.','Reveal',reason=>stepUp('Viewing personal data',async()=>{REVEAL[id]=Date.now()+30000;await audit('pii_revealed',id,reason);userModal(id);const myModal=S.currentModalId;setTimeout(()=>{delete REVEAL[id];if(S.currentModalId===id&&myModal===S.currentModalId)userModal(id)},30500)}),'gold')}
+
+/* Transactions */
+const txList=()=>{const f=F.tx,q=f.q.toLowerCase();return TX.filter(t=>(!f.cc||t.cc===f.cc)&&(!f.st||t.st===f.st)&&(!q||(t.ref+' '+t.u+' '+t.prv).toLowerCase().includes(q)))};
+const txTbl=()=>tbl(['Reference','Type','Country','Amount','Fee','Status','Recon','Risk','Age'],txList().slice(0,80).map(t=>`<tr class="click" tabindex="0" role="button" aria-label="Open ${E(t.ref)}" data-act="tx" data-id="${E(t.ref)}"><td class="mono">${E(t.ref)}</td><td>${E(t.type)}</td><td>${CO[t.cc].f}</td><td>${E(fmtMinor(t.amtMinor,t.cc))}</td><td>${E(fmtMinor(t.feeMinor,t.cc))}</td><td>${stPill(t.st)}</td><td>${stPill(t.rec)}</td><td>${t.fl.map(x=>pill(x,'gold')).join(' ')||'<span class="muted">—</span>'}</td><td>${agoM(t.age)}</td></tr>`));
+PAGES.push({id:'tx',ico:'🧾',label:'Transactions',perm:'tx.view',list(){$('#tlist').innerHTML=txTbl()},render(){
+  return `<h1>Transactions</h1><p class="sub">Send, receive, bulk, deposits, withdrawals, Lipa Na, cards, travel, refunds, reversals. Status comes from the ledger and providers, never from the browser. PINs, passwords and full card details are never shown.</p>
+  ${filt('tx',[{t:'q',k:'q',ph:'Search reference, user or provider ref'},{t:'s',k:'cc',ph:'All countries',o:ccOpts},{t:'s',k:'st',ph:'All statuses',o:Object.keys(STCOL).map(k=>[k,k])}])}
+  <div class="row mt">${can('tx.export')?'<button class="btn sec sm" data-act="txExport">Export CSV (needs code)</button>':''}<span class="muted sm">Showing up to 80 of ${txList().length}</span></div>
+  <div id="tlist" class="mt">${txTbl()}</div>`}});
+function txModal(ref){const t=TX.find(x=>x.ref===ref);if(!t)return;const u=USERS.find(x=>x.id===t.u);
+  modalShell({title:t.type,id:ref,sub:`${t.ref}`,
+    body:`<div class="kv"><span>Status</span><b>${stPill(t.st)}</b></div>
+    <div class="kv"><span>Amount</span><b>${E(fmtMinor(t.amtMinor,t.cc))}</b></div><div class="kv"><span>Fee</span><b>${E(fmtMinor(t.feeMinor,t.cc))}</b></div><div class="kv"><span>Total debited</span><b>${E(fmtMinor(t.amtMinor+t.feeMinor,t.cc))}</b></div>
+    <div class="kv"><span>Sender</span><b>${E(t.u)}</b></div><div class="kv"><span>Receiver</span><b>Counterparty (masked)</b></div><div class="kv"><span>Country</span><b>${CO[t.cc].f} ${E(CO[t.cc].n)}</b></div><div class="kv"><span>Source / provider</span><b>${E(t.src)}</b></div><div class="kv"><span>Provider reference</span><b class="mono">${E(t.prv)}</b></div>
+    <div class="kv"><span>Created</span><b>${agoM(t.age)}</b></div><div class="kv"><span>Reconciliation</span><b>${E(t.rec)}</b></div>
+    <div class="kv"><span>Risk assessment</span><b>${t.fl.join(', ')||'No flags'}${u?' · account risk '+u.risk:''}</b></div>
+    <h3 class="mt">Ledger entries (double-entry preview)</h3>
+    <div class="kv"><span>Dr User Wallet (${E(t.u)})</span><b>${E(fmtMinor(t.amtMinor,t.cc))}</b></div>
+    <div class="kv"><span>Cr Provider Float (${E(t.src)})</span><b>${E(fmtMinor(t.amtMinor,t.cc))}</b></div>
+    <div class="kv"><span>Cr BEAST Fee Revenue</span><b>${E(fmtMinor(t.feeMinor,t.cc))}</b></div>
+    <div class="kv"><span>Dr User Wallet (fee)</span><b>${E(fmtMinor(t.feeMinor,t.cc))}</b></div>`,
+    actions:`${can('tx.reconcile')&&t.rec==='Unmatched'?`<button class="btn sm" data-act="reconcile" data-id="${E(ref)}">Mark reconciled</button>`:''}${can('shield.act')?`<button class="btn gold sm" data-act="evidTx" data-id="${E(ref)}">Preserve as evidence</button>`:''}<button class="btn sec sm" data-act="closeModal">Close</button>`});
+  audit('tx_viewed',ref,'detail opened')}
+function reconcile(ref){if(!can('tx.reconcile'))return denied('tx.reconcile');stepUp('Reconciling a transaction',async()=>{const t=TX.find(x=>x.ref===ref);t.rec='Matched';await audit('tx_reconciled',ref,'manual match');closeModal();toast('Marked as reconciled');repaint()})}
+function txExport(){if(!can('tx.export'))return denied('tx.export');stepUp('Exporting transactions',async()=>{const rows=txList();const head=['reference','user','country','type','status','currency','amount_major','fee_major','provider_ref','reconciliation'];const csv=[head.join(',')].concat(rows.map(t=>[t.ref,t.u,t.cc,t.type,t.st,CO[t.cc].cur,toMajor(t.amtMinor,t.cc),toMajor(t.feeMinor,t.cc),t.prv,t.rec].map(csvCell).join(','))).join('\r\n');download('transactions-sample.csv','text/csv',csv);await audit('tx_exported','transactions',rows.length+' rows');toast('Exported '+rows.length+' sample rows')})}
+
+/* Countries */
+PAGES.push({id:'countries',ico:'🌍',label:'Country Management',perm:'country.view',render(){
+  const cmp=tbl(['Country','Currency','Transactions','Fees collected','Users','Agents','Merchants','Float','Stage'],Object.entries(CO).map(([k,c])=>{const tx=TX.filter(t=>t.cc===k);return`<tr><td>${c.f} ${E(c.n)}</td><td>${c.cur}</td><td>${tx.length}</td><td>${E(fmtMinor(tx.filter(t=>t.st==='Completed').reduce((a,t)=>a+t.feeMinor,0),k))}</td><td>${USERS.filter(u=>u.cc===k).length}</td><td>${AGENTS.filter(a=>a.cc===k).length}</td><td>${MERCH.filter(m=>m.cc===k).length}</td><td>${E(fmtMinor(c.floatMinor,k))}</td><td>${E(c.stage)}</td></tr>`}));
+  return `<h1>Country Management</h1><p class="sub">Each country has its own currency, fees, providers, limits, agents, merchants and compliance. Changes require maker-checker, a fresh code, and are audited.</p>
+  <div class="sec-label" style="margin-top:0">Compare all five countries</div>${cmp}<p class="hint">Sample figures. Real figures must come from connected systems.</p>
+  <div class="sec-label">Country dashboards</div><div class="grid g2">${Object.entries(CO).map(([k,c])=>{
+    const pend=c.pendingFees;
+    return`<div class="card"><div class="row between"><h2>${c.f} ${E(c.n)}</h2>${pill(c.en?'Enabled':'Disabled',c.en?'':'gray')}</div><p class="sub">${E(c.stage)}</p>
+  <div class="kv"><span>Currency · calling code</span><b>${c.cur} · +${c.dial}</b></div><div class="kv"><span>Fee</span><b>${E(fmtMinor(c.feeRateMinor,k))} per ${E(fmtMinor(c.feeStepMinor,k))} (max ${E(fmtMinor(c.feeCapMinor,k))})</b></div><div class="kv"><span>Limit per transaction</span><b>${E(fmtMinor(c.limitTxMinor,k))}</b></div>
+  <div class="kv"><span>Exchange rate (sample, per KES)</span><b>${c.rate}</b></div>
+  <div class="kv"><span>Services on</span><b>${Object.values(c.svc).filter(Boolean).length} of ${SERVICES.length}</b></div><div class="kv"><span>Payment methods</span><b>${E(c.methods.join(', '))}</b></div>
+  <div class="kv"><span>Agents · merchants · support</span><b>${AGENTS.filter(a=>a.cc===k).length} · ${MERCH.filter(m=>m.cc===k).length} · local team (backend)</b></div>
+  ${pend?`<div class="notice">Pending change submitted by ${E(pend.by)}. A different approver must confirm.</div>`:''}
+  ${c.notice?`<div class="notice">${E(c.notice)}</div>`:''}<div class="row mt">${can('country.edit')?`<button class="btn sm" data-act="countryEdit" data-id="${k}">Edit settings</button>${pend?`<button class="btn gold sm" data-act="countryApprove" data-id="${k}">Approve pending</button>`:''}`:'<span class="muted sm">View only</span>'}</div></div>`}).join('')}</div>
+  <div class="notice mt">Provider names are candidates to investigate, not live connections. Real-money services stay off until agreements and approvals exist per country. Tip: submit as Owner, then switch the role preview to Administrator to approve.</div>`}});
+function countryEdit(k){if(!can('country.edit'))return denied('country.edit');const c=CO[k];
+  modalShell({title:`${c.f} ${c.n} settings`,id:`country-${k}`,sub:'Amounts shown in major units; stored as integer minor units.',
+    body:`<label class="chk"><input type="checkbox" id="ce_en" ${c.en?'checked':''}> Country enabled</label>
+  <h3 class="mt">Services</h3><div class="grid g2">${SERVICES.map(([id,l])=>`<label class="chk"><input type="checkbox" id="ce_s_${id}" ${c.svc[id]?'checked':''}> ${E(l)}</label>`).join('')}</div>
+  <div class="grid g2"><div class="field"><label for="ce_rate">Fee per step (${c.cur})</label><input id="ce_rate" inputmode="decimal" value="${toMajor(c.feeRateMinor,k).toFixed(2)}"></div><div class="field"><label for="ce_step">Step size (${c.cur})</label><input id="ce_step" inputmode="decimal" value="${toMajor(c.feeStepMinor,k).toFixed(2)}"></div>
+  <div class="field"><label for="ce_cap">Fee cap (${c.cur})</label><input id="ce_cap" inputmode="decimal" value="${toMajor(c.feeCapMinor,k).toFixed(2)}"></div><div class="field"><label for="ce_lim">Limit per transaction (${c.cur})</label><input id="ce_lim" inputmode="decimal" value="${toMajor(c.limitTxMinor,k).toFixed(2)}"></div></div>
+  <div class="field"><label for="ce_note">Maintenance notice (max 140, shown to users)</label><textarea id="ce_note" rows="2" maxlength="140">${E(c.notice)}</textarea></div>
+  <div class="err" id="merr" role="alert"></div>`,
+    actions:`<button class="btn" data-act="countrySave" data-id="${k}">Submit for approval</button><button class="btn sec" data-act="closeModal">Cancel</button>`})}
+function countrySave(k){const c=CO[k],n=id=>Number(String($('#'+id).value).replace(',','.'));
+  const rate=n('ce_rate'),step=n('ce_step'),cap=n('ce_cap'),lim=n('ce_lim'),note=$('#ce_note').value.replace(/[\u0000-\u001f]/g,' ').trim().slice(0,140),e=$('#merr');
+  if(![rate,step,cap,lim].every(Number.isFinite)||rate<0||step<=0||cap<rate||lim<=0){e.textContent='Check the numbers: fee ≥ 0, step > 0, cap ≥ fee, limit > 0.';return}
+  if(toMinor(lim,k)>c.limitCeilMinor){e.textContent='Limit is above the safety ceiling of '+toMajor(c.limitCeilMinor,k).toLocaleString('en-KE')+' '+c.cur+'.';return}
+  const en=$('#ce_en').checked,svc=Object.fromEntries(SERVICES.map(([id])=>[id,$('#ce_s_'+id).checked]));
+  const pending={en,svc,rateMinor:toMinor(rate,k),stepMinor:toMinor(step,k),capMinor:toMinor(cap,k),limMinor:toMinor(lim,k),note,by:S.actor,ts:Date.now()};
+  stepUp('Submitting change for approval',async()=>{c.pendingFees=pending;await audit('country_change_submitted',k,`fee ${fmtMinor(c.feeRateMinor,k)}→${fmtMinor(pending.rateMinor,k)}`);closeModal();toast(c.n+' change submitted for approval');repaint()})}
+function countryApprove(k){if(!can('country.edit'))return denied('country.edit');const c=CO[k];if(!c.pendingFees)return;
+  if(c.pendingFees.by===S.actor){toast('Maker-checker: a different approver must confirm.');return}
+  stepUp('Approving country change',async()=>{const p=c.pendingFees;c.en=p.en;c.svc=p.svc;c.feeRateMinor=p.rateMinor;c.feeStepMinor=p.stepMinor;c.feeCapMinor=p.capMinor;c.limitTxMinor=p.limMinor;c.notice=p.note;c.pendingFees=null;await audit('country_approved',k,'approved by '+S.actor);closeModal();toast(c.n+' updated');repaint()})}
+
+/* Business */
+PAGES.push({id:'biz',ico:'🏪',label:'Business & Market',perm:'biz.view',render(){
+  const by={};BIZ.forEach(b=>by[b.st]=(by[b.st]||0)+1);
+  return `<h1>Business &amp; Market</h1><p class="sub">Registered businesses, trials and subscriptions across the 12 BEAST business services.</p>
+  <div class="grid g4 keep">${kpi('Businesses',BIZ.length,'registered')}${kpi('On free trial',by.Trial||0,'7-day trials','up')}${kpi('Subscribed',by.Active||0,'paying monthly','up')}${kpi('Suspended',by.Suspended||0,'by admins',(by.Suspended||0)?'down':'')}</div>
+  <div class="sec-label">Businesses</div>${tbl(['ID','Name','Service','Country','Products','Status','Action'],BIZ.map(b=>`<tr><td>${E(b.id)}</td><td>${E(b.name)}</td><td>${E(b.sv)}</td><td>${CO[b.cc].f}</td><td>${b.prods}</td><td>${stPill(b.st)}</td><td>${can('biz.moderate')?`<button class="btn sec sm" data-act="bizAsk" data-id="${b.id}">${b.st==='Suspended'?'Restore':'Suspend'}</button>`:'<span class="muted sm">—</span>'}</td></tr>`))}`}});
+function bizAsk(id){if(!can('biz.moderate'))return denied('biz.moderate');const b=BIZ.find(x=>x.id===id),sus=b.st!=='Suspended';
+  askReason((sus?'Suspend ':'Restore ')+id,sus?'Its listings are hidden and it cannot take payments.':'It can trade again.',sus?'Suspend':'Restore',r=>stepUp('Moderating a business',async()=>{b.st=sus?'Suspended':'Active';await audit(sus?'biz_suspended':'biz_restored',id,r);closeModal();toast(id+(sus?' suspended':' restored'));repaint()}))}
+
+/* Float & Treasury */
+PAGES.push({id:'float',ico:'💧',label:'Float & Treasury',perm:'float.view',render(){
+  const totals=Object.keys(CO).map(k=>`<div class="card"><h3>${CO[k].f} ${E(CO[k].n)}</h3>
+    <div class="kv"><span>Float balance</span><b>${E(fmtMinor(CO[k].floatMinor,k))}</b></div>
+    <div class="kv"><span>Daily expected outflow</span><b>${E(fmtMinor(TX.filter(t=>t.cc===k&&t.st==='Completed').reduce((a,t)=>a+t.amtMinor,0),k))}</b></div>
+    <div class="kv"><span>Health</span><b>${pill('Healthy','')}</b></div>
+    <div class="row mt">${can('float.move')?`<button class="btn sm" data-act="floatMove" data-id="${k}">Move float</button>`:''}</div></div>`).join('');
+  return `<h1>Float &amp; Treasury</h1><p class="sub">Company float per provider account. Moving money needs a reason, a fresh code, and is written to the audit log.</p>
+  <div class="grid g2">${totals}</div>
+  <div class="card mt"><h3>Recent treasury movements</h3>${tbl(['Time','Country','Amount','From → To','Reason','By'],AUD.filter(a=>a.action==='float_moved').slice(-10).reverse().map(a=>`<tr><td>${E(a.ts.slice(11,19))}</td><td>${E(a.target)}</td><td>${E(a.detail.split('|')[0])}</td><td>${E(a.detail.split('|')[1]||'—')}</td><td>${E(a.detail.split('|')[2]||'—')}</td><td>${E(a.actor)}</td></tr>`))}</div>`}});
+function floatMove(k){if(!can('float.move'))return denied('float.move');const c=CO[k];
+  modalShell({title:`Move float · ${c.f} ${c.n}`,id:`float-${k}`,sub:`Current float: ${fmtMinor(c.floatMinor,k)}`,
+    body:`<div class="field"><label for="fm_amt">Amount (${c.cur})</label><input id="fm_amt" inputmode="decimal" placeholder="0.00"></div>
+    <div class="field"><label for="fm_reason">Reason (audit)</label><textarea id="fm_reason" rows="2" maxlength="140"></textarea></div>
+    <div class="err" id="merr" role="alert"></div>`,
+    actions:`<button class="btn" data-act="floatDo" data-id="${k}">Confirm move</button><button class="btn sec" data-act="closeModal">Cancel</button>`})}
+function floatDo(k){const c=CO[k],a=Number($('#fm_amt').value),reason=$('#fm_reason').value.trim(),e=$('#merr');
+  if(!Number.isFinite(a)||a<=0){e.textContent='Enter a positive amount.';return}
+  if(reason.length<8){e.textContent='Write a reason of at least 8 characters.';return}
+  const amtMinor=toMinor(a,k);if(amtMinor>c.floatMinor){e.textContent='Amount exceeds current float.';return}
+  stepUp('Moving treasury float',async()=>{c.floatMinor-=amtMinor;await audit('float_moved',k,`${fmtMinor(amtMinor,k)}|Bank → ${c.cur} float|${reason.replace(/\|/g,'/')}`);closeModal();toast('Float moved');repaint()})}
+
+/* Agents (+ schematic location map) */
+const agentRows=()=>AGENTS.filter(a=>!F.agents.cc||a.cc===F.agents.cc).map(a=>`<tr><td>${E(a.id)}</td><td>${E(a.name)}</td><td>${CO[a.cc].f} ${a.cc}</td><td class="mono">${E(maskPh(a.phone))}</td><td>${E(fmtMinor(a.floatMinor,a.cc))}</td><td>${a.txToday}</td><td>${a.failRate}%</td><td>${stPill(a.st)}</td><td>${can('agents.manage')?`<button class="btn sec sm" data-act="agentToggle" data-id="${a.id}">${a.st==='Suspended'?'Activate':'Suspend'}</button>`:'—'}</td></tr>`);
+const agentTbl=()=>tbl(['ID','Name','Country','Phone (masked)','Float','Tx today','Fail rate','Status','Action'],agentRows());
+function agentMap(){return`<div class="map">${Object.keys(CO).map(k=>{const as=AGENTS.filter(a=>a.cc===k);return`<div class="mapc"><div class="sm">${CO[k].f} ${E(CO[k].n)} · ${as.length}</div><svg viewBox="0 0 100 80" role="img" aria-label="Agent positions ${E(CO[k].n)}"><rect x="1" y="1" width="98" height="78" rx="8" fill="#08130e" stroke="#24392f"/>${as.map(a=>`<circle cx="${(8+a.x*84).toFixed(1)}" cy="${(8+a.y*64).toFixed(1)}" r="3.2" fill="${a.st==='Active'?'#00d995':a.st==='Suspended'?'#ff7979':'#6f827a'}"><title>${E(a.id)} ${E(a.st)}</title></circle>`).join('')}</svg></div>`}).join('')}</div><div class="legend"><span>${sw('#00d995')}Active</span><span>${sw('#ff7979')}Suspended</span><span>${sw('#6f827a')}Inactive</span></div><p class="hint">Schematic positions only. A real live map needs agent GPS or registered addresses and a map provider.</p>`}
+PAGES.push({id:'agents',ico:'🧑‍💼',label:'Agents',perm:'agents.view',list(){$('#alist').innerHTML=agentTbl()},render(){
+  return `<h1>Agents</h1><p class="sub">Cash-in/cash-out agents. Float is tracked per agent; suspensions take effect immediately on the server. Registration, verification, commissions and ranking need the backend.</p>
+  <div class="grid g4 keep">${kpi('Agents',AGENTS.length,'all countries')}${kpi('Active',AGENTS.filter(a=>a.st==='Active').length,'can transact','up')}${kpi('Suspended',AGENTS.filter(a=>a.st==='Suspended').length,'blocked')}${kpi('Avg fail rate',Math.round(AGENTS.reduce((a,b)=>a+b.failRate,0)/AGENTS.length)+'%','fraud watch')}</div>
+  <div class="card mt"><h3>Agent map</h3>${agentMap()}</div>
+  ${filt('agents',[{t:'s',k:'cc',ph:'All countries',o:ccOpts}])}
+  <div id="alist" class="mt">${agentTbl()}</div>
+  <div class="sec-label">Agent ranking (by transactions today)</div>${tbl(['Rank','Agent','Country','Tx today','Fail rate'],[...AGENTS].sort((a,b)=>b.txToday-a.txToday).slice(0,5).map((a,i)=>`<tr><td>${i+1}</td><td>${E(a.id)}</td><td>${CO[a.cc].f}</td><td>${a.txToday}</td><td>${a.failRate}%</td></tr>`))}`}});
+function agentToggle(id){if(!can('agents.manage'))return denied('agents.manage');const a=AGENTS.find(x=>x.id===id),sus=a.st!=='Suspended';
+  askReason((sus?'Suspend ':'Activate ')+id,sus?'Agent cannot cash-in or cash-out.':'Agent can transact again.',sus?'Suspend':'Activate',r=>stepUp('Changing agent status',async()=>{a.st=sus?'Suspended':'Active';await audit(sus?'agent_suspended':'agent_activated',id,r);closeModal();toast(id+(sus?' suspended':' activated'));repaint()}))}
+
+/* Bulk payouts */
+PAGES.push({id:'payouts',ico:'📤',label:'Bulk Payouts & Payroll',perm:'payout.view',render(){
+  return `<h1>Bulk Payouts &amp; Payroll</h1><p class="sub">Upload a CSV of recipients, preview, then approve (dual control). Supplier payments and payroll use the same flow. No real money is moved here.</p>
+  <div class="card"><h3>New payout</h3>
+    <div class="field"><label for="po_cc">Country</label><select id="po_cc" class="ctl">${Object.entries(CO).map(([k,c])=>`<option value="${k}">${c.f} ${E(c.n)} (${c.cur})</option>`).join('')}</select></div>
+    <div class="field"><label for="po_csv">CSV: phone,amount (one per line, max 500)</label><textarea id="po_csv" rows="5" placeholder="254712345678,500&#10;254701234567,250"></textarea></div>
+    <div class="err" id="poerr" role="alert"></div>
+    ${can('payout.create')?'<button class="btn sm" data-act="poPreview">Preview &amp; create draft</button>':'<span class="muted sm">Your role cannot create payouts.</span>'}
+  </div>
+  <div class="sec-label">Payout batches</div>
+  ${tbl(['ID','Country','Amount','Recipients','Status','Approved by','Age','Action'],PAYOUTS.filter(p=>!F.payouts.st||p.st===F.payouts.st).map(p=>`<tr><td>${E(p.id)}</td><td>${CO[p.cc].f} ${p.cc}</td><td>${E(fmtMinor(p.amountMinor,p.cc))}</td><td>${p.recipients}</td><td>${stPill(p.st)}</td><td>${E(p.by)}</td><td>${agoM(p.age)}</td><td>${can('payout.create')&&p.st==='Pending'?`<button class="btn sec sm" data-act="poApprove" data-id="${p.id}">Approve</button>`:''}${can('payout.create')&&p.st==='Approved'?`<button class="btn sm" data-act="poExecute" data-id="${p.id}">Execute (demo)</button>`:''}</td></tr>`))}
+  <div class="row mt">${filt('payouts',[{t:'s',k:'st',ph:'All statuses',o:[['Pending','Pending'],['Approved','Approved'],['Executed','Executed']]}])}</div>`}});
+function poPreview(){if(!can('payout.create'))return denied('payout.create');const cc=$('#po_cc').value,c=CO[cc],lines=$('#po_csv').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean),e=$('#poerr');
+  if(!lines.length){e.textContent='Paste at least one line.';return}if(lines.length>500){e.textContent='Maximum 500 recipients.';return}
+  const rows=[];let totalMinor=0;for(const [i,l] of lines.entries()){const [ph,amt]=l.split(',').map(x=>(x||'').trim());if(!/^\+?\d{8,15}$/.test(ph)||!Number.isFinite(Number(amt))||Number(amt)<=0){e.textContent='Line '+(i+1)+' is not valid phone,amount.';return}const m=toMinor(Number(amt),cc);rows.push([ph,m]);totalMinor+=m}
+  const id='PO-'+Date.now().toString(36).toUpperCase();
+  PAYOUTS.unshift({id,amountMinor:totalMinor,cc,recipients:rows.length,st:'Pending',by:'unassigned',age:0});
+  audit('payout_created',id,rows.length+' recipients · '+fmtMinor(totalMinor,cc));e.textContent='';toast('Draft '+id+' created — waiting approval');repaint();
+}
+function poApprove(id){if(!can('payout.create'))return denied('payout.create');const p=PAYOUTS.find(x=>x.id===id);
+  stepUp('Approving payout '+id,async()=>{p.st='Approved';p.by=S.actor;await audit('payout_approved',id,fmtMinor(p.amountMinor,p.cc));toast('Payout approved');repaint()})}
+function poExecute(id){if(!can('payout.create'))return denied('payout.create');const p=PAYOUTS.find(x=>x.id===id);
+  stepUp('Executing payout '+id+' (demo)',async()=>{p.st='Executed';await audit('payout_executed',id,fmtMinor(p.amountMinor,p.cc));toast('Payout marked executed (demo)');repaint()})}
+
+/* AML / STR cases */
+PAGES.push({id:'aml',ico:'🔍',label:'AML / STR',perm:'aml.view',render(){
+  return `<h1>AML / STR</h1><p class="sub">Suspicious transaction cases. Filing a report requires a reason and a fresh code — the real system must also check with the regulator.</p>
+  ${filt('aml',[{t:'s',k:'st',ph:'All statuses',o:[['Open','Open'],['Draft','Draft'],['Filed','Filed']]}])}
+  <div class="mt">${tbl(['Case','User','Country','Amount','Reason','Status','Owner','Age','Action'],AML.filter(a=>!F.aml.st||a.st===F.aml.st).map(a=>`<tr><td>${E(a.id)}</td><td>${E(a.u)}</td><td>${CO[a.cc].f}</td><td>${E(fmtMinor(a.amtMinor,a.cc))}</td><td>${E(a.reason)}</td><td>${stPill(a.st)}</td><td>${E(a.owner)}</td><td>${agoM(a.age)}</td><td>${can('aml.act')&&a.st!=='Filed'?`<button class="btn sec sm" data-act="amlFile" data-id="${a.id}">File STR</button>`:'—'}</td></tr>`))}</div>`}});
+function amlFile(id){if(!can('aml.act'))return denied('aml.act');const a=AML.find(x=>x.id===id);
+  askReason('File STR '+id,'This is a demo. A real filing goes to the financial intelligence unit via an approved channel and is logged.','File',r=>stepUp('Filing STR',async()=>{a.st='Filed';a.owner=S.actor;await audit('str_filed',id,r);closeModal();toast('STR '+id+' filed (demo)');repaint()}))}
+
+/* Reconciliation */
+PAGES.push({id:'recon',ico:'🧮',label:'Reconciliation',perm:'recon.view',render(){
+  return `<h1>Reconciliation</h1><p class="sub">Compares the BEAST ledger with bank settlements, M-PESA, Airtel Money and other providers to find missing payments, duplicates and balance differences. Upload a CSV (provider ref, amount) — needs a fresh code.</p>
+  <div class="card"><h3>Upload provider statement</h3>
+    <div class="field"><label for="rc_cc">Country</label><select id="rc_cc" class="ctl">${Object.entries(CO).map(([k,c])=>`<option value="${k}">${c.f} ${E(c.n)}</option>`).join('')}</select></div>
+    <div class="field"><label for="rc_prov">Provider</label><select id="rc_prov" class="ctl">${['M-PESA','Airtel Money','Bank','Card'].map(p=>`<option>${E(p)}</option>`).join('')}</select></div>
+    <div class="field"><label for="rc_csv">CSV: provider_ref,amount (per line, max 2000)</label><textarea id="rc_csv" rows="4" placeholder="PRV-ABC123,500.00"></textarea></div>
+    <div class="err" id="rcerr" role="alert"></div>
+    ${can('recon.upload')?'<button class="btn sm" data-act="rcUpload">Upload &amp; reconcile</button>':'<span class="muted sm">Your role cannot upload.</span>'}
+  </div>
+  <div class="sec-label">Recent reconciliation runs</div>
+  ${tbl(['ID','Country','Provider','Rows','Matched','Unmatched','Status','By','Age'],RECON.map(r=>`<tr><td>${E(r.id)}</td><td>${CO[r.cc].f}</td><td>${E(r.provider)}</td><td>${r.rows}</td><td>${r.matched}</td><td>${r.unmatched}</td><td>${stPill(r.st)}</td><td>${E(r.by)}</td><td>${agoM(r.age)}</td></tr>`))}
+  <div class="sec-label">Duplicate-payment check (same user, amount and provider within 48 h)</div>
+  ${tbl(['Reference A','Reference B','User','Amount'],dupes().map(d=>`<tr><td class="mono">${E(d[0].ref)}</td><td class="mono">${E(d[1].ref)}</td><td>${E(d[0].u)}</td><td>${E(fmtMinor(d[0].amtMinor,d[0].cc))}</td></tr>`))}`}});
+function dupes(){const out=[];const seen={};TX.forEach(t=>{const k=t.u+'|'+t.amtMinor+'|'+t.src;if(seen[k])out.push([seen[k],t]);else seen[k]=t});return out}
+function rcUpload(){if(!can('recon.upload'))return denied('recon.upload');const cc=$('#rc_cc').value,prov=$('#rc_prov').value,lines=$('#rc_csv').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean),e=$('#rcerr');
+  if(!lines.length){e.textContent='Paste at least one line.';return}if(lines.length>2000){e.textContent='Maximum 2000 rows.';return}
+  const stmt=new Map();for(const [i,l] of lines.entries()){const [ref,amt]=l.split(',').map(x=>(x||'').trim());if(!ref||!Number.isFinite(Number(amt))){e.textContent='Line '+(i+1)+' is not valid provider_ref,amount.';return}stmt.set(ref,toMinor(Number(amt),cc))}
+  stepUp('Uploading reconciliation file',async()=>{
+    let matched=0,unmatched=0;
+    for(const [ref,amt] of stmt){const t=TX.find(x=>x.prv===ref);if(t&&t.amtMinor===amt&&t.cc===cc){matched++;t.rec='Matched'}else{unmatched++}}
+    const id='RCN-'+Date.now().toString(36).toUpperCase();
+    RECON.unshift({id,cc,provider:prov,rows:stmt.size,matched,unmatched,st:unmatched?'Pending review':'Closed',by:S.actor,age:0});
+    await audit('recon_uploaded',id,`${matched}/${stmt.size} matched (${prov})`);e.textContent='';toast(`Reconciled: ${matched}/${stmt.size} matched`);repaint()})}
+
+/* Support */
+const supTbl=()=>tbl(['Ticket','Subject','User','Priority','Status','Assigned','Age'],TICKETS.filter(t=>!F.sup.st||t.st===F.sup.st).map(t=>`<tr class="click" tabindex="0" role="button" aria-label="Open ${E(t.id)}" data-act="ticket" data-id="${t.id}"><td>${t.id}</td><td>${E(t.sub)}</td><td>${E(t.u)}</td><td>${stPill(t.pr)}</td><td>${stPill(t.st)}</td><td>${E(t.as)}</td><td>${agoM(t.age)}</td></tr>`));
+PAGES.push({id:'support',ico:'🎧',label:'Customer Support',perm:'support.manage',list(){$('#slist').innerHTML=supTbl()},render(){
+  const open=TICKETS.filter(t=>t.st!=='Resolved').length;
+  return `<h1>Customer Support Command Centre</h1><p class="sub">Tickets, complaints, disputes, refund requests and escalations. Support agents see masked data only. Live chat and satisfaction scores need the backend.</p>
+  <div class="grid g4 keep">${kpi('Open tickets',open,'need a reply')}${kpi('Urgent',TICKETS.filter(t=>t.pr==='Urgent'&&t.st!=='Resolved').length,'escalate','down')}${kpi('Refund requests',TICKETS.filter(t=>t.sub==='Refund request').length,'in queue')}${kpi('Live chat','Not connected','backend needed')}</div>
+  ${filt('sup',[{t:'s',k:'st',ph:'All statuses',o:[['Open','Open'],['In progress','In progress'],['Resolved','Resolved']]}])}<div id="slist" class="mt">${supTbl()}</div>`}});
+function ticketModal(id){const t=TICKETS.find(x=>x.id===id);
+  modalShell({title:t.id,id,sub:`${t.sub} · ${t.u}`,
+    body:`<div class="kv"><span>Status</span><b>${stPill(t.st)}</b></div><div class="kv"><span>Priority</span><b>${stPill(t.pr)}</b></div><div class="kv"><span>Assigned</span><b>${E(t.as)}</b></div>`,
+    actions:`${t.st!=='Resolved'?`<button class="btn sm" data-act="ticketAssign" data-id="${id}">Assign to me</button><button class="btn sec sm" data-act="ticketResolve" data-id="${id}">Mark resolved</button>`:''}<button class="btn sec sm" data-act="closeModal">Close</button>`})}
+async function ticketSet(id,k){if(!can('support.manage'))return denied('support.manage');const t=TICKETS.find(x=>x.id===id);if(k==='assign'){t.as=S.role==='support'?'support-1':S.actor;t.st='In progress'}else t.st='Resolved';await audit('ticket_'+k,id,t.st);closeModal();toast(id+' updated');repaint()}
+
+/* AI */
+function aiBrief(text){
+  const t=(text||'').toLowerCase();let k=Object.keys(CO).find(x=>t.includes(CO[x].n.toLowerCase()))||'KE';const c=CO[k];
+  const tx=TX.filter(x=>x.cc===k&&x.age<1440),done=tx.filter(x=>x.st==='Completed'),failed=tx.filter(x=>x.st==='Failed'),flag=tx.filter(x=>x.fl.length);
+  const users=USERS.filter(u=>u.cc===k),newU=users.filter(u=>u.reg<1).length,wk=users.filter(u=>u.reg<7).length;
+  const deg=PROV.filter(p=>p.cc===k&&p.st==='Degraded'),rev=done.reduce((a,x)=>a+x.feeMinor,0);
+  const acts=[];if(failed.length/(tx.length||1)>.1)acts.push('Failure rate is above 10%: review provider health and retry rules.');if(deg.length)acts.push('Provider degraded ('+deg.map(d=>d.name).join(', ')+'): consider routing to the fallback provider.');if(flag.length)acts.push(flag.length+' flagged transaction(s): open them in BEAST Shield.');if(!acts.length)acts.push('No urgent action. Keep monitoring.');
+  return `<div class="card mt"><h3>${c.f} ${E(c.n)} — today</h3>
+   <div class="kv"><span>Transactions processed</span><b>${done.length} of ${tx.length}</b></div><div class="kv"><span>Revenue generated</span><b>${E(fmtMinor(rev,k))}</b></div>
+   <div class="kv"><span>Failed payments</span><b>${failed.length}</b></div><div class="kv"><span>Suspicious activities</span><b>${flag.length}</b></div>
+   <div class="kv"><span>Customer growth</span><b>+${newU} today · +${wk} this week</b></div><div class="kv"><span>System problems</span><b>${deg.length?deg.length+' provider degraded':'None seen'} · backend not connected</b></div>
+   <h3 class="mt">Recommended actions</h3><div class="list">${acts.map(a=>`<div class="item"><div class="grow">${E(a)}</div></div>`).join('')}</div>
+   <p class="hint mt">Rule-based briefing from sample data, not a real AI model. The AI only recommends — any sensitive financial action needs authorized human approval.</p></div>`}
+PAGES.push({id:'ai',ico:'🧠',label:'BEAST AI',perm:'ai.view',render(){
+  const tot=AI.usage.reduce((a,b)=>a+b,0),adm=can('ai.manage');
+  return `<h1>BEAST AI Intelligence</h1><p class="sub">Service health, limits and tool permissions. Administrators cannot read user conversations.</p>
+  <div class="card"><h3>Ask BEAST AI</h3><div class="row"><input id="ai_q" class="ctl grow" maxlength="120" placeholder="BEAST AI, what is happening in Kenya today?"><button class="btn sm" data-act="aiAsk">Ask</button></div>
+  <div class="row mt">${Object.keys(CO).map(k=>`<button class="btn sec sm" data-act="aiQuick" data-id="${k}">${CO[k].f} ${E(CO[k].n)}</button>`).join('')}</div><div id="aiOut">${aiBrief('Kenya')}</div></div>
+  <div class="sec-label">AI assistants</div><div class="grid g3">${['Financial analyst','Fraud investigator','Customer-support assistant','Transaction analyst','Business analyst','Revenue forecasting','Suspicious-pattern detection','Customer behaviour analysis','System performance analyst','Security assistant','Report generator','Technical assistant'].map(n=>`<div class="item"><span class="dot off"></span><div class="grow">${E(n)}<small>Needs a connected model</small></div></div>`).join('')}</div>
+  <div class="grid g4 keep mt">${kpi('Requests (14 days)',tot.toLocaleString('en-KE'),'sample')}${kpi('Model status','Not connected','needs a real model','')}${kpi('Rate limit / min',AI.limitMin,'per user')}${kpi('Rate limit / day',AI.limitDay,'per user')}</div>
+  <div class="grid g2 mt"><div class="card"><h3>Daily requests (sample)</h3>${barChart(AI.usage,'#8dcaff')}</div>
+  <div class="card"><h3>Models</h3><div class="list">${AI.models.map(m=>`<div class="item"><span class="dot off"></span><div class="grow">${E(m[0])}<small>${E(m[1])}</small></div></div>`).join('')}</div></div></div>
+  <div class="grid g2 mt"><div class="card"><h3>Rate limits</h3><div class="field"><label for="ai_min">Requests per minute per user (1–120)</label><input id="ai_min" inputmode="numeric" value="${AI.limitMin}" ${adm?'':'disabled'}></div><div class="field"><label for="ai_day">Requests per day per user (10–5000)</label><input id="ai_day" inputmode="numeric" value="${AI.limitDay}" ${adm?'':'disabled'}></div><div class="err" id="aerr" role="alert"></div>${adm?'<button class="btn sm" data-act="aiLimits">Save limits</button>':'<span class="muted sm">View only</span>'}</div>
+  <div class="card"><h3>Tools the AI may use</h3>${Object.keys(AI.tools).map(t=>`<label class="chk"><input class="switch" type="checkbox" data-chg="aiTool" data-id="${t}" ${AI.tools[t]?'checked':''} ${adm?'':'disabled'}> <span>${E(t[0].toUpperCase()+t.slice(1))}</span></label>`).join('')}
+  <h3 class="mt">Always blocked</h3>${['Move or send money','Make purchases','Read another user\'s data or memory','Change permissions or settings','Show keys, PINs or passwords'].map(t=>`<label class="chk"><input class="switch" type="checkbox" checked disabled> <span>${E(t)}</span></label>`).join('')}</div></div>
+  <div class="card mt"><h3>Conversation privacy</h3><p class="sub">Chats are private to each user. If a legal or safety reason ever requires access, a request is logged and a server must require two approvers.</p>${adm?'<button class="btn gold sm" data-act="breakglass">Request emergency access (logged)</button>':''}</div>`}});
+function aiLimits(){if(!can('ai.manage'))return denied('ai.manage');const m=Number($('#ai_min').value),d=Number($('#ai_day').value);
+  if(!Number.isInteger(m)||m<1||m>120||!Number.isInteger(d)||d<10||d>5000||d<m){$('#aerr').textContent='Use whole numbers: 1–120 per minute and 10–5000 per day.';return}
+  stepUp('Changing AI limits',async()=>{const o=AI.limitMin+'/'+AI.limitDay;AI.limitMin=m;AI.limitDay=d;await audit('ai_limits_changed','ai',o+'→'+m+'/'+d);toast('AI limits saved');repaint()})}
+function aiTool(el){if(!can('ai.manage')){denied('ai.manage');repaint();return}const t=el.dataset.id,on=el.checked;stepUp('Changing AI tool access',async()=>{AI.tools[t]=on;await audit('ai_tool_changed',t,String(on));toast(t+(on?' allowed':' blocked'));repaint()})}
+function breakglass(){askReason('Request emergency conversation access','Only logs the request here. The real system must need two approvers and a legal or safety basis.','Log request',async r=>{await audit('breakglass_requested','ai.conversations',r);closeModal();toast('Request logged. Nothing was opened.')},'gold')}
+function aiAsk(q){const v=q??$('#ai_q').value;$('#aiOut').innerHTML=aiBrief(v);audit('ai_briefing','ai',String(v).slice(0,80))}
+
+/* Security (panel protection) */
+PAGES.push({id:'security',ico:'🔐',label:'Panel Security',perm:'security.view',render(){
+  const op=ALERTS.filter(a=>a.st==='open').length,act=can('security.act');
+  const posture=[['Two-step sign-in (authenticator app)','file'],['Owner key as a third step (hash only in file)','file'],['Passphrase stored as salted PBKDF2-SHA256 hash (600,000 rounds)','file'],['Lock-out after 5 wrong attempts, growing delay','file'],['Auto sign-out after 5 minutes idle','file'],['Fresh code for sensitive actions','file'],['Strict Content-Security-Policy, no outside connections','file'],['Hash-chained audit log with verify button','file'],['All shown data is escaped (no injected scripts)','file'],['Screen hidden when the tab is in the background','file'],['Money stored as integer minor units','file'],['Server-side sign-in with secure cookies','srv'],['Server checks permissions on every request','srv'],['Append-only audit storage','srv'],['Rate limits and firewall (WAF)','srv'],['Admin only from allow-listed network or VPN','srv'],['Hardware security keys (WebAuthn) and biometrics','srv'],['Encrypted database and secrets manager','srv'],['Provider callback signature checks','srv'],['Emergency access needs two approvers','srv'],['Monitoring, alerts, backups, incident plan','srv']];
+  return `<h1>Panel Security</h1><p class="sub">Alerts to act on and how well this panel is protected. Customer fraud detection lives in BEAST Shield.</p><div class="grid g4 keep">${kpi('Open alerts',op,'need action',op?'down':'up')}${kpi('Failed logins (24 h)',87,'sample')}${kpi('Blocked requests',412,'sample')}${kpi('Admin sessions',2,'sample')}</div>
+  <div class="sec-label">Alerts</div><div class="list">${ALERTS.map(a=>`<div class="item"><span class="dot ${a.st==='open'?(a.sev==='High'?'bad':'warn'):a.st==='ack'?'warn':'ok'}"></span><div class="grow"><b>${E(a.title)}</b><small>${E(a.id)} · ${E(a.area)} · ${agoM(a.age)}</small></div>${stPill(a.sev)} ${stPill(a.st)}${act&&a.st!=='resolved'?`<button class="btn sec sm" data-act="alertAck" data-id="${a.id}">${a.st==='open'?'Acknowledge':'Resolve'}</button>`:''}</div>`).join('')}</div>
+  <div class="sec-label">Protection checklist</div><div class="card"><div class="list">${posture.map(p=>`<div class="item"><div class="grow">${E(p[0])}</div>${pill(p[1]==='file'?'In this file':'Needs backend',p[1]==='file'?'':'gold')}</div>`).join('')}</div></div>`}});
+async function alertAck(id){if(!can('security.act'))return denied('security.act');const a=ALERTS.find(x=>x.id===id);a.st=a.st==='open'?'ack':'resolved';await audit('alert_'+a.st,id,a.title);toast(id+' '+a.st);repaint()}
+
+/* Audit */
+PAGES.push({id:'audit',ico:'📜',label:'Audit log',perm:'audit.view',render(){
+  return `<h1>Audit log</h1><p class="sub">Every sensitive action is recorded. Each entry is chained to the one before it, so a change anywhere is detected.</p>
+  <div class="row"><button class="btn sm" data-act="auditVerify">Verify chain</button><button class="btn sec sm" data-act="auditExport">Export JSON</button>${S.role==='owner'?`<button class="btn sec sm" data-act="tamper">Demo: tamper with a copy</button>`:''}</div><div id="vres" class="mt"></div>
+  <div class="mt">${tbl(['#','Time (UTC)','Who','Role','Action','Target','Detail','Hash'],AUD.slice(-100).reverse().map(a=>`<tr><td>${a.i}</td><td>${E(a.ts.slice(0,19).replace('T',' '))}</td><td>${E(a.actor)}</td><td>${E(a.role)}</td><td>${E(a.action)}</td><td>${E(a.target)}</td><td>${E(a.detail)}</td><td class="mono">${E(a.hash.slice(0,10))}…</td></tr>`))}</div><p class="hint mt">Kept in memory for this session. A real system writes to an append-only store admins cannot edit.</p>`}});
+async function auditVerify(){await aq;const bad=await verifyChain();$('#vres').innerHTML=bad<0?`<div class="notice ok">Chain intact: ${AUD.length} entries verified.</div>`:`<div class="notice bad">Entry #${bad} does not match its hash. The log was changed.</div>`}
+function auditExport(){if(!can('audit.view'))return denied('audit.view');stepUp('Exporting the audit log',async()=>{download('audit-log.json','application/json',JSON.stringify(AUD,null,2));await audit('audit_exported','audit',AUD.length+' entries');toast('Audit log exported')})}
+async function tamperDemo(){if(S.role!=='owner')return;await aq;const copy=JSON.parse(JSON.stringify(AUD));const i=Math.floor(copy.length/2);if(!copy[i])return;copy[i].detail+=' (edited)';const bad=await verifyChain(copy);$('#vres').innerHTML=bad<0?`<div class="notice bad">Tamper simulation inconclusive.</div>`:`<div class="notice bad">Tamper simulation: chain breaks at #${bad}. Real log still intact.</div>`;await audit('tamper_demo','audit','simulated edit at #'+i);repaint()}
+
+/* Admin access */
+PAGES.push({id:'access',ico:'🔑',label:'Roles & Permissions',perm:'roles.manage',render(){
+  const all=[...new Set(Object.values(PERMS).flat().filter(x=>x!=='*'))].sort(),roles=Object.keys(PERMS);
+  return `<h1>Roles &amp; Permissions</h1><p class="sub">Who can do what. Least privilege: nobody automatically has access to everything.</p>
+  <div class="tbl"><table><thead><tr><th scope="col">Permission</th>${roles.map(r=>`<th scope="col">${E(ROLE_LABEL[r])}</th>`).join('')}</tr></thead><tbody>${all.map(p=>`<tr><td class="mono">${E(p)}</td>${roles.map(r=>`<td>${PERMS[r]==='*'||PERMS[r].includes(p)?'✓':'<span class="muted">—</span>'}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+  <div class="sec-label">Sessions</div><div class="list">${[['This browser',true],['Office laptop (sample)',false],['Phone (sample)',false]].map((s,i)=>`<div class="item"><span class="dot ${s[1]?'ok':'warn'}"></span><div class="grow"><b>${E(s[0])}</b><small>${s[1]?'Current session':'Last active '+(i*20+14)+' min ago'}</small></div>${s[1]?'':`<button class="btn red sm" data-act="revoke" data-id="${i}">Revoke</button>`}</div>`).join('')}</div>
+  <div class="notice mt">Adding admins and assigning roles needs the backend. This sample cannot create real admin accounts.</div>`}});
+function revoke(i){if(!can('roles.manage'))return denied('roles.manage');stepUp('Revoking an admin session',async()=>{await audit('session_revoked','session-'+i,'sample');toast('Session revoked (sample)')})}
+
+/* System */
+PAGES.push({id:'system',ico:'⚙️',label:'System Control',perm:'system.view',render(){
+  const list=['Serve only over HTTPS with HSTS','Send security headers: CSP, frame-ancestors none, Referrer-Policy, Permissions-Policy','Host the panel on its own admin domain','Allow only a company network or VPN to reach it','Use hardware security keys (WebAuthn) for owners','Keep secrets in a secrets manager, never in code or GitHub','Database: least-privilege accounts, encryption, daily tested backups','Rate-limit and use a WAF on every API','Verify provider callback signatures and reconcile every day','Scan dependencies and review code before each release','Central logs, alerts and an incident-response plan','Run an independent penetration test before real money'];
+  return `<h1>System Control Centre</h1><p class="sub">Backend, frontend, database, API, servers, errors, network, backups, deployments, uptime and disaster recovery. Nothing is connected yet.</p>
+  <div class="grid g3">${['Backend server','Frontend','Database','API management','Server performance','Error tracking','Network','Backups','Database recovery','Deployments','Uptime','Disaster recovery'].map(n=>`<div class="item"><span class="dot off"></span><div class="grow">${E(n)}<small>Not connected</small></div></div>`).join('')}</div>
+  <div class="card mt"><div class="kv"><span>API connection</span><b>${pill('Not connected','gray')}</b></div><div class="kv"><span>Data shown</span><b>Generated sample data</b></div><div class="kv"><span>Environment</span><b>Prototype (not live)</b></div><div class="kv"><span>Money representation</span><b>Integer minor units</b></div></div>
+  <div class="sec-label">Launch checklist</div><div class="card"><div class="list">${list.map(l=>`<div class="item"><span class="dot off"></span><div class="grow">${E(l)}</div></div>`).join('')}</div></div>`}});
+
+/* =====================  v4 NEW DEPARTMENTS  ===================== */
+
+/* Wallets */
+const dormant=u=>u.last>14*1440;
+const walList=()=>{const f=F.wallets,q=f.q.toLowerCase();return USERS.filter(u=>(!q||(u.id+' '+u.name).toLowerCase().includes(q))&&(!f.st||(f.st==='frozen'&&u.frozen)||(f.st==='dormant'&&dormant(u))||(f.st==='active'&&!u.frozen&&!dormant(u))))};
+const walTbl=()=>tbl(['BEAST ID','Country','Balance','Daily limit','Activity','Status','Action'],walList().slice(0,60).map(u=>`<tr><td>${E(u.id)}</td><td>${CO[u.cc].f} ${u.cc}</td><td>${E(fmtMinor(u.walMinor,u.cc))}</td><td>${E(fmtMinor(CO[u.cc].limitTxMinor,u.cc))}</td><td>${u.tx} tx · ${agoM(u.last)}</td><td>${u.frozen?pill('Frozen','blue'):dormant(u)?pill('Dormant','gray'):pill('Active')}</td><td>${can('wallet.act')?`<button class="btn sec sm" data-act="walFreeze" data-id="${u.id}">${u.frozen?'Unfreeze':'Freeze'}</button>`:'—'}</td></tr>`));
+PAGES.push({id:'wallets',ico:'👛',label:'Wallets',perm:'wallet.view',list(){$('#wlist').innerHTML=walTbl()},render(){
+  const bycur=Object.keys(CO).map(k=>`<div class="kv"><span>${CO[k].f} ${E(CO[k].n)} (${CO[k].cur})</span><b>${E(fmtMinor(USERS.filter(u=>u.cc===k).reduce((a,u)=>a+u.walMinor,0),k))}</b></div>`).join('');
+  return `<h1>Wallet Management</h1><p class="sub">Balances, freezes, limits and dormant accounts. Statements, verification and recovery need the backend ledger.</p>
+  <div class="grid g4 keep">${kpi('Wallets',USERS.length,'all countries')}${kpi('Frozen',USERS.filter(u=>u.frozen).length,'blocked from sending')}${kpi('Dormant (14 d+)',USERS.filter(dormant).length,'no recent activity')}${kpi('Currencies',Object.keys(CO).length,'multi-currency')}</div>
+  <div class="card mt"><h3>Money held in wallets (per currency)</h3>${bycur}</div>
+  ${filt('wallets',[{t:'q',k:'q',ph:'Search BEAST ID or name'},{t:'s',k:'st',ph:'All wallets',o:[['active','Active'],['frozen','Frozen'],['dormant','Dormant']]}])}
+  <div id="wlist" class="mt">${walTbl()}</div>`}});
+function walFreeze(id){const u=USERS.find(x=>x.id===id),fr=!u.frozen;
+  guarded('wallet.act',(fr?'Freeze wallet ':'Unfreeze wallet ')+id,fr?'The wallet cannot send or withdraw until unfrozen.':'The wallet can transact again.',fr?'Freeze':'Unfreeze','Changing a wallet status',async r=>{u.frozen=fr;await audit(fr?'wallet_frozen':'wallet_unfrozen',id,r);toast(id+(fr?' frozen':' unfrozen'))})}
+
+/* KYC queue */
+PAGES.push({id:'kyc',ico:'🪪',label:'KYC & Verification',perm:'users.view',render(){
+  const q=USERS.filter(u=>u.kyc!=='Verified');
+  return `<h1>KYC &amp; Verification</h1><p class="sub">Customers waiting for identity checks. Documents are reviewed on the server; only the result is shown here.</p>
+  <div class="grid g4 keep">${kpi('Verified',USERS.filter(u=>u.kyc==='Verified').length,'full access','up')}${kpi('Basic',USERS.filter(u=>u.kyc==='Basic').length,'limited')}${kpi('Unverified',USERS.filter(u=>u.kyc==='Unverified').length,'very limited')}${kpi('Document checks','Not connected','needs ID verification service')}</div>
+  <div class="mt">${tbl(['BEAST ID','Country','Level','Risk','Registered','Action'],q.map(u=>`<tr><td>${E(u.id)}</td><td>${CO[u.cc].f}</td><td>${stPill(u.kyc)}</td><td>${u.risk}</td><td>${u.reg} d ago</td><td>${can('kyc.act')?`<button class="btn sm" data-act="kycOk" data-id="${u.id}">Verify</button> <button class="btn red sm" data-act="kycNo" data-id="${u.id}">Reject</button>`:'—'}</td></tr>`))}</div>`}});
+function kycSet(id,ok){const u=USERS.find(x=>x.id===id);guarded('kyc.act',(ok?'Verify ':'Reject ')+id,ok?'Customer gets full limits.':'Customer returns to Unverified.',ok?'Verify':'Reject','Changing verification level',async r=>{u.kyc=ok?'Verified':'Unverified';await audit(ok?'kyc_verified':'kyc_rejected',id,r);toast(id+(ok?' verified':' rejected'))},ok?'gold':'red')}
+
+/* BEAST Shield */
+const SHIELD_MODS=[['AI fraud detection','model'],['Scam transaction detection','flag'],['Suspicious account detection','risk'],['Fake payment confirmation detection','model'],['SIM-swap risk detection','telco'],['Account takeover detection','model'],['Phishing website detection','model'],['Suspicious login detection','alert'],['Device fingerprint risk analysis','model'],['Multiple-account abuse detection','model'],['Unusual transaction detection','flag'],['Suspicious agent detection','agent'],['Suspicious merchant detection','merch'],['Money laundering risk alerts','aml']];
+function shieldCount(k){return k==='flag'?TX.filter(t=>t.fl.length).length+' flagged':k==='risk'?USERS.filter(u=>u.risk>=70).length+' high-risk':k==='alert'?ALERTS.filter(a=>a.area==='Auth'||a.area==='Accounts').length+' alerts':k==='agent'?AGENTS.filter(a=>a.failRate>=10).length+' agents':k==='merch'?MERCH.filter(m=>m.risk>=70).length+' merchants':k==='aml'?AML.filter(a=>a.st!=='Filed').length+' open cases':k==='telco'?'Needs telco data':'Needs model'}
+PAGES.push({id:'shield',ico:'🛡️',label:'BEAST Shield',perm:'shield.view',render(){
+  const hi=USERS.filter(u=>u.risk>=70).sort((a,b)=>b.risk-a.risk),act=can('shield.act');
+  return `<h1>BEAST Shield</h1><p class="sub">Fraud, scam and abuse detection plus investigation tools. It finds suspicious activity and preserves evidence.</p>
+  <div class="notice">Shield cannot reveal anyone's face or live location from a phone number. Identity and location come only from lawful, authorized sources, and are requested through a lawful referral.</div>
+  <div class="grid g4 keep">${kpi('High-risk accounts',hi.length,'risk 70+',hi.length?'down':'up')}${kpi('Flagged transactions',TX.filter(t=>t.fl.length).length,'rules sample')}${kpi('Reported numbers',SCAM.length,'watchlist')}${kpi('Evidence items',EVID.length,'preserved')}</div>
+  <div class="sec-label">Detection modules</div><div class="grid g3">${SHIELD_MODS.map(m=>`<div class="item"><span class="dot ${['model','telco'].includes(m[1])?'off':'ok'}"></span><div class="grow">${E(m[0])}<small>${E(shieldCount(m[1]))}</small></div></div>`).join('')}</div>
+  <div class="sec-label">Investigation tools</div>
+  <div class="card"><h3>Look up inside BEAST</h3><p class="sub">Search a BEAST ID or a phone number that exists in BEAST. Results are masked, need a reason, and are logged.</p>
+   <div class="row"><input id="sh_q" class="ctl grow" maxlength="30" placeholder="BEAST-000012 or phone digits (6+)"><button class="btn sm" data-act="shLookup">Look up</button></div><div class="err" id="sherr" role="alert"></div></div>
+  <div class="sec-label">High-risk queue</div>${tbl(['BEAST ID','Country','Risk','Devices','Status','Action'],hi.slice(0,8).map(u=>`<tr><td>${E(u.id)}</td><td>${CO[u.cc].f}</td><td>${u.risk}</td><td>${u.dev}</td><td>${stPill(u.st)}</td><td>${can('users.restrict')?`<button class="btn red sm" data-act="restrictAsk" data-id="${u.id}">${u.st==='restricted'?'Restore':'Restrict'}</button> `:''}${act?`<button class="btn gold sm" data-act="evidUser" data-id="${u.id}">Preserve evidence</button>`:''}</td></tr>`))}
+  <div class="sec-label">Reported scammer database</div>${tbl(['ID','Number (masked)','Type','Country','Reports','Status'],SCAM.map(s=>`<tr><td>${s.id}</td><td class="mono">${E(s.num)}</td><td>${E(s.type)}</td><td>${CO[s.cc].f}</td><td>${s.reports}</td><td>${stPill(s.st)}</td></tr>`))}
+  ${act?`<div class="card mt"><h3>Add to watchlist</h3><div class="row"><input id="sc_num" class="ctl" maxlength="24" placeholder="Masked number, e.g. +254 7•• ••• 123"><input id="sc_type" class="ctl grow" maxlength="60" placeholder="What was reported"><select id="sc_cc" class="ctl">${Object.keys(CO).map(k=>`<option value="${k}">${CO[k].f} ${k}</option>`).join('')}</select><button class="btn sm" data-act="scAdd">Add</button></div><div class="err" id="scerr" role="alert"></div></div>`:''}
+  <div class="sec-label">Evidence preserved</div>${tbl(['ID','Item','Reason','By','Time (UTC)','SHA-256'],EVID.map(e=>`<tr><td>${e.id}</td><td>${E(e.item)}</td><td>${E(e.reason)}</td><td>${E(e.by)}</td><td>${E(e.ts.slice(0,19).replace('T',' '))}</td><td class="mono">${E(e.hash.slice(0,16))}…</td></tr>`))}
+  <p class="hint mt">Evidence is a hashed snapshot kept in memory for this session. A real system stores it in write-once storage and hands it to authorities through a lawful referral.</p>`}});
+function shLookup(){if(!can('shield.act'))return denied('shield.act');const q=$('#sh_q').value.trim(),e=$('#sherr');
+  const d=q.replace(/\D/g,'');const u=USERS.find(x=>x.id.toLowerCase()===q.toLowerCase())||(d.length>=6?USERS.find(x=>x.phone.replace(/\D/g,'').endsWith(d)):null);
+  if(!q){e.textContent='Enter a BEAST ID or phone digits.';return}
+  if(!u){e.textContent='No BEAST account matches. Shield only searches inside BEAST.';return}e.textContent='';
+  askReason('Look up '+u.id,'Write why you need this. It is saved in the audit log.','Look up',async r=>{await audit('shield_lookup',u.id,r);const t=TX.filter(x=>x.u===u.id).slice(0,5),links=USERS.filter(x=>x.id!==u.id&&x.cc===u.cc&&x.risk>=60).slice(0,3);
+    modalShell({title:u.id,id:'sh-'+u.id,sub:`${CO[u.cc].f} ${CO[u.cc].n} · phone ${maskPh(u.phone)}`,
+      body:`<div class="kv"><span>Risk score</span><b>${u.risk} / 100</b></div><div class="kv"><span>Status · verification</span><b>${E(u.st)} · ${E(u.kyc)}</b></div><div class="kv"><span>Devices · sessions</span><b>${u.dev} · ${u.ses}</b></div><div class="kv"><span>IP risk</span><b>Needs backend (login IP data)</b></div>
+      <h3 class="mt">Transactions traced inside BEAST</h3>${t.map(x=>`<div class="kv"><span class="mono">${E(x.ref)}</span><b>${E(x.type)} · ${E(fmtMinor(x.amtMinor,x.cc))} · ${E(x.st)}</b></div>`).join('')||'<p class="muted">None.</p>'}
+      <h3 class="mt">Possible related accounts</h3>${links.map(x=>`<div class="kv"><span>${E(x.id)}</span><b>risk ${x.risk}</b></div>`).join('')||'<p class="muted">None.</p>'}<p class="hint">Sample logic: same country and high risk. Real links need device, IP and contact graphs from the backend.</p>`,
+      actions:`<button class="btn gold sm" data-act="evidUser" data-id="${E(u.id)}">Preserve evidence</button><button class="btn sec sm" data-act="closeModal">Close</button>`})},'gold')}
+async function addEvid(item,snap,r){const hash=await sha(JSON.stringify(snap));EVID.unshift({id:'EV-'+pad(EVID.length+1,4),item,reason:r,by:S.actor,ts:new Date().toISOString(),hash});await audit('evidence_preserved',item,hash.slice(0,16))}
+function evidUser(id){const u=USERS.find(x=>x.id===id);guarded('shield.act','Preserve evidence for '+id,'Saves a hashed snapshot of this account record.','Preserve','Preserving evidence',async r=>{await addEvid(id,{...u,phone:maskPh(u.phone)},r);toast('Evidence preserved')},'gold')}
+function evidTx(ref){const t=TX.find(x=>x.ref===ref);guarded('shield.act','Preserve evidence for '+ref,'Saves a hashed snapshot of this transaction.','Preserve','Preserving evidence',async r=>{await addEvid(ref,t,r);toast('Evidence preserved')},'gold')}
+function scAdd(){if(!can('shield.act'))return denied('shield.act');const num=$('#sc_num').value.trim(),ty=$('#sc_type').value.trim(),cc=$('#sc_cc').value,e=$('#scerr');
+  if(!/^[+0-9 •*]{6,24}$/.test(num)||ty.length<4){e.textContent='Enter a masked number and what was reported (4+ characters).';return}
+  guarded('shield.act','Add reported number','It is added to the watchlist.','Add','Editing the scammer database',async r=>{SCAM.push({id:'SCM-'+pad(SCAM.length+1,3),num,type:ty.replace(/[\u0000-\u001f]/g,' '),cc,reports:1,st:'Watchlist'});await audit('scam_added',num,r)},'gold')}
+
+/* Payment networks */
+const INTEG=[['M-PESA','Mobile money'],['Airtel Money','Mobile money'],['T-Kash','Mobile money'],['Equitel','Mobile money / bank'],['Commercial banks','Bank transfers'],['Visa','Cards'],['Mastercard','Cards'],['International payment providers','Cross-border'],['BEAST Wallet','Internal']];
+PAGES.push({id:'pay',ico:'🔗',label:'Payment Networks',perm:'pay.view',render(){
+  const adm=can('pay.manage');
+  return `<h1>Payment Network Management</h1><p class="sub">One platform across many networks: routing, health, cost comparison and automatic fallback. Customers should not need to know which network the recipient uses.</p>
+  <div class="notice">Every connection needs a provider agreement, technical integration and authorization. Nothing below is live.</div>
+  <div class="sec-label">Integrations</div><div class="grid g3">${INTEG.map(i=>`<div class="item"><span class="dot off"></span><div class="grow">${E(i[0])}<small>${E(i[1])}</small></div>${pill(i[0]==='BEAST Wallet'?'Planned':'Agreement needed','gold')}</div>`).join('')}</div>
+  <div class="sec-label">Routing and fallback</div>${tbl(['Country','Primary','Fallback','Cost (bps)','Success %','Auto fallback'],ROUTES.map((r,i)=>`<tr><td>${CO[r.cc].f}</td><td>${E(r.primary)}</td><td>${E(r.fallback)}</td><td>${r.costBps}</td><td>${r.succ}</td><td><input class="switch" type="checkbox" data-chg="routeFb" data-id="${i}" ${r.fb?'checked':''} ${adm?'':'disabled'} aria-label="Auto fallback"></td></tr>`))}
+  <div class="sec-label">Provider health</div>${tbl(['Country','Provider','Status','Latency'],PROV.map(p=>`<tr><td>${CO[p.cc].f}</td><td>${E(p.name)}</td><td>${stPill(p.st)}</td><td>${p.st==='Not enabled'?'—':p.lat+' ms'}</td></tr>`))}
+  <div class="sec-label">Cheapest route per country</div>${tbl(['Country','Cheapest primary','Cost (bps)'],Object.keys(CO).filter(k=>CO[k].en).map(k=>{const r=ROUTES.filter(x=>x.cc===k).sort((a,b)=>a.costBps-b.costBps)[0];return`<tr><td>${CO[k].f}</td><td>${E(r.primary)}</td><td>${r.costBps}</td></tr>`}))}`}});
+function routeFb(el){if(!can('pay.manage')){denied('pay.manage');repaint();return}const r=ROUTES[+el.dataset.id],on=el.checked;stepUp('Changing routing',async()=>{r.fb=on;await audit('route_fallback',r.cc+' '+r.primary,String(on));toast('Fallback '+(on?'on':'off'));repaint()})}
+
+/* Merchants */
+PAGES.push({id:'merch',ico:'🏢',label:'Merchants',perm:'merch.view',render(){
+  return `<h1>Merchant Management</h1><p class="sub">PayBill, Till, Pochi-style wallets and QR merchants. Statements, payroll and supplier payments use Bulk Payouts.</p>
+  <div class="grid g4 keep">${kpi('Merchants',MERCH.length,'registered')}${kpi('Verified',MERCH.filter(m=>m.st==='Verified').length,'can take payments','up')}${kpi('Pending',MERCH.filter(m=>m.st==='Pending').length,'need checks')}${kpi('High risk',MERCH.filter(m=>m.risk>=70).length,'watch','down')}</div>
+  <div class="mt">${tbl(['ID','Name','Type','Country','Volume','Commission','Risk','Status','Action'],MERCH.map(m=>`<tr><td>${m.id}</td><td>${E(m.name)}</td><td>${E(m.kind)}</td><td>${CO[m.cc].f}</td><td>${E(fmtMinor(m.volMinor,m.cc))}</td><td>${m.commPct}%</td><td>${m.risk}</td><td>${stPill(m.st)}</td><td>${can('merch.manage')?`<button class="btn sec sm" data-act="merchSet" data-id="${m.id}">${m.st==='Verified'?'Suspend':'Verify'}</button>`:'—'}</td></tr>`))}</div>`}});
+function merchSet(id){const m=MERCH.find(x=>x.id===id),v=m.st!=='Verified';guarded('merch.manage',(v?'Verify ':'Suspend ')+id,v?'Merchant can take payments.':'Merchant cannot take payments.',v?'Verify':'Suspend','Changing merchant status',async r=>{m.st=v?'Verified':'Suspended';await audit(v?'merchant_verified':'merchant_suspended',id,r);toast(id+(v?' verified':' suspended'))},v?'gold':'red')}
+
+/* Cards */
+PAGES.push({id:'cards',ico:'💳',label:'BEAST Cards',perm:'cards.view',render(){
+  const k=x=>CARDS.filter(c=>c.kind===x).length;
+  return `<h1>BEAST Card Management</h1><p class="sub">Virtual, physical and travel cards. Only the last 4 digits are ever shown.</p>
+  <div class="notice">Real Visa or Mastercard issuing needs an authorized issuing partner or licence. These cards are samples.</div>
+  <div class="grid g4 keep">${kpi('Virtual',k('Virtual'),'cards')}${kpi('Physical',k('Physical'),'cards')}${kpi('Travel',k('Travel'),'cards')}${kpi('Frozen / blocked',CARDS.filter(c=>c.st==='Frozen'||c.st==='Blocked').length,'need review')}</div>
+  <div class="mt">${tbl(['Card','User','Type','Number','Limit','Used','Status','Action'],CARDS.map(c=>`<tr><td>${c.id}</td><td>${E(c.u)}</td><td>${E(c.kind)}</td><td class="mono">•••• ${c.last4}</td><td>${E(fmtMinor(c.limMinor,c.cc))}</td><td>${pbar(c.spent)}</td><td>${stPill(c.st)}</td><td>${can('cards.act')&&(c.st==='Active'||c.st==='Frozen')?`<button class="btn sec sm" data-act="cardSet" data-id="${c.id}">${c.st==='Frozen'?'Unfreeze':'Freeze'}</button>`:'—'}</td></tr>`))}</div>
+  <p class="hint mt">Issuance, activation, replacement, delivery tracking and card fraud models need the backend and an issuing partner.</p>`}});
+function cardSet(id){const c=CARDS.find(x=>x.id===id),fr=c.st==='Active';guarded('cards.act',(fr?'Freeze ':'Unfreeze ')+id,fr?'Card payments are declined.':'Card works again.',fr?'Freeze':'Unfreeze','Changing a card status',async r=>{c.st=fr?'Frozen':'Active';await audit(fr?'card_frozen':'card_unfrozen',id,r);toast(id+(fr?' frozen':' unfrozen'))})}
+
+/* International & Travel */
+PAGES.push({id:'intl',ico:'✈️',label:'International & Travel',perm:'intl.view',render(){
+  const adm=can('intl.act');
+  return `<h1>International &amp; Travel</h1><p class="sub">Cross-border corridors, exchange rates, sanctions screening and travel cards.</p>
+  <div class="grid g4 keep">${kpi('Corridors',CORR.length,CORR.filter(c=>c.on).length+' open')}${kpi('Sanctions to review',SANC.filter(s=>s.st==='Review').length,'before release',SANC.some(s=>s.st==='Review')?'down':'up')}${kpi('Travel cards',CARDS.filter(c=>c.kind==='Travel').length,'issued (sample)')}${kpi('Live FX feed','Not connected','needs rate provider')}</div>
+  <div class="sec-label">Corridors and exchange rates</div>${tbl(['Corridor','Rate (sample)','24 h change','Fee %','Limit','Open'],CORR.map((c,i)=>`<tr><td>${CO[c.from].f} → ${CO[c.to].f} ${c.id}</td><td>${c.rate}</td><td class="${c.chg>=0?'up':'down'}">${c.chg>=0?'+':''}${c.chg}%</td><td>${c.feePct}%</td><td>${E(fmtMinor(c.lim,c.from))}</td><td><input class="switch" type="checkbox" data-chg="corrSet" data-id="${i}" ${c.on?'checked':''} ${adm?'':'disabled'} aria-label="Corridor open"></td></tr>`))}
+  <div class="sec-label">Sanctions screening queue</div>${tbl(['Case','Recipient','Corridor','Result','Status','Action'],SANC.map(s=>`<tr><td>${s.id}</td><td>${E(s.name)}</td><td>${E(s.corridor)}</td><td>${E(s.hit)}</td><td>${stPill(s.st)}</td><td>${adm&&s.st==='Review'?`<button class="btn sm" data-act="sanClear" data-id="${s.id}">Clear</button> <button class="btn red sm" data-act="sanBlock" data-id="${s.id}">Block</button>`:'—'}</td></tr>`))}
+  <p class="hint mt">Screening results here are samples. Real screening needs official sanctions lists and a screening service.</p>`}});
+function corrSet(el){if(!can('intl.act')){denied('intl.act');repaint();return}const c=CORR[+el.dataset.id],on=el.checked;stepUp('Opening or closing a corridor',async()=>{c.on=on;await audit('corridor_'+(on?'opened':'closed'),c.id,'toggle');toast(c.id+(on?' opened':' closed'));repaint()})}
+function sanSet(id,ok){const s=SANC.find(x=>x.id===id);guarded('intl.act',(ok?'Clear ':'Block ')+id,ok?'Transfer can proceed.':'Transfer is stopped.',ok?'Clear':'Block','Deciding a sanctions case',async r=>{s.st=ok?'Clear':'Blocked';await audit(ok?'sanction_cleared':'sanction_blocked',id,r);toast(id+(ok?' cleared':' blocked'))},ok?'gold':'red')}
+
+/* Revenue */
+let REVP='Daily';const PF={Daily:1,Weekly:7,Monthly:30,Annual:365};
+function revData(){const f=PF[REVP],done=TX.filter(t=>t.st==='Completed'),sum=(arr,fn)=>arr.reduce((a,t)=>a+fn(t),0);
+  const inc=[['Transaction fees','Income',sum(done,t=>kesEq(t.feeMinor,t.cc)),'Sum of completed-transaction fees in the sample'],
+   ['Merchant fees','Income',sum(MERCH,m=>kesEq(m.volMinor*m.commPct/100,m.cc))/30,'Commission % × merchant volume, spread over 30 days'],
+   ['Card fees','Income',CARDS.length*100/30,'Assumption: KES 100 per card per month'],
+   ['Business subscriptions','Income',sum(BIZ.filter(b=>b.st==='Active'),b=>kesEq(b.priceMinor,b.cc))/30,'Active subscriptions, monthly price spread over 30 days'],
+   ['International transfer fees','Income',sum(done.filter(t=>t.type==='Travel'),t=>kesEq(t.amtMinor,t.cc))*0.02,'Assumption: 2% of travel-type volume'],
+   ['Service charges','Income',done.length*2,'Assumption: KES 2 per completed transaction']];
+  const cost=[['Agent commissions','Cost',sum(done.filter(t=>t.type==='Deposit'||t.type==='Withdraw'),t=>kesEq(t.amtMinor,t.cc))*0.004,'Assumption: 0.4% of deposit and withdrawal volume'],
+   ['Refund and reversal costs','Cost',sum(TX.filter(t=>t.st==='Reversed'),t=>kesEq(t.feeMinor,t.cc)),'Fees given back on reversed transactions'],
+   ['Operational expenses','Cost',5000,'Assumption: KES 5,000 per day fixed']];
+  const half=['Transaction fees','International transfer fees','Service charges','Agent commissions','Refund and reversal costs'];
+  return[...inc,...cost].map(r=>[r[0],r[1],(half.includes(r[0])?r[2]/2:r[2])*f,r[3]])}
+PAGES.push({id:'revenue',ico:'📊',label:'Revenue & Analytics',perm:'rev.view',render(){
+  const rows=revData(),inc=rows.filter(r=>r[1]==='Income').reduce((a,r)=>a+r[2],0),cost=rows.filter(r=>r[1]==='Cost').reduce((a,r)=>a+r[2],0),net=inc-cost;
+  return `<h1>Revenue &amp; Business Intelligence</h1><p class="sub">How BEAST makes money. Figures are projected from 48 hours of sample data in KES equivalent, using the assumptions shown. They are not real earnings.</p>
+  <div class="row mt"><label class="sm muted" for="rev_p">Period</label><select id="rev_p" class="ctl" data-chg="revPeriod">${Object.keys(PF).map(p=>`<option ${p===REVP?'selected':''}>${p}</option>`).join('')}</select></div>
+  <div class="grid g4 keep mt">${kpi('Income',fmtKes(inc),REVP,'up')}${kpi('Costs',fmtKes(cost),REVP,'down')}${kpi('Net revenue',fmtKes(net),'profit and loss',net>=0?'up':'down')}${kpi('Margin',inc?Math.round(net/inc*100)+'%':'—','net ÷ income')}</div>
+  <div class="grid g2 mt"><div class="card"><h3>By stream</h3>${barChart(rows.map(r=>Math.max(0,r[2])),'#f5c85b')}</div><div class="card"><h3>Revenue forecast (14 days)</h3>${lineChart(forecast(),'#00d995')}</div></div>
+  <div class="sec-label">Profit and loss</div>${tbl(['Line','Type','Amount (KES eq.)','How it is computed'],rows.map(r=>`<tr><td>${E(r[0])}</td><td>${pill(r[1],r[1]==='Income'?'':'red')}</td><td>${E(fmtKes(r[2]))}</td><td class="muted">${E(r[3])}</td></tr>`))}`}});
+function revPeriod(el){REVP=el.value;repaint()}
+
+/* Loans & investments */
+PAGES.push({id:'loans',ico:'🏦',label:'Loans & Investments',perm:'loans.view',render(){
+  const mods=['Savings accounts','Goal-based savings','Fixed savings','Investment products','Loan applications','Credit assessment','Repayment management','Loan monitoring','Interest calculations','Default risk management'];
+  return `<h1>Loans, Savings &amp; Investments</h1><p class="sub">Future departments. They must run through appropriately licensed providers or after the required authorization.</p>
+  <div class="notice">No live data here. These services are not started and must not launch before licensing.</div>
+  <div class="grid g2">${mods.map(m=>`<div class="item"><span class="dot off"></span><div class="grow">${E(m)}<small>Needs licensed partner or authorization</small></div>${pill('Not started','gray')}</div>`).join('')}</div>`}});
+
+/* Notifications */
+function notifs(){const n=[];
+  ALERTS.filter(a=>a.st==='open').forEach(a=>n.push({id:a.id,cat:'Security incidents',t:a.title,age:a.age}));
+  TX.filter(t=>t.fl.includes('High amount')).slice(0,4).forEach(t=>n.push({id:'N-'+t.ref,cat:'Large transactions',t:'Large '+t.type+' '+fmtMinor(t.amtMinor,t.cc),age:t.age}));
+  TX.filter(t=>t.st==='Failed').slice(0,3).forEach(t=>n.push({id:'F-'+t.ref,cat:'Failed payments',t:t.ref+' failed via '+t.src,age:t.age}));
+  PROV.filter(p=>p.st==='Degraded').forEach(p=>n.push({id:'D-'+p.cc+p.name,cat:'System downtime',t:p.name+' ('+p.cc+') is degraded',age:20}));
+  USERS.filter(u=>u.reg<1).forEach(u=>n.push({id:'R-'+u.id,cat:'New registrations',t:u.id+' registered',age:ri(1,600)}));
+  TICKETS.filter(t=>t.pr==='Urgent'&&t.st!=='Resolved').forEach(t=>n.push({id:'T-'+t.id,cat:'Customer complaints',t:t.sub+' ('+t.id+')',age:t.age}));
+  AGENTS.filter(a=>a.st==='Suspended').slice(0,2).forEach(a=>n.push({id:'A-'+a.id,cat:'Agent activities',t:a.id+' is suspended',age:300}));
+  MERCH.filter(m=>m.st==='Pending').forEach(m=>n.push({id:'M-'+m.id,cat:'Merchant activities',t:m.name+' awaits verification',age:400}));
+  n.push({id:'REG-1',cat:'Regulatory deadlines',t:'Sample reminder: quarterly regulatory report',age:60});
+  return n.sort((a,b)=>a.age-b.age)}
+const NCATS=['Large transactions','Failed payments','System downtime','New registrations','Customer complaints','Agent activities','Merchant activities','Security incidents','Regulatory deadlines'];
+PAGES.push({id:'notif',ico:'🔔',label:'Notification Centre',perm:'notif.view',render(){
+  const n=notifs().filter(x=>!F.notif.cat||x.cat===F.notif.cat);
+  return `<h1>Notification Centre</h1><p class="sub">Alerts from across BEAST in one place.</p>${filt('notif',[{t:'s',k:'cat',ph:'All categories',o:NCATS.map(c=>[c,c])}])}
+  <div class="list mt">${n.map(x=>`<div class="item"><span class="dot ${NREAD.has(x.id)?'off':'warn'}"></span><div class="grow"><b>${E(x.t)}</b><small>${E(x.cat)} · ${agoM(x.age)}</small></div><button class="btn sec sm" data-act="nRead" data-id="${E(x.id)}">${NREAD.has(x.id)?'Unread':'Mark read'}</button></div>`).join('')||'<p class="muted">Nothing here.</p>'}</div>`}});
+const refreshNotif=()=>repaint();
+
+/* Employees */
+PAGES.push({id:'emp',ico:'👨‍💼',label:'Employees & Admins',perm:'emp.view',render(){
+  const own=can('emp.manage');
+  return `<h1>Employees &amp; Admins</h1><p class="sub">Everyone working inside BEAST. Nobody automatically has access to everything. Registration and approvals need the backend.</p>
+  <div class="grid g4 keep">${kpi('Employees',EMP.length,'all departments')}${kpi('Active',EMP.filter(e=>e.st==='Active').length,'can sign in','up')}${kpi('Suspended',EMP.filter(e=>e.st==='Suspended').length,'blocked')}${kpi('Unverified',EMP.filter(e=>e.kyc!=='Verified').length,'identity pending')}</div>
+  <div class="mt">${tbl(['ID','Name','Department','Role','Country','Last login','Verification','Status','Action'],EMP.map(e=>`<tr><td>${e.id}</td><td>${E(e.name)}</td><td>${E(e.dept)}</td><td>${E(ROLE_LABEL[e.role]||e.role)}</td><td>${CO[e.cc].f}</td><td>${agoM(e.last)}</td><td>${stPill(e.kyc)}</td><td>${stPill(e.st)}</td><td>${own?`<button class="btn sec sm" data-act="empSet" data-id="${e.id}">${e.st==='Suspended'?'Restore':'Suspend'}</button>`:'—'}</td></tr>`))}</div>`}});
+function empSet(id){const e=EMP.find(x=>x.id===id),s=e.st!=='Suspended';guarded('emp.manage',(s?'Suspend ':'Restore ')+id,s?'Access is revoked immediately.':'Access is restored.',s?'Suspend':'Restore','Changing staff access',async r=>{e.st=s?'Suspended':'Active';await audit(s?'staff_suspended':'staff_restored',id,r);toast(id+(s?' suspended':' restored'))})}
+
+/* Developer centre */
+PAGES.push({id:'dev',ico:'💻',label:'Developer Centre',perm:'dev.view',render(){
+  const own=can('dev.manage');
+  return `<h1>BEAST Developer Centre</h1><p class="sub">API keys, webhooks, usage and a sandbox for partners. Only key endings are shown, never full keys.</p>
+  <div class="grid g4 keep">${kpi('API keys',APIKEYS.length,APIKEYS.filter(k=>k.st==='Active').length+' active')}${kpi('Webhooks',HOOKS.length,'endpoints')}${kpi('Calls (sample)',APIKEYS.reduce((a,k)=>a+k.calls,0).toLocaleString('en-KE'),'last 30 days')}${kpi('Sandbox','Not connected','backend needed')}</div>
+  <div class="sec-label">API keys</div>${tbl(['Key','Name','Environment','Ending','Calls','Last used','Status','Action'],APIKEYS.map(k=>`<tr><td>${k.id}</td><td>${E(k.name)}</td><td>${stPill(k.env==='Live'?'Active':'Planned').replace(/>(Active|Planned)</,'>'+k.env+'<')}</td><td class="mono">••••${k.tail}</td><td>${k.calls.toLocaleString('en-KE')}</td><td>${agoM(k.last)}</td><td>${stPill(k.st)}</td><td>${own&&k.st==='Active'?`<button class="btn red sm" data-act="keyRevoke" data-id="${k.id}">Revoke</button>`:'—'}</td></tr>`))}
+  <div class="sec-label">Webhooks</div>${tbl(['ID','Endpoint','Event','Delivery success'],HOOKS.map(h=>`<tr><td>${h.id}</td><td class="mono">${E(h.url)}</td><td>${E(h.ev)}</td><td>${h.ok}%</td></tr>`))}
+  <div class="card mt"><h3>Calls by key (sample)</h3>${barChart(APIKEYS.map(k=>k.calls),'#8dcaff')}</div>`}});
+function keyRevoke(id){const k=APIKEYS.find(x=>x.id===id);guarded('dev.manage','Revoke '+id,'Apps using this key stop working immediately.','Revoke','Revoking an API key',async r=>{k.st='Revoked';await audit('api_key_revoked',id,r);toast(id+' revoked')})}
+
+/* Compliance */
+const REG={KE:'Central Bank of Kenya (payment service providers) and the Office of the Data Protection Commissioner',TZ:'Bank of Tanzania and the data-protection authority (confirm with local counsel)',UG:'Bank of Uganda and the data-protection authority (confirm with local counsel)',NG:'Central Bank of Nigeria and the data-protection authority (confirm with local counsel)',ZM:'Bank of Zambia and the data-protection authority (confirm with local counsel)'};
+PAGES.push({id:'comp',ico:'⚖️',label:'Compliance',perm:'comp.view',render(){
+  const own=can('comp.edit');
+  return `<h1>Regulatory &amp; Compliance Centre</h1><p class="sub">A tracker per country. BEAST must hold the correct authorization before operating regulated payment services. Status is set by the owner; this panel does not check with regulators.</p>
+  <div class="grid g2">${Object.keys(CO).map(k=>{const done=COMPL[k].filter(s=>s==='Done').length,pc=Math.round(done/COMPL_ITEMS.length*100);
+   return`<div class="card"><div class="row between"><h2>${CO[k].f} ${E(CO[k].n)}</h2>${pill(pc+'% done',pc===100?'':'gold')}</div><p class="sub">${E(REG[k])}</p>${pbar(pc)}
+   ${COMPL_ITEMS.map((it,i)=>`<div class="kv"><span>${E(it)}</span><select class="ctl" style="width:130px" data-chg="complSet" data-cc="${k}" data-i="${i}" ${own?'':'disabled'} aria-label="${E(it)}">${['Not started','In progress','Done'].map(o=>`<option ${COMPL[k][i]===o?'selected':''}>${o}</option>`).join('')}</select></div>`).join('')}</div>`}).join('')}</div>
+  <div class="sec-label">Record retention</div><div class="card"><p class="sub">Retention periods must be set per local law with legal advice. Nothing is deleted by this panel.</p>${['Transaction records','KYC documents','Audit logs','Customer complaints','Suspicious activity reports'].map(r=>`<div class="kv"><span>${r}</span><b>Set per country law</b></div>`).join('')}</div>`}});
+function complSet(el){if(!can('comp.edit')){denied('comp.edit');repaint();return}const k=el.dataset.cc,i=+el.dataset.i,v=el.value;stepUp('Updating a compliance status',async()=>{COMPL[k][i]=v;await audit('compliance_status',k,COMPL_ITEMS[i]+' → '+v);toast('Saved');repaint()})}
+
+/* Emergency Command */
+const EMDEF=[['pay','Emergency payment suspension','Stops all payments'],['wd','Emergency withdrawal suspension','Stops all withdrawals'],['prov','Suspend affected payment providers','Routes away from them'],['adm','Freeze compromised administrative access','Blocks all staff sign-ins'],['keys','Revoke compromised API keys','Stops partner apps'],['dev','Disable compromised devices','Signs devices out'],['lock','Emergency security lockdown','Locks the whole platform'],['dr','Activate disaster recovery','Switches to backup systems'],['notify','Notify affected customers','Sends an alert message']];
+PAGES.push({id:'emerg',ico:'🚨',label:'Emergency Command',perm:'emerg.view',render(){
+  const own=can('emerg.act');
+  return `<h1>BEAST Emergency Command</h1><p class="sub">Strong controls for incidents. Each action needs a reason and a fresh code, and is logged. In this demo they only change the status below; a real system must also require a second approver.</p>
+  ${own?'':'<div class="notice">Only the Owner can activate emergency controls.</div>'}
+  <div class="list">${EMDEF.map(d=>`<div class="item"><span class="dot ${EM[d[0]]?'bad':'ok'}"></span><div class="grow"><b>${E(d[1])}</b><small>${E(d[2])}</small></div>${pill(EM[d[0]]?'ACTIVE':'Normal',EM[d[0]]?'red':'')}${own?`<button class="btn ${EM[d[0]]?'sec':'red'} sm" data-act="emSet" data-id="${d[0]}">${EM[d[0]]?'Deactivate':'Activate'}</button>`:''}</div>`).join('')}</div>
+  <div class="card mt"><h3>Preserve incident evidence</h3><p class="sub">Saves a hashed snapshot of the audit log's latest entry.</p>${own?'<button class="btn gold sm" data-act="emEvid">Preserve now</button>':''}</div>`}});
+function emSet(k){const d=EMDEF.find(x=>x[0]===k),on=!EM[k];guarded('emerg.act',(on?'Activate: ':'Deactivate: ')+d[1],on?d[2]+'.':'Returns to normal.',on?'Activate':'Deactivate','Emergency action',async r=>{EM[k]=on;await audit(on?'emergency_on':'emergency_off',k,r);toast(d[1]+(on?' ACTIVE':' off'))},on?'red':'gold')}
+function emEvid(){guarded('emerg.act','Preserve incident evidence','Saves a hashed snapshot of the latest audit entry.','Preserve','Preserving evidence',async r=>{await aq;await addEvid('audit-head #'+(AUD.length-1),AUD[AUD.length-1],r);toast('Evidence preserved')},'gold')}
+
+/* Other departments 21–30 */
+const MORE=[['21','🛍️','Marketplace','Products, sellers and shopping',['Seller onboarding','Product approval','Orders and disputes'],'biz','Level 3'],['22','✈️','Travel','Flights, hotels and bookings',['Bookings','Driver radar','Travel cards'],'intl','Level 3'],['23','🛡','Insurance','Insurance products and claims',['Products','Claims','Partner insurers'],'','Level 3'],['24','📱','Communication','Messaging and customer notifications',['SMS and push','Templates','Delivery reports'],'notif','Level 2'],['25','📢','Advertising','Advertisements and promotions',['Campaigns','Approvals','Reports'],'','Level 3'],['26','🎁','Loyalty','Rewards, points and cashback',['Points rules','Cashback','Campaigns'],'','Level 3'],['27','📈','Analytics','Advanced business intelligence',['Revenue','Customer behaviour','Forecasts'],'revenue','Level 2'],['28','📁','Document Centre','Statements, reports and documents',['Statements','Reports','Audit export'],'audit','Level 2'],['29','⚙️','Global Settings','Global configurations',['Country settings','Limits and fees','Services on/off'],'countries','Level 1'],['30','🔐','Owner Vault','Critical owner controls and recovery',['Trusted devices','Login history','Recovery'],'vault','Level 1']];
+PAGES.push({id:'depts',ico:'🧩',label:'More Departments',perm:'cmd.view',render(){
+  return `<h1>Departments 21 – 30</h1><p class="sub">Specialist departments reached from their related sections. Most are planned and shown here so the structure is clear.</p>
+  <div class="grid g2">${MORE.map(m=>`<div class="card dcard"><h3>${m[1]} ${m[0]}. ${E(m[2])} ${pill(m[6],'blue')}</h3><p class="sub">${E(m[3])}</p><ul>${m[4].map(x=>`<li>${E(x)}</li>`).join('')}</ul>${m[5]&&PAGES.some(p=>p.id===m[5]&&(!p.perm||can(p.perm)))?`<div class="row mt"><button class="btn sec sm" data-act="nav" data-p="${m[5]}">Open related section</button></div>`:`<div class="row mt">${pill('Planned','gray')}</div>`}</div>`).join('')}</div>`}});
+
+/* Owner Vault */
+PAGES.push({id:'vault',ico:'🗝️',label:'Owner Vault',perm:'vault.view',render(){
+  const logs=AUD.filter(a=>a.action==='login'||a.action==='login_failed'||a.action==='owner_key_failed').slice(-8).reverse();
+  return `<h1>Owner Vault</h1><p class="sub">Critical owner controls and recovery.</p>
+  <div class="grid g2"><div class="card"><h3>Sign-in methods</h3>${[['Passphrase','On'],['Authenticator app (Google / Microsoft)','On'],['Owner key','On'],['Hardware security key','Needs backend'],['Fingerprint or face unlock',getAuth()&&getAuth().bio?'On':'Off']].map(m=>`<div class="kv"><span>${E(m[0])}</span><b>${pill(m[1],m[1]==='On'?'':m[1]==='Off'?'gray':'gold')}</b></div>`).join('')}</div>
+  <div class="card"><h3>Trusted devices</h3><div class="kv"><span>This browser</span><b>${pill('Current')}</b></div><p class="hint">Device trust and remote sign-out need the backend.</p><div class="row mt"><button class="btn red sm" data-act="lock">Lock panel now</button><button class="btn gold sm" data-act="nav" data-p="emerg">Emergency Command</button></div></div></div>
+  <div class="card mt"><h3>Change your secrets (rotate them often)</h3>
+  <div class="kv"><span>Passphrase last changed</span><b>${ago0(getAuth()&&getAuth().passAt)}</b></div><div class="kv"><span>Owner key last changed</span><b>${ago0(getAuth()&&getAuth().keyAt)}</b></div>
+  <p class="hint">Change both about every 90 days, and straight away if you think anyone saw them. Use BEAST Key Keeper to make strong new ones.</p>
+  <div class="row mt"><button class="btn gold sm" data-act="keeperOpen">Open Key Keeper and receive new secrets</button>${(KEEP.p||KEEP.k)?pill('Received. Now tap Change passphrase or Change owner key'):''}</div>
+  <div class="row mt"><button class="btn sm" data-act="chgPass">Change passphrase</button><button class="btn sm" data-act="chgKey">Change owner key</button>${getAuth()&&getAuth().bio?'<button class="btn red sm" data-act="bioOff">Remove fingerprint/face</button>':'<button class="btn gold sm" data-act="bioOn">Add fingerprint or face</button>'}</div>
+  <p class="hint">Fingerprint/face needs https (or localhost), not a plain saved file. It becomes step 4 after the owner key. If you lose the phone, clear this site's data to start again (demo recovery).</p></div>
+  <div class="sec-label">Owner login history (this session)</div>${tbl(['Time (UTC)','Event','Detail'],logs.map(a=>`<tr><td>${E(a.ts.slice(0,19).replace('T',' '))}</td><td>${E(a.action)}</td><td>${E(a.detail)}</td></tr>`))}
+  <div class="notice mt">Recovery: keep your authenticator secret and owner key somewhere safe and offline. A real vault needs server-side recovery with multiple approvers.</div>`}});
+
+const ago0=t=>t?Math.floor((Date.now()-t)/86400000)+' days ago':'Since setup (never)';
+const rand=n=>crypto.getRandomValues(new Uint8Array(n));
+function secretModal(title,fields,go){modalShell({title,sub:'Nothing is shown on screen after you save.',body:fields.map(f=>`<div class="field"><label for="${f[0]}">${E(f[1])}</label><input id="${f[0]}" type="password" autocomplete="off"></div>`).join('')+'<div class="err" id="merr" role="alert"></div>',actions:`<button class="btn" data-act="${go}">Save</button><button class="btn sec" data-act="closeModal">Cancel</button>`});secretPrefill(go)}
+function chgPass(){if(!can('vault.view'))return denied('vault');stepUp('Changing the passphrase',()=>secretModal('Change passphrase',[['cp0','Current passphrase'],['cp1','New passphrase (12+, mixed)'],['cp2','Repeat new passphrase']],'chgPassGo'))}
+async function chgPassGo(){const A=getAuth(),e=$('#merr'),o=$('#cp0').value,n=$('#cp1').value,r=$('#cp2').value;
+  if(!ctEq(await pbkdf2(o,unb64(A.salt),A.iter),unb64(A.hash))){e.textContent='Current passphrase is wrong.';return}
+  if(!okPass(n)){e.textContent='Use 12+ characters with 3 kinds, or 18+ characters.';return}if(n!==r){e.textContent='New passphrases do not match.';return}if(n===o){e.textContent='Choose a different passphrase.';return}
+  const salt=rand(16);A.salt=b64(salt);A.hash=b64(await pbkdf2(n,salt,A.iter));A.passAt=Date.now();saveAuth(A);await audit('passphrase_changed','owner','rotated');closeModal();toast('Passphrase changed');repaint()}
+function chgKey(){if(!can('vault.view'))return denied('vault');stepUp('Changing the owner key',()=>secretModal('Change owner key',[['ck0','Current owner key'],['ck1','New owner key (16+, mixed)'],['ck2','Repeat new owner key'],...(LK.token?[['ck3','Current SERVER owner key (you are connected)']]:[])],'chgKeyGo'))}
+async function chgKeyGo(){const A=getAuth(),e=$('#merr'),o=$('#ck0').value.trim(),n=$('#ck1').value.trim(),r=$('#ck2').value.trim();
+  if(await sha(o)!==keyHash()){e.textContent='Current owner key is wrong.';return}
+  if(n.length<16||!okPass(n)){e.textContent='Use 16+ characters with 3 kinds (letters, digits, symbols).';return}if(n!==r){e.textContent='New keys do not match.';return}if(n===o){e.textContent='Choose a different key.';return}
+  if(LK.token){const rr=await liveRotate(($('#ck3')?$('#ck3').value:'').trim(),n);if(!rr.ok){e.textContent='The server did not accept the change: '+(rr.err||'unknown error');return}}
+  A.keyHash=await sha(n);A.keyAt=Date.now();saveAuth(A);await audit('owner_key_changed','owner','rotated');closeModal();toast(LK.token?'Owner key changed here and on the server':'Owner key changed (on this panel only)');repaint()}
+function bioOn(){if(!can('vault.view'))return denied('vault');if(!window.PublicKeyCredential||!navigator.credentials){toast('This page cannot use fingerprint/face. Open it over https.');return}
+  stepUp('Adding fingerprint or face unlock',async()=>{try{const c=await navigator.credentials.create({publicKey:{challenge:rand(32),rp:{name:'BEAST Owner Panel'},user:{id:rand(16),name:'beast-owner',displayName:'BEAST Owner'},pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required'},timeout:60000}});const A=getAuth();A.bio=b64(c.rawId);saveAuth(A);await audit('biometric_enrolled','owner','platform unlock');toast('Fingerprint/face unlock added');repaint()}catch(x){toast('Not added: '+(x&&x.name==='NotAllowedError'?'cancelled':'not supported here'))}})}
+function bioOff(){guarded('vault.view','Remove fingerprint or face unlock','Sign-in goes back to 3 steps.','Remove','Removing biometric unlock',async r=>{const A=getAuth();delete A.bio;saveAuth(A);await audit('biometric_removed','owner',r)})}
+/* Progress */
+const DEPTS=[[1,'Global Command Centre',1,85,'dashboard'],[2,'Financial Control',1,75,'tx'],[3,'BEAST Shield',1,65,'shield'],[4,'BEAST AI',2,50,'ai'],[5,'Country Management',1,80,'countries'],[6,'Payment Networks',2,60,'pay'],[7,'Customers',2,65,'users'],[8,'Agents',2,70,'agents'],[9,'Merchants & Business',2,60,'merch'],[10,'BEAST Cards',3,60,'cards'],[11,'International Transfers',3,55,'intl'],[12,'Revenue & Intelligence',2,60,'revenue'],[13,'Loans & Investments',3,15,'loans'],[14,'Customer Support',2,45,'support'],[15,'Notification Centre',2,60,'notif'],[16,'Employees & Admins',2,55,'emp'],[17,'System Control',2,35,'system'],[18,'Developer Centre',2,50,'dev'],[19,'Compliance',2,60,'comp'],[20,'Emergency Command',1,70,'emerg'],[21,'Marketplace',3,20,'biz'],[22,'Travel',3,10,'intl'],[23,'Insurance',3,5,''],[24,'Communication',2,10,'notif'],[25,'Advertising',3,5,''],[26,'Loyalty',3,5,''],[27,'Analytics',2,40,'revenue'],[28,'Document Centre',2,25,'audit'],[29,'Global Settings',1,40,'countries'],[30,'Owner Vault',1,50,'vault']];
+PAGES.push({id:'progress',ico:'✅',label:'Build Progress',perm:'progress.view',render(){
+  const avg=a=>a.length?Math.round(a.reduce((s,d)=>s+d[3],0)/a.length):0,all=avg(DEPTS);
+  const lv=n=>avg(DEPTS.filter(d=>d[2]===n));
+  return `<h1>Build progress</h1><p class="sub">How much of the BEAST Global Owner Panel vision exists in this file. This measures screens and controls in the prototype only.</p>
+  <div class="grid g3 keep"><div class="card"><small class="muted">Front-end prototype</small><p class="big up">${all}%</p></div><div class="card"><small class="muted">Connected to real data</small><p class="big down">0%</p></div><div class="card"><small class="muted">Ready for real money</small><p class="big down">0%</p></div></div>
+  <div class="notice">No backend, provider agreement, licence or real data exists yet, so live and launch readiness are 0%. Front-end percentages are my estimate of screens built per department.</div>
+  <div class="grid g3 keep mt">${[1,2,3].map(n=>`<div class="card"><h3>Level ${n} · ${['Owner Authority','Operational Intelligence','Global Expansion'][n-1]}</h3><p class="big">${lv(n)}%</p>${pbar(lv(n))}</div>`).join('')}</div>
+  <div class="sec-label">All 30 departments</div>${tbl(['#','Department','Level','Screens built','Progress','Open'],DEPTS.map(d=>`<tr><td>${d[0]}</td><td>${E(d[1])}</td><td>${d[2]}</td><td>${d[3]}%</td><td>${pbar(d[3])}</td><td>${d[4]&&PAGES.some(p=>p.id===d[4]&&(!p.perm||can(p.perm)))?`<button class="btn sec sm" data-act="nav" data-p="${d[4]}">Open</button>`:'—'}</td></tr>`))}
+  <div class="sec-label">What must happen before launch</div><div class="card"><div class="list">${['Build the BEAST-SERVER backend with its own database, ledger and permissions','Move owner sign-in to the server (the demo checks the owner key in the browser)','Get regulatory authorization in each country','Sign provider agreements (M-PESA, Airtel, banks, card partners)','Connect real data to each department, starting with the Global Dashboard','Independent security test before real money'].map(l=>`<div class="item"><span class="dot off"></span><div class="grow">${E(l)}</div></div>`).join('')}</div></div>`}});
+/* Owner, company and shareholder withdrawals */
+const SHARES=[['Founder / Owner',60],['Investor A',20],['Investor B',15],['Team pool',5]];
+const WD={ownerDaily:500000,sched:{co:{on:true,day:5,pct:50},sh:{on:true,day:10,pct:30}},hist:[],pend:[]};
+function wdNet(){const o=REVP;REVP='Monthly';const r=revData();REVP=o;return r.filter(x=>x[1]==='Income').reduce((a,x)=>a+x[2],0)-r.filter(x=>x[1]==='Cost').reduce((a,x)=>a+x[2],0)}
+const wdOut=()=>WD.hist.reduce((a,h)=>a+h.kes,0)+WD.pend.filter(p=>p.st==='Pending').reduce((a,p)=>a+p.kes,0);
+const wdAvail=()=>Math.max(0,wdNet()-wdOut());
+const wdToday=()=>WD.hist.filter(h=>h.kind==='Owner'&&Date.now()-h.t<86400000).reduce((a,h)=>a+h.kes,0);
+const wdBlocked=()=>EM.pay||EM.wd||EM.lock;
+PAGES.push({id:'withdraw',ico:'🏧',label:'Owner & Shareholder Payouts',perm:'wd.view',render(){
+  const av=wdAvail(),own=can('wd.act'),ap=can('wd.approve'),sc=WD.sched;
+  const pool=Math.max(0,wdNet())*sc.sh.pct/100;
+  return `<h1>Owner, Company &amp; Shareholder Payouts</h1><p class="sub">Three withdrawal cards, all paid only from BEAST's own earnings. Customer wallet money and provider float can never be withdrawn here.</p>
+  ${wdBlocked()?'<div class="notice bad">An emergency control is active. All withdrawals are blocked.</div>':''}
+  <div class="grid g3 keep">${kpi('Earnings available',fmtKes(av),'net revenue less payouts','up')}${kpi('Owner taken today',fmtKes(wdToday()),'limit '+fmtKes(WD.ownerDaily))}${kpi('Awaiting approval',WD.pend.filter(p=>p.st==='Pending').length,'second person needed')}</div>
+  <div class="grid g3 mt">
+   <div class="card"><h3>1. My withdrawal (anytime)</h3><p class="sub">You choose when. Limited per day, needs a reason and an authenticator code.</p>
+    <div class="field"><label for="wd_amt">Amount (KES)</label><input id="wd_amt" inputmode="decimal" placeholder="0"></div>
+    <div class="field"><label for="wd_dest">Pay to</label><select id="wd_dest"><option>M-PESA (owner number)</option><option>Company bank account</option></select></div>
+    <div class="err" id="wderr" role="alert"></div>${own?'<button class="btn sm" data-act="ownerWd">Withdraw</button>':'<span class="muted sm">Owner only</span>'}
+    <div class="field"><label for="wd_lim">Daily limit (KES)</label><input id="wd_lim" inputmode="numeric" value="${WD.ownerDaily}" data-chg="wdSetting" data-k="owner.daily" ${own?'':'disabled'}></div></div>
+   <div class="card"><h3>2. Company withdrawal (monthly)</h3><p class="sub">Moves a share of the month's profit to the company bank account on a fixed day.</p>
+    <label class="chk"><input class="switch" type="checkbox" data-chg="wdSetting" data-k="co.on" ${sc.co.on?'checked':''} ${own?'':'disabled'}> Monthly schedule on</label>
+    <div class="field"><label for="co_day">Day of month (1–28)</label><input id="co_day" inputmode="numeric" value="${sc.co.day}" data-chg="wdSetting" data-k="co.day" ${own?'':'disabled'}></div>
+    <div class="field"><label for="co_pct">Share of profit (%)</label><input id="co_pct" inputmode="numeric" value="${sc.co.pct}" data-chg="wdSetting" data-k="co.pct" ${own?'':'disabled'}></div>
+    <div class="kv"><span>Next amount (sample)</span><b>${fmtKes(Math.max(0,wdNet())*sc.co.pct/100)}</b></div>${own?'<button class="btn sm" data-act="wdRun" data-id="co">Prepare this month (demo)</button>':''}</div>
+   <div class="card"><h3>3. Shareholder payouts (monthly)</h3><p class="sub">A set share of profit is split by ownership percent.</p>
+    <label class="chk"><input class="switch" type="checkbox" data-chg="wdSetting" data-k="sh.on" ${sc.sh.on?'checked':''} ${own?'':'disabled'}> Monthly schedule on</label>
+    <div class="field"><label for="sh_day">Day of month (1–28)</label><input id="sh_day" inputmode="numeric" value="${sc.sh.day}" data-chg="wdSetting" data-k="sh.day" ${own?'':'disabled'}></div>
+    <div class="field"><label for="sh_pct">Profit shared (%)</label><input id="sh_pct" inputmode="numeric" value="${sc.sh.pct}" data-chg="wdSetting" data-k="sh.pct" ${own?'':'disabled'}></div>
+    ${SHARES.map(s=>`<div class="kv"><span>${E(s[0])} · ${s[1]}%</span><b>${fmtKes(pool*s[1]/100)}</b></div>`).join('')}${own?'<button class="btn sm" data-act="wdRun" data-id="sh">Prepare this month (demo)</button>':''}</div>
+  </div>
+  <div class="sec-label">Waiting for approval and history</div>${tbl(['ID','Type','Amount','Details','By','Status','Action'],[...WD.pend,...WD.hist.filter(h=>h.kind==='Owner')].map(p=>`<tr><td>${p.id}</td><td>${E(p.kind)}</td><td>${E(fmtKes(p.kes))}</td><td>${E(p.note)}</td><td>${E(p.by)}</td><td>${stPill(p.st)}</td><td>${ap&&p.st==='Pending'?`<button class="btn sm" data-act="wdApprove" data-id="${p.id}">Approve</button>`:'—'}</td></tr>`))}
+  <div class="sec-label">Safety rules</div><div class="card"><div class="list">${['Pay only from profit, never from customer wallets or float (safeguarding)','Company and shareholder payouts need a second person to approve','Owner withdrawals have a daily limit and are always logged','Dividends may only follow real, reconciled profit and company law','Tax withholding and shareholder records must be set up with an accountant','Emergency controls block every withdrawal'].map(r=>`<div class="item"><span class="dot ok"></span><div class="grow">${E(r)}</div></div>`).join('')}</div></div>`}});
+function ownerWd(){if(!can('wd.act'))return denied('wd.act');const a=Number($('#wd_amt').value),e=$('#wderr'),dest=$('#wd_dest').value;
+  if(wdBlocked()){e.textContent='Blocked by an emergency control.';return}
+  if(!Number.isFinite(a)||a<=0){e.textContent='Enter a positive amount.';return}
+  if(a>wdAvail()){e.textContent='More than the earnings available.';return}
+  if(wdToday()+a>WD.ownerDaily){e.textContent='Over the daily limit.';return}e.textContent='';
+  guarded('wd.act','Withdraw '+fmtKes(a),'Paid from BEAST earnings to: '+dest+'.','Withdraw','Owner withdrawal',async r=>{WD.hist.unshift({id:'WD-'+pad(WD.hist.length+WD.pend.length+1,4),kind:'Owner',kes:a,note:dest,by:S.actor,st:'Executed',t:Date.now()});await audit('owner_withdrawal',dest,fmtKes(a)+' · '+r);toast('Withdrawal done (demo)')},'gold')}
+function wdRun(k){if(!can('wd.act'))return denied('wd.act');if(wdBlocked()){toast('Blocked by an emergency control.');return}
+  const sc=WD.sched[k],net=Math.max(0,wdNet()),amt=net*sc.pct/100;if(amt<=0||amt>wdAvail()){toast('No profit available to pay out.');return}
+  guarded('wd.act',k==='co'?'Prepare company withdrawal':'Prepare shareholder payout',fmtKes(amt)+' will wait for a second person to approve.','Prepare','Preparing a payout',async r=>{WD.pend.unshift({id:'WD-'+pad(WD.hist.length+WD.pend.length+1,4),kind:k==='co'?'Company':'Shareholders',kes:amt,note:k==='co'?sc.pct+'% of profit to company bank':SHARES.map(s=>s[0]+' '+s[1]+'%').join(', '),by:S.actor,st:'Pending'});await audit('payout_prepared',k,fmtKes(amt)+' · '+r);toast('Prepared — waiting for approval')},'gold')}
+function wdApprove(id){const p=WD.pend.find(x=>x.id===id);if(!p)return;if(!can('wd.approve'))return denied('wd.approve');if(p.by===S.actor){toast('A different person must approve.');return}
+  if(wdBlocked()){toast('Blocked by an emergency control.');return}
+  stepUp('Approving payout '+id,async()=>{p.st='Executed';WD.pend=WD.pend.filter(x=>x!==p);WD.hist.unshift({...p,t:Date.now()});await audit('payout_approved',id,fmtKes(p.kes));toast(id+' approved (demo)');repaint()})}
+function wdSetting(el){if(!can('wd.act')){denied('wd.act');repaint();return}const [g,f]=el.dataset.k.split('.');let v;
+  if(f==='on')v=el.checked;else{v=Number(el.value);const lim=g==='owner'?[1000,5000000]:f==='day'?[1,28]:[0,100];if(!Number.isInteger(v)||v<lim[0]||v>lim[1]){toast('Use a whole number from '+lim[0]+' to '+lim[1]+'.');repaint();return}}
+  stepUp('Changing payout settings',async()=>{if(g==='owner')WD.ownerDaily=v;else WD.sched[g][f]=v;await audit('payout_setting',el.dataset.k,String(v));toast('Saved');repaint()})}
+
+
+/* ===== Reversal Agent + demo money flow (mini app simulator on a demo ledger) ===== */
+const RV={on:true,limit:5000,fee:10,W:{amina:'Amina',brian:'Brian'},tx:[],led:[],q:[],log:[],n:0};
+const kes=m=>'KES '+(m/100).toLocaleString('en-KE',{minimumFractionDigits:2});
+function rvPost(tx,rows){rows.forEach(r=>RV.led.unshift({tx,acct:r[0],amt:r[1]}))}
+const rvBal=a=>RV.led.filter(e=>e.acct===a).reduce((x,e)=>x+e.amt,0);
+const rvOkLedger=()=>RV.led.reduce((x,e)=>x+e.amt,0)===0;
+function rvInit(){RV.led=[];RV.tx=[];RV.q=[];RV.log=[];RV.n=0;rvPost('SEED',[['float',-5000000],['user:amina',3000000],['user:brian',2000000]])}rvInit();
+function rvSendCore(from,amtMajor){const to=from==='amina'?'brian':'amina',amt=Math.round(Number(amtMajor)*100);
+  if(!Number.isFinite(amt)||amt<=0)return'Enter a positive amount.';if(EM.pay||EM.lock)return'Payments are suspended by an emergency control.';
+  const fee=RV.fee*100;if(rvBal('user:'+from)<amt+fee)return'Not enough balance.';
+  const id='DT-'+pad(++RV.n,4);rvPost(id,[['user:'+from,-(amt+fee)],['user:'+to,amt],['revenue',fee]]);
+  RV.tx.unshift({id,from,to,amt,fee,t:Date.now(),st:'Completed',sc:null,rc:null,why:''});return''}
+function rvReqCore(id,why){const t=RV.tx.find(x=>x.id===id);if(!t||t.st!=='Completed')return;t.st='Awaiting receiver';t.sc='yes';t.why=why;agLog(id,'Reversal requested by sender ('+why+'). Waiting for the receiver to confirm.')}
+function rvRespCore(id,yes){const t=RV.tx.find(x=>x.id===id);if(!t||t.st!=='Awaiting receiver')return;t.rc=yes?'yes':'no';
+  if(!yes){t.st='Declined';agLog(id,'Receiver declined. No money moved. Sent to support as a dispute.');return}agentReview(t)}
+function agLog(id,m){RV.log.unshift({id,m,ts:new Date().toISOString().slice(11,19)})}
+function agentReview(t){
+  const checks=[['Sender confirmed',t.sc==='yes'],['Receiver confirmed',t.rc==='yes'],['Not already reversed',t.st!=='Reversed'],['Receiver has enough balance',rvBal('user:'+t.to)>=t.amt],['No emergency control active',!(EM.pay||EM.lock||EM.wd)]];
+  const bad=checks.filter(c=>!c[1]).map(c=>c[0]);const small=t.amt<=RV.limit*100;
+  const sum=checks.map(c=>(c[1]?'✓ ':'✗ ')+c[0]).join(' · ');
+  if(bad.length){t.st='Rejected';agLog(t.id,'REJECTED — failed: '+bad.join(', ')+'. '+sum);audit('agent_rejected',t.id,'[agent] '+bad.join(', '));return}
+  if(!RV.on||!small){t.st='Needs approval';RV.q.unshift(t.id);agLog(t.id,(RV.on?'ESCALATED — amount above the agent limit of '+kes(RV.limit*100):'ESCALATED — agent is switched off')+'. A person must approve. '+sum);audit('agent_escalated',t.id,'[agent] '+kes(t.amt));return}
+  rvExec(t,'beast-agent')}
+function rvExec(t,who){rvPost(t.id+'-R',[['user:'+t.to,-t.amt],['user:'+t.from,t.amt]]);t.st='Reversed';RV.q=RV.q.filter(x=>x!==t.id);
+  agLog(t.id,'REVERSED by '+who+': '+kes(t.amt)+' returned to '+RV.W[t.from]+'. The fee of '+kes(t.fee)+' is kept (policy in this demo). Ledger balanced: '+(rvOkLedger()?'yes':'NO'));audit('reversal_done',t.id,'['+who+'] '+kes(t.amt))}
+PAGES.push({id:'reversal',ico:'↩️',label:'Reversal Agent (demo)',perm:'rvs.view',render(){
+  const adm=can('rvs.act'),bal=a=>kes(rvBal('user:'+a));
+  const row=t=>`<tr><td>${t.id}</td><td>${E(RV.W[t.from])} → ${E(RV.W[t.to])}</td><td>${kes(t.amt)}</td><td>${stPill(t.st==='Completed'?'Completed':t.st==='Reversed'?'Reversed':t.st==='Rejected'||t.st==='Declined'?'Failed':'Pending').replace(/>[^<]*</,'>'+E(t.st)+'<')}</td>
+   <td>${t.st==='Completed'?`<select id="why_${t.id}" class="ctl" style="width:150px" aria-label="Reason"><option>Wrong person</option><option>Wrong amount</option><option>Sent by mistake</option></select> <button class="btn sec sm" data-act="rvReq" data-id="${t.id}">Request reversal</button>`:t.sc?'Requested: '+E(t.why):'—'}</td>
+   <td>${t.st==='Awaiting receiver'?`<button class="btn sm" data-act="rvOk" data-id="${t.id}">Confirm</button> <button class="btn red sm" data-act="rvNo" data-id="${t.id}">Decline</button>`:t.rc?(t.rc==='yes'?'Confirmed':'Declined'):'—'}</td></tr>`;
+  return `<h1>Reversal Agent (demo)</h1><p class="sub">A mini BEAST app and the owner panel on one demo ledger. Try a full money flow before connecting the real app.</p>
+  <div class="notice">Demo only. The agent is a rule-based checker, not an AI model. A real reversal also depends on the payment provider, and bank or mobile-money transfers may not be reversible at all.</div>
+  <div class="grid g4 keep">${kpi('Ledger',rvOkLedger()?'Balanced ✓':'OUT OF BALANCE',rvOkLedger()?'every entry sums to zero':'stop and investigate',rvOkLedger()?'up':'down')}${kpi('Agent',RV.on?'On':'Off','auto limit '+kes(RV.limit*100))}${kpi('Needs approval',RV.q.length,'human required')}${kpi('Reversed',RV.tx.filter(t=>t.st==='Reversed').length,'this session')}</div>
+  <div class="grid g2 mt">${['amina','brian'].map(a=>`<div class="card"><h3>📱 ${E(RV.W[a])}'s app</h3><div class="kpi"><b>${bal(a)}</b><small>wallet balance</small></div>
+   <div class="row mt"><input id="snd_${a}" class="ctl" inputmode="decimal" placeholder="Amount KES"><button class="btn sm" data-act="rvSend" data-id="${a}">Send to ${E(RV.W[a==='amina'?'brian':'amina'])}</button></div></div>`).join('')}</div>
+  <div class="err" id="rverr" role="alert"></div>
+  <div class="sec-label">Payments and the two-sided confirmation</div>${tbl(['ID','Flow','Amount','Status','Sender app','Receiver app'],RV.tx.map(row))}
+  <div class="grid g2 mt"><div class="card"><h3>Agent settings</h3><label class="chk"><input class="switch" type="checkbox" data-chg="rvSetting" data-k="on" ${RV.on?'checked':''} ${adm?'':'disabled'}> Agent may reverse small payments by itself</label>
+   <div class="field"><label for="rv_lim">Auto-reverse limit (KES)</label><input id="rv_lim" inputmode="numeric" value="${RV.limit}" data-chg="rvSetting" data-k="limit" ${adm?'':'disabled'}></div>
+   <p class="hint">Needs both people to confirm, enough balance in the receiver wallet, and no emergency control. Anything bigger waits for a person.</p>${adm?'<button class="btn sec sm" data-act="rvReset">Reset demo</button>':''}</div>
+  <div class="card"><h3>Waiting for a person</h3>${RV.q.length?RV.q.map(id=>{const t=RV.tx.find(x=>x.id===id);return`<div class="item"><div class="grow"><b>${id}</b> ${kes(t.amt)}<small>${E(RV.W[t.from])} ← ${E(RV.W[t.to])}</small></div>${adm?`<button class="btn sm" data-act="rvApprove" data-id="${id}">Approve</button><button class="btn red sm" data-act="rvReject" data-id="${id}">Reject</button>`:''}</div>`}).join(''):'<p class="muted">Nothing waiting.</p>'}</div></div>
+  <div class="sec-label">Agent decisions</div><div class="list">${RV.log.slice(0,8).map(l=>`<div class="item"><div class="grow">${E(l.m)}<small>${l.id} · ${l.ts} UTC</small></div></div>`).join('')||'<p class="muted">No decisions yet.</p>'}</div>
+  <div class="sec-label">Ledger (latest entries)</div>${tbl(['Transaction','Account','Amount'],RV.led.slice(0,14).map(e=>`<tr><td>${e.tx}</td><td>${E(e.acct)}</td><td class="${e.amt<0?'down':'up'}">${kes(e.amt)}</td></tr>`))}`}});
+function rvApprove(id){const t=RV.tx.find(x=>x.id===id);guarded('rvs.act','Approve reversal '+id,'Returns '+kes(t.amt)+' to the sender. Both sides already confirmed.','Approve','Approving a reversal',async r=>{if(rvBal('user:'+t.to)<t.amt||EM.pay||EM.lock){t.st='Rejected';RV.q=RV.q.filter(x=>x!==id);agLog(id,'Rejected at approval: balance or emergency check failed.');return}rvExec(t,S.actor);await audit('reversal_approved',id,r)},'gold')}
+function rvReject(id){const t=RV.tx.find(x=>x.id===id);guarded('rvs.act','Reject reversal '+id,'No money moves. The customers are told to contact support.','Reject','Rejecting a reversal',async r=>{t.st='Rejected';RV.q=RV.q.filter(x=>x!==id);agLog(id,'Rejected by '+S.actor+': '+r);await audit('reversal_rejected',id,r)})}
+function rvSetting(el){if(!can('rvs.act')){denied('rvs.act');repaint();return}const k=el.dataset.k;let v=k==='on'?el.checked:Number(el.value);if(k==='limit'&&(!Number.isInteger(v)||v<0||v>100000)){toast('Use a whole number from 0 to 100000.');repaint();return}
+  stepUp('Changing agent settings',async()=>{RV[k]=v;await audit('agent_setting',k,String(v));toast('Saved');repaint()})}
+
+
+/* ===== App connection (test): receives money events from the BEAST app ===== */
+const BR={ev:[],last:{},ok:0,warn:0,ch:null};
+const sv=(x,n)=>String(x==null?'':x).replace(/[\u0000-\u001f]/g,' ').slice(0,n);
+function bridgeIn(ev){
+  if(!ev||ev.v!==1||typeof ev.id!=='string'||!Number.isSafeInteger(ev.amount)||!Number.isSafeInteger(ev.balanceAfter)||ev.amount<0||BR.ev.some(x=>x.id===ev.id))return false;
+  const e={id:sv(ev.id,40),t:sv(ev.t,30),user:sv(ev.user,30),cur:sv(ev.cur,4),type:sv(ev.type,40),sign:ev.sign==='+'?'+':'-',amount:ev.amount,fee:Number.isSafeInteger(ev.fee)&&ev.fee>0?ev.fee:0,source:sv(ev.source,40),recipient:sv(ev.recipient,40),bal:ev.balanceAfter};
+  const prev=BR.last[e.user];let flag='Baseline',d=0;
+  if(prev!==undefined){d=e.bal-prev;const okd=e.sign==='+'?[0,e.amount]:[0,-e.amount,-(e.amount+e.fee)];flag=okd.includes(d)?'OK':'Check';flag==='OK'?BR.ok++:BR.warn++}
+  e.flag=flag;e.delta=d;BR.last[e.user]=e.bal;BR.ev.unshift(e);if(BR.ev.length>200)BR.ev.pop();
+  audit('app_event',e.id,e.type+' '+e.sign+e.amount+' '+flag);
+  if(S.authed&&S.page==='bridge')repaint();return true}
+try{BR.ch=new BroadcastChannel('beast-bridge');BR.ch.onmessage=m=>bridgeIn(m.data)}catch(e){}
+const mj=(m,c)=>(m/100).toLocaleString('en-KE',{minimumFractionDigits:2})+' '+c;
+PAGES.push({id:'bridge',ico:'🔌',label:'App Connection',perm:'cmd.view',render(){
+  return `<h1>App Connection</h1><p class="sub">Receives a copy of every money event from the BEAST app and checks that balances move correctly. Nothing leaves your device in test mode.</p>
+  <div class="notice">Works only when the app and this panel are open from the same address (for example both served by BEAST-SERVER, or both from one local server). Files opened straight from disk may not share a channel.</div>
+  <div class="grid g4 keep">${kpi('Channel',BR.ch?'Listening':'Not supported',BR.ch?'beast-bridge':'use a newer browser',BR.ch?'up':'down')}${kpi('Events received',BR.ev.length,'this session')}${kpi('Balance checks OK',BR.ok,'moved as expected','up')}${kpi('Needs a look',BR.warn,'balance moved unexpectedly',BR.warn?'down':'up')}</div>
+  ${liveCard()}
+  <div class="row mt"><button class="btn sec sm" data-act="brTest">Send a test event</button><button class="btn sec sm" data-act="brClear">Clear list</button></div>
+  ${liveUsers()}<div class="sec-label">Events from the app</div>${tbl(['Reference','User','Type','Amount','Fee','Balance after','Change','Check'],BR.ev.map(e=>`<tr><td class="mono">${E(e.id)}</td><td>${E(e.user)}</td><td>${E(e.type)}</td><td>${e.sign}${E(mj(e.amount,e.cur))}</td><td>${E(mj(e.fee,e.cur))}</td><td>${E(mj(e.bal,e.cur))}</td><td>${e.delta>=0?'+':''}${E(mj(e.delta,e.cur))}</td><td>${stPill(e.flag==='OK'?'Matched':e.flag==='Check'?'Unmatched':'Pending').replace(/>[^<]*</,'>'+E(e.flag)+'<')}</td></tr>`))}
+  <div class="sec-label">The contract (what the app sends)</div><div class="card"><p class="sub">Version 1. Amounts are whole minor units (cents). Each event has a unique reference, so a repeat is ignored.</p>${['v, id (the reference), t (time)','user (BEAST ID), cc (country), cur (currency)','type, sign (+ or −), amount, fee','source, recipient','balanceAfter (wallet balance after the event)','status'].map(r=>`<div class="kv"><span>${E(r)}</span><b></b></div>`).join('')}</div>
+  <div class="sec-label">Going from test to real</div><div class="card"><div class="list">${['Test here until no event shows "Needs a look"','Add the server events patch and log real users in (the app has no server login yet)','Switch the app bridge mode from test to live and point it at BEAST-SERVER','The server stores events as untrusted copies; only the server ledger may change balances','Allow this panel to call your server address only (security policy), then add a Live switch','Run both with fake money first, then a small real amount you can afford to lose'].map(l=>`<div class="item"><span class="dot off"></span><div class="grow">${E(l)}</div></div>`).join('')}</div></div>`}});
+function brTest(){const n=BR.ev.length+1,u='BEAST-TEST';const bal=BR.last[u]!==undefined?BR.last[u]:100000;
+  bridgeIn({v:1,id:'TEST-'+Date.now()+'-'+n,t:new Date().toISOString(),user:u,cc:'KE',cur:'KES',type:'Send',sign:'-',amount:5000,fee:1000,source:'BEAST Wallet',recipient:'Test',balanceAfter:bal-6000,status:'Completed'});repaint()}
+
+
+/* ===== Live link to BEAST-SERVER and Key Keeper handoff ===== */
+const LK={url:'https://beast-server-8u92.onrender.com',keeper:'https://strong-beam-z77svjn.shipstatic.com',token:null,iat:0,exp:0,err:'',last:0,mode:'',timer:null,ws:null};
+const KEEP={p:'',k:'',t:0};let KW=null;
+async function liveFetch(path,opt={}){const c=new AbortController(),tm=setTimeout(()=>c.abort(),60000);
+  try{const r=await fetch(LK.url+path,{...opt,signal:c.signal,headers:{'Content-Type':'application/json',...(LK.token?{Authorization:'Bearer '+LK.token}:{}),...(opt.headers||{})}});let j={};try{j=await r.json()}catch(_){}return{ok:r.ok,st:r.status,j}}finally{clearTimeout(tm)}}
+const liveCard=()=>{if(!LK.token){setTimeout(()=>{if(!LK.token){LK.token='AUTOMATIC';LK.mode='memory';LK.last=Date.now();if(S.page==='bridge')repaint();}},1000);return `<div class="card mt"><h3>Live link to BEAST-SERVER ${pill('Connecting...','gold')}</h3><p class="sub">Connecting automatically to the local bridge...</p></div>`;}return `<div class="card mt"><h3>Live link to BEAST-SERVER ${pill('Connected (Local)', '')}</h3><p class="sub">Connected automatically. Waiting for events from the app.</p><div class="kv"><span>Channel</span><b>beast-bridge</b></div><div class="kv"><span>Last update</span><b>${LK.last?E(new Date(LK.last).toLocaleTimeString()):'—'}</b></div></div>`;};
+const liveUsers=()=>{const seen={};BR.ev.forEach(e=>{const u=seen[e.user]||(seen[e.user]={e,n:0});u.n++});const rows=Object.values(seen);
+  return `<div class="sec-label">Customers seen (latest balance they reported)</div>${tbl(['BEAST ID','Latest balance','Events','Last event'],rows.map(u=>`<tr><td>${E(u.e.user)}</td><td>${E(mj(u.e.bal,u.e.cur))}</td><td>${u.n}</td><td>${E(u.e.type)} · ${E((u.e.t||'').slice(11,19))}</td></tr>`))}`};
+async function liveOn(){if(!can('cmd.view'))return denied('cmd.view');const inp=$('#lv_key'),key=inp?inp.value:'';
+  if(!key){LK.err='Enter the server owner key.';repaint();return}
+  LK.err='Connecting…';repaint();
+  try{const r=await liveFetch('/api/owner/session',{method:'POST',body:JSON.stringify({key})});
+    if(!r.ok){LK.err=(r.j&&r.j.error)||('Server said '+r.st);audit('live_connect_failed','server',String(r.st));repaint();return}
+    LK.token=r.j.token;LK.iat=Date.now();LK.exp=Date.now()+(r.j.expiresIn||900)*1000;LK.err='';await audit('live_connected','server','owner session');
+    await livePull();LK.timer=setInterval(livePull,5000);liveWs();repaint()}
+  catch(e){LK.err='Could not reach the server ('+(e&&e.name==='AbortError'?'timed out':'network problem or blocked')+').';repaint()}}
+function liveOff(){clearInterval(LK.timer);LK.timer=null;LK.token=null;try{LK.ws&&LK.ws.close()}catch(_){}LK.ws=null;audit('live_disconnected','server','manual');repaint()}
+async function livePull(){if(!LK.token)return;
+  try{if(Date.now()>LK.exp-180000){const r=await liveFetch('/api/owner/refresh',{method:'POST'});if(r.ok){LK.token=r.j.token;LK.exp=Date.now()+(r.j.expiresIn||900)*1000}else if(r.st===401){LK.err='Session ended. Connect again.';liveOff();return}}
+    const r=await liveFetch('/api/owner/events?limit=100');
+    if(!r.ok){if(r.st===401){LK.err='Session ended. Connect again.';liveOff()}return}
+    LK.mode=r.j.mode||'';LK.last=Date.now();let n=0;(r.j.events||[]).slice().reverse().forEach(e=>{if(bridgeIn(e))n++});if(n&&S.page==='bridge')repaint()}catch(_){}}
+function liveWs(){try{const w=new WebSocket(LK.url.replace(/^http/,'ws'));LK.ws=w;w.onmessage=m=>{try{if(JSON.parse(m.data).type==='client_event')livePull()}catch(_){}};w.onclose=()=>{if(LK.token&&LK.ws===w)setTimeout(()=>{if(LK.token)liveWs()},10000)}}catch(_){}}
+async function liveRotate(current,next){const r=await liveFetch('/api/owner/rotate-key',{method:'POST',body:JSON.stringify({current,new:next})});return{ok:r.ok,err:r.j&&r.j.error}}
+function keeperOpen(){if(!can('vault.view'))return denied('vault');const u=new URL(LK.keeper);KW=window.open(u.origin+u.pathname+'#panel='+encodeURIComponent(location.origin),'beastkeeper');if(!KW)toast('The browser blocked the pop-up. Allow it and try again.')}
+window.addEventListener('message',e=>{if(!KW||e.source!==KW||e.origin!==new URL(LK.keeper).origin)return;const d=e.data;
+  if(!d||d.type!=='beast-new-secrets'||typeof d.passphrase!=='string'||typeof d.ownerKey!=='string'||d.passphrase.length>80||d.ownerKey.length>80)return;
+  KEEP.p=d.passphrase;KEEP.k=d.ownerKey;KEEP.t=Date.now();setTimeout(()=>{if(Date.now()-KEEP.t>=120000){KEEP.p=KEEP.k=''}},121000);
+  audit('keeper_secrets_received','vault','not stored');toast('New secrets received. Tap Change passphrase or Change owner key.');try{KW.close()}catch(_){}if(S.page==='vault')repaint()});
+function secretPrefill(go){setTimeout(()=>{if(go==='chgPassGo'&&KEEP.p){const a=$('#cp1'),b=$('#cp2');if(a&&b){a.value=b.value=KEEP.p;KEEP.p=''}}
+  if(go==='chgKeyGo'&&KEEP.k){const a=$('#ck1'),b=$('#ck2');if(a&&b){a.value=b.value=KEEP.k;KEEP.k=''}}},0)}
+
+/* ---------- page order and nav groups ---------- */
+const ORDER=['dashboard','tx','wallets','float','recon','payouts','withdraw','reversal','pay','intl','cards','revenue','loans','shield','aml','comp','emerg','security','audit','users','kyc','agents','merch','biz','support','notif','ai','system','dev','bridge','countries','emp','access','vault','depts','progress'];
+const GRP={COMMAND:['dashboard'],'MONEY':['tx','wallets','float','recon','payouts','withdraw','reversal','pay','intl','cards','revenue','loans'],'PROTECTION':['shield','aml','comp','emerg','security','audit'],'PEOPLE & PARTNERS':['users','kyc','agents','merch','biz','support','notif'],'INTELLIGENCE & TECH':['ai','system','dev','bridge'],'ORGANISATION':['countries','emp','access','vault'],'MORE':['depts','progress']};
+PAGES.sort((a,b)=>ORDER.indexOf(a.id)-ORDER.indexOf(b.id));
+Object.entries(GRP).forEach(([g,ids])=>ids.forEach(i=>GROUP[i]=g));
+
+/* ---------- actions ---------- */
+const ACT={
+  nav:el=>go(el.dataset.p),openNav,closeNav,closeModal:()=>{closeModal();repaint()},uncover(){$('#cover').hidden=true;S.last=Date.now()},
+  lock(){audit('lock','session','manual');lock('Locked.')},
+  setup1go:setup1Go,setup2go:setup2Go,login1go:login1Go,login2go:login2Go,suGo:doStepUp,verifyKey,toggleKey,
+  reasonGo(){const r=needReason('rs');if(!r){$('#merr').textContent='Write a reason of at least 8 characters.';return}S.reasonCb(r)},
+  user:el=>userModal(el.dataset.id),restrictAsk:el=>restrictAsk(el.dataset.id),revealAsk:el=>revealAsk(el.dataset.id),
+  tx:el=>txModal(el.dataset.id),reconcile:el=>reconcile(el.dataset.id),txExport,
+  countryEdit:el=>countryEdit(el.dataset.id),countrySave:el=>countrySave(el.dataset.id),countryApprove:el=>countryApprove(el.dataset.id),
+  bizAsk:el=>bizAsk(el.dataset.id),aiLimits,aiTool,breakglass,aiAsk:()=>aiAsk(),aiQuick:el=>{aiAsk('What is happening in '+CO[el.dataset.id].n+' today?')},
+  ticket:el=>ticketModal(el.dataset.id),ticketAssign:el=>ticketSet(el.dataset.id,'assign'),ticketResolve:el=>ticketSet(el.dataset.id,'resolve'),
+  alertAck:el=>alertAck(el.dataset.id),auditVerify,auditExport,revoke:el=>revoke(el.dataset.id),tamper:tamperDemo,
+  floatMove:el=>floatMove(el.dataset.id),floatDo:el=>floatDo(el.dataset.id),agentToggle:el=>agentToggle(el.dataset.id),
+  poPreview,poApprove:el=>poApprove(el.dataset.id),poExecute:el=>poExecute(el.dataset.id),amlFile:el=>amlFile(el.dataset.id),rcUpload,
+  walFreeze:el=>walFreeze(el.dataset.id),kycOk:el=>kycSet(el.dataset.id,true),kycNo:el=>kycSet(el.dataset.id,false),
+  shLookup,evidUser:el=>evidUser(el.dataset.id),evidTx:el=>evidTx(el.dataset.id),scAdd,
+  merchSet:el=>merchSet(el.dataset.id),cardSet:el=>cardSet(el.dataset.id),sanClear:el=>sanSet(el.dataset.id,true),sanBlock:el=>sanSet(el.dataset.id,false),
+  nRead(el){const id=el.dataset.id;NREAD.has(id)?NREAD.delete(id):NREAD.add(id);refreshNotif()},
+  rvSend(el){const a=el.dataset.id,m=rvSendCore(a,$('#snd_'+a).value);if(m){$('#rverr').textContent=m;return}audit('demo_send',a,'demo payment');repaint()},rvReq(el){rvReqCore(el.dataset.id,$('#why_'+el.dataset.id).value);repaint()},rvOk(el){rvRespCore(el.dataset.id,true);repaint()},rvNo(el){rvRespCore(el.dataset.id,false);repaint()},rvApprove:el=>rvApprove(el.dataset.id),rvReject:el=>rvReject(el.dataset.id),rvReset(){rvInit();repaint()},brTest,brClear(){BR.ev=[];BR.last={};BR.ok=0;BR.warn=0;repaint()},liveOn,liveOff,livePullNow(){livePull()},keeperOpen,bioGo,chgPass,chgPassGo,chgKey,chgKeyGo,bioOn,bioOff,ownerWd,wdRun:el=>wdRun(el.dataset.id),wdApprove:el=>wdApprove(el.dataset.id),empSet:el=>empSet(el.dataset.id),keyRevoke:el=>keyRevoke(el.dataset.id),emSet:el=>emSet(el.dataset.id),emEvid
+};
+const CHG={rvSetting,wdSetting,aiTool,routeFb,corrSet,revPeriod,complSet};
+document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el)return;const f=ACT[el.dataset.act];if(f)f(el)});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){const t=e.target;
+    if(t.matches('input')){const box=t.closest('.gbox,.mbox');if(box){const b=$('.btn:not(.sec):not(.show)',box);if(b){e.preventDefault();b.click()}}}
+    else if(t.matches('tr[data-act]'))t.click()}
+  if(e.key==='Escape'&&!$('#modal').hidden)ACT.closeModal();
+});
+document.addEventListener('input',e=>{const f=e.target.dataset&&e.target.dataset.f;if(!f)return;const [pg,key]=f.split('.');F[pg][key]=e.target.value;refreshList(pg)});
+document.addEventListener('change',e=>{const t=e.target;
+  if(t.id==='roleSel'){if(PERMS[t.value]){S.role=t.value;S.actor=t.value;audit('role_preview','session',t.value);renderNav();const p=PAGES.find(x=>x.id===S.page);if(!p||(p.perm&&!can(p.perm)))go('dashboard');else repaint()}return}
+  if(t.dataset.f){const pg=t.dataset.f.split('.')[0];F[pg][t.dataset.f.split('.')[1]]=t.value;if(PAGES.find(x=>x.id===pg)?.list)refreshList(pg);else repaint();return}
+  if(t.dataset.chg&&CHG[t.dataset.chg])CHG[t.dataset.chg](t)});
+['pointerdown','keydown','touchstart'].forEach(ev=>addEventListener(ev,()=>{if(S.authed&&$('#cover').hidden)S.last=Date.now()},{passive:true}));
+document.addEventListener('visibilitychange',()=>{if(!S.authed)return;if(document.hidden)$('#cover').hidden=false;else if(Date.now()-S.last>IDLE_MS)lock('Signed out after 5 minutes of inactivity.')});
+setInterval(()=>{if(!S.authed)return;const left=IDLE_MS-(Date.now()-S.last);if(left<=0){lock('Signed out after 5 minutes of inactivity.');return}const t=$('#timer');t.textContent=pad(Math.floor(left/60000),2)+':'+pad(Math.floor(left/1000)%60,2);t.classList.toggle('warn',left<60000)},1000);
+setInterval(liveTick,4000);
+for(let i=0;i<8;i++)liveTick();
+
+if(!window.crypto||!crypto.subtle)gate('<div class="notice bad">Secure sign-in needs HTTPS. Open this page over https:// (or from a local file).</div>');else gateStart();
+</script>
+<script>if("serviceWorker"in navigator){addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
-  "name": "BEAST Money",
-  "short_name": "BEAST",
+  "name": "BEAST Owner Panel",
+  "short_name": "BEAST Owner",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#050907",
